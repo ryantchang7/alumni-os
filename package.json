@@ -27,7 +27,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
-    "test:all": "npm run test:seasons && npm run test:roster && npm run test:pipeline && npm run test:historical-pipeline && npm run test:graph-quality && npm run test:demo-readiness && npm run test:enrichment && npm run test:no-mock-leak && npm run test:api-validation && npm run test:network-publication && npm run test:simplified-product && npm run build"
+    "test:all": "npm run test:seasons && npm run test:roster && npm run test:pipeline && npm run test:historical-pipeline && npm run test:graph-quality && npm run test:demo-readiness && npm run test:enrichment && npm run test:no-mock-leak && npm run test:api-validation && npm run test:network-publication && npm run test:simplified-product && npm run build",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
