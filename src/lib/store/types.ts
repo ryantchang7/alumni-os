@@ -1,0 +1,180 @@
+export interface Team {
+  id: string
+  schoolName: string
+  teamName: string
+  sport: string
+  gender: string
+  slug: string
+  websiteUrl: string
+  createdAt: string
+}
+
+export interface ScrapeRun {
+  id: string
+  teamId: string
+  seedUrl: string
+  status: 'pending' | 'running' | 'complete' | 'failed'
+  startedAt: string
+  finishedAt?: string
+  summary?: string
+  logs: string[]
+}
+
+export interface CrawledPage {
+  id: string
+  scrapeRunId: string
+  teamId: string
+  url: string
+  title?: string
+  status: number
+  pageType: string
+  fetchedAt: string
+  contentHash?: string
+  htmlPreview?: string
+  warnings: string[]
+}
+
+export interface ExtractedRosterEntry {
+  id: string
+  scrapeRunId: string
+  crawledPageId: string
+  teamId: string
+  fullName: string
+  classLabel?: string
+  hometown?: string
+  highSchool?: string
+  bioUrl?: string
+  sourceUrl: string
+  seasonYear?: string
+  rawText?: string
+  extractionConfidence: number
+  status: 'extracted' | 'promoted' | 'rejected'
+  createdAt: string
+}
+
+export interface Person {
+  id: string
+  canonicalName: string
+  normalizedName: string
+  firstName?: string
+  lastName?: string
+  createdAt: string
+}
+
+export interface TeamMembership {
+  id: string
+  personId: string
+  teamId: string
+  rosterStartYear?: number
+  rosterEndYear?: number
+  classYearEstimate?: string
+  classLabel?: string
+  hometown?: string
+  highSchool?: string
+  bioUrls: string[]
+  sourceUrls: string[]
+  confidence: number
+  publishedToNetwork?: boolean
+  publishedAt?: string
+  publishedByRole?: 'captain' | 'staff' | 'admin'
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ReviewItem {
+  id: string
+  teamId: string
+  type: 'low_confidence_extraction' | 'duplicate_candidate' | 'missing_required_field' | 'promotion_conflict'
+  title: string
+  description: string
+  relatedExtractedEntryId?: string
+  relatedPersonId?: string
+  status: 'open' | 'approved' | 'rejected' | 'resolved'
+  priority: 'low' | 'normal' | 'high'
+  createdAt: string
+}
+
+export interface HistoricalImportRun {
+  id: string
+  teamId: string
+  baseRosterUrl: string
+  status: 'pending' | 'running' | 'complete' | 'failed'
+  currentSeason: string
+  earliestSeason: string
+  startedAt: string
+  finishedAt?: string
+  totalSeasons: number
+  completedSeasons: number
+  successfulSeasons: number
+  failedSeasons: number
+  totalEntries: number
+  promotedCount?: number
+  logs: string[]
+}
+
+export interface HistoricalSeasonResult {
+  id: string
+  historicalImportRunId: string
+  teamId: string
+  seasonYear: string
+  url: string
+  status: 'pending' | 'running' | 'complete' | 'failed' | 'skipped'
+  entriesExtracted: number
+  warningCount: number
+  errorMessage?: string
+  scrapeRunId?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PersonEnrichment {
+  id: string
+  personId: string
+  teamId: string
+  currentRole?: string
+  currentCompany?: string
+  industry?: string
+  city?: string
+  state?: string
+  country?: string
+  email?: string
+  linkedinUrl?: string
+  personalWebsiteUrl?: string
+  notes?: string
+  relationshipStatus?: 'not_started' | 'identified' | 'drafted' | 'contacted' | 'replied' | 'met' | 'do_not_contact'
+  verificationStatus: 'unverified' | 'source_backed' | 'manually_verified' | 'needs_review'
+  sourceUrls: string[]
+  // Alumni self-service fields
+  alumniBio?: string
+  helpTopics?: string[]
+  contactPreference?: 'team_intro' | 'email_ok' | 'linkedin_ok' | 'not_available'
+  visibleToPlayers?: boolean
+  optedOutAt?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface EnrichmentSource {
+  id: string
+  personId: string
+  teamId: string
+  url: string
+  title?: string
+  sourceType: 'team_roster' | 'company_bio' | 'personal_site' | 'linkedin_public' | 'news_article' | 'manual_note' | 'other'
+  notes?: string
+  createdAt: string
+}
+
+export interface Store {
+  teams: Team[]
+  scrapeRuns: ScrapeRun[]
+  crawledPages: CrawledPage[]
+  extractedRosterEntries: ExtractedRosterEntry[]
+  people: Person[]
+  teamMemberships: TeamMembership[]
+  reviewItems: ReviewItem[]
+  historicalImportRuns: HistoricalImportRun[]
+  historicalSeasonResults: HistoricalSeasonResult[]
+  personEnrichments: PersonEnrichment[]
+  enrichmentSources: EnrichmentSource[]
+}

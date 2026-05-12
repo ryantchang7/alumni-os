@@ -1,0 +1,101 @@
+{
+  "teams": [
+    {
+      "id": "5157e67c-6dab-464c-a2c6-db69cb66ddb2",
+      "schoolName": "University of Pennsylvania",
+      "teamName": "Men's Golf",
+      "sport": "Golf",
+      "gender": "Men",
+      "websiteUrl": "https://pennathletics.com/sports/mens-golf/roster",
+      "slug": "penn-mens-golf",
+      "createdAt": "2026-05-12T19:24:29.193Z"
+    }
+  ],
+  "scrapeRuns": [],
+  "crawledPages": [],
+  "extractedRosterEntries": [
+    {
+      "id": "ec9bcc25-9fdc-4665-8e6a-d234f036eb86",
+      "teamId": "5157e67c-6dab-464c-a2c6-db69cb66ddb2",
+      "fullName": "Ryan Chang",
+      "extractionConfidence": 0.95,
+      "sourceUrl": "https://pennathletics.com/sports/mens-golf/roster",
+      "seasonYear": "2025-26",
+      "status": "promoted",
+      "classLabel": "Jr.",
+      "hometown": "San Francisco, CA"
+    },
+    {
+      "id": "a5618928-caf0-4d7c-becf-88501bfa662a",
+      "teamId": "5157e67c-6dab-464c-a2c6-db69cb66ddb2",
+      "fullName": "Hayden Adams",
+      "extractionConfidence": 0.92,
+      "sourceUrl": "https://pennathletics.com/sports/mens-golf/roster",
+      "seasonYear": "2025-26",
+      "status": "promoted",
+      "classLabel": "Sr."
+    }
+  ],
+  "people": [
+    {
+      "id": "a2754ea8-deef-49a2-b75e-e90e9349858b",
+      "canonicalName": "Ryan Chang",
+      "normalizedName": "ryan chang",
+      "firstName": "Ryan",
+      "lastName": "Chang",
+      "createdAt": "2026-05-12T19:24:29.194Z"
+    },
+    {
+      "id": "cf6efed1-4107-4439-b62e-54a54c06069b",
+      "canonicalName": "Hayden Adams",
+      "normalizedName": "hayden adams",
+      "firstName": "Hayden",
+      "lastName": "Adams",
+      "createdAt": "2026-05-12T19:24:29.194Z"
+    }
+  ],
+  "teamMemberships": [
+    {
+      "id": "2eefc07d-7f92-4d3c-a94c-755d6c062872",
+      "personId": "a2754ea8-deef-49a2-b75e-e90e9349858b",
+      "teamId": "5157e67c-6dab-464c-a2c6-db69cb66ddb2",
+      "rosterStartYear": 2025,
+      "rosterEndYear": 2026,
+      "classLabel": "Jr.",
+      "hometown": "San Francisco, CA",
+      "bioUrls": [],
+      "sourceUrls": [
+        "https://pennathletics.com/sports/mens-golf/roster"
+      ],
+      "confidence": 0.95,
+      "createdAt": "2026-05-12T19:24:29.194Z",
+      "updatedAt": "2026-05-12T19:24:29.194Z",
+      "publishedToNetwork": true,
+      "publishedAt": "2026-05-12T19:24:29.194Z",
+      "publishedByRole": "captain"
+    },
+    {
+      "id": "cb1caf45-a392-4306-b4bb-bd964e8a4b80",
+      "personId": "cf6efed1-4107-4439-b62e-54a54c06069b",
+      "teamId": "5157e67c-6dab-464c-a2c6-db69cb66ddb2",
+      "rosterStartYear": 2025,
+      "rosterEndYear": 2026,
+      "classLabel": "Sr.",
+      "bioUrls": [],
+      "sourceUrls": [
+        "https://pennathletics.com/sports/mens-golf/roster"
+      ],
+      "confidence": 0.92,
+      "createdAt": "2026-05-12T19:24:29.194Z",
+      "updatedAt": "2026-05-12T19:24:29.195Z",
+      "publishedToNetwork": true,
+      "publishedAt": "2026-05-12T19:24:29.195Z",
+      "publishedByRole": "captain"
+    }
+  ],
+  "reviewItems": [],
+  "historicalImportRuns": [],
+  "historicalSeasonResults": [],
+  "personEnrichments": [],
+  "enrichmentSources": []
+}
