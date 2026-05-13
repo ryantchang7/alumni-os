@@ -3,27 +3,17 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const modes = [
-  {
-    label: 'Build',
-    tagline: 'For team captains',
-    description:
-      'Import verified Penn Golf rosters going back to 2000. You approve, you publish. A live alumni network in minutes.',
-    href: '/build',
-    cta: 'Build the network',
-    primary: true,
-  },
   {
     label: 'Player Clubhouse',
     tagline: 'For current players',
     description:
       'Browse alumni by name, class, and hometown. See who is open to helping, and reach out through the team.',
     href: '/player',
-    cta: 'Open Clubhouse',
-    primary: false,
+    cta: 'Enter Clubhouse',
+    primary: true,
   },
   {
     label: 'Alumni',
@@ -38,12 +28,8 @@ const modes = [
 
 export default function LandingPage() {
   const [ready, setReady] = useState(false)
-  const { scrollY } = useScroll()
-  const imageY = useTransform(scrollY, [0, 600], [0, 80])
-  const imageScale = useTransform(scrollY, [0, 600], [1, 1.06])
 
   useEffect(() => {
-    // Small delay so the animation fires after hydration
     const t = setTimeout(() => setReady(true), 80)
     return () => clearTimeout(t)
   }, [])
@@ -51,72 +37,60 @@ export default function LandingPage() {
   return (
     <div className="bg-[#f8f5f0]">
 
-      {/* ── Hero ── */}
-      <div className="relative h-screen min-h-[600px] max-h-[1000px] overflow-hidden">
+      {/* ── Hero — full image, never cropped ── */}
+      <div className="relative w-full">
 
-        {/* Parallax image */}
-        <motion.div
-          className="absolute inset-0 w-full h-full"
-          style={{ y: imageY, scale: imageScale }}
-          initial={{ scale: 1.08 }}
-          animate={ready ? { scale: 1.0 } : { scale: 1.08 }}
-          transition={{ duration: 2.8, ease: [0.25, 0.1, 0.25, 1] }}
-        >
-          <Image
-            src="/hero.png"
-            alt="Penn Golf Clubhouse"
-            fill
-            priority
-            className="object-cover object-center"
-            sizes="100vw"
-          />
-        </motion.div>
+        {/* Image defines container height naturally */}
+        <Image
+          src="/hero.png"
+          alt="Penn Golf Clubhouse"
+          width={1344}
+          height={896}
+          priority
+          className="w-full h-auto block"
+        />
 
         {/* Dark curtain that lifts */}
         <motion.div
-          className="absolute inset-0 bg-[#0a1628]"
-          initial={{ opacity: 0.72 }}
-          animate={ready ? { opacity: 0.18 } : { opacity: 0.72 }}
-          transition={{ duration: 2.4, ease: 'easeOut' }}
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(10,22,40,0.72) 0%, rgba(10,22,40,0.12) 55%, rgba(10,22,40,0.05) 100%)' }}
+          initial={{ opacity: 1 }}
+          animate={ready ? { opacity: 1 } : { opacity: 1 }}
         />
 
-        {/* Bottom gradient for card readability */}
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+        {/* Overlay that fades in (separate from gradient so gradient stays) */}
+        <motion.div
+          className="absolute inset-0 bg-[#0a1628]"
+          initial={{ opacity: 0.65 }}
+          animate={ready ? { opacity: 0 } : { opacity: 0.65 }}
+          transition={{ duration: 2.6, ease: 'easeOut' }}
+        />
 
-        {/* Hero content */}
-        <div className="relative z-10 flex flex-col items-center justify-end h-full pb-20 px-6 text-center">
+        {/* Text — sits over bottom of image */}
+        <div className="absolute inset-x-0 bottom-0 pb-[7%] flex flex-col items-center text-center px-6">
           <motion.p
-            className="text-xs font-semibold uppercase tracking-[0.25em] text-white/60 mb-4"
-            initial={{ opacity: 0, y: 12 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-            transition={{ delay: 1.2, duration: 0.7, ease: 'easeOut' }}
+            className="text-xs font-semibold uppercase tracking-[0.25em] text-white/60 mb-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ delay: 1.1, duration: 0.7, ease: 'easeOut' }}
           >
             Penn Golf · Alumni OS
           </motion.p>
 
           <motion.h1
-            className="text-white text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-tight max-w-2xl"
-            initial={{ opacity: 0, y: 18 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-            transition={{ delay: 1.45, duration: 0.75, ease: 'easeOut' }}
-          >
-            The private clubhouse<br />for Penn Golf.
-          </motion.h1>
-
-          <motion.p
-            className="text-white/70 text-base sm:text-lg mt-4 max-w-md leading-relaxed"
+            className="text-white text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight max-w-2xl"
             initial={{ opacity: 0, y: 16 }}
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-            transition={{ delay: 1.7, duration: 0.7, ease: 'easeOut' }}
+            transition={{ delay: 1.35, duration: 0.75, ease: 'easeOut' }}
           >
-            Verified alumni. Real connections. No cold outreach.
-          </motion.p>
+            The network for<br />Penn Golf players.
+          </motion.h1>
 
           <motion.div
-            className="flex flex-col sm:flex-row gap-3 mt-8"
-            initial={{ opacity: 0, y: 14 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-            transition={{ delay: 2.0, duration: 0.65, ease: 'easeOut' }}
+            className="flex flex-col sm:flex-row gap-3 mt-7"
+            initial={{ opacity: 0, y: 12 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ delay: 1.75, duration: 0.65, ease: 'easeOut' }}
           >
             <Link
               href="/player"
@@ -126,39 +100,24 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/alumni"
-              className="text-sm font-semibold border border-white/40 text-white px-7 py-3 rounded-lg hover:bg-white/10 transition-colors backdrop-blur-sm"
+              className="text-sm font-semibold border border-white/40 text-white px-7 py-3 rounded-lg hover:bg-white/10 transition-colors"
             >
               I&apos;m an alumnus
             </Link>
           </motion.div>
         </div>
-
-        {/* Scroll cue */}
-        <motion.div
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10"
-          initial={{ opacity: 0 }}
-          animate={ready ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ delay: 2.6, duration: 0.5 }}
-        >
-          <motion.div
-            animate={{ y: [0, 5, 0] }}
-            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
-          >
-            <ChevronDown className="w-5 h-5 text-white/40" />
-          </motion.div>
-        </motion.div>
       </div>
 
       {/* ── Mode cards ── */}
-      <div className="max-w-[1080px] mx-auto px-6 sm:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-14">
+      <div className="max-w-[800px] mx-auto px-6 sm:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-12">
           {modes.map((mode, i) => (
             <motion.div
               key={mode.href}
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ delay: i * 0.1, duration: 0.55, ease: 'easeOut' }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ delay: i * 0.1, duration: 0.5, ease: 'easeOut' }}
               className={`bg-white rounded-xl p-6 border ${
                 mode.primary
                   ? 'border-l-4 border-l-[#990000] border-[rgba(180,168,150,0.35)]'
