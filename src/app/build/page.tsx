@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useEffect, useState, useCallback, Suspense } from 'react'
 import Link from 'next/link'
-import { CheckCircle2, Eye, EyeOff } from 'lucide-react'
-import { Suspense } from 'react'
+import { CheckCircle2, Eye, EyeOff, Loader2 } from 'lucide-react'
 
 const TEAM_SLUG = 'penn-mens-golf'
+const BASE_ROSTER_URL = 'https://pennathletics.com/sports/mens-golf/roster'
+const EARLIEST_YEAR = 2000
 
 interface BuildPerson {
   personId: string
@@ -17,60 +17,7 @@ interface BuildPerson {
   publishedAt: string | null
 }
 
-function StepRow({
-  number,
-  title,
-  description,
-  done,
-  active,
-}: {
-  number: number
-  title: string
-  description: React.ReactNode
-  done: boolean
-  active: boolean
-}) {
-  return (
-    <div
-      className={`flex gap-4 p-5 rounded-xl border ${
-        active
-          ? 'border-[#0a1628] bg-white'
-          : done
-            ? 'border-[rgba(180,168,150,0.35)] bg-white'
-            : 'border-[rgba(180,168,150,0.25)] bg-[#faf8f5]'
-      }`}
-      style={
-        active ? { boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' } : undefined
-      }
-    >
-      <div className="flex-shrink-0 pt-0.5">
-        {done ? (
-          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-        ) : (
-          <span
-            className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold ${
-              active ? 'bg-[#0a1628] text-white' : 'border border-[rgba(180,168,150,0.5)] text-[#8a7f70]'
-            }`}
-          >
-            {number}
-          </span>
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p
-          className={`font-semibold text-sm leading-snug mb-1 ${
-            active ? 'text-[#0a1628]' : done ? 'text-[#0a1628]' : 'text-[#8a7f70]'
-          }`}
-        >
-          {title}
-        </p>
-        <div className={`text-xs leading-relaxed ${active ? 'text-[#4a5568]' : 'text-[#8a7f70]'}`}>
-          {description}
-        </div>
-      </div>
-    </div>
-  )
-}
+type ImportStatus = 'idle' | 'running' | 'done' | 'error'
 
 function PersonRow({
   person,
@@ -106,7 +53,7 @@ function PersonRow({
               disabled={isBusy}
               className="text-xs font-medium text-[#8a7f70] hover:text-[#0a1628] border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40"
             >
-              {isBusy ? '…' : 'Hide'}
+              {isBusy ? '...' : 'Hide'}
             </button>
           </>
         ) : (
@@ -120,7 +67,7 @@ function PersonRow({
               disabled={isBusy}
               className="text-xs font-medium bg-[#0a1628] hover:bg-[#112240] text-white rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40"
             >
-              {isBusy ? '…' : 'Publish'}
+              {isBusy ? '...' : 'Publish'}
             </button>
           </>
         )}
@@ -129,17 +76,58 @@ function PersonRow({
   )
 }
 
-function BuildPageInner() {
-  const searchParams = useSearchParams()
-  const slug = searchParams.get('teamSlug') ?? TEAM_SLUG
+function StepNumber({ n, done, active }: { n: number; done: boolean; active: boolean }) {
+  if (done) return <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+  return (
+    <span
+      className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold flex-shrink-0 ${
+        active ? 'bg-[#0a1628] text-white' : 'border border-[rgba(180,168,150,0.5)] text-[#8a7f70]'
+      }`}
+    >
+      {n}
+    </span>
+  )
+}
 
+function SectionShell({
+  children,
+  active,
+  done,
+}: {
+  children: React.ReactNode
+  active: boolean
+  done: boolean
+}) {
+  return (
+    <div
+      className={`rounded-xl border ${
+        active || done ? 'border-[#0a1628] bg-white' : 'border-[rgba(180,168,150,0.25)] bg-[#faf8f5]'
+      }`}
+      style={
+        active || done
+          ? { boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }
+          : undefined
+      }
+    >
+      {children}
+    </div>
+  )
+}
+
+function BuildPageInner() {
   const [people, setPeople] = useState<BuildPerson[]>([])
   const [loading, setLoading] = useState(true)
   const [teamExists, setTeamExists] = useState(false)
   const [busy, setBusy] = useState<string | null>(null)
 
+  // Import state
+  const [importStatus, setImportStatus] = useState<ImportStatus>('idle')
+  const [importProgress, setImportProgress] = useState<{ done: number; total: number } | null>(null)
+  const [importSummary, setImportSummary] = useState<string | null>(null)
+  const [importError, setImportError] = useState<string | null>(null)
+
   const fetchPeople = useCallback(async () => {
-    const res = await fetch(`/api/build/people?teamSlug=${slug}`)
+    const res = await fetch(`/api/build/people?teamSlug=${TEAM_SLUG}`)
     if (!res.ok) {
       setTeamExists(false)
       setLoading(false)
@@ -149,7 +137,7 @@ function BuildPageInner() {
     setTeamExists(true)
     setPeople(data.people ?? [])
     setLoading(false)
-  }, [slug])
+  }, [])
 
   useEffect(() => {
     fetchPeople()
@@ -169,7 +157,7 @@ function BuildPageInner() {
     await fetch('/api/network/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ teamSlug: slug, personId, role: 'captain' }),
+      body: JSON.stringify({ teamSlug: TEAM_SLUG, personId, role: 'captain' }),
     })
     await fetchPeople()
     setBusy(null)
@@ -180,10 +168,69 @@ function BuildPageInner() {
     await fetch('/api/network/unpublish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ teamSlug: slug, personId, role: 'captain' }),
+      body: JSON.stringify({ teamSlug: TEAM_SLUG, personId, role: 'captain' }),
     })
     await fetchPeople()
     setBusy(null)
+  }
+
+  async function runHistoricalImport() {
+    setImportStatus('running')
+    setImportProgress(null)
+    setImportSummary(null)
+    setImportError(null)
+
+    try {
+      // Step 1: Create the run and get season list
+      const createRes = await fetch('/api/scrape/historical/create-run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          teamSlug: TEAM_SLUG,
+          baseRosterUrl: BASE_ROSTER_URL,
+          earliestStartYear: EARLIEST_YEAR,
+        }),
+      })
+      if (!createRes.ok) {
+        const err = await createRes.json().catch(() => ({}))
+        throw new Error(err.error ?? `Failed to start import (${createRes.status})`)
+      }
+      const { run, seasonResults } = await createRes.json()
+      const total: number = seasonResults.length
+      setImportProgress({ done: 0, total })
+
+      // Step 2: Run each season sequentially
+      let done = 0
+      for (const sr of seasonResults as { id: string }[]) {
+        await fetch('/api/scrape/historical/run-season', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ seasonResultId: sr.id }),
+        })
+        done++
+        setImportProgress({ done, total })
+      }
+
+      // Step 3: Complete run + promote high-confidence entries
+      const completeRes = await fetch('/api/scrape/historical/complete-run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ runId: run.id, promoteHighConfidence: true }),
+      })
+      const completeData = completeRes.ok ? await completeRes.json() : {}
+      const promoted: number = completeData.promoted ?? 0
+      const people_created: number = completeData.peopleCreated ?? 0
+
+      setImportSummary(
+        `Found ${total} seasons. Promoted ${promoted} entries across ${people_created} alumni.`,
+      )
+      setImportStatus('done')
+      setLoading(true)
+      await fetchPeople()
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'Import failed')
+      setImportStatus('error')
+    }
   }
 
   return (
@@ -192,103 +239,114 @@ function BuildPageInner() {
         <div className="max-w-[860px] mx-auto">
           <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Build</p>
           <h1 className="text-white text-3xl font-semibold tracking-tight">
-            Build your alumni network.
+            Build your alumni clubhouse.
           </h1>
           <p className="text-gray-300 text-base mt-2 max-w-xl leading-relaxed">
-            Four steps from a roster link to a live network your team can actually use.
+            Import verified Penn Golf rosters, then choose who players can reach out to.
           </p>
         </div>
       </div>
 
       <div className="max-w-[860px] mx-auto px-8">
         <div className="-mt-5 relative z-10 space-y-3 pb-16">
-          <StepRow
-            number={1}
-            title="Add your team"
-            description={
-              step1Done ? (
-                <span>Penn Men&apos;s Golf is set up.</span>
-              ) : (
-                <span>
-                  Give us a roster link. The agent reads the page and finds the players.{' '}
-                  <Link href={`/builder/agent?teamSlug=${slug}`} className="font-semibold text-[#990000] hover:underline">
-                    Open agent &rarr;
-                  </Link>
-                </span>
-              )
-            }
-            done={step1Done}
-            active={activeStep === 1}
-          />
 
-          <StepRow
-            number={2}
-            title="Review what was found"
-            description={
-              hasPeople ? (
-                <span>
-                  {people.length} {people.length === 1 ? 'person' : 'people'} found in the network.
-                </span>
-              ) : (
-                <span>
-                  The agent shows you the names it found.{' '}
-                  {step1Done && (
-                    <Link href={`/builder/agent?teamSlug=${slug}`} className="font-semibold text-[#990000] hover:underline">
-                      Open agent &rarr;
-                    </Link>
-                  )}
-                </span>
-              )
-            }
-            done={step2Done}
-            active={activeStep === 2}
-          />
-
-          {/* Step 3 — self-contained publish panel */}
-          <div
-            className={`rounded-xl border ${
-              activeStep === 3 || step3Done
-                ? 'border-[#0a1628] bg-white'
-                : 'border-[rgba(180,168,150,0.25)] bg-[#faf8f5]'
-            }`}
-            style={
-              activeStep === 3 || step3Done
-                ? { boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }
-                : undefined
-            }
-          >
+          {/* Step 1 — Team confirmed */}
+          <SectionShell active={activeStep === 1} done={step1Done}>
             <div className="flex gap-4 p-5">
-              <div className="flex-shrink-0 pt-0.5">
-                {step3Done ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <StepNumber n={1} done={step1Done} active={activeStep === 1} />
+              <div className="flex-1 min-w-0">
+                <p className={`font-semibold text-sm leading-snug mb-1 ${step1Done || activeStep === 1 ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                  Penn Golf confirmed
+                </p>
+                <p className={`text-xs leading-relaxed ${step1Done || activeStep === 1 ? 'text-[#4a5568]' : 'text-[#8a7f70]'}`}>
+                  {loading
+                    ? 'Checking...'
+                    : step1Done
+                      ? 'Penn Men\'s Golf is set up.'
+                      : 'Team not found. Contact support.'}
+                </p>
+              </div>
+            </div>
+          </SectionShell>
+
+          {/* Step 2 — Find alumni */}
+          <SectionShell active={activeStep === 2} done={step2Done}>
+            <div className="flex gap-4 p-5">
+              <StepNumber n={2} done={step2Done} active={activeStep === 2} />
+              <div className="flex-1 min-w-0">
+                <p className={`font-semibold text-sm leading-snug mb-1 ${step2Done || activeStep === 2 ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                  Find alumni
+                </p>
+                {step2Done ? (
+                  <p className="text-xs text-[#4a5568] leading-relaxed">
+                    {people.length} {people.length === 1 ? 'person' : 'people'} found from Penn Golf rosters.
+                  </p>
+                ) : importStatus === 'idle' ? (
+                  <p className={`text-xs leading-relaxed ${activeStep === 2 ? 'text-[#4a5568]' : 'text-[#8a7f70]'}`}>
+                    Pull verified Penn Golf rosters from 2000 through today.
+                  </p>
+                ) : importStatus === 'running' ? (
+                  <p className="text-xs text-[#4a5568] leading-relaxed">
+                    {importProgress
+                      ? `Processing season ${importProgress.done} of ${importProgress.total}...`
+                      : 'Starting import...'}
+                  </p>
+                ) : importStatus === 'done' ? (
+                  <p className="text-xs text-emerald-700 leading-relaxed">{importSummary}</p>
                 ) : (
-                  <span
-                    className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold ${
-                      activeStep === 3
-                        ? 'bg-[#0a1628] text-white'
-                        : 'border border-[rgba(180,168,150,0.5)] text-[#8a7f70]'
-                    }`}
-                  >
-                    3
-                  </span>
+                  <p className="text-xs text-[#990000] leading-relaxed">{importError}</p>
                 )}
               </div>
+            </div>
+
+            {/* Import action — visible when step 1 done and not yet have people */}
+            {step1Done && !step2Done && (
+              <div className="px-5 pb-5 pt-0">
+                {importStatus === 'idle' || importStatus === 'error' ? (
+                  <button
+                    onClick={runHistoricalImport}
+                    className="text-sm font-semibold bg-[#0a1628] hover:bg-[#112240] text-white px-5 py-2.5 rounded-lg transition-colors"
+                  >
+                    Find Historical Alumni
+                  </button>
+                ) : importStatus === 'running' ? (
+                  <div className="flex items-center gap-2 text-sm text-[#4a5568]">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>
+                      {importProgress
+                        ? `${importProgress.done} / ${importProgress.total} seasons`
+                        : 'Working...'}
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+            )}
+
+            {/* Re-run available even after people exist */}
+            {step2Done && importStatus === 'idle' && (
+              <div className="px-5 pb-5 pt-0">
+                <button
+                  onClick={runHistoricalImport}
+                  className="text-xs font-medium text-[#8a7f70] hover:text-[#0a1628] border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] rounded-lg px-3 py-1.5 transition-colors"
+                >
+                  Re-run import
+                </button>
+              </div>
+            )}
+          </SectionShell>
+
+          {/* Step 3 — Review & publish */}
+          <SectionShell active={activeStep === 3} done={step3Done}>
+            <div className="flex gap-4 p-5">
+              <StepNumber n={3} done={step3Done} active={activeStep === 3} />
               <div className="flex-1 min-w-0">
-                <p
-                  className={`font-semibold text-sm leading-snug mb-1 ${
-                    activeStep === 3 || step3Done ? 'text-[#0a1628]' : 'text-[#8a7f70]'
-                  }`}
-                >
-                  Approve and publish
+                <p className={`font-semibold text-sm leading-snug mb-1 ${step3Done || activeStep === 3 ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                  Review and publish
                 </p>
-                <p
-                  className={`text-xs leading-relaxed ${
-                    activeStep === 3 || step3Done ? 'text-[#4a5568]' : 'text-[#8a7f70]'
-                  }`}
-                >
+                <p className={`text-xs leading-relaxed ${step3Done || activeStep === 3 ? 'text-[#4a5568]' : 'text-[#8a7f70]'}`}>
                   {step3Done
                     ? `${publishedCount} ${publishedCount === 1 ? 'profile' : 'profiles'} visible to players.`
-                    : 'You decide who appears in the network. Nothing is visible to players until you publish it.'}
+                    : 'Choose who appears in the clubhouse. Nothing is visible until you publish.'}
                 </p>
               </div>
             </div>
@@ -300,7 +358,7 @@ function BuildPageInner() {
                     Published alumni are visible to current players.
                   </p>
                   {loading ? (
-                    <p className="text-sm text-[#8a7f70] py-4 text-center">Loading…</p>
+                    <p className="text-sm text-[#8a7f70] py-4 text-center">Loading...</p>
                   ) : (
                     <div>
                       {people.map(person => (
@@ -317,42 +375,39 @@ function BuildPageInner() {
                 </div>
               </div>
             )}
-          </div>
+          </SectionShell>
 
-          <StepRow
-            number={4}
-            title="Open Player Mode"
-            description={
-              hasPublished ? (
-                <span>
-                  Players can now see the alumni network.{' '}
-                  <Link href={`/player?teamSlug=${slug}`} className="font-semibold text-[#990000] hover:underline">
-                    Open Player Mode &rarr;
-                  </Link>
-                </span>
-              ) : (
-                'Players see a clean alumni network — names, years, hometowns, and career info when available.'
-              )
-            }
-            done={false}
-            active={activeStep === 4}
-          />
+          {/* Step 4 — Open Clubhouse */}
+          <SectionShell active={activeStep === 4} done={false}>
+            <div className="flex gap-4 p-5">
+              <StepNumber n={4} done={false} active={activeStep === 4} />
+              <div className="flex-1 min-w-0">
+                <p className={`font-semibold text-sm leading-snug mb-1 ${activeStep === 4 ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                  Open Player Clubhouse
+                </p>
+                <p className={`text-xs leading-relaxed ${activeStep === 4 ? 'text-[#4a5568]' : 'text-[#8a7f70]'}`}>
+                  {hasPublished ? (
+                    <>
+                      Players can now browse and reach out to alumni.{' '}
+                      <Link href="/player" className="font-semibold text-[#990000] hover:underline">
+                        Open Clubhouse &rarr;
+                      </Link>
+                    </>
+                  ) : (
+                    'Players see verified alumni — names, years, hometowns, and career info when available.'
+                  )}
+                </p>
+              </div>
+            </div>
+          </SectionShell>
 
-          {hasPeople && (
-            <div className="pt-4 flex gap-3 flex-wrap">
-              {hasPublished && (
-                <Link
-                  href={`/player?teamSlug=${slug}`}
-                  className="text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-5 py-2.5 rounded-lg transition-colors"
-                >
-                  Open Player Mode &rarr;
-                </Link>
-              )}
+          {hasPublished && (
+            <div className="pt-4">
               <Link
-                href={`/builder/agent?teamSlug=${slug}`}
-                className="text-sm font-medium text-[#0a1628] border border-[#0a1628] hover:bg-[#0a1628] hover:text-white px-4 py-2.5 rounded-lg transition-colors"
+                href="/player"
+                className="text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-5 py-2.5 rounded-lg transition-colors"
               >
-                Agent tools
+                Open Player Clubhouse &rarr;
               </Link>
             </div>
           )}
@@ -364,7 +419,7 @@ function BuildPageInner() {
 
 export default function BuildPage() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-sm text-[#8a7f70]">Loading…</div>}>
+    <Suspense fallback={<div className="py-20 text-center text-sm text-[#8a7f70]">Loading...</div>}>
       <BuildPageInner />
     </Suspense>
   )

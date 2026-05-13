@@ -11,12 +11,12 @@ const modes = [
     primary: true,
   },
   {
-    label: 'Player Mode',
+    label: 'Player Clubhouse',
     tagline: 'For current athletes',
     description:
       'Browse alumni by name, class, and hometown. See who is open to helping, and reach out through the team.',
     href: '/player',
-    cta: 'Open Player Mode',
+    cta: 'Open Player Clubhouse',
     primary: false,
   },
   {
@@ -51,7 +51,7 @@ export default function LandingPage() {
               href="/player"
               className="text-sm font-semibold bg-white text-[#0a1628] px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              Open Player Mode
+              Open Player Clubhouse
             </Link>
             <Link
               href="/build"

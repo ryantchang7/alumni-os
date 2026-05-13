@@ -9,22 +9,29 @@ test.describe('MVP loop', () => {
     resetSeedAndNetworkDemo()
   })
 
-  test('Test 1: /build is self-contained — no link to captain-review in visible flow', async ({
+  test('Test 1: /build is self-contained — correct heading, no dead links', async ({
     page,
   }) => {
     await page.goto(`/build?teamSlug=${TEAM_SLUG}`)
     await page.waitForLoadState('networkidle')
 
-    // Page loads with embedded publish panel
-    await expect(page.locator('h1')).toContainText('Build your alumni network', { timeout: 10000 })
+    // Page loads with clubhouse heading
+    await expect(page.locator('h1')).toContainText('Build your alumni clubhouse', { timeout: 10000 })
 
-    // Publish panel is embedded — should show publish toggle UI
+    // Step 1 confirmed
     const bodyText = await page.textContent('body')
-    expect(bodyText).toContain('Visible to players')
+    expect(bodyText).toContain('Penn Golf confirmed')
 
-    // No link pointing to /builder/captain-review in the main UI
+    // No dead links to deleted builder pages
     const captainReviewLinks = await page.locator('a[href*="captain-review"]').count()
     expect(captainReviewLinks).toBe(0)
+    const builderAgentLinks = await page.locator('a[href*="/builder/agent"]').count()
+    expect(builderAgentLinks).toBe(0)
+
+    // Has "Find Historical Alumni" button or shows people already found
+    const hasImportButton = await page.locator('button', { hasText: /find historical alumni/i }).count()
+    const hasPeopleText = (bodyText ?? '').includes('people found')
+    expect(hasImportButton > 0 || hasPeopleText).toBe(true)
 
     await expectNoFakeAlumniText(page)
   })
@@ -176,5 +183,11 @@ test.describe('MVP loop', () => {
     await page.goto('/network/search')
     await page.waitForLoadState('networkidle')
     expect(page.url()).toContain('/player')
+
+    // /builder/agent → /internal
+    await page.goto('/builder/agent')
+    await page.waitForLoadState('networkidle')
+    expect(page.url()).toContain('/internal')
+    expect(page.url()).not.toContain('/builder')
   })
 })

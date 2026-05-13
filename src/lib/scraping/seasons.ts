@@ -36,11 +36,93 @@ export function formatSeason(startYear: number): string {
  * Build a roster URL for a given season.
  * Current season (most recent): uses the base URL as-is.
  * Historical seasons: appends '/{seasonYear}' to the base URL.
+ * @deprecated Use buildSeasonUrlCandidates for robust multi-pattern resolution.
  */
 export function buildRosterSeasonUrl(baseUrl: string, seasonYear: string, currentSeasonYear: string): string {
   if (seasonYear === currentSeasonYear) return baseUrl
   const base = baseUrl.replace(/\/$/, '')
   return `${base}/${seasonYear}`
+}
+
+/**
+ * Convert a relative href to an absolute URL given a base URL.
+ * Returns null if the href is empty, a bare fragment, or javascript:.
+ */
+export function toAbsoluteUrl(href: string, baseUrl: string): string | null {
+  if (!href || href.startsWith('#') || href.toLowerCase().startsWith('javascript:')) return null
+  try {
+    return new URL(href, baseUrl).toString()
+  } catch {
+    return null
+  }
+}
+
+const _SEASON_RE = /\b(\d{4})-(\d{2})\b/
+
+function _isValidSeason(s: string): boolean {
+  const m = s.match(/^(\d{4})-(\d{2})$/)
+  if (!m) return false
+  return parseInt(m[2], 10) === (parseInt(m[1], 10) + 1) % 100
+}
+
+/**
+ * Parse season URLs from roster page HTML by scanning <option> values and <a> hrefs
+ * for YYYY-YY season patterns.  Returns Map<seasonYear, absoluteUrl>.
+ */
+export function parseSeasonUrlsFromHtml(html: string, baseUrl: string): Map<string, string> {
+  const map = new Map<string, string>()
+
+  // <option value="...">...</option>
+  const optRe = /<option[^>]+value="([^"]*)"[^>]*>([\s\S]*?)<\/option>/gi
+  let m: RegExpExecArray | null
+  while ((m = optRe.exec(html)) !== null) {
+    const value = m[1]
+    const text = m[2].replace(/<[^>]+>/g, '').trim()
+    const sm = value.match(_SEASON_RE) ?? text.match(_SEASON_RE)
+    if (!sm || !_isValidSeason(sm[0])) continue
+    const season = sm[0]
+    if (value && (value.startsWith('http') || value.startsWith('/') || value.includes('?'))) {
+      const abs = toAbsoluteUrl(value, baseUrl)
+      if (abs && !map.has(season)) map.set(season, abs)
+    }
+  }
+
+  // <a href="...">...</a>
+  const aRe = /<a[^>]+href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi
+  while ((m = aRe.exec(html)) !== null) {
+    const href = m[1]
+    const text = m[2].replace(/<[^>]+>/g, '').trim()
+    const sm = href.match(_SEASON_RE) ?? text.match(_SEASON_RE)
+    if (!sm || !_isValidSeason(sm[0])) continue
+    const season = sm[0]
+    if (!map.has(season)) {
+      const abs = toAbsoluteUrl(href, baseUrl)
+      if (abs) map.set(season, abs)
+    }
+  }
+
+  return map
+}
+
+/**
+ * Build a list of candidate URLs to try for a given season, in order of likelihood.
+ * Pass parsedUrl (from parseSeasonUrlsFromHtml) if available — it will be tried first.
+ * Covers SideArm Sports (?roster_year=), generic query params, and path-based patterns.
+ */
+export function buildSeasonUrlCandidates(baseUrl: string, season: string, parsedUrl?: string): string[] {
+  const base = baseUrl.replace(/\/$/, '')
+  const [startYear, endSuffix] = season.split('-')
+  const fullEndYear = `${startYear.slice(0, 2)}${endSuffix}`
+  const raw: string[] = [
+    ...(parsedUrl ? [parsedUrl] : []),
+    `${base}?roster_year=${season}`,
+    `${base}?season=${season}`,
+    `${base}?roster=${season}`,
+    `${base}?year=${startYear}`,
+    `${base}/${season}`,
+    `${base}/${startYear}-${fullEndYear}`,
+  ]
+  return [...new Set(raw)]
 }
 
 /**

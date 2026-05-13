@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server'
-import { generateSeasonPlan, currentSeasonStartYear, formatSeason, buildRosterSeasonUrl } from '@/lib/scraping/seasons'
+import {
+  generateSeasonPlan,
+  currentSeasonStartYear,
+  formatSeason,
+  parseSeasonUrlsFromHtml,
+  buildSeasonUrlCandidates,
+} from '@/lib/scraping/seasons'
 import { validateCrawlTarget } from '@/lib/scraping/guards'
+import { fetchPage } from '@/lib/scraping/fetch-page'
 import {
   getTeamBySlug,
   createHistoricalImportRun,
@@ -45,6 +52,17 @@ export async function POST(request: Request) {
   const seasons = generateSeasonPlan(earliestYear, currentStart)
   const now = new Date().toISOString()
 
+  // Try to parse actual season URLs from the base page (non-fatal if fetch fails)
+  let parsedSeasonUrls = new Map<string, string>()
+  try {
+    const baseFetch = await fetchPage(String(baseRosterUrl))
+    if (baseFetch.status < 400) {
+      parsedSeasonUrls = parseSeasonUrlsFromHtml(baseFetch.html, baseFetch.finalUrl || String(baseRosterUrl))
+    }
+  } catch {
+    // proceed with candidate-based URLs
+  }
+
   const run = await createHistoricalImportRun({
     teamId: team.id,
     baseRosterUrl: String(baseRosterUrl),
@@ -61,20 +79,24 @@ export async function POST(request: Request) {
   })
 
   // Pre-create a HistoricalSeasonResult for each season (status: 'pending')
+  // Use the parsed URL from the base page if available, else the first candidate pattern
   const seasonResults = await Promise.all(
-    seasons.map(seasonYear =>
-      saveHistoricalSeasonResult({
+    seasons.map(seasonYear => {
+      const parsedUrl = parsedSeasonUrls.get(seasonYear)
+      const candidates = buildSeasonUrlCandidates(String(baseRosterUrl), seasonYear, parsedUrl)
+      const url = parsedUrl ?? (seasonYear === currentSeason ? String(baseRosterUrl) : candidates[0])
+      return saveHistoricalSeasonResult({
         historicalImportRunId: run.id,
         teamId: team.id,
         seasonYear,
-        url: buildRosterSeasonUrl(String(baseRosterUrl), seasonYear, currentSeason),
+        url,
         status: 'pending',
         entriesExtracted: 0,
         warningCount: 0,
         createdAt: now,
         updatedAt: now,
-      }),
-    ),
+      })
+    }),
   )
 
   return NextResponse.json({

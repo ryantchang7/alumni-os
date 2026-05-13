@@ -7,8 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const navLinks = [
   { label: 'Build', href: '/build' },
-  { label: 'Player Mode', href: '/player' },
-  { label: 'Alumni Mode', href: '/alumni' },
+  { label: 'Player Clubhouse', href: '/player' },
+  { label: 'Alumni', href: '/alumni' },
 ]
 
 export default function NavBar() {
@@ -38,11 +38,14 @@ export default function NavBar() {
           ))}
         </nav>
 
-        {/* Right side */}
-        <div className="hidden md:flex items-center gap-3">
-          <span className="bg-[#112240] border border-white/[0.08] text-gray-300 text-xs font-mono px-2.5 py-1 rounded-full">
-            Penn Golf &middot; Demo
-          </span>
+        {/* Right side — internal link only */}
+        <div className="hidden md:flex items-center">
+          <Link
+            href="/internal"
+            className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors px-2 py-1"
+          >
+            Internal
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -78,9 +81,13 @@ export default function NavBar() {
                 </Link>
               ))}
               <div className="pt-3">
-                <span className="bg-[#112240] border border-white/[0.08] text-gray-300 text-xs font-mono px-2.5 py-1 rounded-full">
-                  Penn Golf &middot; Demo
-                </span>
+                <Link
+                  href="/internal"
+                  className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Internal
+                </Link>
               </div>
             </div>
           </motion.div>

@@ -107,10 +107,10 @@ function PlayerDashboardInner() {
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[1320px] mx-auto">
-          <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Penn Golf Network</p>
+          <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Penn Golf Clubhouse</p>
           <h1 className="text-white text-3xl font-semibold tracking-tight">Penn Golf Alumni</h1>
           <p className="text-gray-300 text-base mt-2 max-w-xl">
-            Profiles are approved by Penn Golf captains or staff before they appear here.
+            Connect with verified Penn Golf alumni for career advice, golf rounds, mentorship, and introductions.
           </p>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { fetchPage } from '@/lib/scraping/fetch-page'
 import { classifyPage } from '@/lib/scraping/classify-page'
 import { extractRoster } from '@/lib/scraping/extract-roster'
+import { buildSeasonUrlCandidates } from '@/lib/scraping/seasons'
 import {
   getHistoricalSeasonResultById,
   updateHistoricalSeasonResult,
@@ -52,37 +53,35 @@ export async function POST(request: Request) {
     logs: [],
   })
 
-  let fetched: Awaited<ReturnType<typeof fetchPage>>
-  try {
-    fetched = await fetchPage(seasonResult.url)
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    await updateScrapeRun(scrapeRun.id, { status: 'failed', finishedAt: new Date().toISOString(), logs: [msg] })
-    const updated = await updateHistoricalSeasonResult(seasonResult.id, {
-      status: 'failed',
-      errorMessage: `Fetch failed: ${msg}`,
-      scrapeRunId: scrapeRun.id,
-      updatedAt: new Date().toISOString(),
-    })
-    await _bumpRunCounters(seasonResult.historicalImportRunId, { failed: 1 })
-    return NextResponse.json({ seasonResult: updated, error: msg }, { status: 200 })
+  // Resolve the base roster URL from the parent run so we can build fallback candidates
+  const store0 = await readStore()
+  const importRun = store0.historicalImportRuns.find(r => r.id === seasonResult.historicalImportRunId)
+  const baseRosterUrl = importRun?.baseRosterUrl ?? seasonResult.url
+
+  // Build ordered list of URLs to try: stored URL first, then alternative patterns
+  const candidates = buildSeasonUrlCandidates(baseRosterUrl, seasonResult.seasonYear, seasonResult.url)
+  const triedUrls: string[] = []
+
+  let fetched: Awaited<ReturnType<typeof fetchPage>> | undefined
+  let successUrl: string | undefined
+
+  for (const candidate of candidates) {
+    triedUrls.push(candidate)
+    try {
+      const result = await fetchPage(candidate)
+      if (result.status < 400) {
+        fetched = result
+        successUrl = candidate
+        break
+      }
+    } catch {
+      // continue to next candidate
+    }
   }
 
-  // HTTP 404 on a historical season usually means the season doesn't exist — skip it
-  if (fetched.status === 404) {
-    await updateScrapeRun(scrapeRun.id, { status: 'complete', finishedAt: new Date().toISOString(), logs: ['HTTP 404 — season not found'] })
-    const updated = await updateHistoricalSeasonResult(seasonResult.id, {
-      status: 'skipped',
-      errorMessage: 'HTTP 404 — season not found on server',
-      scrapeRunId: scrapeRun.id,
-      updatedAt: new Date().toISOString(),
-    })
-    await _bumpRunCounters(seasonResult.historicalImportRunId, { completed: 1, successful: 1 })
-    return NextResponse.json({ seasonResult: updated, skipped: true }, { status: 200 })
-  }
-
-  if (fetched.status >= 400) {
-    const msg = `HTTP ${fetched.status}`
+  if (!fetched || !successUrl) {
+    const triedList = triedUrls.join(', ')
+    const msg = `Could not fetch ${seasonResult.seasonYear}. Tried: ${triedList}`
     await updateScrapeRun(scrapeRun.id, { status: 'failed', finishedAt: new Date().toISOString(), logs: [msg] })
     const updated = await updateHistoricalSeasonResult(seasonResult.id, {
       status: 'failed',
@@ -94,13 +93,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ seasonResult: updated, error: msg }, { status: 200 })
   }
 
-  const classification = classifyPage(seasonResult.url, undefined, fetched.title)
+  // Update stored URL to the one that actually worked
+  if (successUrl !== seasonResult.url) {
+    await updateHistoricalSeasonResult(seasonResult.id, { url: successUrl, updatedAt: new Date().toISOString() })
+  }
+
+  const classification = classifyPage(successUrl, undefined, fetched.title)
   const fetchedAt = new Date().toISOString()
 
   const page = await saveCrawledPage({
     scrapeRunId: scrapeRun.id,
     teamId: seasonResult.teamId,
-    url: seasonResult.url,
+    url: successUrl,
     title: fetched.title,
     status: fetched.status,
     pageType: classification.pageType,

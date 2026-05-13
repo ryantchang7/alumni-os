@@ -4,64 +4,19 @@ const TEAM_SLUG = 'penn-mens-golf'
 
 const tools = [
   {
-    label: 'Agent',
-    description: 'Run roster extraction and approve entries.',
-    href: `/builder/agent?teamSlug=${TEAM_SLUG}`,
+    label: 'Build',
+    description: 'Import historical rosters and publish alumni profiles.',
+    href: '/build',
   },
   {
-    label: 'Captain Review',
-    description: 'Publish and unpublish profiles in the network.',
-    href: `/builder/captain-review?teamSlug=${TEAM_SLUG}`,
+    label: 'Player Clubhouse',
+    description: 'See the alumni list as a current player would.',
+    href: `/player?teamSlug=${TEAM_SLUG}`,
   },
   {
-    label: 'Workspace',
-    description: 'Overview of scrape runs and graph state.',
-    href: `/builder/workspace?teamSlug=${TEAM_SLUG}`,
-  },
-  {
-    label: 'Debug Roster',
-    description: 'Test roster extraction against a URL.',
-    href: `/builder/debug-roster?teamSlug=${TEAM_SLUG}`,
-  },
-  {
-    label: 'Promote',
-    description: 'Manually promote extracted entries to the graph.',
-    href: `/builder/promote?teamSlug=${TEAM_SLUG}`,
-  },
-  {
-    label: 'People',
-    description: 'View all people and their source records.',
-    href: `/builder/people?teamSlug=${TEAM_SLUG}`,
-  },
-  {
-    label: 'Enrichment',
-    description: 'Add verified profile details.',
-    href: `/builder/enrich?teamSlug=${TEAM_SLUG}`,
-  },
-  {
-    label: 'Historical Import',
-    description: 'Import historical season rosters.',
-    href: `/builder/history?teamSlug=${TEAM_SLUG}`,
-  },
-  {
-    label: 'Data Health',
-    description: 'Graph quality and coverage report.',
-    href: `/builder/quality?teamSlug=${TEAM_SLUG}`,
-  },
-  {
-    label: 'Graph Output',
-    description: 'Raw graph export and structure view.',
-    href: `/builder/graph?teamSlug=${TEAM_SLUG}`,
-  },
-  {
-    label: 'Review Queue',
-    description: 'Open review items and conflicts.',
-    href: `/review?teamSlug=${TEAM_SLUG}`,
-  },
-  {
-    label: 'Discovery',
-    description: 'Page discovery and crawl runs.',
-    href: `/builder/discovery?teamSlug=${TEAM_SLUG}`,
+    label: 'Alumni Mode',
+    description: 'See the alumni-side profile and request inbox.',
+    href: '/alumni',
   },
 ]
 
@@ -73,7 +28,7 @@ export default function InternalPage() {
           <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Internal</p>
           <h1 className="text-white text-2xl font-semibold tracking-tight">Internal tools</h1>
           <p className="text-gray-400 text-sm mt-2">
-            Builder, admin, and debug tools. Not visible to players or alumni.
+            Access all three modes. Not visible to players or alumni from the main nav.
           </p>
         </div>
       </div>

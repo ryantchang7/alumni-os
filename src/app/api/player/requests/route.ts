@@ -36,12 +36,27 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid purpose value' }, { status: 400 })
   }
 
-  if (fromName.trim().length < 2) {
+  const trimmedName = fromName.trim()
+  if (trimmedName.length < 2) {
     return NextResponse.json({ error: 'fromName must be at least 2 characters' }, { status: 400 })
   }
+  if (trimmedName.length > 100) {
+    return NextResponse.json({ error: 'fromName must be 100 characters or fewer' }, { status: 400 })
+  }
 
-  if (message.trim().length < 10) {
+  const trimmedMessage = message.trim()
+  if (trimmedMessage.length < 10) {
     return NextResponse.json({ error: 'message must be at least 10 characters' }, { status: 400 })
+  }
+  if (trimmedMessage.length > 2000) {
+    return NextResponse.json({ error: 'message must be 2000 characters or fewer' }, { status: 400 })
+  }
+
+  if (fromEmail) {
+    const email = fromEmail.trim()
+    if (email.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: 'fromEmail is not a valid email address' }, { status: 400 })
+    }
   }
 
   const {
@@ -85,10 +100,10 @@ export async function POST(request: NextRequest) {
   const req = await createPlayerAlumniRequest({
     teamId: team.id,
     alumniPersonId,
-    fromName: fromName.trim(),
+    fromName: trimmedName,
     fromEmail: fromEmail?.trim() || undefined,
     purpose: purpose as PlayerAlumniRequest['purpose'],
-    message: message.trim(),
+    message: trimmedMessage,
   })
 
   return NextResponse.json({
