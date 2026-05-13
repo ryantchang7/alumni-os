@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import ConfidenceBadge from './ConfidenceBadge'
 
 interface NormalizedPeopleTableProps {
   people: NormalizedPerson[]
@@ -45,7 +44,7 @@ export default function NormalizedPeopleTable({ people }: NormalizedPeopleTableP
               <TableCell className="text-xs text-gray-600">{person.classEstimate ?? '—'}</TableCell>
               <TableCell className="text-xs text-gray-500">{person.sourceCount} source{person.sourceCount !== 1 ? 's' : ''}</TableCell>
               <TableCell>
-                <ConfidenceBadge level={person.confidence} size="sm" />
+                
               </TableCell>
             </TableRow>
           ))}

@@ -15,6 +15,7 @@ import type {
   HistoricalSeasonResult,
   PersonEnrichment,
   EnrichmentSource,
+  PlayerAlumniRequest,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -35,6 +36,7 @@ const EMPTY_STORE: Store = {
   historicalSeasonResults: [],
   personEnrichments: [],
   enrichmentSources: [],
+  playerAlumniRequests: [],
 }
 
 function normalizeName(name: string): string {
@@ -101,6 +103,7 @@ export async function readStore(): Promise<Store> {
   if (!parsed.historicalSeasonResults) parsed.historicalSeasonResults = []
   if (!parsed.personEnrichments) parsed.personEnrichments = []
   if (!parsed.enrichmentSources) parsed.enrichmentSources = []
+  if (!parsed.playerAlumniRequests) parsed.playerAlumniRequests = []
   return parsed
 }
 
@@ -690,4 +693,64 @@ export async function updatePersonEnrichmentSafeFields(
   store.personEnrichments.push(enrichment)
   await writeStore(store)
   return enrichment
+}
+
+// ── Player → Alumni requests ──────────────────────────────────────────────────
+
+export async function createPlayerAlumniRequest(input: {
+  teamId: string
+  alumniPersonId: string
+  fromName: string
+  fromEmail?: string
+  purpose: PlayerAlumniRequest['purpose']
+  message: string
+}): Promise<PlayerAlumniRequest> {
+  const store = await readStore()
+  const now = new Date().toISOString()
+  const request: PlayerAlumniRequest = {
+    id: crypto.randomUUID(),
+    teamId: input.teamId,
+    alumniPersonId: input.alumniPersonId,
+    fromName: input.fromName.trim(),
+    fromEmail: input.fromEmail?.trim() || undefined,
+    purpose: input.purpose,
+    message: input.message.trim(),
+    status: 'requested',
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.playerAlumniRequests.push(request)
+  await writeStore(store)
+  return request
+}
+
+export async function getRequestsForAlumni(
+  teamId: string,
+  alumniPersonId: string,
+): Promise<PlayerAlumniRequest[]> {
+  const store = await readStore()
+  return store.playerAlumniRequests.filter(
+    r => r.teamId === teamId && r.alumniPersonId === alumniPersonId,
+  )
+}
+
+export async function getRequestsForTeam(teamId: string): Promise<PlayerAlumniRequest[]> {
+  const store = await readStore()
+  return store.playerAlumniRequests.filter(r => r.teamId === teamId)
+}
+
+export async function updatePlayerAlumniRequestStatus(
+  requestId: string,
+  status: PlayerAlumniRequest['status'],
+): Promise<PlayerAlumniRequest | null> {
+  const store = await readStore()
+  const idx = store.playerAlumniRequests.findIndex(r => r.id === requestId)
+  if (idx === -1) return null
+  store.playerAlumniRequests[idx] = {
+    ...store.playerAlumniRequests[idx],
+    status,
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
+  return store.playerAlumniRequests[idx]
 }

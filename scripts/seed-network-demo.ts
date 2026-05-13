@@ -27,6 +27,7 @@ const EMPTY_STORE: Store = {
   historicalSeasonResults: [],
   personEnrichments: [],
   enrichmentSources: [],
+  playerAlumniRequests: [],
 }
 
 async function run() {
@@ -49,8 +50,9 @@ async function run() {
       sourceUrl: 'https://pennathletics.com/sports/mens-golf/roster',
       seasonYear: '2025-26',
       status: 'extracted',
-      classLabel: 'Jr.',
-      hometown: 'San Francisco, CA',
+      classLabel: 'So.',
+      hometown: 'Brookline, Mass.',
+      highSchool: 'Windermere (Fla.) Prep',
     },
     {
       teamId: team.id,
@@ -59,7 +61,9 @@ async function run() {
       sourceUrl: 'https://pennathletics.com/sports/mens-golf/roster',
       seasonYear: '2025-26',
       status: 'extracted',
-      classLabel: 'Sr.',
+      classLabel: 'Jr.',
+      hometown: 'Lexington, Ky.',
+      highSchool: 'Sayre School',
     },
   ])
 

@@ -21,7 +21,22 @@
       "Bash(mkdir -p \"/Users/ryanchang/Desktop/AI Projects/alumni-os/src/app/api/player/profiles\" && mkdir -p \"/Users/ryanchang/Desktop/AI Projects/alumni-os/src/app/api/player/profiles/[personId]\")",
       "Bash(vercel --version)",
       "Bash(git init *)",
-      "Bash(git commit -m 'Initial commit: Alumni OS with Phase 10 simplified product *)"
+      "Bash(git commit -m 'Initial commit: Alumni OS with Phase 10 simplified product *)",
+      "Bash(vercel --yes)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(list\\(d.keys\\(\\)\\)[:5]\\)\")",
+      "Bash(vercel whoami *)",
+      "Bash(vercel teams *)",
+      "Bash(node -e \"const fs=require\\('fs'\\);const a=JSON.parse\\(fs.readFileSync\\('/Users/ryanchang/Library/Application Support/com.vercel.cli/auth.json','utf8'\\)\\);console.log\\(a.token\\)\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c ' *)",
+      "Bash(git commit -m ' *)",
+      "Bash(gh run *)",
+      "Bash(python3)",
+      "Bash(tee /tmp/alumni-build.log)",
+      "Bash(echo \"Build started as PID $!\")",
+      "Read(//private/tmp/**)",
+      "Bash(npm test *)",
+      "Bash(npx --version)"
     ],
     "additionalDirectories": [
       "/Users/ryanchang/Desktop/AI Projects/alumni-os/e2e",

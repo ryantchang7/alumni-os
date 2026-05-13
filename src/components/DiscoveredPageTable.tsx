@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import ConfidenceBadge from './ConfidenceBadge'
 
 interface DiscoveredPageTableProps {
   pages: DiscoveredPage[]
@@ -69,7 +68,7 @@ export default function DiscoveredPageTable({ pages }: DiscoveredPageTableProps)
                 <span className="text-xs text-gray-500">{page.season ?? '—'}</span>
               </TableCell>
               <TableCell>
-                <ConfidenceBadge level={page.confidence} size="sm" />
+                
               </TableCell>
               <TableCell>
                 <span className={`inline-flex items-center text-xs px-2 py-0.5 rounded font-medium capitalize ${priorityColors[page.priority]}`}>

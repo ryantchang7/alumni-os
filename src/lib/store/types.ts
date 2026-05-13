@@ -165,6 +165,19 @@ export interface EnrichmentSource {
   createdAt: string
 }
 
+export interface PlayerAlumniRequest {
+  id: string
+  teamId: string
+  alumniPersonId: string
+  fromName: string
+  fromEmail?: string
+  purpose: 'career_advice' | 'coffee_chat' | 'mentorship' | 'golf_connection'
+  message: string
+  status: 'requested' | 'seen' | 'responded' | 'closed'
+  createdAt: string
+  updatedAt: string
+}
+
 export interface Store {
   teams: Team[]
   scrapeRuns: ScrapeRun[]
@@ -177,4 +190,5 @@ export interface Store {
   historicalSeasonResults: HistoricalSeasonResult[]
   personEnrichments: PersonEnrichment[]
   enrichmentSources: EnrichmentSource[]
+  playerAlumniRequests: PlayerAlumniRequest[]
 }

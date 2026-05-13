@@ -16,8 +16,6 @@ interface SelfProfile {
   currentRole?: string
   currentCompany?: string
   city?: string
-  state?: string
-  country?: string
   alumniBio?: string
   helpTopics?: string[]
   contactPreference?: string
@@ -26,17 +24,17 @@ interface SelfProfile {
 
 const HELP_TOPIC_OPTIONS = [
   'Career advice',
-  'Recruiting',
-  'Finance / banking',
-  'Consulting',
-  'Tech / startups',
+  'Coffee chats',
+  'Mentorship',
+  'Golf connections',
+  'Recruiting advice',
+  'Resume review',
   'Graduate school',
-  'Golf industry',
   'General networking',
 ]
 
 const CONTACT_PREF_LABELS: Record<string, string> = {
-  team_intro: 'Team introduction (captain connects us)',
+  team_intro: 'Have the captain make an introduction',
   email_ok: 'Email is fine',
   linkedin_ok: 'LinkedIn message is fine',
   not_available: 'Not available right now',
@@ -54,7 +52,6 @@ function AlumniProfileInner() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  // Editable state
   const [currentRole, setCurrentRole] = useState('')
   const [currentCompany, setCurrentCompany] = useState('')
   const [city, setCity] = useState('')
@@ -227,9 +224,7 @@ function AlumniProfileInner() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                    Company
-                  </label>
+                  <label className="block text-xs font-medium text-[#4a5568] mb-1">Company</label>
                   <input
                     type="text"
                     value={currentCompany}
@@ -256,7 +251,7 @@ function AlumniProfileInner() {
                 <textarea
                   value={alumniBio}
                   onChange={e => setAlumniBio(e.target.value)}
-                  placeholder="A sentence or two about what you're up to now."
+                  placeholder="A sentence or two about what you are up to now."
                   rows={3}
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 resize-none"
                 />
@@ -264,13 +259,13 @@ function AlumniProfileInner() {
             </div>
           </div>
 
-          {/* Help topics */}
+          {/* How I can help */}
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
-              How you can help
+              How I can help
             </p>
             <p className="text-xs text-[#8a7f70] mb-4">
               Players see which topics you are open to. Pick all that apply.
@@ -299,7 +294,7 @@ function AlumniProfileInner() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
-              Contact preference
+              How to reach me
             </p>
             <div className="space-y-2">
               {Object.entries(CONTACT_PREF_LABELS).map(([value, label]) => (
@@ -331,9 +326,9 @@ function AlumniProfileInner() {
                 className="mt-0.5 accent-[#0a1628]"
               />
               <div>
-                <p className="text-sm font-medium text-[#0a1628]">Visible in Player Mode</p>
+                <p className="text-sm font-medium text-[#0a1628]">Visible to players</p>
                 <p className="text-xs text-[#8a7f70] mt-0.5">
-                  Uncheck to remove your profile from the player-facing network at any time.
+                  Uncheck to hide your profile from the player-facing network at any time.
                 </p>
               </div>
             </label>

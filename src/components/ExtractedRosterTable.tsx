@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import ConfidenceBadge from './ConfidenceBadge'
 
 interface ExtractedRosterTableProps {
   entries: RosterEntry[]
@@ -36,7 +35,7 @@ export default function ExtractedRosterTable({ entries }: ExtractedRosterTablePr
               <TableCell className="text-xs text-gray-600">{entry.hometown ?? '—'}</TableCell>
               <TableCell className="text-xs text-gray-500">{entry.highSchool ?? '—'}</TableCell>
               <TableCell>
-                <ConfidenceBadge level={entry.confidence} size="sm" />
+                
               </TableCell>
             </TableRow>
           ))}

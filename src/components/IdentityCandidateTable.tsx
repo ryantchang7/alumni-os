@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import ConfidenceBadge from './ConfidenceBadge'
 
 interface IdentityCandidateTableProps {
   candidates: IdentityCandidate[]
@@ -71,7 +70,7 @@ export default function IdentityCandidateTable({ candidates }: IdentityCandidate
               </TableCell>
               <TableCell className="text-xs text-gray-500">{candidate.evidence.length} point{candidate.evidence.length !== 1 ? 's' : ''}</TableCell>
               <TableCell>
-                <ConfidenceBadge level={candidate.confidence} size="sm" />
+                
               </TableCell>
               <TableCell>
                 <span className={`inline-flex text-xs px-2 py-0.5 rounded font-medium ${statusColors[candidate.status]}`}>

@@ -1,5 +1,4 @@
 import type { ReviewItem, ReviewItemType } from '@/lib/types'
-import ConfidenceBadge from './ConfidenceBadge'
 
 interface ReviewItemCardProps {
   item: ReviewItem
@@ -40,7 +39,6 @@ export default function ReviewItemCard({ item }: ReviewItemCardProps) {
           <span className={`inline-flex text-xs px-2 py-0.5 rounded font-medium ${typeColors[item.type]}`}>
             {typeLabels[item.type]}
           </span>
-          <ConfidenceBadge level={item.confidence} size="sm" />
         </div>
         <span className="text-xs text-gray-400 flex-shrink-0">{new Date(item.createdAt).toLocaleDateString()}</span>
       </div>

@@ -1,9 +1,7 @@
 import Link from 'next/link'
 import { MapPin } from 'lucide-react'
 import type { AlumniProfile } from '@/lib/types'
-import ConfidenceBadge from './ConfidenceBadge'
 import VerificationBadge from './VerificationBadge'
-import RelationshipBadge from './RelationshipBadge'
 
 interface AlumniCardProps {
   alumni: AlumniProfile
@@ -53,7 +51,7 @@ export default function AlumniCard({ alumni, compact = false }: AlumniCardProps)
           {/* Badges */}
           <div className="flex flex-wrap gap-1 mt-2">
             {topModes.map((mode) => (
-              <RelationshipBadge key={mode} mode={mode} size="sm" />
+              <span key={mode} className="text-[11px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{mode}</span>
             ))}
           </div>
         </div>
@@ -88,7 +86,6 @@ export default function AlumniCard({ alumni, compact = false }: AlumniCardProps)
           </h3>
           <div className="flex items-center gap-1.5 flex-shrink-0 mt-0.5">
             <VerificationBadge status={alumni.verificationStatus} />
-            <ConfidenceBadge level={alumni.confidence} size="sm" />
           </div>
         </div>
 
@@ -116,7 +113,7 @@ export default function AlumniCard({ alumni, compact = false }: AlumniCardProps)
         {/* Relationship mode badges */}
         <div className="flex flex-wrap gap-1 mb-4">
           {topModes.map((mode) => (
-            <RelationshipBadge key={mode} mode={mode} size="sm" />
+            <span key={mode} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{mode}</span>
           ))}
         </div>
 
