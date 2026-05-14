@@ -37,6 +37,7 @@ const EMPTY_STORE: Store = {
   personEnrichments: [],
   enrichmentSources: [],
   playerAlumniRequests: [],
+  pre2000Candidates: [],
 }
 
 function normalizeName(name: string): string {
@@ -104,6 +105,7 @@ export async function readStore(): Promise<Store> {
   if (!parsed.personEnrichments) parsed.personEnrichments = []
   if (!parsed.enrichmentSources) parsed.enrichmentSources = []
   if (!parsed.playerAlumniRequests) parsed.playerAlumniRequests = []
+  if (!parsed.pre2000Candidates) parsed.pre2000Candidates = []
   return parsed
 }
 

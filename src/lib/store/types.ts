@@ -148,10 +148,31 @@ export interface PersonEnrichment {
   alumniBio?: string
   helpTopics?: string[]
   contactPreference?: 'team_intro' | 'email_ok' | 'linkedin_ok' | 'not_available'
+  availabilityLevel?: 'one_per_month' | 'two_per_month' | 'open' | 'paused'
+  openToGolfRounds?: boolean
+  openToCoffee?: boolean
+  openToMentorship?: boolean
+  openToWarmIntroductions?: boolean
+  favoritePennGolfMemory?: string
+  favoriteCourses?: string
+  memberSince?: string
   visibleToPlayers?: boolean
   optedOutAt?: string
   createdAt: string
   updatedAt: string
+}
+
+export interface Pre2000Candidate {
+  id: string
+  teamId: string
+  name: string
+  years?: string
+  signal?: string
+  sourceUrl?: string
+  sourceType?: string
+  reviewStatus: 'not_reviewed' | 'confirmed' | 'rejected' | 'needs_more_info'
+  notes?: string
+  createdAt: string
 }
 
 export interface EnrichmentSource {
@@ -171,7 +192,7 @@ export interface PlayerAlumniRequest {
   alumniPersonId: string
   fromName: string
   fromEmail?: string
-  purpose: 'career_advice' | 'coffee_chat' | 'mentorship' | 'golf_connection'
+  purpose: 'career_advice' | 'coffee_chat' | 'mentorship' | 'golf_connection' | 'warm_introduction' | 'internship_guidance' | 'interview_prep' | 'golf_round' | 'city_advice' | 'drinks_informal' | 'general_intro'
   message: string
   status: 'requested' | 'seen' | 'responded' | 'closed'
   createdAt: string
@@ -191,4 +212,5 @@ export interface Store {
   personEnrichments: PersonEnrichment[]
   enrichmentSources: EnrichmentSource[]
   playerAlumniRequests: PlayerAlumniRequest[]
+  pre2000Candidates: Pre2000Candidate[]
 }

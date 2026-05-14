@@ -28,6 +28,9 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "test:all": "npm run test:seasons && npm run test:roster && npm run test:pipeline && npm run test:historical-pipeline && npm run test:graph-quality && npm run test:demo-readiness && npm run test:enrichment && npm run test:no-mock-leak && npm run test:api-validation && npm run test:network-publication && npm run test:simplified-product && npm run build",
+    "import:penn-master": "tsx scripts/import-penn-master-list.ts",
+    "import:penn-master:apply": "tsx scripts/import-penn-master-list.ts --apply",
+    "export:penn-master": "tsx scripts/export-penn-master-list.ts",
     "deploy": "vercel --prod"
   },
   "dependencies": {
@@ -52,6 +55,7 @@
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "xlsx": "^0.18.5"
   }
 }

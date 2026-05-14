@@ -2,16 +2,21 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const navLinks = [
-  { label: 'Player Clubhouse', href: '/player' },
+  { label: 'Clubhouse', href: '/player' },
+  { label: 'Member Book', href: '/player/search' },
+  { label: 'Career Room', href: '/career-room' },
+  { label: 'The Course', href: '/the-course' },
   { label: 'Alumni', href: '/alumni' },
 ]
 
 export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const pathname = usePathname()
 
   return (
     <header className="bg-[#0a1628] border-b border-white/[0.08] sticky top-0 z-50">
@@ -19,25 +24,33 @@ export default function NavBar() {
         {/* Wordmark */}
         <Link href="/" className="flex items-center">
           <span className="text-white text-sm font-semibold tracking-[0.15em]">
-            ALUMNI&nbsp;OS
+            PENN GOLF
           </span>
-          <span className="text-[#990000] text-sm font-bold ml-0.5">&middot;</span>
+          <span className="text-[#990000] text-sm font-bold ml-1.5">&middot;</span>
+          <span className="text-gray-400 text-sm font-medium ml-1.5 tracking-wide">Clubhouse</span>
         </Link>
 
         {/* Center nav (desktop) */}
         <nav className="hidden md:flex items-center gap-1">
-          {navLinks.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-[13px] text-gray-300 hover:text-white transition-colors px-3 py-2 rounded hover:bg-white/[0.06]"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map(link => {
+            const active = pathname === link.href || pathname.startsWith(link.href + '/')
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-[13px] transition-colors px-3 py-2 rounded ${
+                  active
+                    ? 'text-white bg-white/[0.08]'
+                    : 'text-gray-300 hover:text-white hover:bg-white/[0.06]'
+                }`}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
         </nav>
 
-        {/* Right side — internal link only */}
+        {/* Right side */}
         <div className="hidden md:flex items-center">
           <Link
             href="/internal"
