@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getTeamBySlug, readStore } from '@/lib/store/local-store'
-import { PLACE_COORDS } from '@/lib/map/hometown-coordinates'
-import type { PlaceCoords } from '@/lib/map/hometown-coordinates'
+import { hometownToStateCode, enrichmentStateToCode, CODE_TO_NAME } from '@/lib/map/state-lookup'
 
 export interface MapMember {
   personId: string
@@ -12,16 +11,16 @@ export interface MapMember {
   rosterStartYear?: number
   rosterEndYear?: number
   hometown?: string
+  city?: string
+  state?: string
   openToCoffee: boolean
   openToGolfRounds: boolean
 }
 
-export interface MapPlace {
-  id: string
-  label: string
-  region: PlaceCoords['region']
-  x: number
-  y: number
+export interface MapState {
+  stateCode: string
+  stateName: string
+  totalCount: number
   currentPlayerCount: number
   alumniCount: number
   openToCoffeeCount: number
@@ -41,83 +40,52 @@ export async function GET(request: Request) {
     store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
   )
 
-  const placeMap = new Map<string, MapPlace>()
+  const stateMap = new Map<string, MapState>()
 
-  function addMember(hometown: string, member: MapMember) {
-    const coords = PLACE_COORDS[hometown]
-    if (!coords) return
-
-    let place = placeMap.get(hometown)
-    if (!place) {
-      place = {
-        id: hometown.replace(/[^a-z0-9]/gi, '-').toLowerCase(),
-        label: hometown,
-        region: coords.region,
-        x: coords.x,
-        y: coords.y,
+  function getOrCreate(code: string): MapState {
+    let s = stateMap.get(code)
+    if (!s) {
+      s = {
+        stateCode: code,
+        stateName: CODE_TO_NAME[code] ?? code,
+        totalCount: 0,
         currentPlayerCount: 0,
         alumniCount: 0,
         openToCoffeeCount: 0,
         openToGolfCount: 0,
         members: [],
       }
-      placeMap.set(hometown, place)
+      stateMap.set(code, s)
     }
-
-    place.members.push(member)
-    if (member.memberRole === 'current_player') place.currentPlayerCount++
-    else place.alumniCount++
-    if (member.openToCoffee) place.openToCoffeeCount++
-    if (member.openToGolfRounds) place.openToGolfCount++
+    return s
   }
 
-  // Current players — use hometown from membership
-  const currentMemberships = store.teamMemberships.filter(
-    m => m.teamId === team.id && m.memberRole === 'current_player',
-  )
-  for (const m of currentMemberships) {
+  function addMember(stateCode: string, member: MapMember) {
+    const s = getOrCreate(stateCode)
+    s.members.push(member)
+    s.totalCount++
+    if (member.memberRole === 'current_player') s.currentPlayerCount++
+    else s.alumniCount++
+    if (member.openToCoffee) s.openToCoffeeCount++
+    if (member.openToGolfRounds) s.openToGolfCount++
+  }
+
+  // Current players — use membership hometown
+  for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'current_player')) {
     const person = store.people.find(p => p.id === m.personId)
     if (!person) continue
     const enrichment = enrichMap.get(m.personId)
     if (enrichment?.visibleToPlayers === false) continue
-    const hometown = m.hometown?.trim()
-    if (!hometown) continue
 
-    addMember(hometown, {
+    const stateCode = hometownToStateCode(m.hometown)
+    if (!stateCode) continue
+
+    addMember(stateCode, {
       personId: person.id,
       canonicalName: person.canonicalName,
       memberRole: 'current_player',
       classLabel: m.classLabel,
       classYearEstimate: m.classYearEstimate,
-      rosterStartYear: m.rosterStartYear,
-      rosterEndYear: m.rosterEndYear,
-      hometown,
-      openToCoffee: enrichment?.openToCoffee ?? false,
-      openToGolfRounds: enrichment?.openToGolfRounds ?? false,
-    })
-  }
-
-  // Published alumni — use enrichment city or membership hometown
-  const alumniMemberships = store.teamMemberships.filter(
-    m => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true,
-  )
-  for (const m of alumniMemberships) {
-    const person = store.people.find(p => p.id === m.personId)
-    if (!person) continue
-    const enrichment = enrichMap.get(m.personId)
-    if (enrichment?.visibleToPlayers === false) continue
-
-    // Prefer enrichment city (where they live now), fall back to hometown
-    const locationLabel = enrichment?.city?.trim()
-      ? enrichment.state ? `${enrichment.city}, ${enrichment.state}` : enrichment.city.trim()
-      : m.hometown?.trim()
-    if (!locationLabel) continue
-
-    addMember(locationLabel, {
-      personId: person.id,
-      canonicalName: person.canonicalName,
-      memberRole: 'alumni',
-      classLabel: m.classLabel,
       rosterStartYear: m.rosterStartYear,
       rosterEndYear: m.rosterEndYear,
       hometown: m.hometown,
@@ -126,9 +94,32 @@ export async function GET(request: Request) {
     })
   }
 
-  const places = Array.from(placeMap.values()).sort(
-    (a, b) => (b.currentPlayerCount + b.alumniCount) - (a.currentPlayerCount + a.alumniCount),
-  )
+  // Published alumni — prefer enrichment state (current location), fall back to hometown
+  for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'alumni' && x.publishedToNetwork === true)) {
+    const person = store.people.find(p => p.id === m.personId)
+    if (!person) continue
+    const enrichment = enrichMap.get(m.personId)
+    if (enrichment?.visibleToPlayers === false) continue
 
-  return NextResponse.json({ places })
+    const stateCode = enrichmentStateToCode(enrichment?.state) ?? hometownToStateCode(m.hometown)
+    if (!stateCode) continue
+
+    addMember(stateCode, {
+      personId: person.id,
+      canonicalName: person.canonicalName,
+      memberRole: 'alumni',
+      classLabel: m.classLabel,
+      rosterStartYear: m.rosterStartYear,
+      rosterEndYear: m.rosterEndYear,
+      hometown: m.hometown,
+      city: enrichment?.city,
+      state: enrichment?.state,
+      openToCoffee: enrichment?.openToCoffee ?? false,
+      openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+    })
+  }
+
+  const states = Array.from(stateMap.values()).sort((a, b) => b.totalCount - a.totalCount)
+
+  return NextResponse.json({ team, states })
 }

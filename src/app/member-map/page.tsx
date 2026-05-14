@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import MemberMapClient from './MemberMapClient'
-import { PLACE_COORDS } from '@/lib/map/hometown-coordinates'
-import type { MapPlace } from '@/app/api/member-map/route'
+import type { MapState, MapMember } from '@/app/api/member-map/route'
+import { hometownToStateCode, enrichmentStateToCode, CODE_TO_NAME } from '@/lib/map/state-lookup'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -10,48 +10,50 @@ export default async function MemberMapPage() {
   const store = await readStore()
   const team = await getTeamBySlug(TEAM_SLUG)
 
-  const placeMap = new Map<string, MapPlace>()
+  const stateMap = new Map<string, MapState>()
 
   if (team) {
     const enrichMap = new Map(
       store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
     )
 
-    function addMember(hometown: string, member: MapPlace['members'][number]) {
-      const coords = PLACE_COORDS[hometown]
-      if (!coords) return
-      let place = placeMap.get(hometown)
-      if (!place) {
-        place = {
-          id: hometown.replace(/[^a-z0-9]/gi, '-').toLowerCase(),
-          label: hometown,
-          region: coords.region,
-          x: coords.x,
-          y: coords.y,
+    function getOrCreate(code: string): MapState {
+      let s = stateMap.get(code)
+      if (!s) {
+        s = {
+          stateCode: code,
+          stateName: CODE_TO_NAME[code] ?? code,
+          totalCount: 0,
           currentPlayerCount: 0,
           alumniCount: 0,
           openToCoffeeCount: 0,
           openToGolfCount: 0,
           members: [],
         }
-        placeMap.set(hometown, place)
+        stateMap.set(code, s)
       }
-      place.members.push(member)
-      if (member.memberRole === 'current_player') place.currentPlayerCount++
-      else place.alumniCount++
-      if (member.openToCoffee) place.openToCoffeeCount++
-      if (member.openToGolfRounds) place.openToGolfCount++
+      return s
     }
 
-    // Current players
+    function addMember(stateCode: string, member: MapMember) {
+      const s = getOrCreate(stateCode)
+      s.members.push(member)
+      s.totalCount++
+      if (member.memberRole === 'current_player') s.currentPlayerCount++
+      else s.alumniCount++
+      if (member.openToCoffee) s.openToCoffeeCount++
+      if (member.openToGolfRounds) s.openToGolfCount++
+    }
+
+    // Current players — use membership hometown
     for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'current_player')) {
       const person = store.people.find(p => p.id === m.personId)
       if (!person) continue
       const enrichment = enrichMap.get(m.personId)
       if (enrichment?.visibleToPlayers === false) continue
-      const hometown = m.hometown?.trim()
-      if (!hometown) continue
-      addMember(hometown, {
+      const stateCode = hometownToStateCode(m.hometown)
+      if (!stateCode) continue
+      addMember(stateCode, {
         personId: person.id,
         canonicalName: person.canonicalName,
         memberRole: 'current_player',
@@ -59,23 +61,21 @@ export default async function MemberMapPage() {
         classYearEstimate: m.classYearEstimate,
         rosterStartYear: m.rosterStartYear,
         rosterEndYear: m.rosterEndYear,
-        hometown,
+        hometown: m.hometown,
         openToCoffee: enrichment?.openToCoffee ?? false,
         openToGolfRounds: enrichment?.openToGolfRounds ?? false,
       })
     }
 
-    // Published alumni
+    // Published alumni — prefer enrichment state (current location), fall back to hometown
     for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'alumni' && x.publishedToNetwork === true)) {
       const person = store.people.find(p => p.id === m.personId)
       if (!person) continue
       const enrichment = enrichMap.get(m.personId)
       if (enrichment?.visibleToPlayers === false) continue
-      const locationLabel = enrichment?.city?.trim()
-        ? enrichment.state ? `${enrichment.city}, ${enrichment.state}` : enrichment.city.trim()
-        : m.hometown?.trim()
-      if (!locationLabel) continue
-      addMember(locationLabel, {
+      const stateCode = enrichmentStateToCode(enrichment?.state) ?? hometownToStateCode(m.hometown)
+      if (!stateCode) continue
+      addMember(stateCode, {
         personId: person.id,
         canonicalName: person.canonicalName,
         memberRole: 'alumni',
@@ -83,18 +83,18 @@ export default async function MemberMapPage() {
         rosterStartYear: m.rosterStartYear,
         rosterEndYear: m.rosterEndYear,
         hometown: m.hometown,
+        city: enrichment?.city,
+        state: enrichment?.state,
         openToCoffee: enrichment?.openToCoffee ?? false,
         openToGolfRounds: enrichment?.openToGolfRounds ?? false,
       })
     }
   }
 
-  const places = Array.from(placeMap.values()).sort(
-    (a, b) => (b.currentPlayerCount + b.alumniCount) - (a.currentPlayerCount + a.alumniCount),
-  )
+  const states = Array.from(stateMap.values()).sort((a, b) => b.totalCount - a.totalCount)
 
-  const totalMembers = places.reduce((s, p) => s + p.members.length, 0)
-  const currentPlayerCount = places.reduce((s, p) => s + p.currentPlayerCount, 0)
+  const totalMembers = states.reduce((s, st) => s + st.totalCount, 0)
+  const currentPlayerCount = states.reduce((s, st) => s + st.currentPlayerCount, 0)
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -115,15 +115,15 @@ export default async function MemberMapPage() {
               <p className="text-xs text-gray-400">Current players</p>
             </div>
             <div>
-              <p className="text-xl font-semibold text-white">{places.length}</p>
-              <p className="text-xs text-gray-400">Places</p>
+              <p className="text-xl font-semibold text-white">{states.length}</p>
+              <p className="text-xs text-gray-400">States</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-8">
-        {places.length === 0 ? (
+        {states.length === 0 ? (
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-10 text-center"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
@@ -133,7 +133,7 @@ export default async function MemberMapPage() {
             </p>
           </div>
         ) : (
-          <MemberMapClient initialPlaces={places} />
+          <MemberMapClient stateData={states} />
         )}
 
         <div
