@@ -749,13 +749,31 @@ export async function updatePlayerAlumniRequestStatus(
   requestId: string,
   status: PlayerAlumniRequest['status'],
 ): Promise<PlayerAlumniRequest | null> {
+  return respondToPlayerAlumniRequest({ requestId, status })
+}
+
+export async function respondToPlayerAlumniRequest(input: {
+  requestId: string
+  status: PlayerAlumniRequest['status']
+  responseMessage?: string
+  suggestedPersonId?: string
+  suggestedPersonName?: string
+}): Promise<PlayerAlumniRequest | null> {
   const store = await readStore()
-  const idx = store.playerAlumniRequests.findIndex(r => r.id === requestId)
+  const idx = store.playerAlumniRequests.findIndex(r => r.id === input.requestId)
   if (idx === -1) return null
+  const now = new Date().toISOString()
+  const current = store.playerAlumniRequests[idx]
+  const respondedStatuses = new Set(['accepted', 'declined', 'suggested', 'responded'])
   store.playerAlumniRequests[idx] = {
-    ...store.playerAlumniRequests[idx],
-    status,
-    updatedAt: new Date().toISOString(),
+    ...current,
+    status: input.status,
+    responseMessage: input.responseMessage?.trim() || current.responseMessage,
+    suggestedPersonId: input.suggestedPersonId || current.suggestedPersonId,
+    suggestedPersonName: input.suggestedPersonName || current.suggestedPersonName,
+    respondedAt: respondedStatuses.has(input.status) ? (current.respondedAt ?? now) : current.respondedAt,
+    closedAt: input.status === 'closed' ? (current.closedAt ?? now) : current.closedAt,
+    updatedAt: now,
   }
   await writeStore(store)
   return store.playerAlumniRequests[idx]

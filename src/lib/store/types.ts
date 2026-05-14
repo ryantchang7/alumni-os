@@ -197,7 +197,12 @@ export interface PlayerAlumniRequest {
   context?: string
   additionalContext?: string
   message: string
-  status: 'requested' | 'seen' | 'responded' | 'closed'
+  status: 'requested' | 'seen' | 'accepted' | 'declined' | 'suggested' | 'responded' | 'closed'
+  responseMessage?: string
+  respondedAt?: string
+  suggestedPersonId?: string
+  suggestedPersonName?: string
+  closedAt?: string
   createdAt: string
   updatedAt: string
 }

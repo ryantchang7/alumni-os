@@ -229,6 +229,20 @@ function ClubhouseInner() {
             )}
           </motion.div>
         )}
+
+        {/* Your Requests */}
+        <div className="pb-8">
+          <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4 flex items-center justify-between"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}>
+            <div>
+              <p className="text-sm font-semibold text-[#0a1628]">Your Requests</p>
+              <p className="text-xs text-[#8a7f70] mt-0.5">See the status of requests you&rsquo;ve sent.</p>
+            </div>
+            <Link href="/player/requests" className="text-xs font-semibold text-[#990000] hover:underline whitespace-nowrap">
+              View &rarr;
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   )

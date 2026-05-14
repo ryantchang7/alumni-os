@@ -275,7 +275,13 @@ export default function AskClient() {
               {first} will see your message in their Clubhouse inbox. Give it a few days — Penn Golf members are busy.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
-              <Link href="/player/search" className="text-sm font-semibold text-white bg-[#0a1628] px-5 py-2.5 rounded-lg hover:bg-[#0a1628]/85 transition-colors">
+              <Link
+                href={`/player/requests?fromName=${encodeURIComponent(fromName.trim())}`}
+                className="text-sm font-semibold text-white bg-[#0a1628] px-5 py-2.5 rounded-lg hover:bg-[#0a1628]/85 transition-colors"
+              >
+                View your requests &rarr;
+              </Link>
+              <Link href="/player/search" className="text-sm font-medium text-[#0a1628] border border-[rgba(180,168,150,0.6)] px-5 py-2.5 rounded-lg hover:border-[#0a1628] transition-colors bg-white">
                 Browse more members
               </Link>
               <Link href="/player" className="text-sm font-medium text-[#0a1628] border border-[rgba(180,168,150,0.6)] px-5 py-2.5 rounded-lg hover:border-[#0a1628] transition-colors bg-white">

@@ -67,6 +67,11 @@ export async function GET(request: Request) {
       additionalContext: r.additionalContext,
       message: r.message,
       status: r.status,
+      responseMessage: r.responseMessage,
+      suggestedPersonId: r.suggestedPersonId,
+      suggestedPersonName: r.suggestedPersonName,
+      respondedAt: r.respondedAt,
+      closedAt: r.closedAt,
       createdAt: r.createdAt,
     }))
 

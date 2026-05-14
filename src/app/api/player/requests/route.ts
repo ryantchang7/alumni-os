@@ -1,6 +1,80 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { PlayerAlumniRequest } from '@/lib/store/types'
 
+const PURPOSE_LABELS: Record<string, string> = {
+  career_advice: 'Career advice',
+  coffee_chat: 'Coffee chat',
+  mentorship: 'Mentorship',
+  warm_introduction: 'Warm introduction',
+  internship_guidance: 'Internship guidance',
+  interview_prep: 'Interview prep',
+  resume_review: 'Resume review',
+  golf_round: 'Golf round',
+  city_advice: 'City advice',
+  golf_connection: 'Golf connection',
+  drinks_informal: 'Drinks / informal meet',
+  general_intro: 'General intro',
+}
+
+const CONTEXT_LABELS: Record<string, string> = {
+  exploring_field: 'Exploring this field',
+  applying_to_role: 'Applying to a role',
+  in_their_city: 'Will be in your city',
+  learn_their_path: 'Wants to learn about your path',
+  referred: 'Referred by a teammate or coach',
+  want_to_play: 'Wants to play a round',
+  summer_advice: 'Looking for summer advice',
+  preparing_interviews: 'Preparing for interviews',
+}
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const teamSlug = searchParams.get('teamSlug')
+  const fromName = searchParams.get('fromName')
+
+  if (!teamSlug || !fromName) {
+    return NextResponse.json({ error: 'teamSlug and fromName are required' }, { status: 400 })
+  }
+
+  const { getTeamBySlug, readStore } = await import('@/lib/store/local-store')
+
+  const team = await getTeamBySlug(teamSlug)
+  if (!team) {
+    return NextResponse.json({ error: 'Team not found' }, { status: 404 })
+  }
+
+  const store = await readStore()
+  const needle = fromName.trim().toLowerCase()
+
+  const rawRequests = store.playerAlumniRequests
+    .filter(r => r.teamId === team.id && r.fromName.toLowerCase() === needle)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+
+  const requests = rawRequests.map(r => {
+    const person = store.people.find(p => p.id === r.alumniPersonId)
+    return {
+      id: r.id,
+      alumniPersonId: r.alumniPersonId,
+      alumniName: person?.canonicalName ?? r.alumniPersonId,
+      purposeKey: r.purpose,
+      purposeLabel: PURPOSE_LABELS[r.purpose] ?? r.purpose,
+      contextKey: r.context,
+      contextLabel: r.context ? (CONTEXT_LABELS[r.context] ?? r.context) : undefined,
+      additionalContext: r.additionalContext,
+      message: r.message,
+      status: r.status,
+      responseMessage: r.responseMessage,
+      suggestedPersonId: r.suggestedPersonId,
+      suggestedPersonName: r.suggestedPersonName,
+      createdAt: r.createdAt,
+      respondedAt: r.respondedAt,
+      closedAt: r.closedAt,
+    }
+  })
+
+  return NextResponse.json({ requests })
+}
+
 const VALID_PURPOSES: PlayerAlumniRequest['purpose'][] = [
   'career_advice',
   'coffee_chat',

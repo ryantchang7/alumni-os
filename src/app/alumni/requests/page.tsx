@@ -20,64 +20,106 @@ interface AlumniRequest {
   contextLabel?: string
   additionalContext?: string
   message: string
-  status: 'requested' | 'seen' | 'responded' | 'closed'
+  status: 'requested' | 'seen' | 'accepted' | 'declined' | 'suggested' | 'responded' | 'closed'
+  responseMessage?: string
+  suggestedPersonId?: string
+  suggestedPersonName?: string
+  respondedAt?: string
+  closedAt?: string
   createdAt: string
-}
-
-const PURPOSE_LABELS: Record<string, string> = {
-  career_advice: 'Career advice',
-  coffee_chat: 'Coffee chat',
-  mentorship: 'Mentorship',
-  warm_introduction: 'Warm introduction',
-  internship_guidance: 'Internship guidance',
-  interview_prep: 'Interview prep',
-  golf_round: 'Golf round',
-  city_advice: 'City advice',
-  drinks_informal: 'Drinks / informal meet',
-  general_intro: 'General intro',
-  golf_connection: 'Golf connection',
 }
 
 const STATUS_LABEL: Record<string, string> = {
   requested: 'New',
   seen: 'Seen',
+  accepted: 'Accepted',
+  declined: 'Declined politely',
+  suggested: 'Suggested another member',
   responded: 'Responded',
   closed: 'Closed',
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  requested: 'bg-[#990000]/10 text-[#990000]',
+  requested: 'bg-[#0a1628]/10 text-[#0a1628]',
   seen: 'bg-amber-100 text-amber-800',
+  accepted: 'bg-emerald-100 text-emerald-800',
+  declined: 'bg-gray-100 text-gray-500',
+  suggested: 'bg-amber-50 text-amber-700',
   responded: 'bg-emerald-100 text-emerald-800',
   closed: 'bg-gray-100 text-gray-500',
 }
 
+const DEFAULT_ACCEPT_MESSAGE = "Happy to help. Send over a few times that work for you and we'll find a time."
+const DEFAULT_DECLINE_MESSAGE = "Thanks for reaching out. I'm not able to help right now, but I appreciate the thoughtful note and wish you the best."
+const DEFAULT_SUGGEST_PREFIX = "I may not be the best fit here, but I'd suggest reaching out to"
+
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 function RequestCard({
   req,
   updatingId,
   onUpdate,
+  profiles,
 }: {
   req: AlumniRequest
   updatingId: string | null
-  onUpdate: (id: string, status: AlumniRequest['status']) => void
+  onUpdate: (
+    id: string,
+    status: AlumniRequest['status'],
+    extra?: { responseMessage?: string; suggestedPersonId?: string; suggestedPersonName?: string }
+  ) => void
+  profiles: AlumniProfile[]
 }) {
   const [expanded, setExpanded] = useState(false)
-  const purposeDisplay =
-    PURPOSE_LABELS[req.purposeKey] ?? req.purposeLabel ?? req.purposeKey
+  const [action, setAction] = useState<null | 'accept' | 'decline' | 'suggest'>(null)
+  const [responseText, setResponseText] = useState('')
+  const [suggestId, setSuggestId] = useState('')
+  const [suggestName, setSuggestName] = useState('')
+
+  const isTerminal = req.status === 'closed' || req.status === 'declined'
+  const hasResponded = ['accepted', 'declined', 'suggested', 'responded'].includes(req.status)
+
+  function openAction(a: 'accept' | 'decline' | 'suggest') {
+    setAction(a)
+    if (a === 'accept') setResponseText(DEFAULT_ACCEPT_MESSAGE)
+    if (a === 'decline') setResponseText(DEFAULT_DECLINE_MESSAGE)
+    if (a === 'suggest') {
+      setResponseText('')
+      setSuggestId('')
+      setSuggestName('')
+    }
+  }
+
+  function handleSubmitAction() {
+    if (action === 'accept') {
+      onUpdate(req.id, 'accepted', { responseMessage: responseText.trim() || undefined })
+    } else if (action === 'decline') {
+      onUpdate(req.id, 'declined', { responseMessage: responseText.trim() || undefined })
+    } else if (action === 'suggest') {
+      const name = suggestId
+        ? profiles.find(p => p.personId === suggestId)?.canonicalName ?? suggestName
+        : suggestName
+      const msgBase = name ? `${DEFAULT_SUGGEST_PREFIX} ${name}.` : ''
+      const finalMsg = responseText.trim() || msgBase
+      onUpdate(req.id, 'suggested', {
+        responseMessage: finalMsg || undefined,
+        suggestedPersonId: suggestId || undefined,
+        suggestedPersonName: name || undefined,
+      })
+    }
+    setAction(null)
+  }
+
+  const otherProfiles = profiles.filter(p => p.personId !== req.id)
 
   return (
     <div
-      className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+      className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-0.5">
@@ -90,10 +132,10 @@ function RequestCard({
           </div>
           <div className="flex items-center gap-2 mt-0.5 flex-wrap">
             <span className="text-xs font-medium text-[#4a5568] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
-              {purposeDisplay}
+              {req.purposeLabel}
             </span>
             {req.contextLabel && (
-              <span className="text-xs font-medium text-[#4a5568] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
+              <span className="text-xs text-[#8a7f70] bg-[#f5f2ee] border border-[rgba(180,168,150,0.3)] px-2 py-0.5 rounded-full">
                 {req.contextLabel}
               </span>
             )}
@@ -110,14 +152,14 @@ function RequestCard({
         </div>
       )}
 
-      {/* Message with expand/collapse */}
+      {/* Message */}
       <div className="mt-3">
         <p
           className={`text-sm text-[#2d3748] leading-relaxed whitespace-pre-wrap ${!expanded ? 'line-clamp-3' : ''}`}
         >
           {req.message}
         </p>
-        {req.message && req.message.length > 200 && (
+        {req.message.length > 200 && (
           <button
             type="button"
             onClick={() => setExpanded(v => !v)}
@@ -128,51 +170,163 @@ function RequestCard({
         )}
       </div>
 
+      {/* Previous response (if already responded) */}
+      {req.responseMessage && (
+        <div className="mt-3 px-3 py-2.5 bg-[#f0faf5] border border-[#2d6a4f]/20 rounded-lg">
+          <p className="text-xs text-[#2d6a4f] font-medium mb-0.5 uppercase tracking-wide">Your response</p>
+          <p className="text-xs text-[#2d3748] leading-relaxed italic">&ldquo;{req.responseMessage}&rdquo;</p>
+          {req.respondedAt && (
+            <p className="text-[11px] text-[#8a7f70] mt-1">{formatDate(req.respondedAt)}</p>
+          )}
+        </div>
+      )}
+      {req.suggestedPersonName && !req.responseMessage && (
+        <div className="mt-3 px-3 py-2.5 bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] rounded-lg">
+          <p className="text-xs text-[#8a7f70] font-medium mb-0.5">Suggested:</p>
+          <p className="text-xs text-[#0a1628] font-semibold">{req.suggestedPersonName}</p>
+        </div>
+      )}
+
+      {/* Inline action panel */}
+      {action && (
+        <div className="mt-4 pt-4 border-t border-[rgba(180,168,150,0.25)]">
+          {(action === 'accept' || action === 'decline') && (
+            <>
+              <p className="text-xs font-semibold text-[#0a1628] mb-2">
+                {action === 'accept' ? 'Your response to ' : 'Decline note for '}{req.fromName}
+              </p>
+              <textarea
+                value={responseText}
+                onChange={e => setResponseText(e.target.value)}
+                rows={3}
+                maxLength={1000}
+                className="w-full text-sm text-[#0a1628] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
+              />
+              <p className="text-[11px] text-[#8a7f70] mt-1">{responseText.length}/1000</p>
+            </>
+          )}
+          {action === 'suggest' && (
+            <>
+              <p className="text-xs font-semibold text-[#0a1628] mb-2">Suggest another Penn Golf member</p>
+              {otherProfiles.length > 0 && (
+                <select
+                  value={suggestId}
+                  onChange={e => setSuggestId(e.target.value)}
+                  className="w-full text-sm text-[#0a1628] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 mb-2 focus:outline-none focus:border-[#0a1628] transition-colors"
+                >
+                  <option value="">Select a member…</option>
+                  {otherProfiles.map(p => (
+                    <option key={p.personId} value={p.personId}>
+                      {p.canonicalName}{p.classLabel ? ` — ${p.classLabel}` : ''}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <textarea
+                value={responseText}
+                onChange={e => setResponseText(e.target.value)}
+                rows={2}
+                maxLength={1000}
+                placeholder={suggestId
+                  ? `${DEFAULT_SUGGEST_PREFIX} ${profiles.find(p => p.personId === suggestId)?.canonicalName ?? '…'}.`
+                  : 'Optional note to the player…'}
+                className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
+              />
+            </>
+          )}
+          <div className="flex gap-2 mt-3">
+            <button
+              type="button"
+              disabled={updatingId === req.id || (action === 'suggest' && !suggestId && !suggestName)}
+              onClick={handleSubmitAction}
+              className={`text-sm font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-40 ${
+                action === 'decline'
+                  ? 'bg-[#f5f2ee] text-[#0a1628] border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628]'
+                  : 'bg-[#0a1628] text-white hover:bg-[#0a1628]/85'
+              }`}
+            >
+              {action === 'accept' ? 'Send acceptance' : action === 'decline' ? 'Send decline' : 'Suggest member'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setAction(null)}
+              className="text-xs text-[#8a7f70] hover:text-[#0a1628] px-3 py-2 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Action buttons */}
-      {req.status !== 'closed' && (
+      {!action && !isTerminal && !hasResponded && (
         <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[rgba(180,168,150,0.25)] flex-wrap">
-          {req.status === 'requested' && (
+          <button
+            type="button"
+            disabled={updatingId === req.id}
+            onClick={() => openAction('accept')}
+            className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#2d6a4f] text-white hover:bg-[#245a41] transition-colors disabled:opacity-50"
+          >
+            Accept
+          </button>
+          <button
+            type="button"
+            disabled={updatingId === req.id}
+            onClick={() => openAction('suggest')}
+            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] text-[#0a1628] transition-colors disabled:opacity-50 bg-white"
+          >
+            Suggest another member
+          </button>
+          <button
+            type="button"
+            disabled={updatingId === req.id}
+            onClick={() => openAction('decline')}
+            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#8a7f70] text-[#8a7f70] transition-colors disabled:opacity-50 bg-white"
+          >
+            Decline politely
+          </button>
+          <div className="ml-auto flex gap-2">
+            {req.status === 'requested' && (
+              <button
+                type="button"
+                disabled={updatingId === req.id}
+                onClick={() => onUpdate(req.id, 'seen')}
+                className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors disabled:opacity-50"
+              >
+                Mark seen
+              </button>
+            )}
             <button
               type="button"
               disabled={updatingId === req.id}
-              onClick={() => onUpdate(req.id, 'seen')}
-              className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] text-[#0a1628] transition-colors disabled:opacity-50"
+              onClick={() => onUpdate(req.id, 'closed')}
+              className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors disabled:opacity-50"
             >
-              Mark as seen
+              Close
             </button>
-          )}
-          {(req.status === 'requested' || req.status === 'seen') && (
-            <button
-              type="button"
-              disabled={updatingId === req.id}
-              onClick={() => onUpdate(req.id, 'responded')}
-              className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] text-[#0a1628] transition-colors disabled:opacity-50"
-            >
-              Mark as responded
-            </button>
-          )}
+          </div>
+        </div>
+      )}
+
+      {/* Post-response secondary actions */}
+      {!action && hasResponded && req.status !== 'closed' && (
+        <div className="flex items-center gap-3 mt-4 pt-4 border-t border-[rgba(180,168,150,0.25)]">
+          <button
+            type="button"
+            disabled={updatingId === req.id}
+            onClick={() => onUpdate(req.id, 'responded')}
+            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] text-[#0a1628] transition-colors disabled:opacity-50 bg-white"
+          >
+            Mark responded
+          </button>
           <button
             type="button"
             disabled={updatingId === req.id}
             onClick={() => onUpdate(req.id, 'closed')}
-            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#8a7f70] text-[#8a7f70] transition-colors disabled:opacity-50"
+            className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors disabled:opacity-50"
           >
             Close
           </button>
-          <div className="flex items-center gap-3 ml-auto">
-            <button
-              type="button"
-              className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
-            >
-              Suggest another alum
-            </button>
-            <button
-              type="button"
-              className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
-            >
-              Pass on this one
-            </button>
-          </div>
         </div>
       )}
     </div>
@@ -193,10 +347,11 @@ function AlumniRequestsInner() {
   const [updatingId, setUpdatingId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (personId) return
     fetch(`/api/player/profiles?teamSlug=${teamSlug}`)
       .then(r => r.json())
-      .then(data => setProfiles(data.profiles ?? []))
+      .then(data => setProfiles(
+        (data.profiles ?? []).filter((p: AlumniProfile) => p.personId !== personId)
+      ))
       .catch(() => setProfiles([]))
   }, [teamSlug, personId])
 
@@ -219,20 +374,37 @@ function AlumniRequestsInner() {
       })
   }, [teamSlug, personId])
 
-  async function updateStatus(requestId: string, status: AlumniRequest['status']) {
+  async function handleUpdate(
+    requestId: string,
+    status: AlumniRequest['status'],
+    extra?: { responseMessage?: string; suggestedPersonId?: string; suggestedPersonName?: string },
+  ) {
     setUpdatingId(requestId)
     try {
       const res = await fetch('/api/alumni/requests/status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ teamSlug, personId, requestId, status }),
+        body: JSON.stringify({ teamSlug, personId, requestId, status, ...extra }),
       })
       if (!res.ok) throw new Error('Update failed')
       setRequests(prev =>
-        prev.map(r => (r.id === requestId ? { ...r, status } : r)),
+        prev.map(r =>
+          r.id === requestId
+            ? {
+                ...r,
+                status,
+                responseMessage: extra?.responseMessage ?? r.responseMessage,
+                suggestedPersonId: extra?.suggestedPersonId ?? r.suggestedPersonId,
+                suggestedPersonName: extra?.suggestedPersonName ?? r.suggestedPersonName,
+                respondedAt: ['accepted', 'declined', 'suggested', 'responded'].includes(status)
+                  ? (r.respondedAt ?? new Date().toISOString())
+                  : r.respondedAt,
+              }
+            : r,
+        ),
       )
     } catch {
-      // silently fail — toast notifications coming soon
+      // silently fail
     } finally {
       setUpdatingId(null)
     }
@@ -354,7 +526,8 @@ function AlumniRequestsInner() {
                     key={req.id}
                     req={req}
                     updatingId={updatingId}
-                    onUpdate={updateStatus}
+                    onUpdate={handleUpdate}
+                    profiles={profiles}
                   />
                 ))}
             </>
