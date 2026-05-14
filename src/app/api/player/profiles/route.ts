@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getTeamBySlug, getPublishedPeopleForTeam, readStore } from '@/lib/store/local-store'
+import { getTeamBySlug, readStore } from '@/lib/store/local-store'
 
 function rosterYearsLabel(start?: number, end?: number): string {
   if (start !== undefined && end !== undefined) return `${start}–${end}`
@@ -20,44 +20,58 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: `Team not found: ${teamSlug}` }, { status: 404 })
   }
 
-  const allPublished = await getPublishedPeopleForTeam(team.id)
-  const published = allPublished.filter(({ membership }) => membership.memberRole !== 'current_player')
   const store = await readStore()
 
-  const profiles = published.map(({ person, membership }) => {
-    const enrichment = store.personEnrichments.find(
-      e => e.personId === person.id && e.teamId === team.id,
-    )
+  // All published visible members — current players AND alumni
+  const publishedMemberships = store.teamMemberships.filter(
+    m => m.teamId === team.id && m.publishedToNetwork === true,
+  )
 
-    const isVerified =
-      enrichment?.verificationStatus === 'source_backed' ||
-      enrichment?.verificationStatus === 'manually_verified'
+  const profiles = publishedMemberships
+    .map(membership => {
+      const person = store.people.find(p => p.id === membership.personId)
+      if (!person) return null
 
-    return {
-      personId: person.id,
-      canonicalName: person.canonicalName,
-      firstName: person.firstName,
-      lastName: person.lastName,
-      classLabel: membership.classLabel,
-      rosterStartYear: membership.rosterStartYear,
-      rosterEndYear: membership.rosterEndYear,
-      rosterYearsLabel: rosterYearsLabel(membership.rosterStartYear, membership.rosterEndYear),
-      hometown: membership.hometown,
-      highSchool: membership.highSchool,
-      publishedAt: membership.publishedAt,
-      career: isVerified && (enrichment?.currentRole || enrichment?.currentCompany)
-        ? {
-            currentRole: enrichment?.currentRole,
-            currentCompany: enrichment?.currentCompany,
-            city: enrichment?.city,
-          }
-        : undefined,
-      alumniBio: enrichment?.alumniBio,
-      helpTopics: enrichment?.helpTopics,
-      contactPreference: enrichment?.contactPreference,
-      visibleToPlayers: enrichment?.visibleToPlayers ?? true,
-    }
-  }).filter(p => p.visibleToPlayers !== false)
+      const enrichment = store.personEnrichments.find(
+        e => e.personId === person.id && e.teamId === team.id,
+      )
+
+      if (enrichment?.visibleToPlayers === false) return null
+
+      const isVerified =
+        enrichment?.verificationStatus === 'source_backed' ||
+        enrichment?.verificationStatus === 'manually_verified'
+
+      return {
+        personId: person.id,
+        canonicalName: person.canonicalName,
+        firstName: person.firstName,
+        lastName: person.lastName,
+        memberRole: membership.memberRole ?? 'alumni',
+        classLabel: membership.classLabel,
+        classYearEstimate: membership.classYearEstimate,
+        rosterStartYear: membership.rosterStartYear,
+        rosterEndYear: membership.rosterEndYear,
+        rosterYearsLabel: rosterYearsLabel(membership.rosterStartYear, membership.rosterEndYear),
+        hometown: membership.hometown,
+        highSchool: membership.highSchool,
+        publishedAt: membership.publishedAt,
+        career: isVerified && (enrichment?.currentRole || enrichment?.currentCompany)
+          ? {
+              currentRole: enrichment?.currentRole,
+              currentCompany: enrichment?.currentCompany,
+              city: enrichment?.city,
+            }
+          : undefined,
+        bio: enrichment?.alumniBio,
+        helpTopics: enrichment?.helpTopics,
+        contactPreference: enrichment?.contactPreference,
+        openToGolfRounds: enrichment?.openToGolfRounds,
+        openToCoffee: enrichment?.openToCoffee,
+        openToMentorship: enrichment?.openToMentorship,
+      }
+    })
+    .filter((p): p is NonNullable<typeof p> => p !== null)
 
   return NextResponse.json({ profiles })
 }

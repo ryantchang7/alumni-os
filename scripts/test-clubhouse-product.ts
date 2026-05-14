@@ -3,7 +3,7 @@
  *
  * Usage: npx tsx scripts/test-clubhouse-product.ts
  *
- * Tests 16 invariants that must hold before any deploy.
+ * Tests invariants that must hold before any deploy.
  */
 
 import * as fs from 'fs'
@@ -49,6 +49,9 @@ async function main() {
       publishedToNetwork?: boolean
       hometown?: string
       highSchool?: string
+      classLabel?: string
+      classYearEstimate?: string
+      rosterEndYear?: number
     }>
     personEnrichments: Array<{
       id: string
@@ -59,9 +62,12 @@ async function main() {
     }>
   }
 
+  // 2026-27 roster — all 9 current players
   const CURRENT_PLAYER_NAMES = [
-    'ryan chang', 'wesley hu', 'kayden wang',
-    'arjun caprihan', 'henry chen', 'max fonseca',
+    'hayden adams', 'max fonseca',
+    'ryan chang', 'wesley hu',
+    'kayden wang', 'arjun caprihan', 'henry chen',
+    'oliver uribe', 'sean curran',
   ]
 
   function normName(s: string) {
@@ -73,15 +79,15 @@ async function main() {
 
   const results: TestResult[] = []
 
-  // T1: All 6 current players exist
-  results.push(test('T1: All 6 current players exist in store', () => {
+  // T1: All 9 current players exist in store
+  results.push(test('T1: All 9 current players (2026-27) exist in store', () => {
     for (const name of CURRENT_PLAYER_NAMES) {
       assert(personByNorm.has(name), `Missing person: ${name}`)
     }
   }))
 
-  // T2: All 6 current players have memberRole = current_player
-  results.push(test('T2: 6 current players have memberRole=current_player', () => {
+  // T2: All 9 current players have memberRole = current_player
+  results.push(test('T2: All 9 current players have memberRole=current_player', () => {
     for (const name of CURRENT_PLAYER_NAMES) {
       const person = personByNorm.get(name)
       assert(!!person, `Person not found: ${name}`)
@@ -100,16 +106,16 @@ async function main() {
     assert(count >= 50, `Only ${count} alumni found`)
   }))
 
-  // T4: No current_player has publishedToNetwork = true
-  results.push(test('T4: No current player is published to network', () => {
+  // T4: All 9 current players are published to network (Member Book)
+  results.push(test('T4: All 9 current players are published to Member Book', () => {
     for (const name of CURRENT_PLAYER_NAMES) {
       const person = personByNorm.get(name)
       if (!person) continue
       const m = membershipByPersonId.get(person.id)
       if (!m) continue
       assert(
-        m.publishedToNetwork !== true,
-        `${name} has publishedToNetwork=true — current players must not appear in Member Book`,
+        m.publishedToNetwork === true,
+        `${name} has publishedToNetwork=${m.publishedToNetwork} — current players must appear in Member Book`,
       )
     }
   }))
@@ -164,13 +170,13 @@ async function main() {
     )
   }))
 
-  // T9: Hayden Adams memberRole = alumni
-  results.push(test('T9: Hayden Adams has memberRole=alumni', () => {
+  // T9: Hayden Adams memberRole = current_player (2026-27 roster)
+  results.push(test('T9: Hayden Adams has memberRole=current_player (Senior 2026-27)', () => {
     const person = personByNorm.get('hayden adams')
     assert(!!person, 'Hayden Adams not found')
     const m = membershipByPersonId.get(person.id)
     assert(!!m, 'Hayden Adams membership not found')
-    assert(m.memberRole === 'alumni', `Hayden Adams memberRole=${m.memberRole}`)
+    assert(m.memberRole === 'current_player', `Hayden Adams memberRole=${m.memberRole}`)
   }))
 
   // T10: All memberships have a memberRole set
@@ -198,7 +204,6 @@ async function main() {
         const content = fs.readFileSync(full, 'utf-8')
         for (const term of FORBIDDEN) {
           // Only flag if the term appears as literal visible text in JSX (not inside {} expressions)
-          // Match: >...term...< on the same line, where no { or } or newline appears
           const jsxTextPattern = new RegExp(`>[^{}<\\n]*\\b${term}\\b[^{}<\\n]*<`, 'i')
           if (jsxTextPattern.test(content)) {
             violations.push(`${path.relative(PROJECT_ROOT, full)}: "${term}"`)
@@ -236,7 +241,6 @@ async function main() {
 
   // T15: No emoji pictographs in player/alumni-facing UI files
   results.push(test('T15: No emoji pictographs in player/alumni-facing UI files', () => {
-    // Only actual emoji pictographs (not checkmarks, arrows, dashes)
     const emojiPattern = /[\u{1F300}-\u{1F9FF}]/u
     const PLAYER_DIRS = ['src/app/player', 'src/app/career-room', 'src/app/the-course', 'src/app/19th-hole', 'src/app/events', 'src/app/member-map', 'src/app/team-room', 'src/app/alumni']
     const violations: string[] = []
@@ -283,6 +287,82 @@ async function main() {
 
     scanDir(path.join(PROJECT_ROOT, 'src'))
     assert(violations.length === 0, `Client components importing local-store:\n  ${violations.join('\n  ')}`)
+  }))
+
+  // T17: Exactly 9 current players in store
+  results.push(test('T17: Exactly 9 current_player memberships in store', () => {
+    const count = teamMemberships.filter(m => m.memberRole === 'current_player').length
+    assert(count === 9, `Expected 9 current players, found ${count}`)
+  }))
+
+  // T18: Owen Hayes is alumni (not current_player)
+  results.push(test('T18: Owen Hayes has memberRole=alumni', () => {
+    const person = personByNorm.get('owen hayes')
+    assert(!!person, 'Owen Hayes not found in store')
+    const m = membershipByPersonId.get(person.id)
+    assert(!!m, 'Owen Hayes membership not found')
+    assert(m.memberRole === 'alumni', `Owen Hayes memberRole=${m.memberRole}, expected alumni`)
+  }))
+
+  // T19: Oliver Uribe exists and hometown = Scottsdale, Ariz.
+  results.push(test('T19: Oliver Uribe exists with hometown = Scottsdale, Ariz.', () => {
+    const person = personByNorm.get('oliver uribe')
+    assert(!!person, 'Oliver Uribe not found in store')
+    const m = membershipByPersonId.get(person.id)
+    assert(!!m, 'Oliver Uribe membership not found')
+    assert(
+      m.hometown === 'Scottsdale, Ariz.',
+      `Oliver Uribe hometown is "${m.hometown}", expected "Scottsdale, Ariz."`,
+    )
+  }))
+
+  // T20: Sean Curran exists and hometown = Newtown Square, Pa.
+  results.push(test('T20: Sean Curran exists with hometown = Newtown Square, Pa.', () => {
+    const person = personByNorm.get('sean curran')
+    assert(!!person, 'Sean Curran not found in store')
+    const m = membershipByPersonId.get(person.id)
+    assert(!!m, 'Sean Curran membership not found')
+    assert(
+      m.hometown === 'Newtown Square, Pa.',
+      `Sean Curran hometown is "${m.hometown}", expected "Newtown Square, Pa."`,
+    )
+  }))
+
+  // T21: Ryan Chang classLabel = Jr. and classYearEstimate = Junior / Rising Junior
+  results.push(test('T21: Ryan Chang classLabel=Jr. classYearEstimate=Junior / Rising Junior', () => {
+    const person = personByNorm.get('ryan chang')
+    assert(!!person, 'Ryan Chang not found')
+    const m = membershipByPersonId.get(person.id)
+    assert(!!m, 'Ryan Chang membership not found')
+    assert(m.classLabel === 'Jr.', `Ryan Chang classLabel="${m.classLabel}", expected "Jr."`)
+    assert(
+      m.classYearEstimate === 'Junior / Rising Junior',
+      `Ryan Chang classYearEstimate="${m.classYearEstimate}"`,
+    )
+  }))
+
+  // T22: Hayden Adams classLabel = Sr. and classYearEstimate = Senior / Rising Senior
+  results.push(test('T22: Hayden Adams classLabel=Sr. classYearEstimate=Senior / Rising Senior', () => {
+    const person = personByNorm.get('hayden adams')
+    assert(!!person, 'Hayden Adams not found')
+    const m = membershipByPersonId.get(person.id)
+    assert(!!m, 'Hayden Adams membership not found')
+    assert(m.classLabel === 'Sr.', `Hayden Adams classLabel="${m.classLabel}", expected "Sr."`)
+    assert(
+      m.classYearEstimate === 'Senior / Rising Senior',
+      `Hayden Adams classYearEstimate="${m.classYearEstimate}"`,
+    )
+  }))
+
+  // T23: Oliver Uribe and Sean Curran are Freshmen
+  results.push(test('T23: Oliver Uribe and Sean Curran classLabel=Fr.', () => {
+    for (const name of ['oliver uribe', 'sean curran']) {
+      const person = personByNorm.get(name)
+      assert(!!person, `${name} not found`)
+      const m = membershipByPersonId.get(person.id)
+      assert(!!m, `${name} membership not found`)
+      assert(m.classLabel === 'Fr.', `${name} classLabel="${m.classLabel}", expected "Fr."`)
+    }
   }))
 
   // Results

@@ -11,7 +11,9 @@ interface PlayerProfile {
   canonicalName: string
   firstName?: string
   lastName?: string
+  memberRole?: 'current_player' | 'alumni'
   classLabel?: string
+  classYearEstimate?: string
   rosterStartYear?: number
   rosterEndYear?: number
   rosterYearsLabel: string
@@ -40,6 +42,7 @@ function PlayerSearchInner() {
   const [fetchError, setFetchError] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [classFilter, setClassFilter] = useState('all')
+  const [roleFilter, setRoleFilter] = useState('all')
 
   useEffect(() => {
     fetch(`/api/player/profiles?teamSlug=${teamSlug}`)
@@ -83,9 +86,10 @@ function PlayerSearchInner() {
         if (!searchable.includes(q)) return false
       }
       if (classFilter !== 'all' && p.classLabel !== classFilter) return false
+      if (roleFilter !== 'all' && p.memberRole !== roleFilter) return false
       return true
     })
-  }, [profiles, query, classFilter])
+  }, [profiles, query, classFilter, roleFilter])
 
   if (loading) {
     return (
@@ -110,7 +114,7 @@ function PlayerSearchInner() {
         <div className="max-w-[1320px] mx-auto">
           <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Penn Golf Clubhouse</p>
           <h1 className="text-white text-2xl font-semibold tracking-tight">
-            Find Penn Golf alumni.
+            Member Book
           </h1>
           <p className="text-gray-400 text-sm mt-2">
             Search by name, class, hometown, or high school.
@@ -121,7 +125,7 @@ function PlayerSearchInner() {
       <div className="max-w-[1320px] mx-auto px-8 py-8">
         {profiles.length === 0 ? (
           <div className="text-center py-20" data-testid="network-empty-state">
-            <p className="text-base font-semibold text-[#0a1628] mb-2">No alumni published yet</p>
+            <p className="text-base font-semibold text-[#0a1628] mb-2">No members published yet</p>
             <p className="text-sm text-[#8a7f70]">
               Profiles are approved by Penn Golf captains before appearing here.
             </p>
@@ -144,6 +148,16 @@ function PlayerSearchInner() {
                 </div>
 
                 <select
+                  value={roleFilter}
+                  onChange={e => setRoleFilter(e.target.value)}
+                  className="bg-white border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2.5 text-sm text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]"
+                >
+                  <option value="all">All Members</option>
+                  <option value="current_player">Current Players</option>
+                  <option value="alumni">Alumni</option>
+                </select>
+
+                <select
                   value={classFilter}
                   onChange={e => setClassFilter(e.target.value)}
                   className="bg-white border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2.5 text-sm text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]"
@@ -157,7 +171,7 @@ function PlayerSearchInner() {
                 </select>
 
                 <p className="text-sm text-[#8a7f70] ml-auto">
-                  <span className="font-semibold text-[#0a1628]">{filtered.length}</span> alumni
+                  <span className="font-semibold text-[#0a1628]">{filtered.length}</span> members
                 </p>
               </div>
             </div>
@@ -166,12 +180,13 @@ function PlayerSearchInner() {
               <div className="text-center py-20">
                 <Search className="w-5 h-5 text-[#8a7f70] mx-auto mb-4" />
                 <p className="text-base font-semibold text-[#0a1628] mb-1">
-                  No alumni match your search
+                  No members match your search
                 </p>
                 <button
                   onClick={() => {
                     setQuery('')
                     setClassFilter('all')
+                    setRoleFilter('all')
                   }}
                   className="mt-4 text-sm font-medium text-[#990000] hover:underline"
                 >
@@ -195,21 +210,33 @@ function PlayerSearchInner() {
                       className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-lg p-4 hover:shadow-md transition-shadow group"
                       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
                     >
-                      <div className="mb-2">
+                      <div className="flex items-start justify-between gap-2 mb-2">
                         <span className="font-semibold text-[#0a1628] text-sm leading-snug">
                           {profile.canonicalName}
                         </span>
+                        {profile.memberRole === 'current_player' ? (
+                          <span className="text-[10px] font-medium text-[#2d6a4f] bg-[#2d6a4f]/10 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+                            Current Player
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-medium text-[#8a7f70] bg-[#f8f5f0] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border border-[rgba(180,168,150,0.4)]">
+                            Alumni
+                          </span>
+                        )}
                       </div>
 
                       <div className="space-y-0.5 mb-3">
-                        {profile.rosterYearsLabel !== '—' && (
-                          <p className="text-xs text-[#8a7f70]">
-                            Penn Golf {profile.rosterYearsLabel}
-                          </p>
-                        )}
-                        {profile.classLabel && (
-                          <p className="text-xs text-[#8a7f70]">{profile.classLabel}</p>
-                        )}
+                        {profile.memberRole === 'current_player'
+                          ? profile.classYearEstimate?.split(' / ')[0] && (
+                              <p className="text-xs text-[#8a7f70]">
+                                {profile.classYearEstimate.split(' / ')[0]}
+                              </p>
+                            )
+                          : profile.rosterYearsLabel !== '—' && (
+                              <p className="text-xs text-[#8a7f70]">
+                                Penn Golf {profile.rosterYearsLabel}
+                              </p>
+                            )}
                         {profile.hometown && (
                           <p className="text-xs text-[#8a7f70]">{profile.hometown}</p>
                         )}

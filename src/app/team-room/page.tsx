@@ -6,6 +6,8 @@ interface PlayerEntry {
   membership: TeamMembership
 }
 
+const CLASS_ORDER: Record<string, number> = { 'Sr.': 0, 'Jr.': 1, 'So.': 2, 'Fr.': 3 }
+
 const SUPPORT_CARDS = [
   {
     title: 'Host a Summer Round',
@@ -58,18 +60,22 @@ export default async function TeamRoomPage() {
         return person ? { membership: m, person } : null
       })
       .filter((x): x is PlayerEntry => x !== null)
+      .sort((a, b) => {
+        const aOrder = CLASS_ORDER[a.membership.classLabel ?? ''] ?? 99
+        const bOrder = CLASS_ORDER[b.membership.classLabel ?? ''] ?? 99
+        if (aOrder !== bOrder) return aOrder - bOrder
+        return a.person.canonicalName.localeCompare(b.person.canonicalName)
+      })
 
-    const alumniNames = ['hayden adams', 'owen hayes']
-    recentAlumni = alumniNames
-      .map(norm => {
-        const person = store.people.find(p => p.normalizedName === norm)
-        if (!person) return null
-        const membership = store.teamMemberships.find(
-          m => m.personId === person.id && m.teamId === team.id,
-        )
-        return membership ? { person, membership } : null
+    recentAlumni = store.teamMemberships
+      .filter(m => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true)
+      .map(m => {
+        const person = store.people.find(p => p.id === m.personId)
+        return person ? { membership: m, person } : null
       })
       .filter((x): x is PlayerEntry => x !== null)
+      .sort((a, b) => (b.membership.rosterEndYear ?? 0) - (a.membership.rosterEndYear ?? 0))
+      .slice(0, 6)
   }
 
   return (
@@ -79,38 +85,67 @@ export default async function TeamRoomPage() {
           <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Team Room</p>
           <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Team Room</h1>
           <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
-            The 2025-26 Penn Golf team and the alumni who support them.
+            The 2026-27 Penn Golf team and the alumni who support them.
           </p>
         </div>
       </div>
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
 
-        {/* 2025-26 Roster */}
+        {/* 2026-27 Roster */}
         <section>
-          <h2 className="text-base font-semibold text-[#0a1628] mb-1">2025-26 Roster</h2>
+          <h2 className="text-base font-semibold text-[#0a1628] mb-1">2026-27 Roster</h2>
           <p className="text-sm text-[#8a7f70] mb-6">Current players on the Penn Men&apos;s Golf team.</p>
           {currentPlayers.length === 0 ? (
             <p className="text-sm text-[#8a7f70]">Roster will appear here once players are added to the Clubhouse.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {currentPlayers.map(({ person, membership }) => (
-                <div
-                  key={person.id}
-                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4"
-                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-                >
-                  <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
-                  {membership.hometown && (
-                    <p className="text-xs text-[#8a7f70] mt-1">{membership.hometown}</p>
-                  )}
-                  {membership.highSchool && (
-                    <p className="text-xs text-[#8a7f70]">{membership.highSchool}</p>
-                  )}
-                </div>
-              ))}
+              {currentPlayers.map(({ person, membership }) => {
+                const classShort = membership.classYearEstimate?.split(' / ')[0]
+                return (
+                  <Link
+                    key={person.id}
+                    href={`/player/alumni/${person.id}`}
+                    className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:border-[#0a1628]/30 transition-colors block"
+                    style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                      {classShort && (
+                        <span className="text-[10px] font-medium text-[#2d6a4f] bg-[#2d6a4f]/10 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+                          {classShort}
+                        </span>
+                      )}
+                    </div>
+                    {membership.hometown && (
+                      <p className="text-xs text-[#8a7f70] mt-1">{membership.hometown}</p>
+                    )}
+                    {membership.highSchool && (
+                      <p className="text-xs text-[#8a7f70]">{membership.highSchool}</p>
+                    )}
+                  </Link>
+                )
+              })}
             </div>
           )}
+        </section>
+
+        {/* Captain's Note */}
+        <section>
+          <h2 className="text-base font-semibold text-[#0a1628] mb-1">Captain&apos;s Note</h2>
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-medium text-[#8a7f70] bg-[#f8f5f0] px-2 py-0.5 rounded-full border border-[rgba(180,168,150,0.35)]">
+                Coming soon
+              </span>
+            </div>
+            <p className="text-sm text-[#8a7f70] leading-relaxed">
+              A note from this year&apos;s captain will appear here each season.
+            </p>
+          </div>
         </section>
 
         {/* Recent Alumni */}
@@ -120,22 +155,24 @@ export default async function TeamRoomPage() {
             <p className="text-sm text-[#8a7f70] mb-6">Just finished their Penn Golf careers.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {recentAlumni.map(({ person, membership }) => (
-                <div
+                <Link
                   key={person.id}
-                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4"
+                  href={`/player/alumni/${person.id}`}
+                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:border-[#0a1628]/30 transition-colors block"
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
                 >
-                  <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                    {membership.rosterEndYear && (
+                      <span className="text-[10px] font-medium text-[#8a7f70] bg-[#f8f5f0] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border border-[rgba(180,168,150,0.35)]">
+                        &apos;{String(membership.rosterEndYear).slice(2)}
+                      </span>
+                    )}
+                  </div>
                   {membership.hometown && (
                     <p className="text-xs text-[#8a7f70] mt-1">{membership.hometown}</p>
                   )}
-                  {membership.highSchool && (
-                    <p className="text-xs text-[#8a7f70]">{membership.highSchool}</p>
-                  )}
-                  {membership.classLabel && (
-                    <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>
-                  )}
-                </div>
+                </Link>
               ))}
             </div>
           </section>
@@ -186,7 +223,7 @@ export default async function TeamRoomPage() {
         >
           <div>
             <p className="font-semibold text-[#0a1628] text-sm">Browse the Full Member Book</p>
-            <p className="text-xs text-[#8a7f70] mt-0.5">All Penn Golf alumni who have set up their Clubhouse profile.</p>
+            <p className="text-xs text-[#8a7f70] mt-0.5">All Penn Golf members who have set up their Clubhouse profile.</p>
           </div>
           <Link
             href="/player/search"

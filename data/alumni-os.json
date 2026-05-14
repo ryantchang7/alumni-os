@@ -674,6 +674,22 @@
       "firstName": "Casey",
       "lastName": "Zeman",
       "createdAt": "2026-05-14T01:01:16.994Z"
+    },
+    {
+      "id": "9e310834-b152-4c5e-885c-3ed69c9704db",
+      "canonicalName": "Oliver Uribe",
+      "normalizedName": "oliver uribe",
+      "firstName": "Oliver",
+      "lastName": "Uribe",
+      "createdAt": "2026-05-14T16:01:17.923565Z"
+    },
+    {
+      "id": "e761db9e-b5de-4409-bd59-97782dbc271b",
+      "canonicalName": "Sean Curran",
+      "normalizedName": "sean curran",
+      "firstName": "Sean",
+      "lastName": "Curran",
+      "createdAt": "2026-05-14T16:01:17.923565Z"
     }
   ],
   "teamMemberships": [
@@ -690,14 +706,15 @@
       ],
       "confidence": 0.95,
       "createdAt": "2026-05-13T20:43:52.962Z",
-      "updatedAt": "2026-05-14T01:01:16.994Z",
-      "publishedToNetwork": false,
-      "publishedAt": "2026-05-13T20:43:52.963Z",
-      "publishedByRole": "captain",
-      "classLabel": "So.",
+      "updatedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedToNetwork": true,
+      "publishedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedByRole": "admin",
+      "classLabel": "Jr.",
       "hometown": "Brookline, Mass.",
       "highSchool": "Windermere (Fla.) Prep",
-      "memberRole": "current_player"
+      "memberRole": "current_player",
+      "classYearEstimate": "Junior / Rising Junior"
     },
     {
       "id": "c8b504e0-235d-4a58-861e-5ee7695a7eb1",
@@ -713,14 +730,15 @@
       ],
       "confidence": 0.92,
       "createdAt": "2026-05-13T20:43:52.962Z",
-      "updatedAt": "2026-05-14T01:01:16.994Z",
+      "updatedAt": "2026-05-14T16:01:17.923565Z",
       "publishedToNetwork": true,
       "publishedAt": "2026-05-13T20:43:52.963Z",
       "publishedByRole": "captain",
-      "classLabel": "Jr.",
+      "classLabel": "Sr.",
       "hometown": "Lexington, Ky.",
       "highSchool": "Sayre School",
-      "memberRole": "alumni"
+      "memberRole": "current_player",
+      "classYearEstimate": "Senior / Rising Senior"
     },
     {
       "id": "b04d4f5f-5b13-41d6-87e8-937c55f82aa5",
@@ -734,14 +752,15 @@
       ],
       "confidence": 0.88,
       "createdAt": "2026-05-13T20:43:52.962Z",
-      "updatedAt": "2026-05-14T01:01:16.994Z",
-      "publishedToNetwork": false,
-      "publishedAt": "2026-05-13T20:43:52.963Z",
-      "publishedByRole": "captain",
-      "classLabel": "Fr.",
+      "updatedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedToNetwork": true,
+      "publishedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedByRole": "admin",
+      "classLabel": "So.",
       "hometown": "Short Hills, N.J.",
       "highSchool": "Newark Academy",
-      "memberRole": "current_player"
+      "memberRole": "current_player",
+      "classYearEstimate": "Sophomore / Rising Sophomore"
     },
     {
       "id": "4e50ba4e-c474-4af6-87d0-b5ef725a72ab",
@@ -837,7 +856,7 @@
       "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
       "rosterStartYear": 2025,
       "rosterEndYear": 2026,
-      "classLabel": "Fr.",
+      "classLabel": "So.",
       "hometown": "Hillsborough, Calif.",
       "highSchool": "Crystal Springs Uplands School",
       "bioUrls": [],
@@ -845,10 +864,13 @@
         "https://pennathletics.com/sports/mens-golf/roster/2025-26"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": false,
-      "updatedAt": "2026-05-14T01:01:16.994Z",
+      "publishedToNetwork": true,
+      "updatedAt": "2026-05-14T16:01:17.923565Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "current_player"
+      "memberRole": "current_player",
+      "classYearEstimate": "Sophomore / Rising Sophomore",
+      "publishedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedByRole": "admin"
     },
     {
       "id": "5818667f-17c3-4a1c-8096-20e3ef653665",
@@ -1003,7 +1025,7 @@
       "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
       "rosterStartYear": 2023,
       "rosterEndYear": 2026,
-      "classLabel": "Jr.",
+      "classLabel": "Sr.",
       "hometown": "Miami, Fla.",
       "highSchool": "Christopher Columbus",
       "bioUrls": [],
@@ -1013,10 +1035,13 @@
         "https://pennathletics.com/sports/mens-golf/roster/2025-26"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": false,
-      "updatedAt": "2026-05-14T01:01:16.994Z",
+      "publishedToNetwork": true,
+      "updatedAt": "2026-05-14T16:01:17.923565Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "current_player"
+      "memberRole": "current_player",
+      "classYearEstimate": "Senior / Rising Senior",
+      "publishedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedByRole": "admin"
     },
     {
       "id": "dba69920-4c54-4e9a-b28c-f61e56a81cee",
@@ -1133,7 +1158,7 @@
       "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
       "rosterStartYear": 2024,
       "rosterEndYear": 2026,
-      "classLabel": "So.",
+      "classLabel": "Jr.",
       "hometown": "Suwanee, Ga.",
       "highSchool": "Lambert",
       "bioUrls": [],
@@ -1142,10 +1167,13 @@
         "https://pennathletics.com/sports/mens-golf/roster/2025-26"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": false,
-      "updatedAt": "2026-05-14T01:01:16.994Z",
+      "publishedToNetwork": true,
+      "updatedAt": "2026-05-14T16:01:17.923565Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "current_player"
+      "memberRole": "current_player",
+      "classYearEstimate": "Junior / Rising Junior",
+      "publishedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedByRole": "admin"
     },
     {
       "id": "a3119f8c-165c-4f73-a390-706f6dc9bab7",
@@ -1926,7 +1954,7 @@
       "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
       "rosterStartYear": 2025,
       "rosterEndYear": 2026,
-      "classLabel": "Fr.",
+      "classLabel": "So.",
       "hometown": "San Diego, Calif.",
       "highSchool": "The Bishop's School",
       "bioUrls": [],
@@ -1934,10 +1962,13 @@
         "https://pennathletics.com/sports/mens-golf/roster/2025-26"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": false,
-      "updatedAt": "2026-05-14T01:01:16.994Z",
+      "publishedToNetwork": true,
+      "updatedAt": "2026-05-14T16:01:17.923565Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "current_player"
+      "memberRole": "current_player",
+      "classYearEstimate": "Sophomore / Rising Sophomore",
+      "publishedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedByRole": "admin"
     },
     {
       "id": "71c75f4a-b08b-4c89-ad1a-e73848d781dc",
@@ -1979,6 +2010,50 @@
       "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
       "memberRole": "alumni"
+    },
+    {
+      "id": "e9a4e48f-da3d-4999-8b2a-5e08ff53d6fc",
+      "personId": "9e310834-b152-4c5e-885c-3ed69c9704db",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "memberRole": "current_player",
+      "rosterStartYear": 2026,
+      "rosterEndYear": 2030,
+      "classLabel": "Fr.",
+      "classYearEstimate": "Freshman / Rising Freshman",
+      "hometown": "Scottsdale, Ariz.",
+      "highSchool": null,
+      "bioUrls": [],
+      "sourceUrls": [
+        "https://pennathletics.com/sports/mens-golf/roster/2025-26"
+      ],
+      "confidence": 1.0,
+      "publishedToNetwork": true,
+      "publishedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedByRole": "admin",
+      "createdAt": "2026-05-14T16:01:17.923565Z",
+      "updatedAt": "2026-05-14T16:01:17.923565Z"
+    },
+    {
+      "id": "8c4b104a-410f-433a-a898-35c1111d4419",
+      "personId": "e761db9e-b5de-4409-bd59-97782dbc271b",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "memberRole": "current_player",
+      "rosterStartYear": 2026,
+      "rosterEndYear": 2030,
+      "classLabel": "Fr.",
+      "classYearEstimate": "Freshman / Rising Freshman",
+      "hometown": "Newtown Square, Pa.",
+      "highSchool": null,
+      "bioUrls": [],
+      "sourceUrls": [
+        "https://pennathletics.com/sports/mens-golf/roster/2025-26"
+      ],
+      "confidence": 1.0,
+      "publishedToNetwork": true,
+      "publishedAt": "2026-05-14T16:01:17.923565Z",
+      "publishedByRole": "admin",
+      "createdAt": "2026-05-14T16:01:17.923565Z",
+      "updatedAt": "2026-05-14T16:01:17.923565Z"
     }
   ],
   "reviewItems": [
@@ -2202,6 +2277,51 @@
       ],
       "contactPreference": "not_available",
       "visibleToPlayers": true
+    },
+    {
+      "id": "2e0468c9-3c6c-4c3c-9051-4137226e5f6f",
+      "personId": "3431f8d8-6d11-45ff-9b88-2fe19935835c",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "verificationStatus": "unverified",
+      "sourceUrls": [],
+      "createdAt": "2026-05-14T16:01:17.923565Z",
+      "updatedAt": "2026-05-14T16:01:17.923565Z"
+    },
+    {
+      "id": "7dce9da3-5acd-4ceb-820b-e8923adf25c0",
+      "personId": "b464f894-bf56-47fb-a849-7017a8c71126",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "verificationStatus": "unverified",
+      "sourceUrls": [],
+      "createdAt": "2026-05-14T16:01:17.923565Z",
+      "updatedAt": "2026-05-14T16:01:17.923565Z"
+    },
+    {
+      "id": "fd356d45-337f-400f-8853-f47b065f6eb2",
+      "personId": "c4879b22-3fda-461d-99ee-f4f6e587ac60",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "verificationStatus": "unverified",
+      "sourceUrls": [],
+      "createdAt": "2026-05-14T16:01:17.923565Z",
+      "updatedAt": "2026-05-14T16:01:17.923565Z"
+    },
+    {
+      "id": "1550bceb-ac64-4349-a792-1c92cc0ee7e0",
+      "personId": "f3874085-d52f-4bc2-b05f-3319c9bc069b",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "verificationStatus": "unverified",
+      "sourceUrls": [],
+      "createdAt": "2026-05-14T16:01:17.923565Z",
+      "updatedAt": "2026-05-14T16:01:17.923565Z"
+    },
+    {
+      "id": "961c3057-33ae-475e-ac8f-b0532b41d2d1",
+      "personId": "e337c1f6-ebaf-47f0-ba34-26a94d28869b",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "verificationStatus": "unverified",
+      "sourceUrls": [],
+      "createdAt": "2026-05-14T16:01:17.923565Z",
+      "updatedAt": "2026-05-14T16:01:17.923565Z"
     }
   ],
   "enrichmentSources": [],

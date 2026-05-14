@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -26,12 +26,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
   const membership = memberships.find(m => m.personId === person.id)
   if (!membership) notFound()
 
-  // Current players belong in /team-room, not here
-  if (membership.memberRole === 'current_player') {
-    redirect('/team-room')
-  }
-
-  // Alumni must be published to appear here
+  // All members must be published to appear here
   if (!membership.publishedToNetwork) notFound()
 
   const enrichment = await getPersonEnrichment(person.id, team.id)
@@ -44,6 +39,8 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
 
   const hasCareer = isVerified && (enrichment?.currentRole || enrichment?.currentCompany)
 
+  const isCurrentPlayer = membership.memberRole === 'current_player'
+
   const rosterYears =
     membership.rosterStartYear && membership.rosterEndYear
       ? `${membership.rosterStartYear}–${String(membership.rosterEndYear).slice(-2)}`
@@ -51,12 +48,19 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
         ? `${membership.rosterStartYear}`
         : null
 
-  const subtitle = [
-    rosterYears ? `Penn Golf ${rosterYears}` : 'Penn Golf',
-    membership.classLabel ?? null,
-  ]
-    .filter(Boolean)
-    .join(' · ')
+  const subtitle = isCurrentPlayer
+    ? [
+        membership.classYearEstimate?.split(' / ')[0] ?? membership.classLabel ?? null,
+        'Penn Golf',
+      ]
+        .filter(Boolean)
+        .join(' · ')
+    : [
+        rosterYears ? `Penn Golf ${rosterYears}` : 'Penn Golf',
+        membership.classLabel ?? null,
+      ]
+        .filter(Boolean)
+        .join(' · ')
 
   const openToBadges: string[] = [
     enrichment?.openToCoffee ? 'Coffee chat' : null,
@@ -109,9 +113,15 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               )}
 
               <div className="flex items-center gap-2 mt-4">
-                <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-[#2d6a4f]/15 border border-[#2d6a4f]/35 text-[#2d6a4f]">
-                  Verified Penn Golf Member
-                </span>
+                {isCurrentPlayer ? (
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-[#0a1628]/15 border border-[#0a1628]/35 text-[#0a1628]">
+                    Current Player
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-[#2d6a4f]/15 border border-[#2d6a4f]/35 text-[#2d6a4f]">
+                    Penn Golf Alumni
+                  </span>
+                )}
               </div>
             </div>
 
