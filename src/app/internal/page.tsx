@@ -4,13 +4,23 @@ const TEAM_SLUG = 'penn-mens-golf'
 
 const tools = [
   {
+    label: 'Current Roster Editor',
+    description: 'Edit the 2026–27 Penn Golf roster and player profile details.',
+    href: '/internal/current-roster',
+  },
+  {
+    label: 'Master List',
+    description: 'View all members, roster status, and enrichment state.',
+    href: '/internal/master-list',
+  },
+  {
     label: 'Build',
     description: 'Import historical rosters and publish alumni profiles.',
     href: '/build',
   },
   {
     label: 'Player Clubhouse',
-    description: 'See the alumni list as a current player would.',
+    description: 'See the member book as a current player would.',
     href: `/player?teamSlug=${TEAM_SLUG}`,
   },
   {

@@ -1,62 +1,100 @@
 import Link from 'next/link'
-import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
+import MemberMapClient from './MemberMapClient'
+import { PLACE_COORDS } from '@/lib/map/hometown-coordinates'
+import type { MapPlace } from '@/app/api/member-map/route'
 
-interface CityCard {
-  city: string
-  count: number
-  coffeeCount: number
-  golfCount: number
-}
+const TEAM_SLUG = 'penn-mens-golf'
 
 export default async function MemberMapPage() {
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const store = await readStore()
-  const team = await getTeamBySlug('penn-mens-golf')
+  const team = await getTeamBySlug(TEAM_SLUG)
 
-  let cityCards: CityCard[] = []
-  let unknownCityCount = 0
-  let totalMembers = 0
+  const placeMap = new Map<string, MapPlace>()
 
   if (team) {
-    const memberships = store.teamMemberships.filter(
-      m => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true,
-    )
-    const enrichments = store.personEnrichments.filter(e => e.teamId === team.id)
-    const enrichMap = new Map(enrichments.map(e => [e.personId, e]))
-
-    const visibleMemberships = memberships.filter(
-      m => enrichMap.get(m.personId)?.visibleToPlayers !== false,
+    const enrichMap = new Map(
+      store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
     )
 
-    totalMembers = visibleMemberships.length
-
-    const cityMap = new Map<string, { memberships: TeamMembership[]; enrichments: PersonEnrichment[] }>()
-    let noCity = 0
-
-    for (const m of visibleMemberships) {
-      const enrichment = enrichMap.get(m.personId)
-      const city = enrichment?.city?.trim() || ''
-      if (!city) {
-        noCity++
-        continue
+    function addMember(hometown: string, member: MapPlace['members'][number]) {
+      const coords = PLACE_COORDS[hometown]
+      if (!coords) return
+      let place = placeMap.get(hometown)
+      if (!place) {
+        place = {
+          id: hometown.replace(/[^a-z0-9]/gi, '-').toLowerCase(),
+          label: hometown,
+          region: coords.region,
+          x: coords.x,
+          y: coords.y,
+          currentPlayerCount: 0,
+          alumniCount: 0,
+          openToCoffeeCount: 0,
+          openToGolfCount: 0,
+          members: [],
+        }
+        placeMap.set(hometown, place)
       }
-      const existing = cityMap.get(city) ?? { memberships: [], enrichments: [] }
-      existing.memberships.push(m)
-      if (enrichment) existing.enrichments.push(enrichment)
-      cityMap.set(city, existing)
+      place.members.push(member)
+      if (member.memberRole === 'current_player') place.currentPlayerCount++
+      else place.alumniCount++
+      if (member.openToCoffee) place.openToCoffeeCount++
+      if (member.openToGolfRounds) place.openToGolfCount++
     }
 
-    unknownCityCount = noCity
+    // Current players
+    for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'current_player')) {
+      const person = store.people.find(p => p.id === m.personId)
+      if (!person) continue
+      const enrichment = enrichMap.get(m.personId)
+      if (enrichment?.visibleToPlayers === false) continue
+      const hometown = m.hometown?.trim()
+      if (!hometown) continue
+      addMember(hometown, {
+        personId: person.id,
+        canonicalName: person.canonicalName,
+        memberRole: 'current_player',
+        classLabel: m.classLabel,
+        classYearEstimate: m.classYearEstimate,
+        rosterStartYear: m.rosterStartYear,
+        rosterEndYear: m.rosterEndYear,
+        hometown,
+        openToCoffee: enrichment?.openToCoffee ?? false,
+        openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+      })
+    }
 
-    cityCards = Array.from(cityMap.entries())
-      .map(([city, data]) => ({
-        city,
-        count: data.memberships.length,
-        coffeeCount: data.enrichments.filter(e => e.openToCoffee).length,
-        golfCount: data.enrichments.filter(e => e.openToGolfRounds).length,
-      }))
-      .sort((a, b) => b.count - a.count)
+    // Published alumni
+    for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'alumni' && x.publishedToNetwork === true)) {
+      const person = store.people.find(p => p.id === m.personId)
+      if (!person) continue
+      const enrichment = enrichMap.get(m.personId)
+      if (enrichment?.visibleToPlayers === false) continue
+      const locationLabel = enrichment?.city?.trim()
+        ? enrichment.state ? `${enrichment.city}, ${enrichment.state}` : enrichment.city.trim()
+        : m.hometown?.trim()
+      if (!locationLabel) continue
+      addMember(locationLabel, {
+        personId: person.id,
+        canonicalName: person.canonicalName,
+        memberRole: 'alumni',
+        classLabel: m.classLabel,
+        rosterStartYear: m.rosterStartYear,
+        rosterEndYear: m.rosterEndYear,
+        hometown: m.hometown,
+        openToCoffee: enrichment?.openToCoffee ?? false,
+        openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+      })
+    }
   }
+
+  const places = Array.from(placeMap.values()).sort(
+    (a, b) => (b.currentPlayerCount + b.alumniCount) - (a.currentPlayerCount + a.alumniCount),
+  )
+
+  const totalMembers = places.reduce((s, p) => s + p.members.length, 0)
+  const currentPlayerCount = places.reduce((s, p) => s + p.currentPlayerCount, 0)
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -65,93 +103,41 @@ export default async function MemberMapPage() {
           <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Member Map</p>
           <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Member Map</h1>
           <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
-            Where Penn Golf alumni are in the world.
+            See where Penn Golf players and alumni come from, live, and gather.
           </p>
+          <div className="flex gap-6 mt-5">
+            <div>
+              <p className="text-xl font-semibold text-white">{totalMembers}</p>
+              <p className="text-xs text-gray-400">Members mapped</p>
+            </div>
+            <div>
+              <p className="text-xl font-semibold text-white">{currentPlayerCount}</p>
+              <p className="text-xs text-gray-400">Current players</p>
+            </div>
+            <div>
+              <p className="text-xl font-semibold text-white">{places.length}</p>
+              <p className="text-xs text-gray-400">Places</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
-
-        {/* Stats bar */}
-        {totalMembers > 0 && (
-          <div className="flex flex-wrap gap-6">
-            <div>
-              <p className="text-2xl font-semibold text-[#0a1628]">{totalMembers}</p>
-              <p className="text-xs text-[#8a7f70] mt-0.5">Published members</p>
-            </div>
-            <div>
-              <p className="text-2xl font-semibold text-[#0a1628]">{cityCards.length}</p>
-              <p className="text-xs text-[#8a7f70] mt-0.5">Cities represented</p>
-            </div>
-            {unknownCityCount > 0 && (
-              <div>
-                <p className="text-2xl font-semibold text-[#8a7f70]">{unknownCityCount}</p>
-                <p className="text-xs text-[#8a7f70] mt-0.5">Location not shared</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* City grid */}
-        <section>
-          <h2 className="text-base font-semibold text-[#0a1628] mb-1">Alumni by City</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">Every city where Penn Golf alumni have set their location.</p>
-
-          {cityCards.length === 0 ? (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-            >
-              <p className="text-sm text-[#8a7f70]">
-                Alumni locations will appear here as members update their profiles.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {cityCards.map(card => (
-                <Link
-                  key={card.city}
-                  href={`/player/search?city=${encodeURIComponent(card.city)}`}
-                  className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 hover:shadow-md transition-shadow group"
-                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-                >
-                  <p className="font-semibold text-[#0a1628] text-sm mb-1">{card.city}</p>
-                  <div className="flex flex-wrap gap-x-4 gap-y-0.5">
-                    <p className="text-xs text-[#8a7f70]">
-                      {card.count} {card.count === 1 ? 'member' : 'members'}
-                    </p>
-                    {card.coffeeCount > 0 && (
-                      <p className="text-xs text-[#2d6a4f]">{card.coffeeCount} open to coffee</p>
-                    )}
-                    {card.golfCount > 0 && (
-                      <p className="text-xs text-[#2d6a4f]">{card.golfCount} open to a round</p>
-                    )}
-                  </div>
-                  <span className="text-xs font-medium text-[#990000] group-hover:underline mt-3 block">
-                    View members in {card.city} &rarr;
-                  </span>
-                </Link>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Unknown location note */}
-        {unknownCityCount > 0 && (
+      <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-8">
+        {places.length === 0 ? (
           <div
-            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-10 text-center"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
           >
             <p className="text-sm text-[#8a7f70]">
-              <span className="font-medium text-[#4a5568]">{unknownCityCount}</span>{' '}
-              {unknownCityCount === 1 ? 'member has' : 'members have'} not shared their location yet.
+              Member locations will appear here as profiles are updated.
             </p>
           </div>
+        ) : (
+          <MemberMapClient initialPlaces={places} />
         )}
 
-        {/* CTA */}
         <div
-          className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          className="mt-10 bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
         >
           <div>
@@ -165,7 +151,6 @@ export default async function MemberMapPage() {
             Update your city &rarr;
           </Link>
         </div>
-
       </div>
     </div>
   )
