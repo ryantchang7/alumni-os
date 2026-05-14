@@ -34,10 +34,10 @@ const rooms = [
   {
     id: 'ask',
     label: 'Ask',
-    description: 'Get career advice, industry insight, or guidance from alumni who have been in your shoes.',
-    href: '/player/search',
+    description: 'Get career advice, industry insight, or guidance from members who have been in your shoes.',
+    href: '/ask',
     icon: MessageSquare,
-    cta: 'Find someone to ask',
+    cta: 'Ask for help',
   },
   {
     id: 'meet',

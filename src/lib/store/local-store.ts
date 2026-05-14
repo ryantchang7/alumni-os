@@ -705,6 +705,8 @@ export async function createPlayerAlumniRequest(input: {
   fromName: string
   fromEmail?: string
   purpose: PlayerAlumniRequest['purpose']
+  context?: string
+  additionalContext?: string
   message: string
 }): Promise<PlayerAlumniRequest> {
   const store = await readStore()
@@ -716,6 +718,8 @@ export async function createPlayerAlumniRequest(input: {
     fromName: input.fromName.trim(),
     fromEmail: input.fromEmail?.trim() || undefined,
     purpose: input.purpose,
+    context: input.context?.trim() || undefined,
+    additionalContext: input.additionalContext?.trim() || undefined,
     message: input.message.trim(),
     status: 'requested',
     createdAt: now,

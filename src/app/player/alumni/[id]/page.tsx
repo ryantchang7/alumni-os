@@ -126,10 +126,10 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             </div>
 
             <Link
-              href={`/player/outreach/${person.id}`}
+              href={`/ask?personId=${person.id}&purpose=career_advice`}
               className="flex-shrink-0 text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-5 py-2.5 rounded-lg transition-colors"
             >
-              Send a Clubhouse Request &rarr;
+              Ask for Help &rarr;
             </Link>
           </div>
         </div>
@@ -292,20 +292,20 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
           {/* Action buttons */}
           <div className="pt-2 flex flex-wrap gap-3">
             <Link
-              href={`/player/outreach/${person.id}`}
+              href={`/ask?personId=${person.id}&purpose=career_advice`}
               className="inline-flex items-center text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-6 py-3 rounded-lg transition-colors"
             >
-              Send a Clubhouse Request &rarr;
+              Ask for Advice &rarr;
             </Link>
-            <button
-              type="button"
+            <Link
+              href={`/ask?personId=${person.id}&purpose=warm_intro`}
               className="inline-flex items-center text-sm font-medium border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] text-[#0a1628] px-6 py-3 rounded-lg transition-colors bg-white"
             >
               Request Introduction
-            </button>
+            </Link>
             {enrichment?.openToGolfRounds && (
               <Link
-                href={`/player/outreach/${person.id}?purpose=golf_round`}
+                href={`/ask?personId=${person.id}&purpose=golf_round`}
                 className="inline-flex items-center text-sm font-medium border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] text-[#0a1628] px-6 py-3 rounded-lg transition-colors bg-white"
               >
                 Invite to a Round

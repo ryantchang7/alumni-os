@@ -69,6 +69,9 @@ export async function GET(request: Request) {
         openToGolfRounds: enrichment?.openToGolfRounds,
         openToCoffee: enrichment?.openToCoffee,
         openToMentorship: enrichment?.openToMentorship,
+        openToWarmIntroductions: enrichment?.openToWarmIntroductions,
+        availabilityLevel: enrichment?.availabilityLevel,
+        contactPreference: enrichment?.contactPreference,
       }
     })
     .filter((p): p is NonNullable<typeof p> => p !== null)

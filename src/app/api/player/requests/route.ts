@@ -6,6 +6,14 @@ const VALID_PURPOSES: PlayerAlumniRequest['purpose'][] = [
   'coffee_chat',
   'mentorship',
   'golf_connection',
+  'warm_introduction',
+  'internship_guidance',
+  'interview_prep',
+  'resume_review',
+  'golf_round',
+  'city_advice',
+  'drinks_informal',
+  'general_intro',
 ]
 
 export async function POST(request: NextRequest) {
@@ -15,6 +23,8 @@ export async function POST(request: NextRequest) {
     fromName?: string
     fromEmail?: string
     purpose?: string
+    context?: string
+    additionalContext?: string
     message?: string
   }
   try {
@@ -23,7 +33,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { teamSlug, alumniPersonId, fromName, purpose, message, fromEmail } = body
+  const { teamSlug, alumniPersonId, fromName, purpose, context, additionalContext, message, fromEmail } = body
 
   if (!teamSlug || !alumniPersonId || !fromName || !purpose || !message) {
     return NextResponse.json(
@@ -59,6 +69,10 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  if (additionalContext && additionalContext.trim().length > 1000) {
+    return NextResponse.json({ error: 'additionalContext must be 1000 characters or fewer' }, { status: 400 })
+  }
+
   const {
     getTeamBySlug,
     getTeamMembershipsForTeam,
@@ -75,12 +89,12 @@ export async function POST(request: NextRequest) {
   const membership = memberships.find(m => m.personId === alumniPersonId)
 
   if (!membership) {
-    return NextResponse.json({ error: 'Alumni not found on this team' }, { status: 404 })
+    return NextResponse.json({ error: 'Member not found on this team' }, { status: 404 })
   }
 
   if (!membership.publishedToNetwork) {
     return NextResponse.json(
-      { error: 'This alumni is not available for requests' },
+      { error: 'This member is not available for requests' },
       { status: 403 },
     )
   }
@@ -92,7 +106,7 @@ export async function POST(request: NextRequest) {
 
   if (enrichment?.visibleToPlayers === false) {
     return NextResponse.json(
-      { error: 'This alumni is not available for requests' },
+      { error: 'This member is not available for requests' },
       { status: 403 },
     )
   }
@@ -103,6 +117,8 @@ export async function POST(request: NextRequest) {
     fromName: trimmedName,
     fromEmail: fromEmail?.trim() || undefined,
     purpose: purpose as PlayerAlumniRequest['purpose'],
+    context: context?.trim() || undefined,
+    additionalContext: additionalContext?.trim() || undefined,
     message: trimmedMessage,
   })
 

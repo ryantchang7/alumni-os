@@ -16,6 +16,9 @@ interface AlumniRequest {
   fromName: string
   purposeKey: string
   purposeLabel: string
+  contextKey?: string
+  contextLabel?: string
+  additionalContext?: string
   message: string
   status: 'requested' | 'seen' | 'responded' | 'closed'
   createdAt: string
@@ -85,14 +88,27 @@ function RequestCard({
               {STATUS_LABEL[req.status] ?? req.status}
             </span>
           </div>
-          <div className="flex items-center gap-2 mt-0.5">
+          <div className="flex items-center gap-2 mt-0.5 flex-wrap">
             <span className="text-xs font-medium text-[#4a5568] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
               {purposeDisplay}
             </span>
+            {req.contextLabel && (
+              <span className="text-xs font-medium text-[#4a5568] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
+                {req.contextLabel}
+              </span>
+            )}
             <span className="text-xs text-[#8a7f70]">{formatDate(req.createdAt)}</span>
           </div>
         </div>
       </div>
+
+      {/* Additional context note */}
+      {req.additionalContext && (
+        <div className="mt-3 px-3 py-2.5 bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] rounded-lg">
+          <p className="text-xs text-[#8a7f70] font-medium mb-0.5 uppercase tracking-wide">Additional context</p>
+          <p className="text-xs text-[#2d3748] leading-relaxed">{req.additionalContext}</p>
+        </div>
+      )}
 
       {/* Message with expand/collapse */}
       <div className="mt-3">

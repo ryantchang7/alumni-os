@@ -193,7 +193,9 @@ export interface PlayerAlumniRequest {
   alumniPersonId: string
   fromName: string
   fromEmail?: string
-  purpose: 'career_advice' | 'coffee_chat' | 'mentorship' | 'golf_connection' | 'warm_introduction' | 'internship_guidance' | 'interview_prep' | 'golf_round' | 'city_advice' | 'drinks_informal' | 'general_intro'
+  purpose: 'career_advice' | 'coffee_chat' | 'mentorship' | 'golf_connection' | 'warm_introduction' | 'internship_guidance' | 'interview_prep' | 'resume_review' | 'golf_round' | 'city_advice' | 'drinks_informal' | 'general_intro'
+  context?: string
+  additionalContext?: string
   message: string
   status: 'requested' | 'seen' | 'responded' | 'closed'
   createdAt: string
