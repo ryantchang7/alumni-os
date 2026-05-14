@@ -36,7 +36,12 @@
       "Bash(echo \"Build started as PID $!\")",
       "Read(//private/tmp/**)",
       "Bash(npm test *)",
-      "Bash(npx --version)"
+      "Bash(npx --version)",
+      "Bash(git restore *)",
+      "Bash(npx vercel *)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(d.get\\('token','not found'\\)[:20]+'...'\\)\")",
+      "Bash(rm \"src/app/network/layout.tsx\")",
+      "Bash(rmdir \"src/app/network\")"
     ],
     "additionalDirectories": [
       "/Users/ryanchang/Desktop/AI Projects/alumni-os/e2e",

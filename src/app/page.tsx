@@ -37,39 +37,36 @@ export default function LandingPage() {
   return (
     <div className="bg-[#f8f5f0]">
 
-      {/* ── Hero — full image, never cropped ── */}
-      <div className="relative w-full">
+      {/* ── Hero ──
+          Mobile:  aspect-[3/4]  → tall portrait, image cropped from top (shows logo + building)
+          Desktop: aspect-[1344/896] → natural image ratio, nothing cropped               */}
+      <div className="relative w-full aspect-[3/4] sm:aspect-[1344/896]">
 
-        {/* Image defines container height naturally */}
         <Image
           src="/hero.png"
-          alt="Penn Golf Clubhouse"
-          width={1344}
-          height={896}
+          fill
           priority
-          className="w-full h-auto block"
+          sizes="100vw"
+          className="object-cover object-top sm:object-center"
+          alt="Penn Golf Clubhouse"
         />
 
-        {/* Dark curtain that lifts */}
-        <motion.div
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, rgba(10,22,40,0.72) 0%, rgba(10,22,40,0.12) 55%, rgba(10,22,40,0.05) 100%)' }}
-          initial={{ opacity: 1 }}
-          animate={ready ? { opacity: 1 } : { opacity: 1 }}
-        />
-
-        {/* Overlay that fades in (separate from gradient so gradient stays) */}
+        {/* Curtain that lifts on load */}
         <motion.div
           className="absolute inset-0 bg-[#0a1628]"
-          initial={{ opacity: 0.65 }}
-          animate={ready ? { opacity: 0 } : { opacity: 0.65 }}
+          initial={{ opacity: 0.68 }}
+          animate={ready ? { opacity: 0 } : { opacity: 0.68 }}
           transition={{ duration: 2.6, ease: 'easeOut' }}
         />
 
-        {/* Text — sits over bottom of image */}
-        <div className="absolute inset-x-0 bottom-0 pb-[7%] flex flex-col items-center text-center px-6">
+        {/* Bottom gradient so text is always readable */}
+        <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black/65 via-black/25 to-transparent pointer-events-none" />
+
+        {/* Overlay text — sits above gradient at bottom of image */}
+        <div className="absolute inset-x-0 bottom-0 pb-[8%] sm:pb-[6%] flex flex-col items-center text-center px-5">
+
           <motion.p
-            className="text-xs font-semibold uppercase tracking-[0.25em] text-white/60 mb-3"
+            className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.25em] text-white/55 mb-2 sm:mb-3"
             initial={{ opacity: 0, y: 10 }}
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
             transition={{ delay: 1.1, duration: 0.7, ease: 'easeOut' }}
@@ -78,7 +75,7 @@ export default function LandingPage() {
           </motion.p>
 
           <motion.h1
-            className="text-white text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight max-w-2xl"
+            className="text-white text-[1.6rem] leading-tight sm:text-4xl md:text-5xl font-semibold tracking-tight max-w-[280px] sm:max-w-2xl"
             initial={{ opacity: 0, y: 16 }}
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
             transition={{ delay: 1.35, duration: 0.75, ease: 'easeOut' }}
@@ -87,20 +84,20 @@ export default function LandingPage() {
           </motion.h1>
 
           <motion.div
-            className="flex flex-col sm:flex-row gap-3 mt-7"
+            className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mt-5 sm:mt-7 w-full max-w-[260px] sm:max-w-none sm:w-auto"
             initial={{ opacity: 0, y: 12 }}
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
             transition={{ delay: 1.75, duration: 0.65, ease: 'easeOut' }}
           >
             <Link
               href="/player"
-              className="text-sm font-semibold bg-white text-[#0a1628] px-7 py-3 rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
+              className="text-sm font-semibold bg-white text-[#0a1628] px-7 py-3 rounded-lg hover:bg-gray-100 transition-colors shadow-lg text-center"
             >
               Enter Clubhouse
             </Link>
             <Link
               href="/alumni"
-              className="text-sm font-semibold border border-white/40 text-white px-7 py-3 rounded-lg hover:bg-white/10 transition-colors"
+              className="text-sm font-semibold border border-white/40 text-white px-7 py-3 rounded-lg hover:bg-white/10 transition-colors text-center"
             >
               I&apos;m an alumnus
             </Link>
@@ -108,9 +105,9 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* ── Mode cards ── */}
-      <div className="max-w-[800px] mx-auto px-6 sm:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-12">
+      {/* ── Cards ── */}
+      <div className="max-w-[800px] mx-auto px-5 sm:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-10 sm:py-12">
           {modes.map((mode, i) => (
             <motion.div
               key={mode.href}
