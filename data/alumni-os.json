@@ -691,12 +691,13 @@
       "confidence": 0.95,
       "createdAt": "2026-05-13T20:43:52.962Z",
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "publishedToNetwork": true,
+      "publishedToNetwork": false,
       "publishedAt": "2026-05-13T20:43:52.963Z",
       "publishedByRole": "captain",
       "classLabel": "So.",
       "hometown": "Brookline, Mass.",
-      "highSchool": "Windermere (Fla.) Prep"
+      "highSchool": "Windermere (Fla.) Prep",
+      "memberRole": "current_player"
     },
     {
       "id": "c8b504e0-235d-4a58-861e-5ee7695a7eb1",
@@ -718,7 +719,8 @@
       "publishedByRole": "captain",
       "classLabel": "Jr.",
       "hometown": "Lexington, Ky.",
-      "highSchool": "Sayre School"
+      "highSchool": "Sayre School",
+      "memberRole": "alumni"
     },
     {
       "id": "b04d4f5f-5b13-41d6-87e8-937c55f82aa5",
@@ -733,12 +735,13 @@
       "confidence": 0.88,
       "createdAt": "2026-05-13T20:43:52.962Z",
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "publishedToNetwork": true,
+      "publishedToNetwork": false,
       "publishedAt": "2026-05-13T20:43:52.963Z",
       "publishedByRole": "captain",
       "classLabel": "Fr.",
       "hometown": "Short Hills, N.J.",
-      "highSchool": "Newark Academy"
+      "highSchool": "Newark Academy",
+      "memberRole": "current_player"
     },
     {
       "id": "4e50ba4e-c474-4af6-87d0-b5ef725a72ab",
@@ -759,7 +762,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "4070c1b9-d151-46fe-bab5-1736d732065f",
@@ -780,7 +784,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "e609b137-8229-4de9-b771-04c467627e30",
@@ -801,7 +806,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "f43aa310-bc9f-425d-92db-7b9d32e51c27",
@@ -822,7 +828,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "30c4dcea-ab87-4e63-871a-f8ddc16fd14e",
@@ -840,7 +847,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "current_player"
     },
     {
       "id": "5818667f-17c3-4a1c-8096-20e3ef653665",
@@ -859,7 +867,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "9a9a21bc-11a4-4554-9529-366be0ffa8c8",
@@ -880,7 +889,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "25705746-2381-471b-9ab5-2fca35e41115",
@@ -901,7 +911,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "5ec39c25-cc7a-4777-b7c8-39d848506f8e",
@@ -919,7 +930,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "d52fcb67-86ae-4f62-b31f-b3fc70efeaea",
@@ -938,7 +950,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "f89f862b-c7f8-4914-b73e-25b807fc6953",
@@ -959,7 +972,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "189fca5c-6f9c-486c-b9f9-732f60ddad74",
@@ -980,7 +994,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "02c1cace-6440-411a-8bf2-50f8fd1f153d",
@@ -1000,7 +1015,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "current_player"
     },
     {
       "id": "dba69920-4c54-4e9a-b28c-f61e56a81cee",
@@ -1018,7 +1034,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "4e290777-aa0f-4b3a-b380-a56af4b34e58",
@@ -1040,7 +1057,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "4951cead-65d1-474a-90b2-e8f101e16279",
@@ -1061,7 +1079,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "1514f8e2-0676-488a-a498-c082fe22e0b2",
@@ -1083,7 +1102,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "1d0d1701-3e15-46a1-a10d-8e6826d3207e",
@@ -1104,7 +1124,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "968383ee-eebb-4d6e-8895-0b8871e444be",
@@ -1123,7 +1144,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "current_player"
     },
     {
       "id": "a3119f8c-165c-4f73-a390-706f6dc9bab7",
@@ -1140,7 +1162,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "7ee9ef6f-9076-486b-9559-08d174d19fe4",
@@ -1161,7 +1184,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "0ad8786b-e470-47d6-be19-d639edabef4f",
@@ -1182,7 +1206,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "3981b7d5-cf48-414b-b266-4e6526867f19",
@@ -1203,7 +1228,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "8684dede-6703-4cc1-a923-1d8d81eda30a",
@@ -1224,7 +1250,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "91444a19-7540-426f-93d5-e86b2aa5ec44",
@@ -1242,7 +1269,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "11c57759-6270-4582-9339-dab0cfb7d6c8",
@@ -1263,7 +1291,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "686c1801-80ce-4a2e-bd98-4658ff0adddd",
@@ -1283,7 +1312,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "c58ed0ad-6450-474f-8977-25c9775f3c99",
@@ -1304,7 +1334,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "8c71c4b7-fe46-49fc-9223-d9a991736530",
@@ -1325,7 +1356,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "7c0f6db8-d0ba-4773-98ae-4fbcf9698a74",
@@ -1346,7 +1378,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "7b9a199b-0006-44d8-98dd-e7cb7b9b1457",
@@ -1362,7 +1395,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "f599ae43-9e4a-4348-b67d-872eab504098",
@@ -1380,7 +1414,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "fd8ebf4d-9e08-4e99-8672-0314a2f6355c",
@@ -1401,7 +1436,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "78a14abc-fbc0-4881-912c-24ec591637d9",
@@ -1422,7 +1458,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "2748d9a3-11ee-4eea-a4d3-99bc38bd1eee",
@@ -1443,7 +1480,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "bb5837ee-961d-4263-a064-16c35748804f",
@@ -1461,7 +1499,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "518b4c86-1612-4e6d-a4e6-31caa5c746d6",
@@ -1482,7 +1521,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "73b0bd5f-007b-4fe0-b8fc-ada6901e8bb6",
@@ -1501,7 +1541,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "efdf2f4c-da17-4072-8b67-9a9edcb45b91",
@@ -1522,7 +1563,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "214c125a-2fd5-4270-9554-175dc92b54c4",
@@ -1543,7 +1585,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "83d0e38b-8df3-4a31-a270-fde52ab0801e",
@@ -1563,7 +1606,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "a8ac1ccb-eb24-4e57-b9b5-f1dfd1fd3692",
@@ -1584,7 +1628,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "6fc98ddf-edc6-47af-ba53-f739cb739b64",
@@ -1605,7 +1650,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "a434ae45-3c91-4b41-a0a1-b51937f1a37b",
@@ -1626,7 +1672,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "859f20e6-78c2-461a-a725-6807ec187c29",
@@ -1644,7 +1691,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "733d11d2-a2b5-4b14-b03e-7774a9cf75f2",
@@ -1662,7 +1710,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "38bc5190-524c-4855-9e9a-38cfbb97d05c",
@@ -1681,7 +1730,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "4e9b3c8b-8715-4d8b-bbc4-b8d66cfc042d",
@@ -1702,7 +1752,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "fdd49563-6c9b-4176-a6c0-cc0068ed885a",
@@ -1723,7 +1774,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "44812e28-cd4b-4f33-861f-32ddd462c568",
@@ -1741,7 +1793,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "e5871a76-ce5e-4ab7-a4ce-2fc897b8544a",
@@ -1762,7 +1815,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "1700152d-9ada-4602-b9a6-4c83ee306c1e",
@@ -1781,7 +1835,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "8fd680fc-d10d-4c04-8005-01594f16d192",
@@ -1798,7 +1853,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "6b38cbfb-db4f-4ff0-96c2-a5c83dac0328",
@@ -1819,7 +1875,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "6bc443b1-a38e-49a3-b5d3-51abecdb6584",
@@ -1840,7 +1897,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "b4574b9d-d461-4405-b22c-dbcd541fbadd",
@@ -1859,7 +1917,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "16b05966-9b8e-41db-93c7-0cca6696019f",
@@ -1877,7 +1936,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "current_player"
     },
     {
       "id": "71c75f4a-b08b-4c89-ad1a-e73848d781dc",
@@ -1898,7 +1958,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     },
     {
       "id": "767b762d-3b46-40a3-a7c0-9c6bcdc55b6d",
@@ -1916,7 +1977,8 @@
       "confidence": 0.95,
       "publishedToNetwork": false,
       "updatedAt": "2026-05-14T01:01:16.994Z",
-      "createdAt": "2026-05-14T01:01:16.994Z"
+      "createdAt": "2026-05-14T01:01:16.994Z",
+      "memberRole": "alumni"
     }
   ],
   "reviewItems": [

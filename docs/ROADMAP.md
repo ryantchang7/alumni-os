@@ -1,83 +1,43 @@
-# Alumni OS — Product Roadmap
+# Penn Golf Clubhouse — Roadmap
 
-## What Is Built (Phase 1 + 1.5)
+## Now
 
-### Phase 1 — Mock Demo (Complete)
-- Full Next.js 16 App Router project with TypeScript and Tailwind v4
-- 10 fictionalized alumni profiles with rich mock data
-- Routes: /, /teams/penn-mens-golf, /teams/penn-mens-golf/search, /teams/penn-mens-golf/alumni/[id], /teams/penn-mens-golf/outreach/[id], /teams/penn-mens-golf/agent, /teams/penn-mens-golf/review, /teams/penn-mens-golf/scraper, /teams/new
-- 21 custom components + 15 shadcn/ui components
-- Premium design system: Penn Athletic Clubhouse aesthetic
-- Animated pipeline reveal, agent finding feed, stat count-ups
+- [x] Master list import (79 Penn Golf members)
+- [x] Member roles (current_player / alumni)
+- [x] Data corrections (Ryan Chang, Hayden Adams)
+- [x] Team Room (current roster + alumni support CTAs)
+- [x] Member Book (alumni-only, filtered, searchable)
+- [x] Career Room MVP (industries, open-to filters)
+- [x] The Course MVP (golf rounds, playing partners)
+- [x] 19th Hole MVP (coffee, drinks, city gatherings)
+- [x] Events MVP (formal gatherings, coming soon)
+- [x] Member Map MVP (alumni by city)
+- [x] Alumni profile self-service (bio, help topics, openTo*)
+- [x] Public member card (player-facing view)
+- [x] Guided request flow (Send a Clubhouse Request)
+- [x] Alumni inbox
+- [x] Internal master member manager
+- [x] Vision doc (docs/PENN_GOLF_CLUBHOUSE_VISION.md)
 
-### Phase 1.5 — Clean Product Structure (Complete)
-- /login — Mock login with 4 demo user cards
-- /app — Product home with mode selection
-- /builder, /builder/new, /builder/run, /builder/review, /builder/graph — Builder flow
-- /player, /player/search, /player/alumni/[id], /player/outreach/[id], /player/relationships — Player flow
-- /review, /review/candidates, /review/sources — Review flow
-- Updated NavBar with clear mode navigation
+## Next
 
-### Phase 2 — Real Discovery Preview Kernel (Complete)
-- /api/discovery/preview — POST endpoint that fetches a public team website and returns discovered pages + roster extraction preview
-- /builder/discovery — Real discovery preview UI using the API
-- src/lib/scraping/ — Scraping library: types, guards, normalize-url, fetch-page, classify-page, discover-team-pages, extract-roster
-- No data persistence. Public pages only. Human review required.
+- [ ] Auth — invite-link based (no password required initially)
+- [ ] Persistent DB — Supabase or PlanetScale
+- [ ] Email notifications — alumni receive request notifications
+- [ ] Real request dispatch — route requests to alumni email
+- [ ] Alumni claim flow — email-verified profile ownership
+- [ ] Event objects — real event creation and RSVP
+- [ ] Round objects — golf round scheduling
+- [ ] City summer clubhouse — city-based local gatherings
+- [ ] Recommendation engine — match player intent to alumni openness
+- [ ] Search improvements — full-text, industry taxonomy
+- [ ] Coach/captain notes — rich team updates
 
-## What Is Still Mock
-- All alumni profile data is fictionalized
-- All scraper/pipeline output (discovered pages, crawled pages, roster entries) is static mock data
-- Agent run is an animated demo, not a real pipeline
-- Review queue items are mock, approve/reject buttons are UI-only
-- Outreach drafts use static templates, not AI generation
-- FilterSidebar filters are UI-only
-- Login is mock, no real authentication
+## Later
 
-## Next Phases
-
-### Phase 3 — Crawl Selected Pages
-- After discovery preview, let user select roster pages to crawl
-- POST /api/discovery/crawl?url=... to fetch and extract roster from a specific discovered page
-- Show extracted roster entries before saving
-
-### Phase 4 — Supabase Persistence
-- Add Supabase project
-- Schema: teams, discovery_runs, discovered_pages, roster_entries, normalized_people, identity_candidates, review_items
-- Save discovery preview and crawl results
-- No auth yet — team-scoped by URL slug
-
-### Phase 5 — Normalize People
-- Deduplicate roster entries across seasons into canonical person records
-- Name normalization (nicknames, suffixes, middle names)
-- Class year estimation from season coverage
-- Source count per person
-
-### Phase 6 — Profile Candidate Workflow
-- Cross-reference normalized people against public sources (LinkedIn public profiles, company bios, news)
-- Confidence scoring for identity matches
-- Hold low-confidence matches in review queue
-
-### Phase 7 — Auth and Team Access
-- Supabase Auth: email magic link or Google OAuth
-- Team-scoped access: builder, player, reviewer roles
-- Invite system for current players and coaches
-
-### Phase 8 — Alumni Claim / Edit / Opt-Out
-- Alumni receive invite link
-- Can claim profile, correct details, set relationship preferences
-- Can hide contact info or opt out entirely
-- Contact paths replace scraped data
-
-### Phase 9 — Send to First Real Team
-- Harden trust layer (robots.txt, rate limiting, source attribution)
-- Coach and team captain onboarding flow
-- Real outreach (email or LinkedIn) with full audit trail
-- Penn Golf as first live deployment
-
-## What Not to Build Yet
-- Real email sending
-- LinkedIn scraping or profile fetching
-- AI API calls for name normalization or hook generation
-- Multi-school production infrastructure
-- Payments or subscription management
-- Mobile app
+- [ ] Multi-team expansion (Penn Women's Golf, other Ivies)
+- [ ] Sellable system for other college golf programs
+- [ ] Import agent as internal admin tool (automated roster updates)
+- [ ] Fully verified member network with credentialing
+- [ ] Mobile app (React Native)
+- [ ] Annual alumni report

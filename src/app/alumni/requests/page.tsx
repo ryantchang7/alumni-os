@@ -21,6 +21,20 @@ interface AlumniRequest {
   createdAt: string
 }
 
+const PURPOSE_LABELS: Record<string, string> = {
+  career_advice: 'Career advice',
+  coffee_chat: 'Coffee chat',
+  mentorship: 'Mentorship',
+  warm_introduction: 'Warm introduction',
+  internship_guidance: 'Internship guidance',
+  interview_prep: 'Interview prep',
+  golf_round: 'Golf round',
+  city_advice: 'City advice',
+  drinks_informal: 'Drinks / informal meet',
+  general_intro: 'General intro',
+  golf_connection: 'Golf connection',
+}
+
 const STATUS_LABEL: Record<string, string> = {
   requested: 'New',
   seen: 'Seen',
@@ -41,6 +55,112 @@ function formatDate(iso: string) {
     day: 'numeric',
     year: 'numeric',
   })
+}
+
+function RequestCard({
+  req,
+  updatingId,
+  onUpdate,
+}: {
+  req: AlumniRequest
+  updatingId: string | null
+  onUpdate: (id: string, status: AlumniRequest['status']) => void
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const purposeDisplay =
+    PURPOSE_LABELS[req.purposeKey] ?? req.purposeLabel ?? req.purposeKey
+
+  return (
+    <div
+      className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+      style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap mb-0.5">
+            <p className="text-sm font-semibold text-[#0a1628]">{req.fromName}</p>
+            <span
+              className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${STATUS_COLOR[req.status] ?? 'bg-gray-100 text-gray-500'}`}
+            >
+              {STATUS_LABEL[req.status] ?? req.status}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className="text-xs font-medium text-[#4a5568] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
+              {purposeDisplay}
+            </span>
+            <span className="text-xs text-[#8a7f70]">{formatDate(req.createdAt)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Message with expand/collapse */}
+      <div className="mt-3">
+        <p
+          className={`text-sm text-[#2d3748] leading-relaxed whitespace-pre-wrap ${!expanded ? 'line-clamp-3' : ''}`}
+        >
+          {req.message}
+        </p>
+        {req.message && req.message.length > 200 && (
+          <button
+            type="button"
+            onClick={() => setExpanded(v => !v)}
+            className="text-xs text-[#990000] hover:underline mt-1"
+          >
+            {expanded ? 'Show less' : 'Read more'}
+          </button>
+        )}
+      </div>
+
+      {/* Action buttons */}
+      {req.status !== 'closed' && (
+        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[rgba(180,168,150,0.25)] flex-wrap">
+          {req.status === 'requested' && (
+            <button
+              type="button"
+              disabled={updatingId === req.id}
+              onClick={() => onUpdate(req.id, 'seen')}
+              className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] text-[#0a1628] transition-colors disabled:opacity-50"
+            >
+              Mark as seen
+            </button>
+          )}
+          {(req.status === 'requested' || req.status === 'seen') && (
+            <button
+              type="button"
+              disabled={updatingId === req.id}
+              onClick={() => onUpdate(req.id, 'responded')}
+              className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] text-[#0a1628] transition-colors disabled:opacity-50"
+            >
+              Mark as responded
+            </button>
+          )}
+          <button
+            type="button"
+            disabled={updatingId === req.id}
+            onClick={() => onUpdate(req.id, 'closed')}
+            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#8a7f70] text-[#8a7f70] transition-colors disabled:opacity-50"
+          >
+            Close
+          </button>
+          <div className="flex items-center gap-3 ml-auto">
+            <button
+              type="button"
+              className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+            >
+              Suggest another alum
+            </button>
+            <button
+              type="button"
+              className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+            >
+              Pass on this one
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 function AlumniRequestsInner() {
@@ -96,11 +216,13 @@ function AlumniRequestsInner() {
         prev.map(r => (r.id === requestId ? { ...r, status } : r)),
       )
     } catch {
-      // silently fail
+      // silently fail — toast notifications coming soon
     } finally {
       setUpdatingId(null)
     }
   }
+
+  const selectedProfile = profiles.find(p => p.personId === personId)
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -113,36 +235,35 @@ function AlumniRequestsInner() {
             &larr; Alumni Mode
           </Link>
           <h1 className="text-white text-2xl font-semibold tracking-tight mt-1">
-            Player requests
+            Your Clubhouse Inbox
           </h1>
-          <p className="text-gray-400 text-sm mt-2">
-            When players want to connect, their requests appear here.
-          </p>
+          {selectedProfile ? (
+            <p className="text-gray-400 text-sm mt-2">
+              {selectedProfile.canonicalName}
+              {selectedProfile.classLabel ? ` · ${selectedProfile.classLabel}` : ''}
+            </p>
+          ) : (
+            <p className="text-gray-400 text-sm mt-2">
+              Select your profile to view requests from current players.
+            </p>
+          )}
         </div>
       </div>
 
       <div className="max-w-[860px] mx-auto px-8 pb-16">
         <div className="-mt-5 relative z-10 space-y-4">
 
-          <div
-            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-3"
-            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-          >
-            <p className="text-xs text-[#8a7f70]">
-              Dev mode — in production, alumni will access this through a private login link.
-            </p>
-          </div>
-
+          {/* Profile selector */}
           {!personId && (
             <div
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
               <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
-                Select your profile
+                Select your profile to view your inbox
               </p>
               {profiles.length === 0 ? (
-                <p className="text-sm text-[#8a7f70]">No published alumni found.</p>
+                <p className="text-sm text-[#8a7f70]">No published alumni profiles found.</p>
               ) : (
                 <div className="flex flex-col gap-2">
                   {profiles.map(p => (
@@ -165,6 +286,20 @@ function AlumniRequestsInner() {
             </div>
           )}
 
+          {/* Switch profile link */}
+          {personId && (
+            <div className="flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => router.push(`/alumni/requests?teamSlug=${teamSlug}`)}
+                className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+              >
+                Switch profile
+              </button>
+            </div>
+          )}
+
+          {/* Requests list */}
           {personId && (
             <>
               {loading && (
@@ -172,7 +307,7 @@ function AlumniRequestsInner() {
                   className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
                 >
-                  <p className="text-sm text-[#8a7f70]">Loading requests...</p>
+                  <p className="text-sm text-[#8a7f70]">Loading requests…</p>
                 </div>
               )}
 
@@ -190,69 +325,22 @@ function AlumniRequestsInner() {
                   className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-10 text-center"
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
                 >
-                  <p className="text-base font-semibold text-[#0a1628] mb-2">No requests yet</p>
+                  <p className="text-base font-semibold text-[#0a1628] mb-2">Your inbox is clear.</p>
                   <p className="text-sm text-[#8a7f70] max-w-sm mx-auto">
-                    When players reach out through Player Mode, you will see their requests here.
+                    Requests from current players will appear here once they send them.
                   </p>
                 </div>
               )}
 
-              {!loading && requests.map(req => (
-                <div
-                  key={req.id}
-                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-sm font-semibold text-[#0a1628]">{req.fromName}</p>
-                        <span
-                          className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${STATUS_COLOR[req.status] ?? 'bg-gray-100 text-gray-500'}`}
-                        >
-                          {STATUS_LABEL[req.status] ?? req.status}
-                        </span>
-                        <span className="text-xs text-[#8a7f70]">{req.purposeLabel}</span>
-                      </div>
-                      <p className="text-xs text-[#8a7f70] mt-0.5">{formatDate(req.createdAt)}</p>
-                      <p className="text-sm text-[#2d3748] mt-3 leading-relaxed">{req.message}</p>
-                    </div>
-                  </div>
-
-                  {req.status !== 'closed' && (
-                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[rgba(180,168,150,0.25)]">
-                      {req.status === 'requested' && (
-                        <button
-                          type="button"
-                          disabled={updatingId === req.id}
-                          onClick={() => updateStatus(req.id, 'seen')}
-                          className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] text-[#0a1628] transition-colors disabled:opacity-50"
-                        >
-                          Mark seen
-                        </button>
-                      )}
-                      {(req.status === 'requested' || req.status === 'seen') && (
-                        <button
-                          type="button"
-                          disabled={updatingId === req.id}
-                          onClick={() => updateStatus(req.id, 'responded')}
-                          className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] text-[#0a1628] transition-colors disabled:opacity-50"
-                        >
-                          Mark responded
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        disabled={updatingId === req.id}
-                        onClick={() => updateStatus(req.id, 'closed')}
-                        className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#8a7f70] text-[#8a7f70] transition-colors disabled:opacity-50"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
+              {!loading &&
+                requests.map(req => (
+                  <RequestCard
+                    key={req.id}
+                    req={req}
+                    updatingId={updatingId}
+                    onUpdate={updateStatus}
+                  />
+                ))}
             </>
           )}
         </div>
@@ -266,7 +354,7 @@ export default function AlumniRequestsPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-[#f8f5f0] py-20 text-center">
-          <p className="text-sm text-[#8a7f70]">Loading...</p>
+          <p className="text-sm text-[#8a7f70]">Loading…</p>
         </div>
       }
     >

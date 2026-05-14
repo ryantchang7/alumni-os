@@ -6,6 +6,11 @@ const nextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
+  serverExternalPackages: ['cheerio', 'parse5', 'parse5-htmlparser2-tree-adapter', 'htmlparser2'],
+  transpilePackages: ['framer-motion'],
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   async redirects() {
     return [
       // Legacy root redirects

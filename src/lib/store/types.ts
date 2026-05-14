@@ -65,6 +65,7 @@ export interface TeamMembership {
   id: string
   personId: string
   teamId: string
+  memberRole?: 'current_player' | 'alumni'
   rosterStartYear?: number
   rosterEndYear?: number
   classYearEstimate?: string

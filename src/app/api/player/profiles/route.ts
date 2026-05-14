@@ -20,7 +20,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: `Team not found: ${teamSlug}` }, { status: 404 })
   }
 
-  const published = await getPublishedPeopleForTeam(team.id)
+  const allPublished = await getPublishedPeopleForTeam(team.id)
+  const published = allPublished.filter(({ membership }) => membership.memberRole !== 'current_player')
   const store = await readStore()
 
   const profiles = published.map(({ person, membership }) => {

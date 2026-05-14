@@ -1,0 +1,202 @@
+import Link from 'next/link'
+import type { Person, TeamMembership } from '@/lib/store/types'
+
+interface PlayerEntry {
+  person: Person
+  membership: TeamMembership
+}
+
+const SUPPORT_CARDS = [
+  {
+    title: 'Host a Summer Round',
+    description: 'Open your home course to a player during summer. A round and a conversation go a long way.',
+    cta: 'Express Interest',
+    href: '/alumni',
+  },
+  {
+    title: 'Join a Career Night',
+    description: 'Share your path in a small-group setting with current players preparing for recruiting.',
+    cta: 'Join the List',
+    href: '/alumni',
+  },
+  {
+    title: 'Meet Players in Your City',
+    description: 'Connect with current Penn Golf players when they are in your city for tournaments or internships.',
+    cta: 'Let Us Know',
+    href: '/alumni',
+  },
+  {
+    title: 'Share Recruiting Advice',
+    description: 'Pass along what you know about recruiting, interviews, or networking in your industry.',
+    cta: 'Contribute',
+    href: '/alumni',
+  },
+]
+
+const WAYS_TO_GIVE_BACK = [
+  'Attend alumni events',
+  'Share your career path',
+  'Host a round at your club',
+  'Connect players with your network',
+  'Offer recruiting advice',
+  'Join us for alumni weekend',
+]
+
+export default async function TeamRoomPage() {
+  const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
+  const store = await readStore()
+  const team = await getTeamBySlug('penn-mens-golf')
+
+  let currentPlayers: PlayerEntry[] = []
+  let recentAlumni: PlayerEntry[] = []
+
+  if (team) {
+    currentPlayers = store.teamMemberships
+      .filter(m => m.teamId === team.id && m.memberRole === 'current_player')
+      .map(m => {
+        const person = store.people.find(p => p.id === m.personId)
+        return person ? { membership: m, person } : null
+      })
+      .filter((x): x is PlayerEntry => x !== null)
+
+    const alumniNames = ['hayden adams', 'owen hayes']
+    recentAlumni = alumniNames
+      .map(norm => {
+        const person = store.people.find(p => p.normalizedName === norm)
+        if (!person) return null
+        const membership = store.teamMemberships.find(
+          m => m.personId === person.id && m.teamId === team.id,
+        )
+        return membership ? { person, membership } : null
+      })
+      .filter((x): x is PlayerEntry => x !== null)
+  }
+
+  return (
+    <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
+        <div className="max-w-[1320px] mx-auto">
+          <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Team Room</p>
+          <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Team Room</h1>
+          <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
+            The 2025-26 Penn Golf team and the alumni who support them.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
+
+        {/* 2025-26 Roster */}
+        <section>
+          <h2 className="text-base font-semibold text-[#0a1628] mb-1">2025-26 Roster</h2>
+          <p className="text-sm text-[#8a7f70] mb-6">Current players on the Penn Men&apos;s Golf team.</p>
+          {currentPlayers.length === 0 ? (
+            <p className="text-sm text-[#8a7f70]">Roster will appear here once players are added to the Clubhouse.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {currentPlayers.map(({ person, membership }) => (
+                <div
+                  key={person.id}
+                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4"
+                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+                >
+                  <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                  {membership.hometown && (
+                    <p className="text-xs text-[#8a7f70] mt-1">{membership.hometown}</p>
+                  )}
+                  {membership.highSchool && (
+                    <p className="text-xs text-[#8a7f70]">{membership.highSchool}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Recent Alumni */}
+        {recentAlumni.length > 0 && (
+          <section>
+            <h2 className="text-base font-semibold text-[#0a1628] mb-1">Recent Alumni</h2>
+            <p className="text-sm text-[#8a7f70] mb-6">Just finished their Penn Golf careers.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recentAlumni.map(({ person, membership }) => (
+                <div
+                  key={person.id}
+                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4"
+                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+                >
+                  <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                  {membership.hometown && (
+                    <p className="text-xs text-[#8a7f70] mt-1">{membership.hometown}</p>
+                  )}
+                  {membership.highSchool && (
+                    <p className="text-xs text-[#8a7f70]">{membership.highSchool}</p>
+                  )}
+                  {membership.classLabel && (
+                    <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Support the Program */}
+        <section>
+          <h2 className="text-base font-semibold text-[#0a1628] mb-1">Support the Program</h2>
+          <p className="text-sm text-[#8a7f70] mb-6">Ways alumni can make a real difference for current players.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {SUPPORT_CARDS.map(card => (
+              <div
+                key={card.title}
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+              >
+                <p className="font-semibold text-[#0a1628] text-sm mb-1">{card.title}</p>
+                <p className="text-xs text-[#4a5568] mb-4 leading-relaxed">{card.description}</p>
+                <Link
+                  href={card.href}
+                  className="text-xs font-semibold text-[#990000] hover:underline"
+                >
+                  {card.cta} &rarr;
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Ways to Give Back */}
+        <section>
+          <h2 className="text-base font-semibold text-[#0a1628] mb-1">Ways to Give Back</h2>
+          <p className="text-sm text-[#8a7f70] mb-6">Small things that add up over a season.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2">
+            {WAYS_TO_GIVE_BACK.map(item => (
+              <div key={item} className="flex items-center gap-2.5 py-2 border-b border-[rgba(180,168,150,0.2)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2d6a4f] flex-shrink-0" />
+                <p className="text-sm text-[#4a5568]">{item}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Bottom CTA */}
+        <div
+          className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+        >
+          <div>
+            <p className="font-semibold text-[#0a1628] text-sm">Browse the Full Member Book</p>
+            <p className="text-xs text-[#8a7f70] mt-0.5">All Penn Golf alumni who have set up their Clubhouse profile.</p>
+          </div>
+          <Link
+            href="/player/search"
+            className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap"
+          >
+            Open Member Book &rarr;
+          </Link>
+        </div>
+
+      </div>
+    </div>
+  )
+}

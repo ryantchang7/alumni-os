@@ -24,85 +24,117 @@ interface PlayerProfile {
   contactPreference?: string
 }
 
-type Purpose = 'career_advice' | 'coffee_chat' | 'mentorship' | 'golf_connection'
-type Tone = 'casual' | 'polished' | 'concise'
+type Purpose =
+  | 'career_advice'
+  | 'coffee_chat'
+  | 'mentorship'
+  | 'warm_introduction'
+  | 'internship_guidance'
+  | 'interview_prep'
+  | 'golf_round'
+  | 'city_advice'
+  | 'drinks_informal'
+  | 'general_intro'
+
+type Context =
+  | 'exploring_field'
+  | 'applying_to_role'
+  | 'in_their_city'
+  | 'learn_about_path'
+  | 'referred_by_teammate'
+  | 'want_to_play'
 
 const PURPOSE_OPTIONS: { value: Purpose; label: string }[] = [
   { value: 'career_advice', label: 'Career advice' },
   { value: 'coffee_chat', label: 'Coffee chat' },
   { value: 'mentorship', label: 'Mentorship' },
-  { value: 'golf_connection', label: 'Golf connection' },
+  { value: 'warm_introduction', label: 'Warm introduction' },
+  { value: 'internship_guidance', label: 'Internship guidance' },
+  { value: 'interview_prep', label: 'Interview prep' },
+  { value: 'golf_round', label: 'Golf round' },
+  { value: 'city_advice', label: 'City advice' },
+  { value: 'drinks_informal', label: 'Drinks / informal meet' },
+  { value: 'general_intro', label: 'General intro' },
 ]
 
-const TONE_OPTIONS: { value: Tone; label: string }[] = [
-  { value: 'casual', label: 'Casual' },
-  { value: 'polished', label: 'Polished' },
-  { value: 'concise', label: 'Concise' },
+const CONTEXT_OPTIONS: { value: Context; label: string }[] = [
+  { value: 'exploring_field', label: "I'm exploring this field" },
+  { value: 'applying_to_role', label: "I'm applying to a role" },
+  { value: 'in_their_city', label: "I'll be in their city soon" },
+  { value: 'learn_about_path', label: "I'd like to learn about their path" },
+  { value: 'referred_by_teammate', label: 'I was referred by a teammate or coach' },
+  { value: 'want_to_play', label: "I'd love to play a round" },
 ]
 
-const CLOSING: Record<Tone, string> = {
-  casual: 'Go Quakers!\n[Your name]',
-  polished: 'Thank you for your time.\n[Your name]',
-  concise: '[Your name]',
-}
-
-function buildDraft(profile: PlayerProfile, purpose: Purpose, tone: Tone): string {
+function buildDraft(profile: PlayerProfile, purpose: Purpose, context: Context): string {
   const first = profile.firstName ?? profile.canonicalName.split(' ')[0]
-  const rosterLabel =
-    profile.rosterYearsLabel !== '—' ? `Penn Golf ${profile.rosterYearsLabel}` : 'Penn Golf'
-  const hometown = profile.hometown ? `I noticed you're from ${profile.hometown} — ` : ''
   const company = profile.career?.currentCompany
   const role = profile.career?.currentRole
   const hasCareer = !!(profile.career && (role || company))
-  const closing = CLOSING[tone]
+  const careerRef = hasCareer
+    ? company
+      ? `your path from Penn Golf to ${company}`
+      : `your work in ${role}`
+    : 'your path since Penn Golf'
+
+  const referralLine =
+    context === 'referred_by_teammate'
+      ? ' A teammate pointed me your way and said you were someone worth reaching out to.'
+      : ''
+
+  const cityLine =
+    context === 'in_their_city'
+      ? " I'll actually be in your area soon and thought it could be a great chance to connect in person."
+      : ''
+
+  const applyingLine =
+    context === 'applying_to_role'
+      ? " I'm currently exploring opportunities in this space and your perspective would be really valuable."
+      : ''
+
+  const exploringLine =
+    context === 'exploring_field'
+      ? " I'm in the early stages of exploring this field and would love any honest perspective."
+      : ''
 
   if (purpose === 'career_advice') {
-    if (tone === 'casual') {
-      return `Hi ${first},\n\nI'm a current member of Penn Golf and came across your name in the team's alumni records. ${hometown}I'd love to grab 15 minutes to hear about your path after Penn if you're open to it.\n\n${closing}`
-    }
-    if (tone === 'polished') {
-      if (hasCareer) {
-        return `Hi ${first},\n\nI'm a current member of ${rosterLabel} at Penn and came across your name in the program's alumni history. I saw you're working at ${company ?? role ?? 'your firm'} and I'm actively thinking through career paths — I would genuinely value 15–20 minutes of your time.\n\nNo obligation — I'm happy to work around your schedule.\n\n${closing}`
-      }
-      return `Hi ${first},\n\nI'm a current member of ${rosterLabel} at Penn and came across your name in the program's alumni history. I'm actively thinking through career paths and would genuinely value 15–20 minutes of your time.\n\nNo obligation — I'm happy to work around your schedule.\n\n${closing}`
-    }
-    return `Hi ${first},\n\nPenn Golf current player here. ${hometown}Would love 15 minutes to hear about your path after Penn.\n\n${closing}`
+    return `Hi ${first} —\n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine}${applyingLine}${exploringLine} I'd love to hear about ${careerRef} and any advice you might have for someone earlier in the process. Even 20 minutes would mean a lot.\n\nThanks for staying connected to the program.\n\n— [Your name]`
   }
 
   if (purpose === 'coffee_chat') {
-    if (tone === 'casual') {
-      return `Hey ${first},\n\nI'm on Penn Golf and your name came up in our alumni records. ${hometown}Would love to grab a quick coffee or call sometime — totally no pressure!\n\n${closing}`
-    }
-    if (tone === 'polished') {
-      return `Hi ${first},\n\nI'm a current member of ${rosterLabel} and came across your name in the program's alumni history. I'd love to find 20–30 minutes to connect and hear about your experience after graduation.\n\nNo commitment required — I'm happy to work around your schedule.\n\n${closing}`
-    }
-    return `Hi ${first}, Penn Golf here. ${hometown}Up for a quick coffee or call sometime?\n\n${closing}`
+    return `Hi ${first} —\n\nI'm a current Penn Golf player and found your profile in the Clubhouse.${referralLine}${cityLine} I'd love to connect over a quick coffee or call sometime — happy to work around your schedule entirely.\n\nThanks for being part of the network.\n\n— [Your name]`
   }
 
   if (purpose === 'mentorship') {
-    if (tone === 'casual') {
-      return `Hi ${first},\n\nI'm a current Penn golfer and came across your name in the team's alumni records. ${hometown}I'd love to hear about your path after Penn — even 20 minutes would mean a lot.\n\n${closing}`
-    }
-    if (tone === 'polished') {
-      if (hasCareer) {
-        return `Hi ${first},\n\nI'm currently a member of ${rosterLabel} and came across your name in the program's alumni history. I saw you're at ${company ?? role ?? 'your firm'} and I'm navigating some important decisions — I would be very grateful for even a brief conversation.\n\nNo obligation — I appreciate you considering it.\n\n${closing}`
-      }
-      return `Hi ${first},\n\nI'm currently a member of ${rosterLabel} and came across your name in the program's history. I'm navigating some important decisions and would be very grateful for even a brief conversation.\n\nNo obligation — I appreciate you considering it.\n\n${closing}`
-    }
-    return `Hi ${first}, Penn Golf current player. ${hometown}Would love 20 minutes of mentorship advice when you have time.\n\n${closing}`
+    return `Hi ${first} —\n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine}${exploringLine} I'm at a point where I'm thinking seriously about my path after Penn, and I'd be genuinely grateful for even a brief conversation. Hearing about ${careerRef} would help a lot.\n\nNo obligation at all — I appreciate you considering it.\n\n— [Your name]`
   }
 
-  if (purpose === 'golf_connection') {
-    if (tone === 'casual') {
-      return `Hey ${first},\n\nI'm on Penn Golf and your name came up in the team's alumni records. ${hometown}Would love to play a round or just stay connected — totally no pressure!\n\n${closing}`
-    }
-    if (tone === 'polished') {
-      return `Hi ${first},\n\nI'm currently a member of ${rosterLabel} and came across your name in the program's alumni history. I'd love to connect with you as a fellow Penn golfer — whether that's a round, a quick chat, or just staying in touch.\n\n${closing}`
-    }
-    return `Hi ${first}, Penn Golf here. ${hometown}Would love to connect — even just to stay in touch.\n\n${closing}`
+  if (purpose === 'warm_introduction') {
+    return `Hi ${first} —\n\nI'm a current Penn Golf player reaching out through the Clubhouse.${referralLine} I'm hoping you might be able to connect me with someone in your network${company ? ` at ${company}` : ''} — I'd be happy to share more context on what I'm looking for. Totally understand if it's not the right time.\n\nThanks for staying involved with the program.\n\n— [Your name]`
   }
 
-  return `Hi ${first},\n\nI'm a current member of Penn Golf and came across your name in the team's alumni records. I'd love to connect.\n\n${closing}`
+  if (purpose === 'internship_guidance') {
+    return `Hi ${first} —\n\nI'm a current Penn Golf player and found your profile in the Clubhouse.${referralLine}${applyingLine} I'm actively looking at internships${company ? ` in the ${company} space` : ''} and would really value any guidance you could share — even a quick note on what to look for or avoid.\n\nThanks for staying connected to Penn Golf.\n\n— [Your name]`
+  }
+
+  if (purpose === 'interview_prep') {
+    return `Hi ${first} —\n\nI'm a current Penn Golf player reaching out through the Clubhouse.${referralLine}${applyingLine} I have an interview coming up${company ? ` for a role at a firm like ${company}` : ''} and I'd be really grateful for any prep advice or a quick chat. I know you're busy — even 15 minutes would make a real difference.\n\n— [Your name]`
+  }
+
+  if (purpose === 'golf_round') {
+    return `Hi ${first} —\n\nI saw you're open to rounds in the Clubhouse. Would love to play sometime if you're ever in the area. No pressure at all — just thought it'd be great to stay connected on the course.\n\nThanks for supporting the program.\n\n— [Your name]`
+  }
+
+  if (purpose === 'city_advice') {
+    return `Hi ${first} —\n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine} I'm planning to spend some time in your city and would love any advice on neighborhoods, things to do, or people to connect with. Even a few pointers would be super helpful.\n\n— [Your name]`
+  }
+
+  if (purpose === 'drinks_informal') {
+    return `Hi ${first} —\n\nI'm a current Penn Golf player reaching out through the Clubhouse.${referralLine}${cityLine} Would love to grab a drink or meet up informally if you're around sometime. No agenda — just a chance to connect as part of the same program.\n\n— [Your name]`
+  }
+
+  // general_intro fallback
+  return `Hi ${first} —\n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine} I'd love to introduce myself and stay connected — Penn Golf alumni mean a lot to the program and it'd be great to know you.\n\nThanks for staying part of the network.\n\n— [Your name]`
 }
 
 function OutreachPageInner() {
@@ -110,19 +142,21 @@ function OutreachPageInner() {
   const searchParams = useSearchParams()
   const id = params.id as string
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
+  const initialPurpose = (searchParams.get('purpose') as Purpose | null) ?? 'career_advice'
 
   const [profile, setProfile] = useState<PlayerProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFoundState, setNotFoundState] = useState(false)
-  const [purpose, setPurpose] = useState<Purpose>('career_advice')
-  const [tone, setTone] = useState<Tone>('polished')
-  const [copied, setCopied] = useState(false)
+
+  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const [purpose, setPurpose] = useState<Purpose>(initialPurpose)
+  const [context, setContext] = useState<Context>('learn_about_path')
+  const [customMessage, setCustomMessage] = useState('')
+  const [messageEdited, setMessageEdited] = useState(false)
 
   // Request form state
   const [fromName, setFromName] = useState('')
   const [fromEmail, setFromEmail] = useState('')
-  const [customMessage, setCustomMessage] = useState('')
-  const [messageEdited, setMessageEdited] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [requestSent, setRequestSent] = useState(false)
   const [requestError, setRequestError] = useState<string | null>(null)
@@ -141,21 +175,13 @@ function OutreachPageInner() {
       .catch(() => { setNotFoundState(true); setLoading(false) })
   }, [id, teamSlug])
 
-  const generatedDraft = profile ? buildDraft(profile, purpose, tone) : ''
-  const displayDraft = messageEdited ? customMessage : generatedDraft
+  const generatedDraft = profile ? buildDraft(profile, purpose, context) : ''
 
-  // Sync generated draft to custom message box when not manually edited
   useEffect(() => {
     if (!messageEdited) setCustomMessage(generatedDraft)
   }, [generatedDraft, messageEdited])
 
-  function handleCopy() {
-    if (!displayDraft) return
-    navigator.clipboard.writeText(displayDraft).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
+  const displayDraft = messageEdited ? customMessage : generatedDraft
 
   async function handleSendRequest() {
     if (!profile || !fromName.trim()) return
@@ -211,10 +237,50 @@ function OutreachPageInner() {
   const rosterLabel =
     profile.rosterYearsLabel !== '—' ? `Penn Golf ${profile.rosterYearsLabel}` : 'Penn Golf'
 
+  const purposeLabel = PURPOSE_OPTIONS.find(o => o.value === purpose)?.label ?? purpose
+
+  const STEP_LABELS = ['What kind of request?', 'A bit of context', 'Your message']
+
+  if (requestSent) {
+    return (
+      <div className="min-h-screen bg-[#f8f5f0]">
+        <div className="bg-[#0a1628] border-b border-white/10">
+          <div className="max-w-[680px] mx-auto px-6 py-5">
+            <div className="flex items-center gap-3 mb-3 text-xs">
+              <Link href="/player" className="text-gray-400 hover:text-gray-200 transition-colors">
+                &larr; Player Mode
+              </Link>
+            </div>
+            <h1 className="text-white text-xl font-semibold">Send a Clubhouse Request</h1>
+            <p className="text-gray-400 text-sm mt-1">{profile.canonicalName}</p>
+          </div>
+        </div>
+        <div className="max-w-[680px] mx-auto px-6 py-12">
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <p className="text-base font-semibold text-[#0a1628] mb-2">Request sent.</p>
+            <p className="text-sm text-[#4a5568] leading-relaxed max-w-sm mx-auto">
+              Your request has been saved. {first} will see it when they check their Clubhouse inbox. Email notifications are coming soon.
+            </p>
+            <Link
+              href={`/player/alumni/${profile.personId}`}
+              className="inline-block mt-6 text-sm font-medium text-[#990000] hover:underline"
+            >
+              &larr; Back to {first}&apos;s profile
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
+      {/* Header */}
       <div className="bg-[#0a1628] border-b border-white/10">
-        <div className="max-w-[900px] mx-auto px-6 py-5">
+        <div className="max-w-[680px] mx-auto px-6 py-5">
           <div className="flex items-center gap-3 mb-3 text-xs">
             <Link href="/player" className="text-gray-400 hover:text-gray-200 transition-colors">
               &larr; Player Mode
@@ -223,62 +289,177 @@ function OutreachPageInner() {
             <Link href={`/player/alumni/${profile.personId}`} className="text-gray-400 hover:text-gray-200 transition-colors">
               {profile.canonicalName}
             </Link>
-            <span className="text-gray-600">/</span>
-            <span className="text-gray-300">Ask for help</span>
           </div>
-          <h1 className="text-white text-xl font-semibold">Ask {first} for help</h1>
-          <p className="text-gray-400 text-sm mt-1">{rosterLabel}</p>
+          <h1 className="text-white text-xl font-semibold">Send a Clubhouse Request</h1>
+          <p className="text-gray-400 text-sm mt-1">{profile.canonicalName} &middot; {rosterLabel}</p>
         </div>
       </div>
 
-      <div className="max-w-[900px] mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left: draft + request form */}
-          <div className="lg:col-span-2 space-y-5">
-            {/* Draft builder */}
+      <div className="max-w-[680px] mx-auto px-6 py-8">
+        {/* Step indicator */}
+        <div className="flex items-center gap-0 mb-8">
+          {STEP_LABELS.map((label, i) => {
+            const s = (i + 1) as 1 | 2 | 3
+            const active = step === s
+            const done = step > s
+            return (
+              <div key={s} className="flex items-center flex-1 last:flex-none">
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${
+                      done
+                        ? 'bg-[#0a1628] text-white'
+                        : active
+                          ? 'bg-[#990000] text-white'
+                          : 'bg-[rgba(180,168,150,0.3)] text-[#8a7f70]'
+                    }`}
+                  >
+                    {done ? '✓' : s}
+                  </div>
+                  <span className={`text-xs font-medium hidden sm:block ${active ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                    {label}
+                  </span>
+                </div>
+                {s < 3 && <div className="flex-1 h-px bg-[rgba(180,168,150,0.4)] mx-3" />}
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="space-y-4">
+
+          {/* Step 1: Purpose */}
+          <div
+            className={`bg-white border rounded-xl p-6 transition-all ${step === 1 ? 'border-[#0a1628]/30' : 'border-[rgba(180,168,150,0.35)]'}`}
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider">
+                Step 1 — What kind of request?
+              </p>
+              {step > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="text-xs text-[#990000] hover:underline"
+                >
+                  Edit
+                </button>
+              )}
+            </div>
+
+            {step === 1 ? (
+              <>
+                <div className="grid grid-cols-2 gap-2">
+                  {PURPOSE_OPTIONS.map(o => (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => { setPurpose(o.value); setMessageEdited(false) }}
+                      className={`text-left text-sm px-4 py-3 rounded-lg border transition-colors font-medium ${
+                        purpose === o.value
+                          ? 'border-[#990000] bg-[#990000]/5 text-[#990000]'
+                          : 'border-[rgba(180,168,150,0.4)] hover:border-[#0a1628] text-[#0a1628]'
+                      }`}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-5">
+                  <button
+                    type="button"
+                    onClick={() => setStep(2)}
+                    className="text-sm font-semibold bg-[#0a1628] hover:bg-[#1a2a40] text-white px-5 py-2.5 rounded-lg transition-colors"
+                  >
+                    Continue &rarr;
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p className="text-sm font-medium text-[#0a1628]">{purposeLabel}</p>
+            )}
+          </div>
+
+          {/* Step 2: Context */}
+          {step >= 2 && (
             <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+              className={`bg-white border rounded-xl p-6 transition-all ${step === 2 ? 'border-[#0a1628]/30' : 'border-[rgba(180,168,150,0.35)]'}`}
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
-              <h3 className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wide mb-4">
-                Message
-              </h3>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="text-xs font-medium text-[#8a7f70] block mb-1.5">Purpose</label>
-                  <select
-                    value={purpose}
-                    onChange={e => { setPurpose(e.target.value as Purpose); setMessageEdited(false) }}
-                    className="w-full text-sm border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628] bg-white"
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider">
+                  Step 2 — A bit of context
+                </p>
+                {step > 2 && (
+                  <button
+                    type="button"
+                    onClick={() => setStep(2)}
+                    className="text-xs text-[#990000] hover:underline"
                   >
-                    {PURPOSE_OPTIONS.map(o => (
-                      <option key={o.value} value={o.value}>{o.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-medium text-[#8a7f70] block mb-1.5">Tone</label>
-                  <select
-                    value={tone}
-                    onChange={e => { setTone(e.target.value as Tone); setMessageEdited(false) }}
-                    className="w-full text-sm border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628] bg-white"
-                  >
-                    {TONE_OPTIONS.map(o => (
-                      <option key={o.value} value={o.value}>{o.label}</option>
-                    ))}
-                  </select>
-                </div>
+                    Edit
+                  </button>
+                )}
               </div>
 
-              <div>
+              {step === 2 ? (
+                <>
+                  <div className="flex flex-col gap-2">
+                    {CONTEXT_OPTIONS.map(o => (
+                      <button
+                        key={o.value}
+                        type="button"
+                        onClick={() => { setContext(o.value); setMessageEdited(false) }}
+                        className={`text-left text-sm px-4 py-3 rounded-lg border transition-colors ${
+                          context === o.value
+                            ? 'border-[#990000] bg-[#990000]/5 text-[#990000] font-medium'
+                            : 'border-[rgba(180,168,150,0.4)] hover:border-[#0a1628] text-[#0a1628]'
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-5">
+                    <button
+                      type="button"
+                      onClick={() => setStep(3)}
+                      className="text-sm font-semibold bg-[#0a1628] hover:bg-[#1a2a40] text-white px-5 py-2.5 rounded-lg transition-colors"
+                    >
+                      Continue &rarr;
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <p className="text-sm font-medium text-[#0a1628]">
+                  {CONTEXT_OPTIONS.find(o => o.value === context)?.label}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Step 3: Message + send */}
+          {step === 3 && (
+            <div
+              className="bg-white border border-[#0a1628]/30 rounded-xl p-6"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+            >
+              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
+                Step 3 — Your message
+              </p>
+
+              <div className="mb-3">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-medium text-[#8a7f70]">Draft — edit as needed</label>
-                  <button
-                    onClick={handleCopy}
-                    className="text-xs font-medium bg-[#f5f2ee] hover:bg-[#e8e3da] text-[#0a1628] px-3 py-1.5 rounded transition-colors border border-[rgba(180,168,150,0.5)]"
-                  >
-                    {copied ? 'Copied!' : 'Copy message'}
-                  </button>
+                  <label className="text-xs font-medium text-[#8a7f70]">Edit as needed</label>
+                  {messageEdited && (
+                    <button
+                      type="button"
+                      onClick={() => { setCustomMessage(generatedDraft); setMessageEdited(false) }}
+                      className="text-xs text-[#8a7f70] hover:text-[#0a1628]"
+                    >
+                      Reset draft
+                    </button>
+                  )}
                 </div>
                 <textarea
                   data-testid="outreach-draft-preview"
@@ -287,155 +468,55 @@ function OutreachPageInner() {
                   rows={12}
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2.5 text-sm text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628] bg-white font-sans leading-relaxed resize-none"
                 />
-                {messageEdited && (
-                  <button
-                    onClick={() => { setCustomMessage(generatedDraft); setMessageEdited(false) }}
-                    className="text-xs text-[#8a7f70] hover:text-[#0a1628] mt-1"
-                  >
-                    Reset to generated draft
-                  </button>
-                )}
               </div>
-            </div>
 
-            {/* Request form */}
-            {!requestSent ? (
-              <div
-                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-              >
-                <h3 className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wide mb-4">
-                  Send request
-                </h3>
-                <p className="text-xs text-[#8a7f70] mb-4 bg-[#faf8f5] border border-[rgba(180,168,150,0.35)] rounded-lg px-3 py-2.5 leading-relaxed">
-                  This saves the request to {first}&apos;s inbox. Email delivery will be added soon.
-                </p>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                      Your name <span className="text-[#990000]">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={fromName}
-                      onChange={e => setFromName(e.target.value)}
-                      placeholder="Your full name"
-                      className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                      Your email <span className="text-[#8a7f70]">(optional)</span>
-                    </label>
-                    <input
-                      type="email"
-                      value={fromEmail}
-                      onChange={e => setFromEmail(e.target.value)}
-                      placeholder="For the alum to reply to"
-                      className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]"
-                    />
-                  </div>
-                  {requestError && (
-                    <p className="text-xs text-[#990000]">{requestError}</p>
-                  )}
-                  <button
-                    onClick={handleSendRequest}
-                    disabled={!fromName.trim() || submitting}
-                    className="w-full text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white py-2.5 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    {submitting ? 'Sending…' : `Send request to ${first}`}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div
-                className="bg-emerald-50 border border-emerald-200 rounded-xl p-5"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-              >
-                <p className="text-sm font-semibold text-emerald-800 mb-1">Request saved.</p>
-                <p className="text-xs text-emerald-700">
-                  Your request has been saved to {first}&apos;s inbox. You can also copy and send the message directly.
-                </p>
-              </div>
-            )}
-
-            <Link
-              href={`/player/alumni/${profile.personId}`}
-              className="inline-flex text-sm text-[#990000] hover:underline font-medium"
-            >
-              &larr; Back to {first}&apos;s profile
-            </Link>
-          </div>
-
-          {/* Right: facts panel */}
-          <div>
-            <div
-              data-testid="verified-facts-panel"
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 sticky top-6"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-            >
-              <h3 className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wide mb-4">
-                About {first}
-              </h3>
-              <dl className="space-y-3 text-sm">
+              {/* Sender info + submit */}
+              <div className="border-t border-[rgba(180,168,150,0.25)] pt-5 mt-2 space-y-3">
                 <div>
-                  <dt className="text-xs text-[#8a7f70] mb-0.5">Name</dt>
-                  <dd className="font-medium text-[#0a1628]">{profile.canonicalName}</dd>
+                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                    Your name <span className="text-[#990000]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={fromName}
+                    onChange={e => setFromName(e.target.value)}
+                    placeholder="Your full name"
+                    className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]"
+                  />
                 </div>
                 <div>
-                  <dt className="text-xs text-[#8a7f70] mb-0.5">Penn Golf</dt>
-                  <dd className="font-medium text-[#0a1628]">{rosterLabel}</dd>
+                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                    Your email <span className="text-[#8a7f70]">(optional — for the alum to reply to)</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={fromEmail}
+                    onChange={e => setFromEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]"
+                  />
                 </div>
-                {profile.classLabel && (
-                  <div>
-                    <dt className="text-xs text-[#8a7f70] mb-0.5">Class</dt>
-                    <dd className="font-medium text-[#0a1628]">{profile.classLabel}</dd>
-                  </div>
+                {requestError && (
+                  <p className="text-xs text-[#990000]">{requestError}</p>
                 )}
-                {profile.hometown && (
-                  <div>
-                    <dt className="text-xs text-[#8a7f70] mb-0.5">Hometown</dt>
-                    <dd className="font-medium text-[#0a1628]">{profile.hometown}</dd>
-                  </div>
-                )}
-                {profile.career?.currentRole && (
-                  <div>
-                    <dt className="text-xs text-[#8a7f70] mb-0.5">Role</dt>
-                    <dd className="font-medium text-[#0a1628]">{profile.career.currentRole}</dd>
-                  </div>
-                )}
-                {profile.career?.currentCompany && (
-                  <div>
-                    <dt className="text-xs text-[#8a7f70] mb-0.5">Company</dt>
-                    <dd className="font-medium text-[#0a1628]">{profile.career.currentCompany}</dd>
-                  </div>
-                )}
-                {profile.career && (
-                  <div>
-                    <dt className="text-xs text-[#8a7f70] mb-0.5">Career info</dt>
-                    <dd>
-                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
-                        Team verified
-                      </span>
-                    </dd>
-                  </div>
-                )}
-              </dl>
-
-              {profile.helpTopics && profile.helpTopics.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-[rgba(180,168,150,0.2)]">
-                  <p className="text-xs text-[#8a7f70] mb-2">Open to helping with</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {profile.helpTopics.map(t => (
-                      <span key={t} className="text-xs bg-[#f5f2ee] border border-[rgba(180,168,150,0.5)] text-[#0a1628] px-2 py-1 rounded-full">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+                <button
+                  type="button"
+                  onClick={handleSendRequest}
+                  disabled={!fromName.trim() || submitting}
+                  className="w-full text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white py-3 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {submitting ? 'Sending…' : `Send request to ${first}`}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
+
+          <Link
+            href={`/player/alumni/${profile.personId}`}
+            className="inline-flex text-sm text-[#990000] hover:underline font-medium"
+          >
+            &larr; Back to {first}&apos;s profile
+          </Link>
         </div>
       </div>
     </div>

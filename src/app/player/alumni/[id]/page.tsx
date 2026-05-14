@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -24,7 +24,15 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
 
   const memberships = await getTeamMembershipsForTeam(team.id)
   const membership = memberships.find(m => m.personId === person.id)
-  if (!membership || !membership.publishedToNetwork) notFound()
+  if (!membership) notFound()
+
+  // Current players belong in /team-room, not here
+  if (membership.memberRole === 'current_player') {
+    redirect('/team-room')
+  }
+
+  // Alumni must be published to appear here
+  if (!membership.publishedToNetwork) notFound()
 
   const enrichment = await getPersonEnrichment(person.id, team.id)
 
@@ -36,49 +44,128 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
 
   const hasCareer = isVerified && (enrichment?.currentRole || enrichment?.currentCompany)
 
-  const rosterLabel =
+  const rosterYears =
     membership.rosterStartYear && membership.rosterEndYear
-      ? `Penn Golf ${membership.rosterStartYear}–${String(membership.rosterEndYear).slice(-2)}`
+      ? `${membership.rosterStartYear}–${String(membership.rosterEndYear).slice(-2)}`
       : membership.rosterStartYear
-        ? `Penn Golf ${membership.rosterStartYear}`
-        : 'Penn Golf'
+        ? `${membership.rosterStartYear}`
+        : null
 
-  const CONTACT_LABELS: Record<string, string> = {
-    team_intro: 'Team intro first',
-    email_ok: 'Email is fine',
-    linkedin_ok: 'LinkedIn message is fine',
-    not_available: 'Not available right now',
-  }
+  const subtitle = [
+    rosterYears ? `Penn Golf ${rosterYears}` : 'Penn Golf',
+    membership.classLabel ?? null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
+  const openToBadges: string[] = [
+    enrichment?.openToCoffee ? 'Coffee chat' : null,
+    enrichment?.openToMentorship ? 'Mentorship' : null,
+    enrichment?.openToWarmIntroductions ? 'Warm introduction' : null,
+    enrichment?.openToGolfRounds ? 'Golf round' : null,
+  ].filter((v): v is string => v !== null)
+
+  const location = enrichment?.city
+    ? [enrichment.city, enrichment.state].filter(Boolean).join(', ')
+    : null
+
+  const first = person.firstName ?? person.canonicalName.split(' ')[0]
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-8 pt-10 pb-10">
+      {/* Header */}
+      <div className="bg-[#0a1628] px-8 pt-10 pb-12">
         <div className="max-w-[860px] mx-auto">
-          <div className="flex items-center gap-2 mb-4 text-xs">
+          <div className="flex items-center gap-2 mb-5 text-xs">
             <Link href="/player" className="text-gray-400 hover:text-gray-200 transition-colors">
               &larr; Player Mode
             </Link>
             <span className="text-gray-600">/</span>
             <span className="text-gray-300">{person.canonicalName}</span>
           </div>
-          <div className="flex items-start justify-between gap-4">
+
+          <div className="flex items-start justify-between gap-6">
             <div>
-              <h1 className="text-white text-2xl font-semibold tracking-tight">{person.canonicalName}</h1>
-              <p className="text-gray-400 text-sm mt-1">{rosterLabel}</p>
+              <h1 className="text-white text-3xl font-semibold tracking-tight leading-tight">
+                {person.canonicalName}
+              </h1>
+              <p className="text-gray-400 text-sm mt-2">{subtitle}</p>
+
+              {hasCareer && (enrichment?.currentRole || enrichment?.currentCompany) && (
+                <div className="flex items-center gap-2 mt-3">
+                  <p className="text-gray-300 text-sm">
+                    {[enrichment?.currentRole, enrichment?.currentCompany]
+                      .filter(Boolean)
+                      .join(' at ')}
+                  </p>
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#2d6a4f]/20 border border-[#2d6a4f]/40 text-[#2d6a4f]">
+                    Penn Golf verified
+                  </span>
+                </div>
+              )}
+
+              {location && (
+                <p className="text-gray-400 text-sm mt-1.5">{location}</p>
+              )}
+
+              <div className="flex items-center gap-2 mt-4">
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-[#2d6a4f]/15 border border-[#2d6a4f]/35 text-[#2d6a4f]">
+                  Verified Penn Golf Member
+                </span>
+              </div>
             </div>
+
             <Link
               href={`/player/outreach/${person.id}`}
-              className="flex-shrink-0 text-xs bg-[#990000] hover:bg-[#b30000] text-white px-4 py-2 rounded font-medium transition-colors"
+              className="flex-shrink-0 text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-5 py-2.5 rounded-lg transition-colors"
             >
-              Ask for help &rarr;
+              Send a Clubhouse Request &rarr;
             </Link>
           </div>
         </div>
       </div>
 
+      {/* Content */}
       <div data-testid="player-profile" className="max-w-[860px] mx-auto px-8 py-8">
         <div className="space-y-4">
-          {/* Roster info */}
+
+          {/* How I Can Help */}
+          {((enrichment?.helpTopics && enrichment.helpTopics.length > 0) || openToBadges.length > 0) && (
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+            >
+              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
+                How I Can Help
+              </p>
+              {enrichment?.helpTopics && enrichment.helpTopics.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {enrichment.helpTopics.map(topic => (
+                    <span
+                      key={topic}
+                      className="text-xs font-medium px-3 py-1.5 rounded-full bg-[#f5f2ee] border border-[rgba(180,168,150,0.5)] text-[#0a1628]"
+                    >
+                      {topic}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {openToBadges.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {openToBadges.map(label => (
+                    <span
+                      key={label}
+                      className="text-xs font-medium px-3 py-1.5 rounded-full bg-[#0a1628]/5 border border-[#0a1628]/15 text-[#0a1628]"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Penn Golf section */}
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
@@ -93,10 +180,10 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                   <dd className="font-medium text-[#0a1628]">{membership.classLabel}</dd>
                 </div>
               )}
-              {membership.rosterStartYear && (
+              {rosterYears && (
                 <div>
                   <dt className="text-xs text-[#8a7f70] mb-0.5">Years on team</dt>
-                  <dd className="font-medium text-[#0a1628]">{rosterLabel.replace('Penn Golf ', '')}</dd>
+                  <dd className="font-medium text-[#0a1628]">{rosterYears}</dd>
                 </div>
               )}
               {membership.hometown && (
@@ -114,7 +201,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             </dl>
           </div>
 
-          {/* Career card — only show if team-verified */}
+          {/* Career — only if verified */}
           {hasCareer && (
             <div
               data-testid="career-contact-card"
@@ -123,8 +210,8 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             >
               <div className="flex items-center justify-between gap-3 mb-4">
                 <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider">Career</p>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
-                  Team verified
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#2d6a4f]/10 border border-[#2d6a4f]/30 text-[#2d6a4f]">
+                  Penn Golf verified
                 </span>
               </div>
               <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
@@ -140,19 +227,48 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                     <dd className="font-medium text-[#0a1628]">{enrichment.currentCompany}</dd>
                   </div>
                 )}
-                {enrichment?.city && (
+                {enrichment?.industry && (
+                  <div>
+                    <dt className="text-xs text-[#8a7f70] mb-0.5">Industry</dt>
+                    <dd className="font-medium text-[#0a1628]">{enrichment.industry}</dd>
+                  </div>
+                )}
+                {location && (
                   <div>
                     <dt className="text-xs text-[#8a7f70] mb-0.5">Location</dt>
-                    <dd className="font-medium text-[#0a1628]">
-                      {[enrichment.city, enrichment.state].filter(Boolean).join(', ')}
-                    </dd>
+                    <dd className="font-medium text-[#0a1628]">{location}</dd>
                   </div>
                 )}
               </dl>
             </div>
           )}
 
-          {/* Alumni bio */}
+          {/* Golf section */}
+          {(enrichment?.favoriteCourses || enrichment?.openToGolfRounds) && (
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+            >
+              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
+                Golf
+              </p>
+              <div className="space-y-3 text-sm">
+                {enrichment?.favoriteCourses && (
+                  <div>
+                    <p className="text-xs text-[#8a7f70] mb-0.5">Favorite courses</p>
+                    <p className="font-medium text-[#0a1628]">{enrichment.favoriteCourses}</p>
+                  </div>
+                )}
+                {enrichment?.openToGolfRounds && (
+                  <span className="inline-block text-xs font-medium px-3 py-1.5 rounded-full bg-[#2d6a4f]/10 border border-[#2d6a4f]/30 text-[#2d6a4f]">
+                    Open to golf rounds
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* About */}
           {enrichment?.alumniBio && (
             <div
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
@@ -163,51 +279,28 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             </div>
           )}
 
-          {/* How I can help */}
-          {enrichment?.helpTopics && enrichment.helpTopics.length > 0 && (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-            >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
-                How I can help
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {enrichment.helpTopics.map(topic => (
-                  <span
-                    key={topic}
-                    className="text-xs font-medium px-3 py-1.5 rounded-full bg-[#f5f2ee] border border-[rgba(180,168,150,0.5)] text-[#0a1628]"
-                  >
-                    {topic}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Contact preference */}
-          {enrichment?.contactPreference && (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-            >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
-                Best way to reach out
-              </p>
-              <p className="text-sm text-[#0a1628] font-medium">
-                {CONTACT_LABELS[enrichment.contactPreference] ?? enrichment.contactPreference}
-              </p>
-            </div>
-          )}
-
-          {/* Ask for help CTA */}
-          <div className="pt-2">
+          {/* Action buttons */}
+          <div className="pt-2 flex flex-wrap gap-3">
             <Link
               href={`/player/outreach/${person.id}`}
               className="inline-flex items-center text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-6 py-3 rounded-lg transition-colors"
             >
-              Ask {person.firstName ?? person.canonicalName.split(' ')[0]} for help &rarr;
+              Send a Clubhouse Request &rarr;
             </Link>
+            <button
+              type="button"
+              className="inline-flex items-center text-sm font-medium border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] text-[#0a1628] px-6 py-3 rounded-lg transition-colors bg-white"
+            >
+              Request Introduction
+            </button>
+            {enrichment?.openToGolfRounds && (
+              <Link
+                href={`/player/outreach/${person.id}?purpose=golf_round`}
+                className="inline-flex items-center text-sm font-medium border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] text-[#0a1628] px-6 py-3 rounded-lg transition-colors bg-white"
+              >
+                Invite to a Round
+              </Link>
+            )}
           </div>
         </div>
       </div>

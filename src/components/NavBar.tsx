@@ -11,6 +11,10 @@ const navLinks = [
   { label: 'Member Book', href: '/player/search' },
   { label: 'Career Room', href: '/career-room' },
   { label: 'The Course', href: '/the-course' },
+  { label: '19th Hole', href: '/19th-hole' },
+  { label: 'Events', href: '/events' },
+  { label: 'Member Map', href: '/member-map' },
+  { label: 'Team Room', href: '/team-room' },
   { label: 'Alumni', href: '/alumni' },
 ]
 
