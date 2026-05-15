@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import type { MapState, MapMember } from '@/app/api/member-map/route'
 
@@ -108,6 +108,37 @@ function matchesCombined(m: MapMember, role: RoleFilter, era: EraFilter): boolea
   return true
 }
 
+// ── Directory member card ─────────────────────────────────────────────────────
+function DirectoryMemberCard({ member }: { member: MapMember }) {
+  const isCP = member.memberRole === 'current_player'
+  const classShort = member.classYearEstimate?.split(' / ')[0] ?? member.classLabel
+  const years =
+    member.rosterStartYear && member.rosterEndYear
+      ? `${member.rosterStartYear}–${String(member.rosterEndYear).slice(-2)}`
+      : member.rosterStartYear ? String(member.rosterStartYear) : null
+  const location = member.city
+    ? member.state ? `${member.city}, ${member.state}` : member.city
+    : member.hometown
+  return (
+    <Link
+      href={`/player/alumni/${member.personId}`}
+      className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:border-[#0a1628]/30 hover:shadow-sm transition-all group"
+      style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+    >
+      <div className="flex items-start justify-between gap-2 mb-1">
+        <p className="font-semibold text-[#0a1628] text-sm leading-snug">{member.canonicalName}</p>
+        <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border ${isCP ? 'text-[#2d6a4f] bg-[#2d6a4f]/10 border-[#2d6a4f]/25' : 'text-[#8a7f70] bg-[#f8f5f0] border-[rgba(180,168,150,0.5)]'}`}>
+          {isCP ? 'Current Player' : 'Alumni'}
+        </span>
+      </div>
+      {isCP && classShort && <p className="text-xs text-[#8a7f70]">{classShort}</p>}
+      {!isCP && years && <p className="text-xs text-[#8a7f70]">Penn Golf {years}</p>}
+      {location && <p className="text-xs text-[#8a7f70] mt-0.5">{location}</p>}
+      <span className="text-[10px] font-semibold text-[#990000] group-hover:underline mt-2.5 block">View member &rarr;</span>
+    </Link>
+  )
+}
+
 // ── Member card ───────────────────────────────────────────────────────────────
 function MemberCard({ member }: { member: MapMember }) {
   const isCP = member.memberRole === 'current_player'
@@ -153,7 +184,7 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
   const [eraFilter, setEraFilter] = useState<EraFilter>('all')
 
   const hasData = stateData.length > 0
-  const stateByCode = new Map(stateData.map(s => [s.stateCode, s]))
+  const stateByCode = useMemo(() => new Map(stateData.map(s => [s.stateCode, s])), [stateData])
 
   useEffect(() => {
     fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json')
@@ -186,6 +217,38 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
 
   const totalShown = filteredStateData.reduce((s, st) => s + st.filteredCount, 0)
   const statesWithMembers = filteredStateData.filter(st => st.filteredCount > 0).length
+
+  const allFilteredMembers = useMemo(() => {
+    const base = selected
+      ? (stateByCode.get(selected)?.members ?? [])
+      : stateData.flatMap(st => st.members)
+    return base
+      .filter(m => matchesCombined(m, roleFilter, eraFilter))
+      .sort((a, b) => {
+        if (a.memberRole !== b.memberRole) return a.memberRole === 'current_player' ? -1 : 1
+        return (b.rosterEndYear ?? 9999) - (a.rosterEndYear ?? 9999)
+      })
+  }, [stateData, stateByCode, selected, roleFilter, eraFilter])
+
+  const directoryTitle = useMemo(() => {
+    if (selected) return stateByCode.get(selected)?.stateName ?? 'Members'
+    if (roleFilter === 'current_player') return 'Current Roster'
+    if (roleFilter === 'alumni') return 'Alumni Directory'
+    if (roleFilter === 'coffee') return 'Open to Coffee Chat'
+    if (roleFilter === 'golf') return 'Open to Golf'
+    return 'Member Directory'
+  }, [selected, roleFilter, stateByCode])
+
+  const summaryLabel = useMemo(() => {
+    const count = allFilteredMembers.length
+    const parts: string[] = [`${count} member${count !== 1 ? 's' : ''}`]
+    if (eraFilter !== 'all') parts.push(ERA_LABELS[eraFilter])
+    if (!selected) {
+      const stateCount = filteredStateData.filter(s => s.filteredCount > 0).length
+      if (stateCount > 0) parts.push(`across ${stateCount} state${stateCount !== 1 ? 's' : ''}`)
+    }
+    return parts.join(' · ')
+  }, [allFilteredMembers, eraFilter, selected, filteredStateData])
 
   // State dropdown options — states with any members in current filter
   const stateOptions = filteredStateData
@@ -360,35 +423,34 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
         )}
       </div>
 
-      {/* Current roster section */}
-      <section>
-        <h2 className="text-base font-semibold text-[#0a1628] mb-1">2026–27 Roster Hometowns</h2>
-        <p className="text-sm text-[#8a7f70] mb-4">Where this year&apos;s team comes from.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {stateData
-            .filter(s => s.currentPlayerCount > 0)
-            .map(stateInfo => (
-              <button
-                key={stateInfo.stateCode}
-                type="button"
-                onClick={() => setSelected(prev => prev === stateInfo.stateCode ? null : stateInfo.stateCode)}
-                className={`text-left bg-white border rounded-xl p-4 transition-all ${selected === stateInfo.stateCode ? 'border-[#0a1628] shadow-sm' : 'border-[rgba(180,168,150,0.35)] hover:border-[#0a1628]/30'}`}
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-              >
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <p className="font-semibold text-[#0a1628] text-sm">{stateInfo.stateName}</p>
-                  <span className="text-[10px] font-medium text-[#2d6a4f] bg-[#2d6a4f]/8 px-2 py-0.5 rounded-full border border-[#2d6a4f]/20">
-                    {stateInfo.currentPlayerCount} player{stateInfo.currentPlayerCount > 1 ? 's' : ''}
-                  </span>
-                </div>
-                {stateInfo.members.filter(m => m.memberRole === 'current_player').map(m => {
-                  const cls = m.classYearEstimate?.split(' / ')[0] ?? m.classLabel
-                  return <p key={m.personId} className="text-xs text-[#4a5568]">{m.canonicalName}{cls ? ` · ${cls}` : ''}{m.hometown ? ` · ${m.hometown}` : ''}</p>
-                })}
-                {stateInfo.alumniCount > 0 && <p className="text-[10px] text-[#8a7f70] mt-1">{stateInfo.alumniCount} alum{stateInfo.alumniCount !== 1 ? 'ni' : ''} also here</p>}
-              </button>
-            ))}
+      {/* Filter-aware member directory */}
+      <section data-testid="member-directory">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-[#0a1628]">{directoryTitle}</h2>
+            <p className="text-sm text-[#8a7f70] mt-0.5">{summaryLabel}</p>
+          </div>
+          {allFilteredMembers.length > 0 && (
+            <Link href="/player/search" className="text-xs font-semibold text-[#990000] hover:underline whitespace-nowrap hidden sm:block">Full Member Book &rarr;</Link>
+          )}
         </div>
+        {allFilteredMembers.length === 0 ? (
+          <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center" style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}>
+            <p className="text-sm font-medium text-[#0a1628] mb-1">No members found for this view.</p>
+            <p className="text-xs text-[#8a7f70]">Try another year, state, or member group.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {allFilteredMembers.slice(0, 60).map(m => <DirectoryMemberCard key={m.personId} member={m} />)}
+            {allFilteredMembers.length > 60 && (
+              <div className="col-span-full">
+                <Link href="/player/search" className="text-xs font-semibold text-[#990000] hover:underline">
+                  View all {allFilteredMembers.length} members in the Member Book &rarr;
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
       </section>
     </div>
   )

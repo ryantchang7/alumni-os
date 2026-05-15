@@ -151,17 +151,17 @@ function TraditionSection() {
         </div>
         {/* Penn red ribbon */}
         <div className="h-[3px] bg-gradient-to-r from-[#990000] via-[#bb0000] to-[#990000]" />
-        {/* Plaque grid on parchment */}
+        {/* Plaque grid on parchment — NUMBER FIRST */}
         <div className="bg-[#faf7f2] grid grid-cols-2 sm:grid-cols-3 divide-x divide-y divide-[rgba(180,168,150,0.3)]">
           {PENN_GOLF_TRADITION.achievements.map((a) => (
-            <div key={a.label} className="px-5 sm:px-6 py-5 sm:py-6">
-              <p className="text-[8px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-2.5">{a.label}</p>
+            <div key={a.label} className="px-5 sm:px-6 py-6 sm:py-7 hover:-translate-y-px hover:bg-white transition-all duration-150 cursor-default">
               <p
-                className="text-[1.25rem] sm:text-[1.45rem] font-medium text-[#0a1628] leading-none mb-2"
+                className={`text-[3rem] sm:text-[3.5rem] font-light leading-none mb-1 ${a.featured ? 'text-[#990000]' : 'text-[#0a1628]'}`}
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
                 {a.value}
               </p>
+              <p className="text-[8px] font-semibold uppercase tracking-[0.2em] text-[#8a7f70] mb-2 leading-tight">{a.label}</p>
               <p className="text-[11px] font-medium text-[#3d4a5c] mb-1.5 leading-snug">{a.detail}</p>
               <p className="text-[10px] text-[#8a7f70] leading-relaxed">{a.description}</p>
             </div>

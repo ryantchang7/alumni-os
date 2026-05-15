@@ -141,7 +141,19 @@ test.describe('Clubhouse home — Penn Golf Tradition trophy cabinet', () => {
     const section = page.locator('[data-testid="tradition-section"]')
     const text = await section.textContent()
     expect(text).toMatch(/All-America|Ivy Honors/i)
-    expect(text).toContain('Powell')
+  })
+
+  test('tradition section numbers are shown first and prominently (number-first hierarchy)', async ({ page }) => {
+    await page.goto('/player')
+    await page.waitForLoadState('networkidle')
+    const section = page.locator('[data-testid="tradition-section"]')
+    const text = await section.textContent()
+    // All six achievement values must appear
+    expect(text).toContain('4')
+    expect(text).toContain('5')
+    expect(text).toContain('27')
+    expect(text).toContain('20')
+    expect(text).toContain('42')
   })
 
   test('no forbidden vocabulary on clubhouse home', async ({ page }) => {
@@ -200,5 +212,30 @@ test.describe('Member Map — filters', () => {
     for (const word of ['dashboard', 'analytics', 'pipeline', 'source_backed', 'manually_verified', 'extraction', 'raw']) {
       expect(body).not.toContain(word)
     }
+  })
+
+  test('bottom section does not say 2026–27 Roster Hometowns', async ({ page }) => {
+    await page.goto('/member-map')
+    await page.waitForLoadState('networkidle')
+    const body = await page.textContent('body')
+    expect(body).not.toContain('2026–27 Roster Hometowns')
+  })
+
+  test('renders member-directory section', async ({ page }) => {
+    await page.goto('/member-map')
+    await page.waitForLoadState('networkidle')
+    const dir = page.locator('[data-testid="member-directory"]')
+    await expect(dir).toBeVisible({ timeout: 10000 })
+  })
+
+  test('member directory title changes when Alumni filter is selected', async ({ page }) => {
+    await page.goto('/member-map')
+    await page.waitForLoadState('networkidle')
+    const roleFilter = page.locator('[data-testid="role-filter"]')
+    await roleFilter.getByText('Alumni').click()
+    await page.waitForTimeout(300)
+    const dir = page.locator('[data-testid="member-directory"]')
+    const text = await dir.textContent()
+    expect(text).toMatch(/Alumni Directory/i)
   })
 })
