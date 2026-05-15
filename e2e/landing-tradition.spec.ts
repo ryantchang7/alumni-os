@@ -70,7 +70,7 @@ test.describe('Landing page — cover and copy', () => {
   })
 })
 
-test.describe('Clubhouse home — Penn Golf Tradition', () => {
+test.describe('Clubhouse home — Penn Golf Tradition trophy cabinet', () => {
   test.beforeAll(() => {
     resetSeedAndNetworkDemo()
   })
@@ -97,24 +97,51 @@ test.describe('Clubhouse home — Penn Golf Tradition', () => {
     expect(text).toContain('2015')
   })
 
-  test('tradition section shows Big 5 Champions 2024', async ({ page }) => {
+  test('tradition section shows NCAA Championship History', async ({ page }) => {
     await page.goto('/player')
     await page.waitForLoadState('networkidle')
     const section = page.locator('[data-testid="tradition-section"]')
     const text = await section.textContent()
-    expect(text).toMatch(/Big 5/)
+    expect(text).toMatch(/NCAA Championship/i)
+    expect(text).toContain('1947')
+    expect(text).toContain('1965')
+    expect(text).toContain('1973')
+  })
+
+  test('tradition section shows NCAA Regional Appearances', async ({ page }) => {
+    await page.goto('/player')
+    await page.waitForLoadState('networkidle')
+    const section = page.locator('[data-testid="tradition-section"]')
+    const text = await section.textContent()
+    expect(text).toMatch(/NCAA Regional/i)
+    expect(text).toContain('2010')
+  })
+
+  test('tradition section shows Team Tournament Titles', async ({ page }) => {
+    await page.goto('/player')
+    await page.waitForLoadState('networkidle')
+    const section = page.locator('[data-testid="tradition-section"]')
+    const text = await section.textContent()
+    expect(text).toMatch(/Team Tournament|Team Titles/i)
     expect(text).toContain('2024')
   })
 
-  test('tradition section shows NCAA Postseason History', async ({ page }) => {
+  test('tradition section shows Individual Tournament Titles', async ({ page }) => {
     await page.goto('/player')
     await page.waitForLoadState('networkidle')
     const section = page.locator('[data-testid="tradition-section"]')
     const text = await section.textContent()
-    expect(text).toMatch(/NCAA/i)
-    expect(text).toContain('1972')
-    expect(text).toContain('1973')
-    expect(text).toContain('1974')
+    expect(text).toMatch(/Individual/i)
+    expect(text).toContain('1996')
+  })
+
+  test('tradition section shows Individual Honors', async ({ page }) => {
+    await page.goto('/player')
+    await page.waitForLoadState('networkidle')
+    const section = page.locator('[data-testid="tradition-section"]')
+    const text = await section.textContent()
+    expect(text).toMatch(/All-America|Ivy Honors/i)
+    expect(text).toContain('Powell')
   })
 
   test('no forbidden vocabulary on clubhouse home', async ({ page }) => {
@@ -133,5 +160,45 @@ test.describe('Team Room — mascot', () => {
     await page.waitForLoadState('networkidle')
     const mascot = page.locator('[data-testid="team-room-mascot"]')
     await expect(mascot).toBeVisible({ timeout: 10000 })
+  })
+})
+
+test.describe('Member Map — filters', () => {
+  test('renders role filter with Current Roster and Alumni', async ({ page }) => {
+    await page.goto('/member-map')
+    await page.waitForLoadState('networkidle')
+    const roleFilter = page.locator('[data-testid="role-filter"]')
+    await expect(roleFilter).toBeVisible({ timeout: 10000 })
+    const text = await roleFilter.textContent()
+    expect(text).toContain('Current Roster')
+    expect(text).toContain('Alumni')
+    expect(text).toContain('All Members')
+  })
+
+  test('renders era filter with decade options', async ({ page }) => {
+    await page.goto('/member-map')
+    await page.waitForLoadState('networkidle')
+    const eraFilter = page.locator('[data-testid="era-filter"]')
+    await expect(eraFilter).toBeVisible({ timeout: 10000 })
+    const text = await eraFilter.textContent()
+    expect(text).toContain('2010s')
+    expect(text).toContain('2000s')
+    expect(text).toContain('All Years')
+  })
+
+  test('renders state filter dropdown', async ({ page }) => {
+    await page.goto('/member-map')
+    await page.waitForLoadState('networkidle')
+    const stateFilter = page.locator('[data-testid="state-filter"]')
+    await expect(stateFilter).toBeVisible({ timeout: 10000 })
+  })
+
+  test('no forbidden vocabulary on member map', async ({ page }) => {
+    await page.goto('/member-map')
+    await page.waitForLoadState('networkidle')
+    const body = await page.textContent('body')
+    for (const word of ['dashboard', 'analytics', 'pipeline', 'source_backed', 'manually_verified', 'extraction', 'raw']) {
+      expect(body).not.toContain(word)
+    }
   })
 })

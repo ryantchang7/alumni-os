@@ -5,9 +5,6 @@ import Link from 'next/link'
 import type { MapState, MapMember } from '@/app/api/member-map/route'
 
 // ── Minimal topojson decoder ──────────────────────────────────────────────────
-// Decodes us-atlas states topojson without any npm packages.
-// Spec: https://github.com/topojson/topojson-specification
-
 interface Topology {
   type: 'Topology'
   bbox?: number[]
@@ -18,7 +15,7 @@ interface Topology {
       type: 'GeometryCollection'
       geometries: Array<{
         type: 'Polygon' | 'MultiPolygon'
-        arcs: number[][]  | number[][][]
+        arcs: number[][] | number[][][]
         id: string
         properties: { name: string }
       }>
@@ -27,56 +24,39 @@ interface Topology {
 }
 
 interface StateGeo {
-  id: string   // FIPS code e.g. "06"
-  name: string // "California"
-  d: string    // SVG path string
+  id: string
+  name: string
+  d: string
 }
 
 function decodeTopojson(topo: Topology): StateGeo[] {
   const { scale = [1, 1], translate = [0, 0] } = topo.transform ?? {}
-
-  // Delta-decode arcs into projected coordinates
   const decoded: [number, number][][] = topo.arcs.map(arc => {
     let x = 0, y = 0
     return arc.map(([dx, dy]) => {
-      x += dx
-      y += dy
+      x += dx; y += dy
       return [x * scale[0] + translate[0], y * scale[1] + translate[1]] as [number, number]
     })
   })
-
   function arcToPoints(idx: number): [number, number][] {
     return idx >= 0 ? decoded[idx] : [...decoded[~idx]].reverse()
   }
-
   function ringToPath(arcIndices: number[]): string {
     const pts: [number, number][] = []
     for (const idx of arcIndices) {
       const arc = arcToPoints(idx)
-      if (pts.length > 0) pts.pop() // remove shared junction point
+      if (pts.length > 0) pts.pop()
       pts.push(...arc)
     }
     if (pts.length === 0) return ''
     return pts.map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`).join('') + 'Z'
   }
-
   function geometryToPath(geom: Topology['objects']['states']['geometries'][number]): string {
-    if (geom.type === 'Polygon') {
-      return (geom.arcs as number[][]).map(ring => ringToPath(ring)).join('')
-    }
-    if (geom.type === 'MultiPolygon') {
-      return (geom.arcs as number[][][])
-        .map(poly => (poly as number[][]).map(ring => ringToPath(ring)).join(''))
-        .join('')
-    }
+    if (geom.type === 'Polygon') return (geom.arcs as number[][]).map(ring => ringToPath(ring)).join('')
+    if (geom.type === 'MultiPolygon') return (geom.arcs as number[][][]).map(p => (p as number[][]).map(ring => ringToPath(ring)).join('')).join('')
     return ''
   }
-
-  return topo.objects.states.geometries.map(geo => ({
-    id: geo.id,
-    name: geo.properties.name,
-    d: geometryToPath(geo),
-  }))
+  return topo.objects.states.geometries.map(geo => ({ id: geo.id, name: geo.properties.name, d: geometryToPath(geo) }))
 }
 
 // ── FIPS → state code lookup ──────────────────────────────────────────────────
@@ -91,14 +71,41 @@ const FIPS_TO_CODE: Record<string, string> = {
 }
 
 // ── Filter types ──────────────────────────────────────────────────────────────
-type Filter = 'all' | 'current_player' | 'alumni' | 'coffee' | 'golf'
+type RoleFilter = 'all' | 'current_player' | 'alumni' | 'coffee' | 'golf'
+type EraFilter = 'all' | '2020s' | '2010s' | '2000s' | '1990s' | 'earlier'
 
-const FILTER_LABELS: Record<Filter, string> = {
+const ROLE_LABELS: Record<RoleFilter, string> = {
   all: 'All Members',
-  current_player: 'Current Players',
+  current_player: 'Current Roster',
   alumni: 'Alumni',
   coffee: 'Open to Coffee',
   golf: 'Open to Golf',
+}
+
+const ERA_LABELS: Record<EraFilter, string> = {
+  all: 'All Years',
+  '2020s': '2020s',
+  '2010s': '2010s',
+  '2000s': '2000s',
+  '1990s': '1990s',
+  earlier: 'Earlier',
+}
+
+function matchesCombined(m: MapMember, role: RoleFilter, era: EraFilter): boolean {
+  if (role === 'current_player' && m.memberRole !== 'current_player') return false
+  if (role === 'alumni' && m.memberRole !== 'alumni') return false
+  if (role === 'coffee' && !m.openToCoffee) return false
+  if (role === 'golf' && !m.openToGolfRounds) return false
+  if (era === 'all') return true
+  if (m.memberRole === 'current_player') return era === '2020s'
+  const ey = m.rosterEndYear
+  if (!ey) return false
+  if (era === '2020s') return ey >= 2020
+  if (era === '2010s') return ey >= 2010 && ey < 2020
+  if (era === '2000s') return ey >= 2000 && ey < 2010
+  if (era === '1990s') return ey >= 1990 && ey < 2000
+  if (era === 'earlier') return ey < 1990
+  return true
 }
 
 // ── Member card ───────────────────────────────────────────────────────────────
@@ -108,13 +115,10 @@ function MemberCard({ member }: { member: MapMember }) {
   const years =
     member.rosterStartYear && member.rosterEndYear
       ? `${member.rosterStartYear}–${String(member.rosterEndYear).slice(-2)}`
-      : member.rosterStartYear
-        ? String(member.rosterStartYear)
-        : null
+      : member.rosterStartYear ? String(member.rosterStartYear) : null
   const location = member.city
     ? member.state ? `${member.city}, ${member.state}` : member.city
     : member.hometown
-
   return (
     <Link
       href={`/player/alumni/${member.personId}`}
@@ -122,35 +126,17 @@ function MemberCard({ member }: { member: MapMember }) {
     >
       <div className="flex items-start justify-between gap-2">
         <p className="font-semibold text-[#0a1628] text-xs leading-snug">{member.canonicalName}</p>
-        <span
-          className={`text-[9px] font-medium px-1.5 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 ${
-            isCP
-              ? 'text-[#2d6a4f] bg-[#2d6a4f]/12 border border-[#2d6a4f]/25'
-              : 'text-[#8a7f70] bg-white border border-[rgba(180,168,150,0.5)]'
-          }`}
-        >
+        <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 ${isCP ? 'text-[#2d6a4f] bg-[#2d6a4f]/12 border border-[#2d6a4f]/25' : 'text-[#8a7f70] bg-white border border-[rgba(180,168,150,0.5)]'}`}>
           {isCP ? 'Current Player' : 'Alumni'}
         </span>
       </div>
-      {isCP && classShort && (
-        <p className="text-[10px] text-[#8a7f70] mt-0.5">{classShort}</p>
-      )}
-      {!isCP && years && (
-        <p className="text-[10px] text-[#8a7f70] mt-0.5">Penn Golf {years}</p>
-      )}
+      {isCP && classShort && <p className="text-[10px] text-[#8a7f70] mt-0.5">{classShort}</p>}
+      {!isCP && years && <p className="text-[10px] text-[#8a7f70] mt-0.5">Penn Golf {years}</p>}
       {location && <p className="text-[10px] text-[#8a7f70]">{location}</p>}
       {(member.openToCoffee || member.openToGolfRounds) && (
         <div className="flex gap-1 mt-1.5">
-          {member.openToCoffee && (
-            <span className="text-[9px] font-medium text-[#2d6a4f] bg-white px-1.5 py-0.5 rounded-full border border-[#2d6a4f]/25">
-              Coffee
-            </span>
-          )}
-          {member.openToGolfRounds && (
-            <span className="text-[9px] font-medium text-[#2d6a4f] bg-white px-1.5 py-0.5 rounded-full border border-[#2d6a4f]/25">
-              Golf
-            </span>
-          )}
+          {member.openToCoffee && <span className="text-[9px] font-medium text-[#2d6a4f] bg-white px-1.5 py-0.5 rounded-full border border-[#2d6a4f]/25">Coffee</span>}
+          {member.openToGolfRounds && <span className="text-[9px] font-medium text-[#2d6a4f] bg-white px-1.5 py-0.5 rounded-full border border-[#2d6a4f]/25">Golf</span>}
         </div>
       )}
     </Link>
@@ -163,12 +149,12 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
   const [geoError, setGeoError] = useState(false)
   const [hovered, setHovered] = useState<string | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
-  const [filter, setFilter] = useState<Filter>('all')
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>('all')
+  const [eraFilter, setEraFilter] = useState<EraFilter>('all')
 
-  // Build stateCode → MapState lookup
+  const hasData = stateData.length > 0
   const stateByCode = new Map(stateData.map(s => [s.stateCode, s]))
 
-  // Fetch and decode topojson
   useEffect(() => {
     fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json')
       .then(r => r.json())
@@ -176,85 +162,116 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
       .catch(() => setGeoError(true))
   }, [])
 
-  // Filter members in selected state
+  // Derived: all states with members matching current filter
+  const filteredStateData = stateData.map(st => ({
+    ...st,
+    filteredCount: st.members.filter(m => matchesCombined(m, roleFilter, eraFilter)).length,
+  }))
+
+  // Selected state members
   const selectedState = selected ? stateByCode.get(selected) ?? null : null
-  const filteredMembers = selectedState?.members.filter(m => {
-    if (filter === 'current_player') return m.memberRole === 'current_player'
-    if (filter === 'alumni') return m.memberRole === 'alumni'
-    if (filter === 'coffee') return m.openToCoffee
-    if (filter === 'golf') return m.openToGolfRounds
-    return true
-  }) ?? []
+  const filteredMembers = selectedState?.members.filter(m => matchesCombined(m, roleFilter, eraFilter)) ?? []
 
   const getStateColor = useCallback((fips: string) => {
     const code = FIPS_TO_CODE[fips]
     if (!code) return '#e8e3db'
-    const state = stateByCode.get(code)
-    if (!state) return '#e8e3db'
-
-    const isSelected = selected === code
-    const isHovered = hovered === code
-
-    // Filter visibility
-    let matches = state.totalCount
-    if (filter === 'current_player') matches = state.currentPlayerCount
-    else if (filter === 'alumni') matches = state.alumniCount
-    else if (filter === 'coffee') matches = state.openToCoffeeCount
-    else if (filter === 'golf') matches = state.openToGolfCount
-
-    if (matches === 0) return isHovered ? '#ddd8d0' : '#e8e3db'
-    if (isSelected) return '#0a1628'
-    if (isHovered) return '#1a3050'
-    // Intensity based on count
-    if (matches >= 3) return '#1e4a7c'
-    if (matches === 2) return '#2d6a9f'
+    const st = filteredStateData.find(s => s.stateCode === code)
+    if (!st || st.filteredCount === 0) return hovered === code ? '#ddd8d0' : '#e8e3db'
+    if (selected === code) return '#0a1628'
+    if (hovered === code) return '#1a3050'
+    if (st.filteredCount >= 3) return '#1e4a7c'
+    if (st.filteredCount === 2) return '#2d6a9f'
     return '#4a8fc4'
-  }, [stateByCode, selected, hovered, filter])
+  }, [filteredStateData, selected, hovered])
 
-  const totalShown = stateData.reduce((s, st) => {
-    if (filter === 'current_player') return s + st.currentPlayerCount
-    if (filter === 'alumni') return s + st.alumniCount
-    if (filter === 'coffee') return s + st.openToCoffeeCount
-    if (filter === 'golf') return s + st.openToGolfCount
-    return s + st.totalCount
-  }, 0)
-  const statesWithMembers = stateData.filter(st => {
-    if (filter === 'current_player') return st.currentPlayerCount > 0
-    if (filter === 'alumni') return st.alumniCount > 0
-    if (filter === 'coffee') return st.openToCoffeeCount > 0
-    if (filter === 'golf') return st.openToGolfCount > 0
-    return st.totalCount > 0
-  }).length
+  const totalShown = filteredStateData.reduce((s, st) => s + st.filteredCount, 0)
+  const statesWithMembers = filteredStateData.filter(st => st.filteredCount > 0).length
+
+  // State dropdown options — states with any members in current filter
+  const stateOptions = filteredStateData
+    .filter(st => st.filteredCount > 0)
+    .sort((a, b) => a.stateName.localeCompare(b.stateName))
+
+  function handleRoleChange(role: RoleFilter) {
+    setRoleFilter(role)
+    setSelected(null)
+  }
+
+  function handleEraChange(era: EraFilter) {
+    setEraFilter(era)
+    setSelected(null)
+  }
+
+  function handleStateSelect(e: React.ChangeEvent<HTMLSelectElement>) {
+    const code = e.target.value
+    setSelected(code || null)
+  }
 
   return (
     <div className="space-y-5">
-      {/* Filter tabs */}
-      <div className="flex flex-wrap gap-2">
-        {(Object.keys(FILTER_LABELS) as Filter[]).map(f => (
-          <button
-            key={f}
-            type="button"
-            onClick={() => { setFilter(f); setSelected(null) }}
-            className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
-              filter === f
-                ? 'bg-[#0a1628] text-white border-[#0a1628]'
-                : 'bg-white text-[#4a5568] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
-            }`}
-          >
-            {FILTER_LABELS[f]}
-          </button>
-        ))}
-      </div>
-
-      {/* Stats */}
-      <div className="flex gap-6">
-        <div>
-          <p className="text-xl font-semibold text-[#0a1628]">{totalShown}</p>
-          <p className="text-xs text-[#8a7f70]">Members mapped</p>
+      {/* Filter panel */}
+      <div
+        className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4 space-y-3"
+        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+      >
+        {/* Role filter */}
+        <div data-testid="role-filter">
+          <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">Member Type</p>
+          <div className="flex flex-wrap gap-1.5">
+            {(Object.keys(ROLE_LABELS) as RoleFilter[]).map(f => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => handleRoleChange(f)}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${roleFilter === f ? 'bg-[#0a1628] text-white border-[#0a1628]' : 'bg-[#faf7f2] text-[#4a5568] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'}`}
+              >
+                {ROLE_LABELS[f]}
+              </button>
+            ))}
+          </div>
         </div>
-        <div>
-          <p className="text-xl font-semibold text-[#0a1628]">{statesWithMembers}</p>
-          <p className="text-xs text-[#8a7f70]">States represented</p>
+
+        {/* Era filter */}
+        <div data-testid="era-filter">
+          <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">Era</p>
+          <div className="flex flex-wrap gap-1.5">
+            {(Object.keys(ERA_LABELS) as EraFilter[]).map(e => (
+              <button
+                key={e}
+                type="button"
+                onClick={() => handleEraChange(e)}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${eraFilter === e ? 'bg-[#0a1628] text-white border-[#0a1628]' : 'bg-[#faf7f2] text-[#4a5568] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'}`}
+              >
+                {ERA_LABELS[e]}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* State filter */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <div>
+            <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-1.5">State</p>
+            <select
+              data-testid="state-filter"
+              value={selected ?? ''}
+              onChange={handleStateSelect}
+              className="text-xs text-[#0a1628] bg-[#faf7f2] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#0a1628]/20 focus:border-[#0a1628]/30 pr-8"
+            >
+              <option value="">All States</option>
+              {stateOptions.map(st => (
+                <option key={st.stateCode} value={st.stateCode}>
+                  {st.stateName} ({st.filteredCount})
+                </option>
+              ))}
+            </select>
+          </div>
+          {/* Summary */}
+          <div className="sm:ml-auto pt-4">
+            <p className="text-xs text-[#8a7f70]" data-testid="map-filter-summary">
+              Showing <span className="font-semibold text-[#0a1628]">{totalShown}</span> member{totalShown !== 1 ? 's' : ''} across <span className="font-semibold text-[#0a1628]">{statesWithMembers}</span> state{statesWithMembers !== 1 ? 's' : ''}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -265,7 +282,11 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
           className="w-full bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
         >
-          {geoError ? (
+          {!hasData ? (
+            <div className="flex items-center justify-center" style={{ height: 380 }}>
+              <p className="text-sm text-[#8a7f70]">Member locations will appear here as profiles are updated.</p>
+            </div>
+          ) : geoError ? (
             <div className="flex items-center justify-center" style={{ height: 380 }}>
               <p className="text-sm text-[#8a7f70]">Map unavailable — see city list below.</p>
             </div>
@@ -274,18 +295,12 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
               <p className="text-sm text-[#8a7f70]">Loading map…</p>
             </div>
           ) : (
-            <svg
-              viewBox="0 0 975 610"
-              className="w-full block"
-              style={{ maxHeight: 480 }}
-              aria-label="United States member map"
-            >
+            <svg viewBox="0 0 975 610" className="w-full block" style={{ maxHeight: 480 }} aria-label="United States member map">
               {geos.map(geo => {
                 const code = FIPS_TO_CODE[geo.id]
-                const state = code ? stateByCode.get(code) : undefined
+                const st = code ? filteredStateData.find(s => s.stateCode === code) : undefined
+                const hasMembers = st && st.filteredCount > 0
                 const fill = getStateColor(geo.id)
-                const isActive = selected === code
-
                 return (
                   <path
                     key={geo.id}
@@ -294,44 +309,25 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
                     stroke="white"
                     strokeWidth={0.75}
                     strokeLinejoin="round"
-                    className={state ? 'cursor-pointer' : ''}
+                    className={hasMembers ? 'cursor-pointer' : ''}
                     style={{ transition: 'fill 0.15s' }}
-                    onClick={() => {
-                      if (!state) return
-                      setSelected(prev => prev === code ? null : code ?? null)
-                    }}
+                    onClick={() => { if (!hasMembers || !code) return; setSelected(prev => prev === code ? null : code) }}
                     onMouseEnter={() => code && setHovered(code)}
                     onMouseLeave={() => setHovered(null)}
-                    role={state ? 'button' : undefined}
-                    aria-label={state ? `${geo.name}: ${state.totalCount} member${state.totalCount === 1 ? '' : 's'}` : geo.name}
-                    aria-pressed={isActive}
-                    tabIndex={state ? 0 : undefined}
-                    onKeyDown={e => {
-                      if ((e.key === 'Enter' || e.key === ' ') && state && code) {
-                        e.preventDefault()
-                        setSelected(prev => prev === code ? null : code)
-                      }
-                    }}
+                    role={hasMembers ? 'button' : undefined}
+                    aria-label={hasMembers && st ? `${geo.name}: ${st.filteredCount} member${st.filteredCount === 1 ? '' : 's'}` : geo.name}
+                    aria-pressed={selected === code}
+                    tabIndex={hasMembers ? 0 : undefined}
+                    onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && hasMembers && code) { e.preventDefault(); setSelected(prev => prev === code ? null : code) } }}
                   />
                 )
               })}
             </svg>
           )}
-
-          {/* Map legend */}
           <div className="px-4 pb-3 flex items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm inline-block" style={{ background: '#4a8fc4' }} />
-              <span className="text-[10px] text-[#8a7f70]">1–2 members</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm inline-block" style={{ background: '#1e4a7c' }} />
-              <span className="text-[10px] text-[#8a7f70]">3+ members</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm inline-block" style={{ background: '#0a1628' }} />
-              <span className="text-[10px] text-[#8a7f70]">Selected</span>
-            </div>
+            <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm inline-block" style={{ background: '#4a8fc4' }} /><span className="text-[10px] text-[#8a7f70]">1–2 members</span></div>
+            <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm inline-block" style={{ background: '#1e4a7c' }} /><span className="text-[10px] text-[#8a7f70]">3+ members</span></div>
+            <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm inline-block" style={{ background: '#0a1628' }} /><span className="text-[10px] text-[#8a7f70]">Selected</span></div>
             <p className="text-[10px] text-[#8a7f70] ml-auto hidden sm:block">Click a state to see members</p>
           </div>
         </div>
@@ -342,39 +338,20 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
             className="w-full lg:w-72 flex-shrink-0 bg-white border border-[rgba(180,168,150,0.35)] rounded-xl flex flex-col overflow-hidden"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            {/* Panel header */}
             <div className="bg-[#0a1628] px-4 py-3 flex items-start justify-between gap-2">
               <div>
                 <p className="font-semibold text-white text-sm">{selectedState.stateName}</p>
                 <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
-                  <p className="text-[10px] text-gray-400">{selectedState.totalCount} total</p>
-                  {selectedState.currentPlayerCount > 0 && (
-                    <p className="text-[10px] text-[#6db990]">{selectedState.currentPlayerCount} current player{selectedState.currentPlayerCount > 1 ? 's' : ''}</p>
-                  )}
-                  {selectedState.alumniCount > 0 && (
-                    <p className="text-[10px] text-gray-400">{selectedState.alumniCount} alum{selectedState.alumniCount !== 1 ? 'ni' : ''}</p>
-                  )}
-                  {selectedState.openToCoffeeCount > 0 && (
-                    <p className="text-[10px] text-[#6db990]">{selectedState.openToCoffeeCount} coffee</p>
-                  )}
-                  {selectedState.openToGolfCount > 0 && (
-                    <p className="text-[10px] text-[#6db990]">{selectedState.openToGolfCount} golf</p>
-                  )}
+                  <p className="text-[10px] text-gray-400">{filteredMembers.length} member{filteredMembers.length !== 1 ? 's' : ''}</p>
+                  {selectedState.currentPlayerCount > 0 && <p className="text-[10px] text-[#6db990]">{selectedState.currentPlayerCount} current</p>}
+                  {selectedState.alumniCount > 0 && <p className="text-[10px] text-gray-400">{selectedState.alumniCount} alumni</p>}
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setSelected(null)}
-                className="text-gray-400 hover:text-white text-lg leading-none mt-0.5 flex-shrink-0"
-              >
-                &times;
-              </button>
+              <button type="button" onClick={() => setSelected(null)} className="text-gray-400 hover:text-white text-lg leading-none mt-0.5 flex-shrink-0">&times;</button>
             </div>
-
-            {/* Member list */}
             <div className="p-3 space-y-2 overflow-y-auto flex-1" style={{ maxHeight: 380 }}>
               {filteredMembers.length === 0 ? (
-                <p className="text-xs text-[#8a7f70] py-2">No members match this filter.</p>
+                <p className="text-xs text-[#8a7f70] py-2">No members match this filter. Try another year or state.</p>
               ) : (
                 filteredMembers.map(m => <MemberCard key={m.personId} member={m} />)
               )}
@@ -395,11 +372,7 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
                 key={stateInfo.stateCode}
                 type="button"
                 onClick={() => setSelected(prev => prev === stateInfo.stateCode ? null : stateInfo.stateCode)}
-                className={`text-left bg-white border rounded-xl p-4 transition-all ${
-                  selected === stateInfo.stateCode
-                    ? 'border-[#0a1628] shadow-sm'
-                    : 'border-[rgba(180,168,150,0.35)] hover:border-[#0a1628]/30'
-                }`}
+                className={`text-left bg-white border rounded-xl p-4 transition-all ${selected === stateInfo.stateCode ? 'border-[#0a1628] shadow-sm' : 'border-[rgba(180,168,150,0.35)] hover:border-[#0a1628]/30'}`}
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
               >
                 <div className="flex items-center justify-between gap-2 mb-1">
@@ -408,19 +381,11 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
                     {stateInfo.currentPlayerCount} player{stateInfo.currentPlayerCount > 1 ? 's' : ''}
                   </span>
                 </div>
-                {stateInfo.members
-                  .filter(m => m.memberRole === 'current_player')
-                  .map(m => {
-                    const cls = m.classYearEstimate?.split(' / ')[0] ?? m.classLabel
-                    return (
-                      <p key={m.personId} className="text-xs text-[#4a5568]">
-                        {m.canonicalName}{cls ? ` · ${cls}` : ''}{m.hometown ? ` · ${m.hometown}` : ''}
-                      </p>
-                    )
-                  })}
-                {stateInfo.alumniCount > 0 && (
-                  <p className="text-[10px] text-[#8a7f70] mt-1">{stateInfo.alumniCount} alum{stateInfo.alumniCount !== 1 ? 'ni' : ''} also here</p>
-                )}
+                {stateInfo.members.filter(m => m.memberRole === 'current_player').map(m => {
+                  const cls = m.classYearEstimate?.split(' / ')[0] ?? m.classLabel
+                  return <p key={m.personId} className="text-xs text-[#4a5568]">{m.canonicalName}{cls ? ` · ${cls}` : ''}{m.hometown ? ` · ${m.hometown}` : ''}</p>
+                })}
+                {stateInfo.alumniCount > 0 && <p className="text-[10px] text-[#8a7f70] mt-1">{stateInfo.alumniCount} alum{stateInfo.alumniCount !== 1 ? 'ni' : ''} also here</p>}
               </button>
             ))}
         </div>

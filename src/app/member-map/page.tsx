@@ -123,18 +123,7 @@ export default async function MemberMapPage() {
       </div>
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-8">
-        {states.length === 0 ? (
-          <div
-            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-10 text-center"
-            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-          >
-            <p className="text-sm text-[#8a7f70]">
-              Member locations will appear here as profiles are updated.
-            </p>
-          </div>
-        ) : (
-          <MemberMapClient stateData={states} />
-        )}
+        <MemberMapClient stateData={states} />
 
         <div
           className="mt-10 bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"

@@ -2,7 +2,7 @@ export interface TraditionAchievement {
   label: string
   value: string
   detail: string
-  sourceLabel: string
+  description: string
 }
 
 export interface ProgramTradition {
@@ -13,43 +13,43 @@ export interface ProgramTradition {
 
 export const PENN_GOLF_TRADITION: ProgramTradition = {
   title: 'Penn Golf Tradition',
-  subtitle: 'Championship history, postseason appearances, captains, and the legacy of Penn Golf.',
+  subtitle: 'Championship history, postseason appearances, individual honors, and tournament titles from the Penn Golf record book.',
   achievements: [
     {
       label: 'Ivy League Champions',
-      value: '4 titles',
+      value: '4 Titles',
       detail: '1998 · 2007 · 2012 · 2015',
-      sourceLabel: 'Penn Golf Quick Facts',
+      description: 'Four Ivy crowns, including the 2012 playoff win over Dartmouth.',
     },
     {
-      label: 'Big 5 Champions',
-      value: '2024',
-      detail: 'First among Philadelphia\'s six Division I programs at Aronimink Golf Club',
-      sourceLabel: 'Penn Athletics',
+      label: 'NCAA Championship History',
+      value: 'National Stage',
+      detail: '1947 · 1958 · 1965 · 1973 · 1974',
+      description: 'Penn teams have appeared at the NCAA Championship across five seasons.',
     },
     {
-      label: 'NCAA Postseason History',
-      value: '1972 · 1973 · 1974',
-      detail: 'Individual NCAA appearance in 1972; team appearances in 1973 and 1974',
-      sourceLabel: 'Penn Athletics',
+      label: 'NCAA Regional Appearances',
+      value: 'Regional Stage',
+      detail: '2007 · 2010 · 2012 · 2015',
+      description: 'Penn Golf returned to NCAA regional competition across four modern postseason appearances.',
     },
     {
-      label: 'Eastern Intercollegiate Champions',
-      value: '1974',
-      detail: 'Part of Penn\'s early-1970s postseason legacy',
-      sourceLabel: 'Penn Athletics Hall of Fame',
+      label: 'Team Tournament Titles',
+      value: 'Team Titles',
+      detail: '1996 – 2024',
+      description: 'From Bucknell and Lehigh to Ivy titles and the 2024 Big 5 Championship at Aronimink.',
     },
     {
-      label: 'ECAC Fall Champions',
-      value: '1972',
-      detail: 'A landmark title in program history',
-      sourceLabel: 'Penn Athletics Hall of Fame',
+      label: 'Individual Tournament Titles',
+      value: 'Individual Winners',
+      detail: '1996 – 2017',
+      description: 'Penn golfers have claimed individual titles across Ivy, Big 5, and invitational fields.',
     },
     {
-      label: 'Penn Golf History',
-      value: 'Full Archive',
-      detail: 'Captains, letterwinners, individual honors, and tournament titles on record at Penn Athletics',
-      sourceLabel: 'Penn Athletics',
+      label: 'Individual Honors',
+      value: 'All-America & Ivy Honors',
+      detail: 'Norbury · Wecal · Powell · St. Maxens · Heintz',
+      description: 'All-America honors, Ivy major awards, All-Region recognition, and scholar honors.',
     },
   ],
 }

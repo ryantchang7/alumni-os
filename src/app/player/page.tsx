@@ -128,44 +128,42 @@ function TraditionSection() {
       data-testid="tradition-section"
     >
       <div
-        className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
-        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+        className="rounded-2xl overflow-hidden border border-[rgba(180,168,150,0.28)]"
+        style={{ boxShadow: '0 2px 8px rgba(10,22,40,0.08), 0 16px 40px rgba(10,22,40,0.06)' }}
       >
-        {/* Panel header */}
-        <div className="px-6 pt-6 pb-4">
-          <h2
-            className="text-xl sm:text-2xl font-medium text-[#0a1628] leading-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            {PENN_GOLF_TRADITION.title}
-          </h2>
-          <p className="text-xs text-[#8a7f70] mt-1.5 leading-relaxed max-w-lg">
-            {PENN_GOLF_TRADITION.subtitle}
-          </p>
+        {/* Trophy cabinet header — deep navy */}
+        <div className="bg-[#0a1628] px-6 sm:px-8 pt-6 pb-5 relative overflow-hidden">
+          {/* Subtle horizontal line texture */}
+          <div
+            className="absolute inset-0 opacity-[0.035] pointer-events-none"
+            style={{ backgroundImage: 'repeating-linear-gradient(0deg, white, white 1px, transparent 1px, transparent 22px)' }}
+          />
+          <div className="relative">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/35 mb-2.5">Penn Men&apos;s Golf</p>
+            <h2
+              className="text-xl sm:text-2xl font-medium text-white leading-tight mb-2"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              {PENN_GOLF_TRADITION.title}
+            </h2>
+            <p className="text-[11px] text-white/45 max-w-lg leading-relaxed">{PENN_GOLF_TRADITION.subtitle}</p>
+          </div>
         </div>
-
-        {/* Penn red divider */}
-        <div className="mx-6 h-px bg-[#990000]/25" />
-
-        {/* Plaque grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 divide-x divide-y divide-[rgba(180,168,150,0.25)]">
+        {/* Penn red ribbon */}
+        <div className="h-[3px] bg-gradient-to-r from-[#990000] via-[#bb0000] to-[#990000]" />
+        {/* Plaque grid on parchment */}
+        <div className="bg-[#faf7f2] grid grid-cols-2 sm:grid-cols-3 divide-x divide-y divide-[rgba(180,168,150,0.3)]">
           {PENN_GOLF_TRADITION.achievements.map((a) => (
-            <div key={a.label} className="px-5 py-5">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
-                {a.label}
-              </p>
+            <div key={a.label} className="px-5 sm:px-6 py-5 sm:py-6">
+              <p className="text-[8px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-2.5">{a.label}</p>
               <p
-                className="text-lg sm:text-xl font-medium text-[#0a1628] leading-snug mb-1.5"
+                className="text-[1.25rem] sm:text-[1.45rem] font-medium text-[#0a1628] leading-none mb-2"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
                 {a.value}
               </p>
-              <p className="text-[11px] text-[#4a5568] leading-relaxed">
-                {a.detail}
-              </p>
-              <p className="text-[9px] text-[#b0a898] mt-2 tracking-wide">
-                {a.sourceLabel}
-              </p>
+              <p className="text-[11px] font-medium text-[#3d4a5c] mb-1.5 leading-snug">{a.detail}</p>
+              <p className="text-[10px] text-[#8a7f70] leading-relaxed">{a.description}</p>
             </div>
           ))}
         </div>
