@@ -36,9 +36,7 @@ export async function GET(request: Request, { params }: PageParams) {
     return NextResponse.json({ error: 'Profile not found or not published' }, { status: 404 })
   }
 
-  const isVerified =
-    enrichment?.verificationStatus === 'source_backed' ||
-    enrichment?.verificationStatus === 'manually_verified'
+  const hasCareer = !!(enrichment?.currentRole || enrichment?.currentCompany)
 
   const rosterYearsLabel =
     membership.rosterStartYear !== undefined && membership.rosterEndYear !== undefined
@@ -53,23 +51,32 @@ export async function GET(request: Request, { params }: PageParams) {
       canonicalName: person.canonicalName,
       firstName: person.firstName,
       lastName: person.lastName,
+      memberRole: membership.memberRole ?? 'alumni',
+      memberStatus: membership.memberStatus,
       classLabel: membership.classLabel,
+      classYearEstimate: membership.classYearEstimate,
       rosterStartYear: membership.rosterStartYear,
       rosterEndYear: membership.rosterEndYear,
       rosterYearsLabel,
       hometown: membership.hometown,
       highSchool: membership.highSchool,
       publishedAt: membership.publishedAt,
-      career: isVerified && (enrichment?.currentRole || enrichment?.currentCompany)
+      career: hasCareer
         ? {
             currentRole: enrichment?.currentRole,
             currentCompany: enrichment?.currentCompany,
             city: enrichment?.city,
+            state: enrichment?.state,
           }
         : undefined,
       alumniBio: enrichment?.alumniBio,
       helpTopics: enrichment?.helpTopics,
       contactPreference: enrichment?.contactPreference,
+      openToGolfRounds: enrichment?.openToGolfRounds,
+      openToCoffee: enrichment?.openToCoffee,
+      openToMentorship: enrichment?.openToMentorship,
+      openToWarmIntroductions: enrichment?.openToWarmIntroductions,
+      availabilityLevel: enrichment?.availabilityLevel,
     },
   })
 }

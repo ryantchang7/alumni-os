@@ -779,14 +779,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2006-07"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2007",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "4070c1b9-d151-46fe-bab5-1736d732065f",
@@ -805,14 +801,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2022-23"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2023",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "e609b137-8229-4de9-b771-04c467627e30",
@@ -831,14 +823,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2021-22"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2022",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "f43aa310-bc9f-425d-92db-7b9d32e51c27",
@@ -857,14 +845,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2008-09"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2009",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "30c4dcea-ab87-4e63-871a-f8ddc16fd14e",
@@ -903,14 +887,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2013-14"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2016",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "9a9a21bc-11a4-4554-9529-366be0ffa8c8",
@@ -929,14 +909,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2006-07"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2007",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "25705746-2381-471b-9ab5-2fca35e41115",
@@ -955,14 +931,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2020-21"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2021",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "5ec39c25-cc7a-4777-b7c8-39d848506f8e",
@@ -978,14 +950,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2015-16"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2017",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "d52fcb67-86ae-4f62-b31f-b3fc70efeaea",
@@ -1002,14 +970,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2008-09"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2009",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "f89f862b-c7f8-4914-b73e-25b807fc6953",
@@ -1028,14 +992,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2022-23"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2023",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "189fca5c-6f9c-486c-b9f9-732f60ddad74",
@@ -1054,14 +1014,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2021-22"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2022",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "02c1cace-6440-411a-8bf2-50f8fd1f153d",
@@ -1101,14 +1057,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2016-17"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2020",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "4e290777-aa0f-4b3a-b380-a56af4b34e58",
@@ -1128,14 +1080,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2020-21"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2021",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "4951cead-65d1-474a-90b2-e8f101e16279",
@@ -1154,14 +1102,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2018-19"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2019",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "1514f8e2-0676-488a-a498-c082fe22e0b2",
@@ -1181,14 +1125,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2022-23"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2023",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "1d0d1701-3e15-46a1-a10d-8e6826d3207e",
@@ -1248,14 +1188,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2004-05"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2007",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "7ee9ef6f-9076-486b-9559-08d174d19fe4",
@@ -1274,14 +1210,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2023-24"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2024",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "0ad8786b-e470-47d6-be19-d639edabef4f",
@@ -1300,14 +1232,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2018-19"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2019",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "3981b7d5-cf48-414b-b266-4e6526867f19",
@@ -1326,14 +1254,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2016-17"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2017",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "8684dede-6703-4cc1-a923-1d8d81eda30a",
@@ -1352,14 +1276,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2007-08"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2008",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "91444a19-7540-426f-93d5-e86b2aa5ec44",
@@ -1375,14 +1295,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2022-23"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2026",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "11c57759-6270-4582-9339-dab0cfb7d6c8",
@@ -1401,14 +1317,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2021-22"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2022",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "686c1801-80ce-4a2e-bd98-4658ff0adddd",
@@ -1426,14 +1338,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2024-25"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2026",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "c58ed0ad-6450-474f-8977-25c9775f3c99",
@@ -1452,14 +1360,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2022-23"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2023",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "8c71c4b7-fe46-49fc-9223-d9a991736530",
@@ -1478,14 +1382,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2008-09"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2009",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "7c0f6db8-d0ba-4773-98ae-4fbcf9698a74",
@@ -1504,14 +1404,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2007-08"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2008",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "7b9a199b-0006-44d8-98dd-e7cb7b9b1457",
@@ -1525,14 +1421,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2003-04"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2007",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "f599ae43-9e4a-4348-b67d-872eab504098",
@@ -1548,14 +1440,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2020-21"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2024",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "fd8ebf4d-9e08-4e99-8672-0314a2f6355c",
@@ -1574,14 +1462,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2004-05"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2005",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "78a14abc-fbc0-4881-912c-24ec591637d9",
@@ -1600,14 +1484,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2015-16"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2016",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "2748d9a3-11ee-4eea-a4d3-99bc38bd1eee",
@@ -1626,14 +1506,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2022-23"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2023",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "bb5837ee-961d-4263-a064-16c35748804f",
@@ -1649,14 +1525,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2006-07"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2010",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "518b4c86-1612-4e6d-a4e6-31caa5c746d6",
@@ -1675,14 +1547,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2017-18"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2018",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "73b0bd5f-007b-4fe0-b8fc-ada6901e8bb6",
@@ -1699,14 +1567,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2007-08"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2010",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "efdf2f4c-da17-4072-8b67-9a9edcb45b91",
@@ -1725,14 +1589,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2021-22"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2022",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "214c125a-2fd5-4270-9554-175dc92b54c4",
@@ -1751,14 +1611,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2008-09"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2009",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "83d0e38b-8df3-4a31-a270-fde52ab0801e",
@@ -1776,14 +1632,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2023-24"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2025",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "a8ac1ccb-eb24-4e57-b9b5-f1dfd1fd3692",
@@ -1802,14 +1654,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2004-05"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2005",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "6fc98ddf-edc6-47af-ba53-f739cb739b64",
@@ -1828,14 +1676,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2024-25"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2025",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "a434ae45-3c91-4b41-a0a1-b51937f1a37b",
@@ -1854,14 +1698,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2005-06"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2006",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "859f20e6-78c2-461a-a725-6807ec187c29",
@@ -1877,14 +1717,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2016-17"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2020",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "733d11d2-a2b5-4b14-b03e-7774a9cf75f2",
@@ -1900,14 +1736,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2014-15"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2018",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "38bc5190-524c-4855-9e9a-38cfbb97d05c",
@@ -1924,14 +1756,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2006-07"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2008",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "4e9b3c8b-8715-4d8b-bbc4-b8d66cfc042d",
@@ -1950,14 +1778,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2024-25"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2025",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "fdd49563-6c9b-4176-a6c0-cc0068ed885a",
@@ -1976,14 +1800,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2018-19"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2019",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "44812e28-cd4b-4f33-861f-32ddd462c568",
@@ -1999,14 +1819,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2003-04"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2006",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "e5871a76-ce5e-4ab7-a4ce-2fc897b8544a",
@@ -2025,14 +1841,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2018-19"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2019",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "1700152d-9ada-4602-b9a6-4c83ee306c1e",
@@ -2049,14 +1861,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2020-21"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2023",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "8fd680fc-d10d-4c04-8005-01594f16d192",
@@ -2071,14 +1879,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2001-02"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2003",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "6b38cbfb-db4f-4ff0-96c2-a5c83dac0328",
@@ -2097,14 +1901,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2016-17"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2017",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "6bc443b1-a38e-49a3-b5d3-51abecdb6584",
@@ -2123,14 +1923,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2020-21"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2021",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "b4574b9d-d461-4405-b22c-dbcd541fbadd",
@@ -2147,14 +1943,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2014-15"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2017",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "16b05966-9b8e-41db-93c7-0cca6696019f",
@@ -2195,14 +1987,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2007-08"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2008",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "767b762d-3b46-40a3-a7c0-9c6bcdc55b6d",
@@ -2218,14 +2006,10 @@
         "https://pennathletics.com/sports/mens-golf/roster/2004-05"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": true,
-      "updatedAt": "2026-05-15T03:38:14.081Z",
+      "publishedToNetwork": false,
+      "updatedAt": "2026-05-14T01:01:16.994Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "classYearEstimate": "2005",
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin"
+      "memberRole": "alumni"
     },
     {
       "id": "e9a4e48f-da3d-4999-8b2a-5e08ff53d6fc",
@@ -2270,440 +2054,6 @@
       "publishedByRole": "admin",
       "createdAt": "2026-05-14T16:01:17.923565Z",
       "updatedAt": "2026-05-14T16:01:17.923565Z"
-    },
-    {
-      "id": "588b9b34-895f-4330-a5d6-6de007b5b4f5",
-      "personId": "80827854-e7fb-4dbe-adc8-ddf20ddd19b2",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2006,
-      "rosterEndYear": 2010,
-      "classYearEstimate": "2010",
-      "classLabel": "Sr.",
-      "hometown": "Orinda, Calif.",
-      "highSchool": "Miramonte",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2006-07",
-        "https://pennathletics.com/sports/mens-golf/roster/2007-08",
-        "https://pennathletics.com/sports/mens-golf/roster/2008-09",
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "0efaad2e-2a57-4d88-b82b-2c14557c290a",
-      "personId": "9534ec39-4c0f-420b-b034-e488e97e543c",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2007,
-      "rosterEndYear": 2011,
-      "classYearEstimate": "2011",
-      "classLabel": "Sr.",
-      "hometown": "West Chester, Pa.",
-      "highSchool": "Malvern Prep",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2007-08",
-        "https://pennathletics.com/sports/mens-golf/roster/2008-09",
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10",
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "da3b78ca-63be-48d9-bf2a-83ac2431ee89",
-      "personId": "b108e093-fb83-42e5-b45e-898da2a54e27",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2007,
-      "rosterEndYear": 2011,
-      "classYearEstimate": "2011",
-      "classLabel": "Sr.",
-      "hometown": "Kansas City, Mo.",
-      "highSchool": "Pembroke Hill",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2007-08",
-        "https://pennathletics.com/sports/mens-golf/roster/2008-09",
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10",
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "bf49cefa-5ed5-44a1-890d-a196acb26fdb",
-      "personId": "656465d0-80ed-4556-8b79-c201c10535d5",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2008,
-      "rosterEndYear": 2010,
-      "classYearEstimate": "2012",
-      "classLabel": "So.",
-      "hometown": "Pittsburgh, Pa.",
-      "highSchool": "Shady Side Academy",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2008-09",
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "d33a7075-40fe-4f24-b801-f07920bd56d6",
-      "personId": "8021ebca-c9b0-4fe5-beda-1b19dc652222",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2008,
-      "rosterEndYear": 2011,
-      "classYearEstimate": "2012",
-      "classLabel": "Jr.",
-      "hometown": "San Diego, Calif.",
-      "highSchool": "Coronado",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2008-09",
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10",
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11",
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "7a5d6bcb-9f2d-4183-a665-21492d99e28d",
-      "personId": "6bf31df8-21ee-4d03-9808-b57e7f881e7a",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2008,
-      "rosterEndYear": 2011,
-      "classYearEstimate": "2011",
-      "classLabel": "Sr.",
-      "hometown": "Dayton, Ohio",
-      "highSchool": "Miami Valley School (Cal-Berkeley)",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2008-09",
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10",
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "45fea8ed-0d8b-427b-af3c-062031c6c730",
-      "personId": "f3ecdd5e-48ef-45da-8642-c3e1f037df83",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2008,
-      "rosterEndYear": 2012,
-      "classYearEstimate": "2012",
-      "classLabel": "Sr.",
-      "hometown": "Orinda, Calif.",
-      "highSchool": "Miramonte",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2008-09",
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10",
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11",
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "e98c426c-ac0f-4f77-8e49-b955b91e8587",
-      "personId": "65779c0c-b8f8-484c-9606-896328a8e26c",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2009,
-      "rosterEndYear": 2013,
-      "classYearEstimate": "2013",
-      "classLabel": "Sr.",
-      "hometown": "Washington, D.C.",
-      "highSchool": "Maret School",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10",
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11",
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12",
-        "https://pennathletics.com/sports/mens-golf/roster/2012-13"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "184f30e6-e472-4ab2-b650-597f3dd09369",
-      "personId": "2028d6f7-4ea9-43a8-a4a3-17e74c5f22cf",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2009,
-      "rosterEndYear": 2013,
-      "classYearEstimate": "2013",
-      "classLabel": "Sr.",
-      "hometown": "McMurray, Pa.",
-      "highSchool": "Peter's Township",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10",
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11",
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12",
-        "https://pennathletics.com/sports/mens-golf/roster/2012-13"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "b08fee1b-638b-4846-a0a9-b1a55fc99aa7",
-      "personId": "578bda39-e52c-4c2e-ab31-85db57775187",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2009,
-      "rosterEndYear": 2011,
-      "classYearEstimate": "2012",
-      "classLabel": "Jr.",
-      "hometown": "Darien, Conn.",
-      "highSchool": "Darien (SMU)",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2009-10",
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11",
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "21c5e604-3c04-4922-b39b-4bd50602086c",
-      "personId": "83f8b965-602a-4397-a3c3-b6f830b43dad",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2010,
-      "rosterEndYear": 2011,
-      "classYearEstimate": "2014",
-      "classLabel": "Fr.",
-      "hometown": "Fasano, Italy",
-      "highSchool": "American School of London",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11",
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "5a46164c-afae-4c86-9ffb-3fa96ddbb471",
-      "personId": "c563595b-5561-4219-9cef-9bd56413bd4a",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2010,
-      "rosterEndYear": 2013,
-      "classYearEstimate": "2014",
-      "classLabel": "Jr.",
-      "hometown": "Glendale, Calif.",
-      "highSchool": "Loyola",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11",
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12",
-        "https://pennathletics.com/sports/mens-golf/roster/2012-13"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "2daadf83-53c1-4a03-8c73-1d3932b364df",
-      "personId": "e2702933-4efb-4759-ac46-6871696731cb",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2010,
-      "rosterEndYear": 2014,
-      "classYearEstimate": "2014",
-      "classLabel": "Sr.",
-      "hometown": "Las Vegas, Nev.",
-      "highSchool": "The Meadows School",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11",
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12",
-        "https://pennathletics.com/sports/mens-golf/roster/2012-13",
-        "https://pennathletics.com/sports/mens-golf/roster/2013-14"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "259ad353-b624-40af-bf0c-aefed37a1951",
-      "personId": "7d48ab88-f398-490e-9f85-5e71ac582c25",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2010,
-      "rosterEndYear": 2013,
-      "classYearEstimate": "2013",
-      "classLabel": "Sr.",
-      "hometown": "Brentwood, Calif.",
-      "highSchool": "Brentwood",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2010-11",
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12",
-        "https://pennathletics.com/sports/mens-golf/roster/2012-13"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "8bd32460-e835-402f-bcdd-fd0042be008b",
-      "personId": "c5d01ced-173b-482e-9238-d96ec18e82cb",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2011,
-      "rosterEndYear": 2015,
-      "classYearEstimate": "2015",
-      "classLabel": "Sr.",
-      "hometown": "Jupiter, Fla.",
-      "highSchool": "Cardinal Newman",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12",
-        "https://pennathletics.com/sports/mens-golf/roster/2012-13",
-        "https://pennathletics.com/sports/mens-golf/roster/2013-14",
-        "https://pennathletics.com/sports/mens-golf/roster/2014-15"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "8df83598-ea70-495a-bcec-f7d1e20cd12e",
-      "personId": "5f02289e-47e4-4848-a4e5-b59e161ac03c",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2011,
-      "rosterEndYear": 2015,
-      "classYearEstimate": "2015",
-      "classLabel": "Sr.",
-      "hometown": "Rydal, Pa.",
-      "highSchool": "Abington Senior",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12",
-        "https://pennathletics.com/sports/mens-golf/roster/2012-13",
-        "https://pennathletics.com/sports/mens-golf/roster/2013-14",
-        "https://pennathletics.com/sports/mens-golf/roster/2014-15"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
-    },
-    {
-      "id": "7030dfdd-6f24-48c3-9772-cacd592a96bb",
-      "personId": "63736397-8539-4617-9484-74c2bd6c3ba6",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "memberRole": "alumni",
-      "memberStatus": "imported",
-      "rosterStartYear": 2011,
-      "rosterEndYear": 2015,
-      "classYearEstimate": "2015",
-      "classLabel": "Sr.",
-      "hometown": "Greenwich, Conn.",
-      "highSchool": "Greenwich",
-      "bioUrls": [],
-      "sourceUrls": [
-        "https://pennathletics.com/sports/mens-golf/roster/2011-12",
-        "https://pennathletics.com/sports/mens-golf/roster/2012-13",
-        "https://pennathletics.com/sports/mens-golf/roster/2013-14",
-        "https://pennathletics.com/sports/mens-golf/roster/2014-15"
-      ],
-      "confidence": 0.9,
-      "publishedToNetwork": true,
-      "publishedAt": "2026-05-15T03:38:14.081Z",
-      "publishedByRole": "admin",
-      "createdAt": "2026-05-15T03:38:14.081Z",
-      "updatedAt": "2026-05-15T03:38:14.081Z"
     }
   ],
   "reviewItems": [
@@ -3090,6 +2440,5 @@
       "updatedAt": "2026-05-15T00:11:36.372Z"
     }
   ],
-  "clubhouseGatheringRequests": [],
-  "profileClaimRequests": []
+  "clubhouseGatheringRequests": []
 }

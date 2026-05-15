@@ -33,6 +33,11 @@ const tools = [
     description: 'Manage rounds, coffees, drinks, dinners, and events shown on Play and Gather pages.',
     href: '/internal/gatherings',
   },
+  {
+    label: 'Profile Claims',
+    description: 'Review alumni requests to claim their imported profile.',
+    href: '/internal/claims',
+  },
 ]
 
 export default function InternalPage() {

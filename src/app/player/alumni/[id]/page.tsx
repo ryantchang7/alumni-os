@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import ClaimModule from './ClaimModule'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -33,11 +34,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
 
   if (enrichment?.visibleToPlayers === false) notFound()
 
-  const isVerified =
-    enrichment?.verificationStatus === 'source_backed' ||
-    enrichment?.verificationStatus === 'manually_verified'
-
-  const hasCareer = isVerified && (enrichment?.currentRole || enrichment?.currentCompany)
+  const hasCareer = !!(enrichment?.currentRole || enrichment?.currentCompany)
 
   const isCurrentPlayer = membership.memberRole === 'current_player'
 
@@ -95,17 +92,12 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               </h1>
               <p className="text-gray-400 text-sm mt-2">{subtitle}</p>
 
-              {hasCareer && (enrichment?.currentRole || enrichment?.currentCompany) && (
-                <div className="flex items-center gap-2 mt-3">
-                  <p className="text-gray-300 text-sm">
-                    {[enrichment?.currentRole, enrichment?.currentCompany]
-                      .filter(Boolean)
-                      .join(' at ')}
-                  </p>
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#2d6a4f]/20 border border-[#2d6a4f]/40 text-[#2d6a4f]">
-                    Penn Golf verified
-                  </span>
-                </div>
+              {hasCareer && (
+                <p className="text-gray-300 text-sm mt-3">
+                  {[enrichment?.currentRole, enrichment?.currentCompany]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </p>
               )}
 
               {location && (
@@ -211,19 +203,14 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             </dl>
           </div>
 
-          {/* Career — only if verified */}
+          {/* Career */}
           {hasCareer && (
             <div
               data-testid="career-contact-card"
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
-              <div className="flex items-center justify-between gap-3 mb-4">
-                <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider">Career</p>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#2d6a4f]/10 border border-[#2d6a4f]/30 text-[#2d6a4f]">
-                  Penn Golf verified
-                </span>
-              </div>
+              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">Career</p>
               <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
                 {enrichment?.currentRole && (
                   <div>
@@ -287,6 +274,11 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">About</p>
               <p className="text-sm text-[#0a1628] leading-relaxed">{enrichment.alumniBio}</p>
             </div>
+          )}
+
+          {/* Claim module — alumni only, unclaimed profiles */}
+          {!isCurrentPlayer && membership.memberStatus !== 'verified' && membership.memberStatus !== 'active' && (
+            <ClaimModule memberId={person.id} memberName={person.canonicalName} />
           )}
 
           {/* Action buttons */}

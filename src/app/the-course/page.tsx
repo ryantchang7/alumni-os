@@ -62,6 +62,29 @@ export default async function TheCoursePage() {
     ) as GatheringData[]
   }
 
+  const actionCards = [
+    {
+      label: 'Find a Round',
+      description: 'Browse alumni open to hosting or joining. Golf travels well.',
+      href: '#open-to-rounds',
+    },
+    {
+      label: 'Host a Round',
+      description: 'Add yourself to the Member Book as open to hosting a round.',
+      href: '/alumni',
+    },
+    {
+      label: 'Browse the Map',
+      description: 'See where Penn Golf alumni are playing across the country.',
+      href: '/player?tab=map',
+    },
+    {
+      label: 'Alumni Clubs',
+      description: 'Members at notable clubs who may be able to arrange access.',
+      href: '/player/search?teamSlug=penn-mens-golf',
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
@@ -75,6 +98,24 @@ export default async function TheCoursePage() {
       </div>
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
+
+        {/* Action cards */}
+        <section>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {actionCards.map(card => (
+              <Link
+                key={card.label}
+                href={card.href}
+                className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 hover:shadow-md hover:border-[rgba(10,22,40,0.2)] transition-all group"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+              >
+                <p className="font-semibold text-[#0a1628] text-sm mb-1">{card.label}</p>
+                <p className="text-xs text-[#8a7f70] leading-snug mb-3">{card.description}</p>
+                <span className="text-xs font-medium text-[#990000] group-hover:underline">&rarr;</span>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {/* Organized Rounds */}
         {rounds.length > 0 && (
@@ -92,7 +133,7 @@ export default async function TheCoursePage() {
         )}
 
         {/* Open to a Round — alumni */}
-        <section>
+        <section id="open-to-rounds">
           <div className="flex items-baseline gap-3 mb-1">
             <h2 className="text-base font-semibold text-[#0a1628]">Open to a Round</h2>
             {openToRounds.length > 0 && (

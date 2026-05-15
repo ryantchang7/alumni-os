@@ -38,9 +38,7 @@ export async function GET(request: Request) {
 
       if (enrichment?.visibleToPlayers === false) return null
 
-      const isVerified =
-        enrichment?.verificationStatus === 'source_backed' ||
-        enrichment?.verificationStatus === 'manually_verified'
+      const hasCareer = !!(enrichment?.currentRole || enrichment?.currentCompany)
 
       return {
         personId: person.id,
@@ -48,6 +46,7 @@ export async function GET(request: Request) {
         firstName: person.firstName,
         lastName: person.lastName,
         memberRole: membership.memberRole ?? 'alumni',
+        memberStatus: membership.memberStatus,
         classLabel: membership.classLabel,
         classYearEstimate: membership.classYearEstimate,
         rosterStartYear: membership.rosterStartYear,
@@ -56,11 +55,12 @@ export async function GET(request: Request) {
         hometown: membership.hometown,
         highSchool: membership.highSchool,
         publishedAt: membership.publishedAt,
-        career: isVerified && (enrichment?.currentRole || enrichment?.currentCompany)
+        career: hasCareer
           ? {
               currentRole: enrichment?.currentRole,
               currentCompany: enrichment?.currentCompany,
               city: enrichment?.city,
+              state: enrichment?.state,
             }
           : undefined,
         bio: enrichment?.alumniBio,
@@ -71,7 +71,6 @@ export async function GET(request: Request) {
         openToMentorship: enrichment?.openToMentorship,
         openToWarmIntroductions: enrichment?.openToWarmIntroductions,
         availabilityLevel: enrichment?.availabilityLevel,
-        contactPreference: enrichment?.contactPreference,
       }
     })
     .filter((p): p is NonNullable<typeof p> => p !== null)

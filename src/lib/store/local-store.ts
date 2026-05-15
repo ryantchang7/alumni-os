@@ -18,6 +18,7 @@ import type {
   PlayerAlumniRequest,
   ClubhouseGathering,
   ClubhouseGatheringRequest,
+  ClubhouseProfileClaimRequest,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -42,6 +43,7 @@ const EMPTY_STORE: Store = {
   pre2000Candidates: [],
   clubhouseGatherings: [],
   clubhouseGatheringRequests: [],
+  profileClaimRequests: [],
 }
 
 function normalizeName(name: string): string {
@@ -112,6 +114,7 @@ export async function readStore(): Promise<Store> {
   if (!parsed.pre2000Candidates) parsed.pre2000Candidates = []
   if (!parsed.clubhouseGatherings) parsed.clubhouseGatherings = []
   if (!parsed.clubhouseGatheringRequests) parsed.clubhouseGatheringRequests = []
+  if (!parsed.profileClaimRequests) parsed.profileClaimRequests = []
   return parsed
 }
 
@@ -880,4 +883,71 @@ export async function updateClubhouseGatheringRequestStatus(
   }
   await writeStore(store)
   return store.clubhouseGatheringRequests[idx]
+}
+
+// ── Profile Claim Requests ────────────────────────────────────────────────────
+
+export async function createProfileClaimRequest(input: {
+  teamId: string
+  memberId: string
+  requesterName: string
+  requesterEmail: string
+  pennGolfYears?: string
+  note?: string
+}): Promise<ClubhouseProfileClaimRequest> {
+  const store = await readStore()
+  const now = new Date().toISOString()
+  const claim: ClubhouseProfileClaimRequest = {
+    id: crypto.randomUUID(),
+    teamId: input.teamId,
+    memberId: input.memberId,
+    requesterName: input.requesterName.trim(),
+    requesterEmail: input.requesterEmail.trim().toLowerCase(),
+    pennGolfYears: input.pennGolfYears?.trim() || undefined,
+    note: input.note?.trim() || undefined,
+    status: 'pending',
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.profileClaimRequests.push(claim)
+  await writeStore(store)
+  return claim
+}
+
+export async function getProfileClaimRequestsForTeam(
+  teamId: string,
+): Promise<ClubhouseProfileClaimRequest[]> {
+  const store = await readStore()
+  return store.profileClaimRequests.filter(r => r.teamId === teamId)
+}
+
+export async function updateProfileClaimRequestStatus(
+  id: string,
+  status: ClubhouseProfileClaimRequest['status'],
+): Promise<ClubhouseProfileClaimRequest | null> {
+  const store = await readStore()
+  const idx = store.profileClaimRequests.findIndex(r => r.id === id)
+  if (idx === -1) return null
+  const now = new Date().toISOString()
+  store.profileClaimRequests[idx] = {
+    ...store.profileClaimRequests[idx],
+    status,
+    respondedAt: now,
+    updatedAt: now,
+  }
+  if (status === 'approved') {
+    const claim = store.profileClaimRequests[idx]
+    const memberIdx = store.teamMemberships.findIndex(
+      m => m.personId === claim.memberId && m.teamId === claim.teamId,
+    )
+    if (memberIdx !== -1) {
+      store.teamMemberships[memberIdx] = {
+        ...store.teamMemberships[memberIdx],
+        memberStatus: 'verified',
+        updatedAt: now,
+      }
+    }
+  }
+  await writeStore(store)
+  return store.profileClaimRequests[idx]
 }

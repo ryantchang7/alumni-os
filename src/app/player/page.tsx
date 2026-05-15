@@ -96,7 +96,9 @@ interface PlayerProfile {
   canonicalName: string
   firstName?: string
   lastName?: string
+  memberRole?: 'current_player' | 'alumni'
   classLabel?: string
+  classYearEstimate?: string
   rosterStartYear?: number
   rosterEndYear?: number
   rosterYearsLabel: string
@@ -150,38 +152,33 @@ const rooms = [
   },
 ]
 
-function ProfileCard({ profile, index }: { profile: PlayerProfile; index: number }) {
-  const careerLine =
-    profile.career?.currentRole && profile.career?.currentCompany
-      ? `${profile.career.currentRole} at ${profile.career.currentCompany}`
-      : profile.career?.currentRole ?? profile.career?.currentCompany ?? null
+function MiniMemberCard({ profile, teamSlug }: { profile: PlayerProfile; teamSlug: string }) {
+  const isCurrentPlayer = profile.memberRole === 'current_player'
+  const subline = isCurrentPlayer
+    ? (profile.classYearEstimate?.split(' / ')[0] ?? profile.classLabel ?? null)
+    : profile.rosterYearsLabel !== '—'
+      ? `Penn Golf ${profile.rosterYearsLabel}`
+      : null
+  const careerLine = profile.career?.currentRole && profile.career?.currentCompany
+    ? `${profile.career.currentRole} · ${profile.career.currentCompany}`
+    : profile.career?.currentRole ?? profile.career?.currentCompany ?? null
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...spring, delay: Math.min(index * 0.04, 0.4) }}
+    <Link
+      href={`/player/alumni/${profile.personId}?teamSlug=${teamSlug}`}
+      className="block bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 hover:bg-white hover:shadow-sm transition-all group flex-shrink-0 w-[200px]"
     >
-      <Link
-        href={`/player/alumni/${profile.personId}`}
-        className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-lg p-4 hover:shadow-md transition-shadow"
-        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-      >
-        <p className="font-semibold text-[#0a1628] text-sm leading-snug mb-1">{profile.canonicalName}</p>
-        <div className="space-y-0.5">
-          {(profile.classLabel || profile.rosterYearsLabel !== '—') && (
-            <p className="text-xs text-[#8a7f70]">
-              {[profile.classLabel, profile.rosterYearsLabel !== '—' ? `Penn Golf ${profile.rosterYearsLabel}` : null]
-                .filter(Boolean)
-                .join(' · ')}
-            </p>
-          )}
-          {profile.hometown && <p className="text-xs text-[#8a7f70]">{profile.hometown}</p>}
-          {careerLine && <p className="text-xs text-[#4a5568] pt-0.5">{careerLine}</p>}
-        </div>
-        <span className="text-xs font-medium text-[#990000] mt-3 block">View profile &rarr;</span>
-      </Link>
-    </motion.div>
+      <div className="flex items-start justify-between gap-1 mb-1">
+        <p className="font-semibold text-[#0a1628] text-xs leading-snug truncate">{profile.canonicalName}</p>
+        {isCurrentPlayer && (
+          <span className="flex-shrink-0 text-[9px] font-semibold text-[#2d6a4f] bg-[#2d6a4f]/10 px-1.5 py-0.5 rounded-full">
+            Player
+          </span>
+        )}
+      </div>
+      {subline && <p className="text-[10px] text-[#8a7f70]">{subline}</p>}
+      {careerLine && <p className="text-[10px] text-[#4a5568] mt-0.5 truncate">{careerLine}</p>}
+    </Link>
   )
 }
 
@@ -267,53 +264,78 @@ function ClubhouseInner() {
           </div>
         </div>
 
-        {/* Members section */}
-        {loading ? (
-          <div className="py-16 text-center">
-            <p className="text-sm text-[#8a7f70]">Loading members...</p>
-          </div>
-        ) : profiles.length === 0 ? (
-          <div className="py-16 text-center" data-testid="network-empty-state">
-            <p className="text-base font-semibold text-[#0a1628] mb-2">No members published yet</p>
-            <p className="text-sm text-[#8a7f70] max-w-sm mx-auto">
-              Profiles are approved by Penn Golf captains before they appear here.
-            </p>
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...spring, delay: 0.5 }}
-            className="pb-16"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-semibold text-[#0a1628]">
-                Members ({profiles.length})
-              </h2>
-              <Link href="/player/search" className="text-xs text-[#990000] hover:underline font-medium">
-                Browse all &rarr;
-              </Link>
-            </div>
-            <div
+        {/* Member Book preview panel */}
+        {!loading && profiles.length > 0 && (() => {
+          const currentPlayers = profiles.filter(p => p.memberRole === 'current_player')
+          const alumni = profiles.filter(p => p.memberRole !== 'current_player')
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...spring, delay: 0.5 }}
+              className="pb-10"
               data-testid="network-alumni-grid"
-              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
             >
-              {profiles.slice(0, 9).map((p, i) => (
-                <ProfileCard key={p.personId} profile={p} index={i} />
-              ))}
-            </div>
-            {profiles.length > 9 && (
-              <div className="mt-6 text-center">
-                <Link
-                  href="/player/search"
-                  className="text-sm font-semibold text-[#990000] hover:underline"
-                >
-                  See all {profiles.length} members &rarr;
-                </Link>
+              <div
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+              >
+                {/* Header */}
+                <div className="px-5 pt-5 pb-4 border-b border-[rgba(180,168,150,0.3)] flex items-center justify-between">
+                  <div>
+                    <h2 className="text-sm font-semibold text-[#0a1628]">Member Book</h2>
+                    <p className="text-xs text-[#8a7f70] mt-0.5">
+                      {profiles.length} members · {currentPlayers.length} current players · {alumni.length} alumni
+                    </p>
+                  </div>
+                  <Link
+                    href={`/player/search?teamSlug=${teamSlug}`}
+                    className="text-xs font-semibold text-[#990000] hover:underline whitespace-nowrap"
+                  >
+                    Browse all &rarr;
+                  </Link>
+                </div>
+
+                {/* Current players row */}
+                {currentPlayers.length > 0 && (
+                  <div className="px-5 py-4 border-b border-[rgba(180,168,150,0.2)]">
+                    <p className="text-[10px] font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
+                      Current Players
+                    </p>
+                    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                      {currentPlayers.map(p => (
+                        <MiniMemberCard key={p.personId} profile={p} teamSlug={teamSlug} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Alumni row */}
+                {alumni.length > 0 && (
+                  <div className="px-5 py-4">
+                    <p className="text-[10px] font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
+                      Alumni
+                    </p>
+                    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                      {alumni.slice(0, 12).map(p => (
+                        <MiniMemberCard key={p.personId} profile={p} teamSlug={teamSlug} />
+                      ))}
+                      {alumni.length > 12 && (
+                        <Link
+                          href={`/player/search?teamSlug=${teamSlug}`}
+                          className="flex-shrink-0 w-[140px] bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 flex flex-col items-center justify-center hover:bg-white transition-colors"
+                        >
+                          <p className="text-xs font-semibold text-[#0a1628]">+{alumni.length - 12} more</p>
+                          <p className="text-[10px] text-[#990000] mt-1">View all alumni &rarr;</p>
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </motion.div>
-        )}
+            </motion.div>
+          )
+        })()}
 
         {/* This Week in the Clubhouse */}
         <ThisWeekPanel teamSlug={teamSlug} />

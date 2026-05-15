@@ -66,6 +66,7 @@ export interface TeamMembership {
   personId: string
   teamId: string
   memberRole?: 'current_player' | 'alumni'
+  memberStatus?: 'imported' | 'verified' | 'active'
   rosterStartYear?: number
   rosterEndYear?: number
   classYearEstimate?: string
@@ -207,6 +208,20 @@ export interface PlayerAlumniRequest {
   updatedAt: string
 }
 
+export interface ClubhouseProfileClaimRequest {
+  id: string
+  teamId: string
+  memberId: string
+  requesterName: string
+  requesterEmail: string
+  pennGolfYears?: string
+  note?: string
+  status: 'pending' | 'approved' | 'declined'
+  createdAt: string
+  updatedAt: string
+  respondedAt?: string
+}
+
 export interface ClubhouseGathering {
   id: string
   teamId: string
@@ -257,4 +272,5 @@ export interface Store {
   pre2000Candidates: Pre2000Candidate[]
   clubhouseGatherings: ClubhouseGathering[]
   clubhouseGatheringRequests: ClubhouseGatheringRequest[]
+  profileClaimRequests: ClubhouseProfileClaimRequest[]
 }

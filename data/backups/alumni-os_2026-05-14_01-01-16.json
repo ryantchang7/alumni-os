@@ -1,0 +1,161 @@
+{
+  "teams": [
+    {
+      "id": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "schoolName": "University of Pennsylvania",
+      "teamName": "Men's Golf",
+      "sport": "Golf",
+      "gender": "Men",
+      "websiteUrl": "https://pennathletics.com/sports/mens-golf/roster",
+      "slug": "penn-mens-golf",
+      "createdAt": "2026-05-13T20:43:52.961Z"
+    }
+  ],
+  "scrapeRuns": [],
+  "crawledPages": [],
+  "extractedRosterEntries": [
+    {
+      "id": "1a6f0ce2-dcd4-46cd-bc47-3b0667e71c4c",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "fullName": "Ryan Chang",
+      "extractionConfidence": 0.95,
+      "sourceUrl": "https://pennathletics.com/sports/mens-golf/roster",
+      "seasonYear": "2025-26",
+      "status": "promoted"
+    },
+    {
+      "id": "22cc4b0a-0ac5-42d6-ad39-11b37c41ea72",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "fullName": "Hayden Adams",
+      "extractionConfidence": 0.92,
+      "sourceUrl": "https://pennathletics.com/sports/mens-golf/roster",
+      "seasonYear": "2025-26",
+      "status": "promoted"
+    },
+    {
+      "id": "a0bce876-542b-44a0-a707-e43b023aaf72",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "fullName": "Arjun Caprihan",
+      "extractionConfidence": 0.88,
+      "sourceUrl": "https://pennathletics.com/sports/mens-golf/roster",
+      "seasonYear": "2025-26",
+      "status": "promoted"
+    }
+  ],
+  "people": [
+    {
+      "id": "4a41af96-b5f4-455d-8d94-55a52efa6ad8",
+      "canonicalName": "Ryan Chang",
+      "normalizedName": "ryan chang",
+      "firstName": "Ryan",
+      "lastName": "Chang",
+      "createdAt": "2026-05-13T20:43:52.962Z"
+    },
+    {
+      "id": "3431f8d8-6d11-45ff-9b88-2fe19935835c",
+      "canonicalName": "Hayden Adams",
+      "normalizedName": "hayden adams",
+      "firstName": "Hayden",
+      "lastName": "Adams",
+      "createdAt": "2026-05-13T20:43:52.962Z"
+    },
+    {
+      "id": "9d3e1f66-b95f-4065-b9d8-8a300e84bd89",
+      "canonicalName": "Arjun Caprihan",
+      "normalizedName": "arjun caprihan",
+      "firstName": "Arjun",
+      "lastName": "Caprihan",
+      "createdAt": "2026-05-13T20:43:52.962Z"
+    }
+  ],
+  "teamMemberships": [
+    {
+      "id": "aa8b78c5-846f-44d6-bde3-0cac93bd9881",
+      "personId": "4a41af96-b5f4-455d-8d94-55a52efa6ad8",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "rosterStartYear": 2025,
+      "rosterEndYear": 2026,
+      "bioUrls": [],
+      "sourceUrls": [
+        "https://pennathletics.com/sports/mens-golf/roster"
+      ],
+      "confidence": 0.95,
+      "createdAt": "2026-05-13T20:43:52.962Z",
+      "updatedAt": "2026-05-13T20:43:52.963Z",
+      "publishedToNetwork": true,
+      "publishedAt": "2026-05-13T20:43:52.963Z",
+      "publishedByRole": "captain"
+    },
+    {
+      "id": "c8b504e0-235d-4a58-861e-5ee7695a7eb1",
+      "personId": "3431f8d8-6d11-45ff-9b88-2fe19935835c",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "rosterStartYear": 2025,
+      "rosterEndYear": 2026,
+      "bioUrls": [],
+      "sourceUrls": [
+        "https://pennathletics.com/sports/mens-golf/roster"
+      ],
+      "confidence": 0.92,
+      "createdAt": "2026-05-13T20:43:52.962Z",
+      "updatedAt": "2026-05-13T20:43:52.963Z",
+      "publishedToNetwork": true,
+      "publishedAt": "2026-05-13T20:43:52.963Z",
+      "publishedByRole": "captain"
+    },
+    {
+      "id": "b04d4f5f-5b13-41d6-87e8-937c55f82aa5",
+      "personId": "9d3e1f66-b95f-4065-b9d8-8a300e84bd89",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "rosterStartYear": 2025,
+      "rosterEndYear": 2026,
+      "bioUrls": [],
+      "sourceUrls": [
+        "https://pennathletics.com/sports/mens-golf/roster"
+      ],
+      "confidence": 0.88,
+      "createdAt": "2026-05-13T20:43:52.962Z",
+      "updatedAt": "2026-05-13T20:43:52.963Z",
+      "publishedToNetwork": true,
+      "publishedAt": "2026-05-13T20:43:52.963Z",
+      "publishedByRole": "captain"
+    }
+  ],
+  "reviewItems": [],
+  "historicalImportRuns": [],
+  "historicalSeasonResults": [],
+  "personEnrichments": [
+    {
+      "id": "54369d66-d6ae-4352-a432-5f23243839b5",
+      "personId": "9d3e1f66-b95f-4065-b9d8-8a300e84bd89",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "visibleToPlayers": false,
+      "verificationStatus": "unverified",
+      "sourceUrls": [],
+      "createdAt": "2026-05-13T20:43:52.964Z",
+      "updatedAt": "2026-05-13T20:43:52.964Z"
+    },
+    {
+      "id": "0c715ea2-9314-498f-9b78-146c7d59fb90",
+      "personId": "4a41af96-b5f4-455d-8d94-55a52efa6ad8",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "currentRole": "Analyst",
+      "relationshipStatus": "not_started",
+      "verificationStatus": "unverified",
+      "sourceUrls": [],
+      "createdAt": "2026-05-13T20:43:52.964Z",
+      "updatedAt": "2026-05-13T20:43:52.966Z",
+      "currentCompany": "Goldman Sachs",
+      "city": "New York",
+      "alumniBio": "Working in finance.",
+      "helpTopics": [
+        "Finance / banking",
+        "Career advice"
+      ],
+      "contactPreference": "not_available",
+      "visibleToPlayers": true
+    }
+  ],
+  "enrichmentSources": [],
+  "playerAlumniRequests": []
+}
