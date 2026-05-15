@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { MessageSquare, Users, Flag, CalendarDays, MapPin, Calendar } from 'lucide-react'
+import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
 
 interface GatheringSnippet {
   id: string
@@ -117,6 +118,62 @@ interface PlayerProfile {
 
 const spring = { type: 'spring' as const, stiffness: 120, damping: 22, mass: 0.8 }
 
+function TraditionSection() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...spring, delay: 0.45 }}
+      className="mb-8"
+      data-testid="tradition-section"
+    >
+      <div
+        className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
+        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+      >
+        {/* Panel header */}
+        <div className="px-6 pt-6 pb-4">
+          <h2
+            className="text-xl sm:text-2xl font-medium text-[#0a1628] leading-tight"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            {PENN_GOLF_TRADITION.title}
+          </h2>
+          <p className="text-xs text-[#8a7f70] mt-1.5 leading-relaxed max-w-lg">
+            {PENN_GOLF_TRADITION.subtitle}
+          </p>
+        </div>
+
+        {/* Penn red divider */}
+        <div className="mx-6 h-px bg-[#990000]/25" />
+
+        {/* Plaque grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 divide-x divide-y divide-[rgba(180,168,150,0.25)]">
+          {PENN_GOLF_TRADITION.achievements.map((a) => (
+            <div key={a.label} className="px-5 py-5">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                {a.label}
+              </p>
+              <p
+                className="text-lg sm:text-xl font-medium text-[#0a1628] leading-snug mb-1.5"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                {a.value}
+              </p>
+              <p className="text-[11px] text-[#4a5568] leading-relaxed">
+                {a.detail}
+              </p>
+              <p className="text-[9px] text-[#b0a898] mt-2 tracking-wide">
+                {a.sourceLabel}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 const rooms = [
   {
     id: 'ask',
@@ -226,7 +283,7 @@ function ClubhouseInner() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.35 }}
           >
-            Your direct line to every Penn Golf alumnus. Ask. Meet. Play. Gather.
+            Member Book, career connections, and the Penn Golf community in one place.
           </motion.p>
         </div>
       </div>
@@ -263,6 +320,9 @@ function ClubhouseInner() {
             })}
           </div>
         </div>
+
+        {/* Penn Golf Tradition */}
+        <TraditionSection />
 
         {/* Member Book preview panel */}
         {!loading && profiles.length > 0 && (() => {

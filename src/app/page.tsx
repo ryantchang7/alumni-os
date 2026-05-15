@@ -18,7 +18,7 @@ export default function LandingPage() {
   return (
     <div className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden">
 
-      {/* Background image */}
+      {/* Background image — full composition, bright */}
       <Image
         src="/clubhouse-cover.jpg"
         fill
@@ -29,11 +29,22 @@ export default function LandingPage() {
         data-testid="cover-image"
       />
 
-      {/* Navy overlay — lets the image breathe but grounds the text */}
-      <div className="absolute inset-0 bg-[#0a1628]/40 pointer-events-none" />
+      {/* Very light navy tint — preserves image brightness */}
+      <div className="absolute inset-0 bg-[#0a1628]/18 pointer-events-none" />
 
-      {/* Bottom gradient for text legibility */}
-      <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#0a1628]/70 via-[#0a1628]/25 to-transparent pointer-events-none" />
+      {/* Soft radial shadow behind text for legibility without darkening the image */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '640px',
+          height: '340px',
+          background: 'radial-gradient(ellipse at center, rgba(10,22,40,0.28) 0%, transparent 70%)',
+          borderRadius: '50%',
+        }}
+      />
 
       {/* Curtain that lifts on load */}
       <motion.div
@@ -44,11 +55,12 @@ export default function LandingPage() {
       />
 
       {/* Content — centered vertically */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-end pb-[12dvh] sm:pb-[10dvh] px-6 text-center">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center">
 
         {/* Eyebrow */}
         <motion.p
-          className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.3em] text-white/50 mb-4 sm:mb-5"
+          className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.35em] text-white/75 mb-5 sm:mb-6"
+          style={{ textShadow: '0 1px 10px rgba(10,22,40,0.55)' }}
           initial={{ opacity: 0, y: 8 }}
           animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
           transition={{ delay: 0.9, duration: 0.7, ease }}
@@ -56,10 +68,14 @@ export default function LandingPage() {
           Welcome to the
         </motion.p>
 
-        {/* Title — serif */}
+        {/* Title */}
         <motion.h1
-          className="text-white text-[2.1rem] sm:text-5xl md:text-6xl leading-[1.1] tracking-tight mb-8 sm:mb-10"
-          style={{ fontFamily: 'var(--font-playfair)', fontWeight: 500 }}
+          className="text-white text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] leading-[1.05] tracking-tight mb-10 sm:mb-12"
+          style={{
+            fontFamily: 'var(--font-playfair)',
+            fontWeight: 500,
+            textShadow: '0 2px 24px rgba(10,22,40,0.5), 0 1px 6px rgba(10,22,40,0.4)',
+          }}
           initial={{ opacity: 0, y: 18 }}
           animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
           transition={{ delay: 1.1, duration: 0.8, ease }}
@@ -68,7 +84,7 @@ export default function LandingPage() {
           Penn Golf Clubhouse
         </motion.h1>
 
-        {/* Buttons */}
+        {/* Buttons — private-club stationery feel */}
         <motion.div
           className="flex flex-col sm:flex-row gap-3 w-full max-w-[280px] sm:max-w-none sm:w-auto"
           initial={{ opacity: 0, y: 12 }}
@@ -78,29 +94,18 @@ export default function LandingPage() {
           <Link
             href="/player"
             data-testid="enter-clubhouse"
-            className="text-sm font-semibold bg-[#f5f0e8] text-[#0a1628] px-8 py-3.5 rounded-lg hover:bg-white transition-colors shadow-lg text-center tracking-wide"
+            className="text-sm font-semibold bg-[#f5f0e8] text-[#0a1628] border border-[rgba(245,240,232,0.9)] px-10 py-3.5 rounded-lg hover:bg-white transition-colors shadow-lg text-center tracking-wide"
           >
             Enter Clubhouse
           </Link>
           <Link
             href="/player/search?teamSlug=penn-mens-golf"
             data-testid="claim-alumni-profile"
-            className="text-sm font-semibold border border-white/35 text-white px-8 py-3.5 rounded-lg hover:bg-white/10 hover:border-white/55 transition-colors text-center tracking-wide"
+            className="text-sm font-semibold border border-white/40 text-white/90 px-10 py-3.5 rounded-lg hover:bg-white/10 hover:border-white/60 transition-colors text-center tracking-wide"
           >
             Claim Alumni Profile
           </Link>
         </motion.div>
-
-        {/* Footer line */}
-        <motion.p
-          className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/30 mt-8"
-          initial={{ opacity: 0 }}
-          animate={ready ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ delay: 2.1, duration: 0.8, ease }}
-          data-testid="private-member-network"
-        >
-          Private Member Network
-        </motion.p>
       </div>
     </div>
   )

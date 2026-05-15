@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Person, TeamMembership } from '@/lib/store/types'
 
 interface PlayerEntry {
@@ -80,13 +81,26 @@ export default async function TeamRoomPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
-        <div className="max-w-[1320px] mx-auto">
-          <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Team Room</p>
-          <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Team Room</h1>
-          <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
-            The 2026-27 Penn Golf team and the alumni who support them.
-          </p>
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14 overflow-hidden">
+        <div className="max-w-[1320px] mx-auto flex items-end justify-between gap-6">
+          <div>
+            <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Team Room</p>
+            <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Team Room</h1>
+            <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
+              Current roster, program tradition, and the alumni who carry Penn Golf forward.
+            </p>
+          </div>
+          {/* Mascot — Penn spirit accent, right side of hero */}
+          <div className="hidden sm:flex flex-shrink-0 items-end self-end pb-0">
+            <Image
+              src="/quaker-golfer.png"
+              alt="Penn Quaker golfer"
+              width={130}
+              height={170}
+              className="object-contain drop-shadow-lg"
+              data-testid="team-room-mascot"
+            />
+          </div>
         </div>
       </div>
 
