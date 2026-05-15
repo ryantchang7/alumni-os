@@ -1,15 +1,11 @@
 import Link from 'next/link'
+import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
 
 interface AlumniEntry {
   person: Person
   membership: TeamMembership
   enrichment: PersonEnrichment
-}
-
-interface CityGroup {
-  city: string
-  members: AlumniEntry[]
 }
 
 function AlumniCard({ entry }: { entry: AlumniEntry }) {
@@ -21,12 +17,8 @@ function AlumniCard({ entry }: { entry: AlumniEntry }) {
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
       <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
-      {enrichment.city && (
-        <p className="text-xs text-[#8a7f70] mt-0.5">{enrichment.city}</p>
-      )}
-      {membership.classLabel && (
-        <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>
-      )}
+      {enrichment.city && <p className="text-xs text-[#8a7f70] mt-0.5">{enrichment.city}</p>}
+      {membership.classLabel && <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>}
       {(enrichment.currentRole || enrichment.currentCompany) && (
         <p className="text-xs text-[#4a5568] mt-1">
           {enrichment.currentRole && enrichment.currentCompany
@@ -47,14 +39,16 @@ export default async function NineteenthHolePage() {
   const team = await getTeamBySlug('penn-mens-golf')
 
   let openToCoffee: AlumniEntry[] = []
-  let cityGroups: CityGroup[] = []
+  let cityGroups: { city: string; members: AlumniEntry[] }[] = []
+  let socialGatherings: GatheringData[] = []
 
   if (team) {
     const memberships = store.teamMemberships.filter(
       m => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true,
     )
-    const enrichments = store.personEnrichments.filter(e => e.teamId === team.id)
-    const enrichMap = new Map(enrichments.map(e => [e.personId, e]))
+    const enrichMap = new Map(
+      store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
+    )
 
     const visible: AlumniEntry[] = memberships
       .map(m => {
@@ -68,7 +62,6 @@ export default async function NineteenthHolePage() {
 
     openToCoffee = visible.filter(a => a.enrichment.openToCoffee)
 
-    // Group by city — only show cities with 2+ members
     const cityMap = new Map<string, AlumniEntry[]>()
     for (const entry of visible) {
       const city = entry.enrichment.city?.trim()
@@ -81,6 +74,13 @@ export default async function NineteenthHolePage() {
       .filter(([, members]) => members.length >= 2)
       .sort((a, b) => b[1].length - a[1].length)
       .map(([city, members]) => ({ city, members }))
+
+    socialGatherings = store.clubhouseGatherings.filter(
+      g =>
+        g.teamId === team.id &&
+        (g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner') &&
+        g.status !== 'closed',
+    ) as GatheringData[]
   }
 
   return (
@@ -90,12 +90,27 @@ export default async function NineteenthHolePage() {
           <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · 19th Hole</p>
           <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">19th Hole</h1>
           <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
-            Coffee, drinks, dinners, and informal gatherings for Penn Golf members.
+            Coffee, drinks, and dinners for Penn Golf members wherever they are.
           </p>
         </div>
       </div>
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
+
+        {/* Upcoming Gatherings */}
+        {socialGatherings.length > 0 && (
+          <section data-testid="social-gatherings-section">
+            <h2 className="text-base font-semibold text-[#0a1628] mb-1">Upcoming Gatherings</h2>
+            <p className="text-sm text-[#8a7f70] mb-6">
+              Coffee, drinks, and dinners organized by Penn Golf alumni.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {socialGatherings.map(g => (
+                <GatheringCard key={g.id} gathering={g} />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Open to Coffee */}
         <section>
@@ -107,7 +122,7 @@ export default async function NineteenthHolePage() {
               </span>
             )}
           </div>
-          <p className="text-sm text-[#8a7f70] mb-6">Alumni who are open to meeting for an informal chat.</p>
+          <p className="text-sm text-[#8a7f70] mb-6">Alumni who are open to an informal chat.</p>
           {openToCoffee.length === 0 ? (
             <div
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
@@ -124,20 +139,11 @@ export default async function NineteenthHolePage() {
           )}
         </section>
 
-        {/* Cities */}
-        <section>
-          <h2 className="text-base font-semibold text-[#0a1628] mb-1">Alumni by City</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">
-            Cities with two or more Penn Golf members.
-          </p>
-          {cityGroups.length === 0 ? (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-            >
-              Alumni locations will appear here as members set up their profiles.
-            </div>
-          ) : (
+        {/* Alumni by City */}
+        {cityGroups.length > 0 && (
+          <section>
+            <h2 className="text-base font-semibold text-[#0a1628] mb-1">Alumni by City</h2>
+            <p className="text-sm text-[#8a7f70] mb-6">Cities with two or more Penn Golf members.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {cityGroups.map(({ city, members }) => {
                 const coffeeCount = members.filter(m => m.enrichment.openToCoffee).length
@@ -154,28 +160,16 @@ export default async function NineteenthHolePage() {
                       {coffeeCount > 0 && ` · ${coffeeCount} open to coffee`}
                     </p>
                     <span className="text-xs font-medium text-[#990000] group-hover:underline mt-3 block">
-                      View members in {city} &rarr;
+                      View members &rarr;
                     </span>
                   </Link>
                 )
               })}
             </div>
-          )}
-        </section>
+          </section>
+        )}
 
-        {/* Drinks & Dinner */}
-        <section>
-          <h2 className="text-base font-semibold text-[#0a1628] mb-1">Drinks &amp; Dinner</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">Informal alumni dinners in your city.</p>
-          <div
-            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
-            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-          >
-            Informal dinner coordination coming soon. City dinners will be announced through the Clubhouse.
-          </div>
-        </section>
-
-        {/* CTA */}
+        {/* Alumni CTA */}
         <div
           className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
@@ -186,10 +180,7 @@ export default async function NineteenthHolePage() {
               Let the team know you are open to meeting players or organizing a gathering.
             </p>
           </div>
-          <Link
-            href="/alumni"
-            className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap"
-          >
+          <Link href="/alumni" className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap">
             Update your profile &rarr;
           </Link>
         </div>

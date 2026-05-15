@@ -28,6 +28,11 @@ const tools = [
     description: 'See the alumni-side profile and request inbox.',
     href: '/alumni',
   },
+  {
+    label: 'Gatherings',
+    description: 'Manage rounds, coffees, drinks, dinners, and events shown on Play and Gather pages.',
+    href: '/internal/gatherings',
+  },
 ]
 
 export default function InternalPage() {

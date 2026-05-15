@@ -16,6 +16,8 @@ import type {
   PersonEnrichment,
   EnrichmentSource,
   PlayerAlumniRequest,
+  ClubhouseGathering,
+  ClubhouseGatheringRequest,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -38,6 +40,8 @@ const EMPTY_STORE: Store = {
   enrichmentSources: [],
   playerAlumniRequests: [],
   pre2000Candidates: [],
+  clubhouseGatherings: [],
+  clubhouseGatheringRequests: [],
 }
 
 function normalizeName(name: string): string {
@@ -106,6 +110,8 @@ export async function readStore(): Promise<Store> {
   if (!parsed.enrichmentSources) parsed.enrichmentSources = []
   if (!parsed.playerAlumniRequests) parsed.playerAlumniRequests = []
   if (!parsed.pre2000Candidates) parsed.pre2000Candidates = []
+  if (!parsed.clubhouseGatherings) parsed.clubhouseGatherings = []
+  if (!parsed.clubhouseGatheringRequests) parsed.clubhouseGatheringRequests = []
   return parsed
 }
 
@@ -777,4 +783,101 @@ export async function respondToPlayerAlumniRequest(input: {
   }
   await writeStore(store)
   return store.playerAlumniRequests[idx]
+}
+
+// ── Clubhouse Gatherings ──────────────────────────────────────────────────────
+
+export async function createClubhouseGathering(
+  input: Omit<ClubhouseGathering, 'id' | 'createdAt' | 'updatedAt'>,
+): Promise<ClubhouseGathering> {
+  const store = await readStore()
+  const now = new Date().toISOString()
+  const gathering: ClubhouseGathering = {
+    id: crypto.randomUUID(),
+    ...input,
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.clubhouseGatherings.push(gathering)
+  await writeStore(store)
+  return gathering
+}
+
+export async function getClubhouseGatheringsForTeam(
+  teamId: string,
+  type?: ClubhouseGathering['type'],
+): Promise<ClubhouseGathering[]> {
+  const store = await readStore()
+  return store.clubhouseGatherings.filter(
+    g => g.teamId === teamId && (type === undefined || g.type === type) && g.status !== 'closed',
+  )
+}
+
+export async function getClubhouseGatheringById(id: string): Promise<ClubhouseGathering | undefined> {
+  const store = await readStore()
+  return store.clubhouseGatherings.find(g => g.id === id)
+}
+
+export async function updateClubhouseGathering(
+  id: string,
+  patch: Partial<Omit<ClubhouseGathering, 'id' | 'teamId' | 'createdAt'>>,
+): Promise<ClubhouseGathering | null> {
+  const store = await readStore()
+  const idx = store.clubhouseGatherings.findIndex(g => g.id === id)
+  if (idx === -1) return null
+  store.clubhouseGatherings[idx] = {
+    ...store.clubhouseGatherings[idx],
+    ...patch,
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
+  return store.clubhouseGatherings[idx]
+}
+
+export async function createClubhouseGatheringRequest(input: {
+  gatheringId: string
+  teamId: string
+  fromName: string
+  fromEmail?: string
+  note?: string
+}): Promise<ClubhouseGatheringRequest> {
+  const store = await readStore()
+  const now = new Date().toISOString()
+  const req: ClubhouseGatheringRequest = {
+    id: crypto.randomUUID(),
+    gatheringId: input.gatheringId,
+    teamId: input.teamId,
+    fromName: input.fromName.trim(),
+    fromEmail: input.fromEmail?.trim() || undefined,
+    note: input.note?.trim() || undefined,
+    status: 'requested',
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.clubhouseGatheringRequests.push(req)
+  await writeStore(store)
+  return req
+}
+
+export async function getRequestsForGathering(gatheringId: string): Promise<ClubhouseGatheringRequest[]> {
+  const store = await readStore()
+  return store.clubhouseGatheringRequests.filter(r => r.gatheringId === gatheringId)
+}
+
+export async function updateClubhouseGatheringRequestStatus(
+  requestId: string,
+  status: ClubhouseGatheringRequest['status'],
+): Promise<ClubhouseGatheringRequest | null> {
+  const store = await readStore()
+  const idx = store.clubhouseGatheringRequests.findIndex(r => r.id === requestId)
+  if (idx === -1) return null
+  const now = new Date().toISOString()
+  store.clubhouseGatheringRequests[idx] = {
+    ...store.clubhouseGatheringRequests[idx],
+    status,
+    respondedAt: status !== 'requested' ? now : store.clubhouseGatheringRequests[idx].respondedAt,
+    updatedAt: now,
+  }
+  await writeStore(store)
+  return store.clubhouseGatheringRequests[idx]
 }

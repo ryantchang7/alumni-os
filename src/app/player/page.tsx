@@ -4,7 +4,92 @@ import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { MessageSquare, Users, Flag, CalendarDays } from 'lucide-react'
+import { MessageSquare, Users, Flag, CalendarDays, MapPin, Calendar } from 'lucide-react'
+
+interface GatheringSnippet {
+  id: string
+  type: 'round' | 'coffee' | 'drinks' | 'dinner' | 'event'
+  title: string
+  dateText: string
+  city?: string
+  state?: string
+  venue?: string
+  status: 'open' | 'full' | 'closed'
+}
+
+const GATHERING_HREF: Record<GatheringSnippet['type'], string> = {
+  round: '/the-course',
+  coffee: '/19th-hole',
+  drinks: '/19th-hole',
+  dinner: '/19th-hole',
+  event: '/events',
+}
+
+function ThisWeekPanel({ teamSlug }: { teamSlug: string }) {
+  const [gatherings, setGatherings] = useState<GatheringSnippet[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`/api/gatherings?teamSlug=${teamSlug}`)
+      .then(r => r.ok ? r.json() : { gatherings: [] })
+      .then(d => {
+        const all: GatheringSnippet[] = d.gatherings ?? []
+        // Pick one of each type class: round, social (coffee/drinks/dinner), event
+        const round = all.find(g => g.type === 'round')
+        const social = all.find(g => g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner')
+        const event = all.find(g => g.type === 'event')
+        setGatherings([round, social, event].filter((g): g is GatheringSnippet => !!g))
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [teamSlug])
+
+  if (loading || gatherings.length === 0) return null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...spring, delay: 0.55 }}
+      className="pb-8"
+      data-testid="this-week-panel"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-base font-semibold text-[#0a1628]">This Week in the Clubhouse</h2>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {gatherings.map(g => (
+          <Link
+            key={g.id}
+            href={GATHERING_HREF[g.type]}
+            className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:shadow-md transition-shadow group"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <p className="text-[10px] font-semibold text-[#0a1628] bg-[#0a1628]/8 px-2 py-0.5 rounded-full inline-block mb-2 capitalize">
+              {g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner' ? '19th Hole' : g.type === 'round' ? 'The Course' : 'Event'}
+            </p>
+            <p className="font-semibold text-[#0a1628] text-sm leading-snug mb-1.5">{g.title}</p>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">
+                <Calendar className="w-3 h-3 text-[#8a7f70]" />
+                <span>{g.dateText}</span>
+              </div>
+              {(g.city || g.venue) && (
+                <div className="flex items-center gap-1.5 text-xs text-[#8a7f70]">
+                  <MapPin className="w-3 h-3" />
+                  <span>{g.venue ?? `${g.city}${g.state ? `, ${g.state}` : ''}`}</span>
+                </div>
+              )}
+            </div>
+            <span className="text-xs font-medium text-[#990000] group-hover:underline mt-3 block">
+              See details &rarr;
+            </span>
+          </Link>
+        ))}
+      </div>
+    </motion.div>
+  )
+}
 
 interface PlayerProfile {
   personId: string
@@ -229,6 +314,9 @@ function ClubhouseInner() {
             )}
           </motion.div>
         )}
+
+        {/* This Week in the Clubhouse */}
+        <ThisWeekPanel teamSlug={teamSlug} />
 
         {/* Your Requests */}
         <div className="pb-8">

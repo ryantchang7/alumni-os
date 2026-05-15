@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
 
 interface AlumniEntry {
@@ -16,12 +17,8 @@ function AlumniCard({ entry }: { entry: AlumniEntry }) {
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
       <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
-      {enrichment.city && (
-        <p className="text-xs text-[#8a7f70] mt-0.5">{enrichment.city}</p>
-      )}
-      {membership.classLabel && (
-        <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>
-      )}
+      {enrichment.city && <p className="text-xs text-[#8a7f70] mt-0.5">{enrichment.city}</p>}
+      {membership.classLabel && <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>}
       {enrichment.favoriteCourses && (
         <p className="text-xs text-[#4a5568] mt-1.5 italic">&ldquo;{enrichment.favoriteCourses}&rdquo;</p>
       )}
@@ -32,32 +29,21 @@ function AlumniCard({ entry }: { entry: AlumniEntry }) {
   )
 }
 
-function ComingSoonCard({ title, description }: { title: string; description: string }) {
-  return (
-    <div
-      className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
-      style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-    >
-      <p className="font-semibold text-[#0a1628] text-sm mb-1">{title}</p>
-      <p className="text-xs text-[#8a7f70]">{description}</p>
-    </div>
-  )
-}
-
 export default async function TheCoursePage() {
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
 
   let openToRounds: AlumniEntry[] = []
-  let withFavoriteCourses: AlumniEntry[] = []
+  let rounds: GatheringData[] = []
 
   if (team) {
     const memberships = store.teamMemberships.filter(
       m => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true,
     )
-    const enrichments = store.personEnrichments.filter(e => e.teamId === team.id)
-    const enrichMap = new Map(enrichments.map(e => [e.personId, e]))
+    const enrichMap = new Map(
+      store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
+    )
 
     const visible: AlumniEntry[] = memberships
       .map(m => {
@@ -70,7 +56,10 @@ export default async function TheCoursePage() {
       .filter((x): x is AlumniEntry => x !== null)
 
     openToRounds = visible.filter(a => a.enrichment.openToGolfRounds)
-    withFavoriteCourses = visible.filter(a => a.enrichment.favoriteCourses)
+
+    rounds = store.clubhouseGatherings.filter(
+      g => g.teamId === team.id && g.type === 'round' && g.status !== 'closed',
+    ) as GatheringData[]
   }
 
   return (
@@ -87,7 +76,22 @@ export default async function TheCoursePage() {
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
 
-        {/* Open to a Round */}
+        {/* Organized Rounds */}
+        {rounds.length > 0 && (
+          <section data-testid="rounds-section">
+            <h2 className="text-base font-semibold text-[#0a1628] mb-1">Upcoming Rounds</h2>
+            <p className="text-sm text-[#8a7f70] mb-6">
+              Organized alumni rounds open for members to join.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {rounds.map(g => (
+                <GatheringCard key={g.id} gathering={g} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Open to a Round — alumni */}
         <section>
           <div className="flex items-baseline gap-3 mb-1">
             <h2 className="text-base font-semibold text-[#0a1628]">Open to a Round</h2>
@@ -97,7 +101,9 @@ export default async function TheCoursePage() {
               </span>
             )}
           </div>
-          <p className="text-sm text-[#8a7f70] mb-6">Alumni who have marked themselves open to hosting a round.</p>
+          <p className="text-sm text-[#8a7f70] mb-6">
+            Alumni who have marked themselves open to hosting or joining a round.
+          </p>
           {openToRounds.length === 0 ? (
             <div
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
@@ -114,27 +120,7 @@ export default async function TheCoursePage() {
           )}
         </section>
 
-        {/* Favorite Courses */}
-        <section>
-          <h2 className="text-base font-semibold text-[#0a1628] mb-1">Favorite Courses</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">What alumni say about their home courses.</p>
-          {withFavoriteCourses.length === 0 ? (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-            >
-              Favorite course picks will appear here once alumni share them.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {withFavoriteCourses.map(entry => (
-                <AlumniCard key={entry.person.id} entry={entry} />
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Host a Round CTA */}
+        {/* Alumni profile CTA */}
         <div
           className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
@@ -145,32 +131,10 @@ export default async function TheCoursePage() {
               Mark yourself open to hosting in your Alumni profile and players will find you here.
             </p>
           </div>
-          <Link
-            href="/alumni"
-            className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap"
-          >
+          <Link href="/alumni" className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap">
             Update your profile &rarr;
           </Link>
         </div>
-
-        {/* Coming Soon cards */}
-        <section>
-          <h2 className="text-base font-semibold text-[#0a1628] mb-6">Coming Soon</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <ComingSoonCard
-              title="Playing Abroad"
-              description="Alumni tips for playing courses overseas. Check back as members contribute."
-            />
-            <ComingSoonCard
-              title="Penn Golf Clubs"
-              description="Alumni-affiliated clubs and memberships. Coming once members share access."
-            />
-            <ComingSoonCard
-              title="Travel Dates"
-              description="Coordinate rounds when traveling. Feature in progress."
-            />
-          </div>
-        </section>
 
       </div>
     </div>

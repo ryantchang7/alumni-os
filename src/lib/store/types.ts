@@ -207,6 +207,40 @@ export interface PlayerAlumniRequest {
   updatedAt: string
 }
 
+export interface ClubhouseGathering {
+  id: string
+  teamId: string
+  type: 'round' | 'coffee' | 'drinks' | 'dinner' | 'event'
+  title: string
+  description?: string
+  hostPersonId?: string
+  hostName: string
+  city?: string
+  state?: string
+  venue?: string
+  dateText: string
+  timeText?: string
+  capacity?: number
+  audience: 'players' | 'alumni' | 'both'
+  vibe?: 'casual' | 'competitive' | 'career' | 'social' | 'formal'
+  status: 'open' | 'full' | 'closed'
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ClubhouseGatheringRequest {
+  id: string
+  gatheringId: string
+  teamId: string
+  fromName: string
+  fromEmail?: string
+  note?: string
+  status: 'requested' | 'accepted' | 'declined' | 'closed'
+  createdAt: string
+  updatedAt: string
+  respondedAt?: string
+}
+
 export interface Store {
   teams: Team[]
   scrapeRuns: ScrapeRun[]
@@ -221,4 +255,6 @@ export interface Store {
   enrichmentSources: EnrichmentSource[]
   playerAlumniRequests: PlayerAlumniRequest[]
   pre2000Candidates: Pre2000Candidate[]
+  clubhouseGatherings: ClubhouseGathering[]
+  clubhouseGatheringRequests: ClubhouseGatheringRequest[]
 }
