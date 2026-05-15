@@ -27,37 +27,26 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
   const membership = memberships.find(m => m.personId === person.id)
   if (!membership) notFound()
 
-  // All members must be published to appear here
   if (!membership.publishedToNetwork) notFound()
 
   const enrichment = await getPersonEnrichment(person.id, team.id)
-
   if (enrichment?.visibleToPlayers === false) notFound()
 
   const hasCareer = !!(enrichment?.currentRole || enrichment?.currentCompany)
-
   const isCurrentPlayer = membership.memberRole === 'current_player'
 
   const rosterYears =
     membership.rosterStartYear && membership.rosterEndYear
-      ? `${membership.rosterStartYear}–${String(membership.rosterEndYear).slice(-2)}`
+      ? `${membership.rosterStartYear}–${membership.rosterEndYear}`
       : membership.rosterStartYear
         ? `${membership.rosterStartYear}`
         : null
 
   const subtitle = isCurrentPlayer
-    ? [
-        membership.classYearEstimate?.split(' / ')[0] ?? membership.classLabel ?? null,
-        'Penn Golf',
-      ]
-        .filter(Boolean)
-        .join(' · ')
-    : [
-        rosterYears ? `Penn Golf ${rosterYears}` : 'Penn Golf',
-        membership.classLabel ?? null,
-      ]
-        .filter(Boolean)
-        .join(' · ')
+    ? [membership.classYearEstimate?.split(' / ')[0] ?? membership.classLabel, 'Penn Golf']
+        .filter(Boolean).join(' · ')
+    : [rosterYears ? `Penn Golf ${rosterYears}` : 'Penn Golf', membership.classLabel]
+        .filter(Boolean).join(' · ')
 
   const openToBadges: string[] = [
     enrichment?.openToCoffee ? 'Coffee chat' : null,
@@ -70,239 +59,259 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
     ? [enrichment.city, enrichment.state].filter(Boolean).join(', ')
     : null
 
-  const first = person.firstName ?? person.canonicalName.split(' ')[0]
+  const unclaimed =
+    !isCurrentPlayer &&
+    membership.memberStatus !== 'verified' &&
+    membership.memberStatus !== 'active'
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      {/* Header */}
-      <div className="bg-[#0a1628] px-8 pt-10 pb-12">
-        <div className="max-w-[860px] mx-auto">
-          <div className="flex items-center gap-2 mb-5 text-xs">
-            <Link href="/player" className="text-gray-400 hover:text-gray-200 transition-colors">
-              &larr; Player Mode
+
+      {/* ── Header ── */}
+      <div className="bg-[#0a1628] px-5 sm:px-8 pt-8 pb-14">
+        <div className="max-w-[900px] mx-auto">
+
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 mb-6 text-[10px] font-medium uppercase tracking-[0.15em]">
+            <Link
+              href="/player/search?teamSlug=penn-mens-golf"
+              className="text-white/35 hover:text-white/60 transition-colors"
+            >
+              Member Book
             </Link>
-            <span className="text-gray-600">/</span>
-            <span className="text-gray-300">{person.canonicalName}</span>
+            <span className="text-white/20">/</span>
+            <span className="text-white/55">{person.canonicalName}</span>
           </div>
 
-          <div className="flex items-start justify-between gap-6">
+          {/* Main header row */}
+          <div className="flex items-end justify-between gap-6 flex-wrap">
             <div>
-              <h1 className="text-white text-3xl font-semibold tracking-tight leading-tight">
+              {/* Role tag */}
+              <span className={`inline-block text-[9px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-sm border mb-3 ${
+                isCurrentPlayer
+                  ? 'text-[#2d6a4f] bg-[#2d6a4f]/15 border-[#2d6a4f]/30'
+                  : 'text-white/45 bg-white/8 border-white/15'
+              }`}>
+                {isCurrentPlayer ? 'Current Player' : 'Penn Golf Alumni'}
+              </span>
+
+              {/* Name */}
+              <h1
+                className="text-white text-3xl sm:text-4xl font-medium leading-tight tracking-tight"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
                 {person.canonicalName}
               </h1>
-              <p className="text-gray-400 text-sm mt-2">{subtitle}</p>
-
+              <p className="text-white/50 text-sm mt-2">{subtitle}</p>
               {hasCareer && (
-                <p className="text-gray-300 text-sm mt-3">
-                  {[enrichment?.currentRole, enrichment?.currentCompany]
-                    .filter(Boolean)
-                    .join(' · ')}
+                <p className="text-white/75 text-sm mt-2">
+                  {[enrichment?.currentRole, enrichment?.currentCompany].filter(Boolean).join(', ')}
                 </p>
               )}
-
-              {location && (
-                <p className="text-gray-400 text-sm mt-1.5">{location}</p>
-              )}
-
-              <div className="flex items-center gap-2 mt-4">
-                {isCurrentPlayer ? (
-                  <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-[#0a1628]/15 border border-[#0a1628]/35 text-[#0a1628]">
-                    Current Player
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-[#2d6a4f]/15 border border-[#2d6a4f]/35 text-[#2d6a4f]">
-                    Penn Golf Alumni
-                  </span>
-                )}
-              </div>
+              {location && <p className="text-white/40 text-sm mt-1">{location}</p>}
             </div>
 
-            <Link
-              href={`/ask?personId=${person.id}&purpose=career_advice`}
-              className="flex-shrink-0 text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-5 py-2.5 rounded-lg transition-colors"
-            >
-              Ask for Help &rarr;
-            </Link>
+            {!isCurrentPlayer && (
+              <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+                <Link
+                  href={`/ask?personId=${person.id}&purpose=career_advice`}
+                  className="text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-5 py-2.5 rounded-lg transition-colors text-center"
+                >
+                  Ask for Advice
+                </Link>
+                <Link
+                  href={`/ask?personId=${person.id}&purpose=warm_intro`}
+                  className="text-sm font-medium border border-white/20 text-white/80 hover:bg-white/10 px-5 py-2.5 rounded-lg transition-colors text-center"
+                >
+                  Request Introduction
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div data-testid="player-profile" className="max-w-[860px] mx-auto px-8 py-8">
-        <div className="space-y-4">
+      {/* ── Content — book-spread two-column on desktop ── */}
+      <div data-testid="player-profile" className="max-w-[900px] mx-auto px-5 sm:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5 items-start">
 
-          {/* How I Can Help */}
-          {((enrichment?.helpTopics && enrichment.helpTopics.length > 0) || openToBadges.length > 0) && (
+          {/* Left: Penn Golf identity + claim */}
+          <div className="space-y-4">
+
             <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
+              style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
             >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
-                How I Can Help
-              </p>
-              {enrichment?.helpTopics && enrichment.helpTopics.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {enrichment.helpTopics.map(topic => (
-                    <span
-                      key={topic}
-                      className="text-xs font-medium px-3 py-1.5 rounded-full bg-[#f5f2ee] border border-[rgba(180,168,150,0.5)] text-[#0a1628]"
-                    >
-                      {topic}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {openToBadges.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {openToBadges.map(label => (
-                    <span
-                      key={label}
-                      className="text-xs font-medium px-3 py-1.5 rounded-full bg-[#0a1628]/5 border border-[#0a1628]/15 text-[#0a1628]"
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Penn Golf section */}
-          <div
-            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-          >
-            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
-              Penn Golf
-            </p>
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
-              {membership.classLabel && (
-                <div>
-                  <dt className="text-xs text-[#8a7f70] mb-0.5">Class</dt>
-                  <dd className="font-medium text-[#0a1628]">{membership.classLabel}</dd>
-                </div>
-              )}
-              {rosterYears && (
-                <div>
-                  <dt className="text-xs text-[#8a7f70] mb-0.5">Years on team</dt>
-                  <dd className="font-medium text-[#0a1628]">{rosterYears}</dd>
-                </div>
-              )}
-              {membership.hometown && (
-                <div>
-                  <dt className="text-xs text-[#8a7f70] mb-0.5">Hometown</dt>
-                  <dd className="font-medium text-[#0a1628]">{membership.hometown}</dd>
-                </div>
-              )}
-              {membership.highSchool && (
-                <div>
-                  <dt className="text-xs text-[#8a7f70] mb-0.5">High school</dt>
-                  <dd className="font-medium text-[#0a1628]">{membership.highSchool}</dd>
-                </div>
-              )}
-            </dl>
-          </div>
-
-          {/* Career */}
-          {hasCareer && (
-            <div
-              data-testid="career-contact-card"
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-            >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">Career</p>
-              <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                {enrichment?.currentRole && (
-                  <div>
-                    <dt className="text-xs text-[#8a7f70] mb-0.5">Role</dt>
-                    <dd className="font-medium text-[#0a1628]">{enrichment.currentRole}</dd>
+              <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                  Penn Golf
+                </p>
+              </div>
+              <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">
+                {rosterYears && (
+                  <div className="flex justify-between items-baseline py-2.5">
+                    <dt className="text-xs text-[#8a7f70]">Seasons</dt>
+                    <dd className="text-sm font-medium text-[#0a1628]">{rosterYears}</dd>
                   </div>
                 )}
-                {enrichment?.currentCompany && (
-                  <div>
-                    <dt className="text-xs text-[#8a7f70] mb-0.5">Company</dt>
-                    <dd className="font-medium text-[#0a1628]">{enrichment.currentCompany}</dd>
+                {membership.classLabel && (
+                  <div className="flex justify-between items-baseline py-2.5">
+                    <dt className="text-xs text-[#8a7f70]">Class</dt>
+                    <dd className="text-sm font-medium text-[#0a1628]">{membership.classLabel}</dd>
                   </div>
                 )}
-                {enrichment?.industry && (
-                  <div>
-                    <dt className="text-xs text-[#8a7f70] mb-0.5">Industry</dt>
-                    <dd className="font-medium text-[#0a1628]">{enrichment.industry}</dd>
+                {membership.hometown && (
+                  <div className="flex justify-between items-baseline gap-4 py-2.5">
+                    <dt className="text-xs text-[#8a7f70] flex-shrink-0">Hometown</dt>
+                    <dd className="text-sm font-medium text-[#0a1628] text-right">{membership.hometown}</dd>
                   </div>
                 )}
-                {location && (
-                  <div>
-                    <dt className="text-xs text-[#8a7f70] mb-0.5">Location</dt>
-                    <dd className="font-medium text-[#0a1628]">{location}</dd>
+                {membership.highSchool && (
+                  <div className="flex justify-between items-baseline gap-4 py-2.5">
+                    <dt className="text-xs text-[#8a7f70] flex-shrink-0">High School</dt>
+                    <dd className="text-sm font-medium text-[#0a1628] text-right">{membership.highSchool}</dd>
                   </div>
                 )}
               </dl>
             </div>
-          )}
 
-          {/* Golf section */}
-          {(enrichment?.favoriteCourses || enrichment?.openToGolfRounds) && (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-            >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
-                Golf
-              </p>
-              <div className="space-y-3 text-sm">
-                {enrichment?.favoriteCourses && (
-                  <div>
-                    <p className="text-xs text-[#8a7f70] mb-0.5">Favorite courses</p>
-                    <p className="font-medium text-[#0a1628]">{enrichment.favoriteCourses}</p>
-                  </div>
-                )}
-                {enrichment?.openToGolfRounds && (
-                  <span className="inline-block text-xs font-medium px-3 py-1.5 rounded-full bg-[#2d6a4f]/10 border border-[#2d6a4f]/30 text-[#2d6a4f]">
-                    Open to golf rounds
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* About */}
-          {enrichment?.alumniBio && (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-            >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">About</p>
-              <p className="text-sm text-[#0a1628] leading-relaxed">{enrichment.alumniBio}</p>
-            </div>
-          )}
-
-          {/* Claim module — alumni only, unclaimed profiles */}
-          {!isCurrentPlayer && membership.memberStatus !== 'verified' && membership.memberStatus !== 'active' && (
-            <ClaimModule memberId={person.id} memberName={person.canonicalName} />
-          )}
-
-          {/* Action buttons */}
-          <div className="pt-2 flex flex-wrap gap-3">
-            <Link
-              href={`/ask?personId=${person.id}&purpose=career_advice`}
-              className="inline-flex items-center text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-6 py-3 rounded-lg transition-colors"
-            >
-              Ask for Advice &rarr;
-            </Link>
-            <Link
-              href={`/ask?personId=${person.id}&purpose=warm_intro`}
-              className="inline-flex items-center text-sm font-medium border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] text-[#0a1628] px-6 py-3 rounded-lg transition-colors bg-white"
-            >
-              Request Introduction
-            </Link>
-            {enrichment?.openToGolfRounds && (
-              <Link
-                href={`/ask?personId=${person.id}&purpose=golf_round`}
-                className="inline-flex items-center text-sm font-medium border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] text-[#0a1628] px-6 py-3 rounded-lg transition-colors bg-white"
-              >
-                Invite to a Round
-              </Link>
+            {/* Claim module */}
+            {unclaimed && (
+              <ClaimModule memberId={person.id} memberName={person.canonicalName} />
             )}
+          </div>
+
+          {/* Right: career, help, golf, about, actions */}
+          <div className="space-y-4">
+
+            {/* How I Can Help */}
+            {((enrichment?.helpTopics && enrichment.helpTopics.length > 0) || openToBadges.length > 0) && (
+              <div
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
+                style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
+              >
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                    How I Can Help
+                  </p>
+                </div>
+                <div className="px-5 py-4 space-y-3">
+                  {enrichment?.helpTopics && enrichment.helpTopics.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {enrichment.helpTopics.map(topic => (
+                        <span
+                          key={topic}
+                          className="text-xs font-medium px-3 py-1 rounded-sm bg-[#f5f2ee] border border-[rgba(180,168,150,0.45)] text-[#0a1628]"
+                        >
+                          {topic}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {openToBadges.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {openToBadges.map(label => (
+                        <span
+                          key={label}
+                          className="text-xs font-medium px-3 py-1 rounded-sm bg-[#0a1628]/5 border border-[#0a1628]/12 text-[#0a1628]"
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Career */}
+            {hasCareer && (
+              <div
+                data-testid="career-contact-card"
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
+                style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
+              >
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">Career</p>
+                </div>
+                <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">
+                  {enrichment?.currentRole && (
+                    <div className="flex justify-between items-baseline gap-4 py-2.5">
+                      <dt className="text-xs text-[#8a7f70] flex-shrink-0">Role</dt>
+                      <dd className="text-sm font-medium text-[#0a1628] text-right">{enrichment.currentRole}</dd>
+                    </div>
+                  )}
+                  {enrichment?.currentCompany && (
+                    <div className="flex justify-between items-baseline gap-4 py-2.5">
+                      <dt className="text-xs text-[#8a7f70] flex-shrink-0">Company</dt>
+                      <dd className="text-sm font-medium text-[#0a1628] text-right">{enrichment.currentCompany}</dd>
+                    </div>
+                  )}
+                  {enrichment?.industry && (
+                    <div className="flex justify-between items-baseline gap-4 py-2.5">
+                      <dt className="text-xs text-[#8a7f70] flex-shrink-0">Industry</dt>
+                      <dd className="text-sm font-medium text-[#0a1628] text-right">{enrichment.industry}</dd>
+                    </div>
+                  )}
+                  {location && (
+                    <div className="flex justify-between items-baseline gap-4 py-2.5">
+                      <dt className="text-xs text-[#8a7f70] flex-shrink-0">Location</dt>
+                      <dd className="text-sm font-medium text-[#0a1628] text-right">{location}</dd>
+                    </div>
+                  )}
+                </dl>
+              </div>
+            )}
+
+            {/* Golf */}
+            {(enrichment?.favoriteCourses || enrichment?.openToGolfRounds) && (
+              <div
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
+                style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
+              >
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">Golf</p>
+                </div>
+                <div className="px-5 py-4 space-y-3">
+                  {enrichment?.favoriteCourses && (
+                    <div>
+                      <p className="text-[10px] text-[#8a7f70] uppercase tracking-wider mb-1">Favorite courses</p>
+                      <p className="text-sm font-medium text-[#0a1628]">{enrichment.favoriteCourses}</p>
+                    </div>
+                  )}
+                  {enrichment?.openToGolfRounds && (
+                    <span className="inline-block text-xs font-medium px-3 py-1 rounded-sm bg-[#2d6a4f]/10 border border-[#2d6a4f]/25 text-[#2d6a4f]">
+                      Open to golf rounds
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* About */}
+            {enrichment?.alumniBio && (
+              <div
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
+                style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
+              >
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">About</p>
+                </div>
+                <p className="px-5 py-4 text-sm text-[#0a1628] leading-relaxed">{enrichment.alumniBio}</p>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              {enrichment?.openToGolfRounds && (
+                <Link
+                  href={`/ask?personId=${person.id}&purpose=golf_round`}
+                  className="text-sm font-medium border border-[rgba(180,168,150,0.55)] hover:border-[#0a1628] text-[#0a1628] px-5 py-2.5 rounded-lg transition-colors bg-white"
+                >
+                  Invite to a Round
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>

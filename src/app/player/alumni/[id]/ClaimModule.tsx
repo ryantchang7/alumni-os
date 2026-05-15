@@ -21,6 +21,8 @@ export default function ClaimModule({ memberId, memberName }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    if (!name.trim()) { setError('Please add your name.'); return }
+    if (!email.trim() || !email.includes('@')) { setError('Please enter a valid email.'); return }
     setSubmitting(true)
     try {
       const res = await fetch('/api/profile/claim', {
@@ -40,123 +42,140 @@ export default function ClaimModule({ memberId, memberName }: Props) {
       }
       setStep('submitted')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
       setSubmitting(false)
     }
   }
 
-  if (step === 'prompt') {
+  if (step === 'submitted') {
     return (
       <div
-        className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+        className="border-l-2 border-l-[#990000] bg-[#faf7f2] border border-[rgba(180,168,150,0.3)] rounded-r-xl px-6 py-5"
+        style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.04)' }}
       >
-        <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
-          Is This You?
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#990000] mb-2">
+          Claim Request Saved
         </p>
-        <p className="text-sm text-[#0a1628] mb-4">
-          If this is your profile, you can request to claim it and add your career and contact details.
+        <p className="text-sm text-[#3d4a5c] leading-relaxed">
+          A Penn Golf admin will review your request for{' '}
+          <span className="font-medium">{memberName}</span>. You&rsquo;ll be contacted once it&rsquo;s been confirmed.
         </p>
-        <button
-          onClick={() => setStep('form')}
-          className="text-sm font-semibold text-[#990000] hover:underline"
-        >
-          Claim this profile &rarr;
-        </button>
       </div>
     )
   }
 
-  if (step === 'submitted') {
+  if (step === 'prompt') {
     return (
       <div
-        className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+        className="border-l-2 border-l-[rgba(180,168,150,0.6)] bg-[#faf7f2] border border-[rgba(180,168,150,0.3)] rounded-r-xl px-6 py-5"
+        style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.04)' }}
+        data-testid="claim-module"
       >
-        <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
-          Request Submitted
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-1.5">
+          Is This You?
         </p>
-        <p className="text-sm text-[#0a1628]">
-          Your request to claim <span className="font-medium">{memberName}</span>&apos;s profile has been sent. Penn Golf will review it shortly.
+        <p className="text-sm text-[#3d4a5c] leading-relaxed mb-4 max-w-lg">
+          Claim your Penn Golf Clubhouse profile to update your role, city, availability, and how you&rsquo;re open to helping.
         </p>
+        <button
+          onClick={() => setStep('form')}
+          className="text-sm font-semibold text-[#0a1628] border border-[#0a1628]/20 bg-white hover:bg-[#0a1628] hover:text-white px-4 py-2 rounded-lg transition-colors"
+        >
+          Claim Profile
+        </button>
       </div>
     )
   }
 
   return (
     <div
-      className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-      style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+      className="border-l-2 border-l-[#990000] bg-[#faf7f2] border border-[rgba(180,168,150,0.3)] rounded-r-xl px-6 py-5"
+      style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.04)' }}
     >
       <div className="flex items-center justify-between mb-4">
-        <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider">
-          Claim This Profile
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#990000]">
+          Claim Profile
         </p>
         <button
           onClick={() => setStep('prompt')}
-          className="text-xs text-[#8a7f70] hover:text-[#0a1628]"
+          className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+          aria-label="Cancel claim"
         >
           Cancel
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-3" noValidate>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-medium text-[#0a1628] mb-1">Your name *</label>
+            <label htmlFor="claim-name" className="block text-xs font-medium text-[#3d4a5c] mb-1">
+              Your name
+            </label>
             <input
+              id="claim-name"
               type="text"
               required
+              maxLength={100}
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder={memberName}
-              className="w-full bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] placeholder-[#8a7f70] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/15 focus:border-[#0a1628]/30"
+              className="w-full bg-white border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-[#0a1628] mb-1">Email *</label>
+            <label htmlFor="claim-email" className="block text-xs font-medium text-[#3d4a5c] mb-1">
+              Email address
+            </label>
             <input
+              id="claim-email"
               type="email"
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] placeholder-[#8a7f70] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/15 focus:border-[#0a1628]/30"
+              className="w-full bg-white border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-[#0a1628] mb-1">Penn Golf years (optional)</label>
+          <label htmlFor="claim-years" className="block text-xs font-medium text-[#3d4a5c] mb-1">
+            Penn Golf years <span className="text-[#b0a898] font-normal">(optional)</span>
+          </label>
           <input
+            id="claim-years"
             type="text"
             value={years}
             onChange={e => setYears(e.target.value)}
             placeholder="e.g. 2012–2016"
-            className="w-full bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] placeholder-[#8a7f70] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/15 focus:border-[#0a1628]/30"
+            className="w-full bg-white border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-[#0a1628] mb-1">Note (optional)</label>
+          <label htmlFor="claim-note" className="block text-xs font-medium text-[#3d4a5c] mb-1">
+            Note <span className="text-[#b0a898] font-normal">(optional)</span>
+          </label>
           <textarea
+            id="claim-note"
             value={note}
             onChange={e => setNote(e.target.value)}
-            placeholder="Anything that helps verify your identity..."
+            maxLength={1000}
+            placeholder="Anything that helps us verify your identity..."
             rows={2}
-            className="w-full bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] placeholder-[#8a7f70] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/15 focus:border-[#0a1628]/30 resize-none"
+            className="w-full bg-white border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors resize-none"
           />
         </div>
 
         {error && (
-          <p className="text-xs text-[#990000]">{error}</p>
+          <p role="alert" className="text-xs text-[#990000]">{error}</p>
         )}
 
         <button
           type="submit"
           disabled={submitting}
-          className="w-full sm:w-auto text-sm font-semibold bg-[#0a1628] hover:bg-[#0a1628]/90 disabled:opacity-50 text-white px-6 py-2.5 rounded-lg transition-colors"
+          className="text-sm font-semibold bg-[#0a1628] hover:bg-[#0a1628]/90 disabled:opacity-50 text-white px-5 py-2.5 rounded-lg transition-colors"
         >
           {submitting ? 'Submitting...' : 'Submit Request'}
         </button>

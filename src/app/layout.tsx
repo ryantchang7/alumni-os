@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import NavBar from '@/components/NavBar'
 import SiteFooter from '@/components/SiteFooter'
@@ -15,6 +15,12 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+const playfair = Playfair_Display({
+  variable: '--font-playfair',
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+})
+
 export const metadata: Metadata = {
   title: "Alumni OS — Penn Men's Golf",
   description: "Private alumni relationship graph for Penn Men's Golf",
@@ -28,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#f8f5f0]">
         <TooltipProvider>
