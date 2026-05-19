@@ -431,7 +431,7 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
             <p className="text-sm text-[#8a7f70] mt-0.5">{summaryLabel}</p>
           </div>
           {allFilteredMembers.length > 0 && (
-            <Link href="/player/search" className="text-xs font-semibold text-[#990000] hover:underline whitespace-nowrap hidden sm:block">Full Member Book &rarr;</Link>
+            <Link href="/member-book" className="text-xs font-semibold text-[#990000] hover:underline whitespace-nowrap hidden sm:block">Open Member Book &rarr;</Link>
           )}
         </div>
         {allFilteredMembers.length === 0 ? (
@@ -441,11 +441,11 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {allFilteredMembers.slice(0, 60).map(m => <DirectoryMemberCard key={m.personId} member={m} />)}
-            {allFilteredMembers.length > 60 && (
+            {allFilteredMembers.slice(0, selected ? 60 : 12).map(m => <DirectoryMemberCard key={m.personId} member={m} />)}
+            {(selected ? allFilteredMembers.length > 60 : allFilteredMembers.length > 12) && (
               <div className="col-span-full">
-                <Link href="/player/search" className="text-xs font-semibold text-[#990000] hover:underline">
-                  View all {allFilteredMembers.length} members in the Member Book &rarr;
+                <Link href="/member-book" className="text-xs font-semibold text-[#990000] hover:underline">
+                  Browse all {allFilteredMembers.length} members in the Member Book &rarr;
                 </Link>
               </div>
             )}

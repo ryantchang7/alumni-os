@@ -12,6 +12,7 @@
     "seed:penn-team": "tsx scripts/seed-penn-team.ts",
     "test:pipeline": "tsx scripts/test-promotion-pipeline.ts",
     "test:seasons": "tsx scripts/test-season-utils.ts",
+    "test:member-book": "tsx scripts/test-member-book.ts",
     "test:historical-pipeline": "tsx scripts/test-historical-import-pipeline.ts",
     "test:graph-quality": "tsx scripts/test-graph-quality.ts",
     "test:demo-readiness": "tsx scripts/test-demo-readiness.ts",
