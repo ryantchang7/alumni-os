@@ -18,7 +18,7 @@ export default async function MemberMapPage() {
   const team = await getTeamBySlug(TEAM_SLUG)
 
   const stateMap = new Map<string, MapState>()
-  const seenCurrentPlayerNames = new Set<string>()
+  const seenTeamStoreNames = new Set<string>()
 
   function normalize(name: string): string {
     return name.toLowerCase().replace(/[^a-z]/g, '')
@@ -65,7 +65,7 @@ export default async function MemberMapPage() {
       if (enrichment?.visibleToPlayers === false) continue
       const stateCode = hometownToStateCode(m.hometown)
       if (!stateCode) continue
-      seenCurrentPlayerNames.add(normalize(person.canonicalName))
+      seenTeamStoreNames.add(normalize(person.canonicalName))
       addMember(stateCode, {
         personId: person.id,
         canonicalName: person.canonicalName,
@@ -88,6 +88,7 @@ export default async function MemberMapPage() {
       if (enrichment?.visibleToPlayers === false) continue
       const stateCode = enrichmentStateToCode(enrichment?.state) ?? hometownToStateCode(m.hometown)
       if (!stateCode) continue
+      seenTeamStoreNames.add(normalize(person.canonicalName))
       addMember(stateCode, {
         personId: person.id,
         canonicalName: person.canonicalName,
@@ -128,7 +129,7 @@ export default async function MemberMapPage() {
   for (const entry of memberBookEntries) {
     if (!isPublicMember(entry)) continue
     if (isActiveMember(entry)) continue
-    if (seenCurrentPlayerNames.has(normalize(entry.displayName))) continue
+    if (seenTeamStoreNames.has(normalize(entry.displayName))) continue
     const stateCode = hometownToStateCode(entry.profile.hometown ?? undefined)
     if (!stateCode) continue
     const start = getMemberStartYear(entry)
