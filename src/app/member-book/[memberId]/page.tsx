@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { memberBookEntries, getMemberById } from '@/lib/member-book/data'
+import { getMemberById } from '@/lib/member-book/data'
 import {
   isPublicMember,
   getMemberPennGolfYears,
@@ -9,11 +9,9 @@ import {
   isActiveMember,
 } from '@/lib/member-book/helpers'
 
-export function generateStaticParams() {
-  return memberBookEntries
-    .filter(isPublicMember)
-    .map((m) => ({ memberId: m.id }))
-}
+// Detail pages render on demand so we don't ship 337 prebuilt HTML payloads
+// in the deploy artifact (caused vercel CLI Upload aborted at ~29 MB).
+export const dynamic = 'force-dynamic'
 
 export default async function MemberDetailPage({
   params,
