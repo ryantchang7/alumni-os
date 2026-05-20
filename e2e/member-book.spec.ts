@@ -1,56 +1,82 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Penn Men’s Golf Member Book', () => {
-  test('renders title, stats, and full member registry', async ({ page }) => {
+  test('renders title, public stats, and minimal registry', async ({ page }) => {
     await page.goto('/member-book')
     await page.waitForLoadState('networkidle')
 
-    // Title
-    await expect(page.getByTestId('member-book-title')).toHaveText(/Penn Men.+s Golf Member Book/)
+    await expect(page.getByTestId('member-book-title')).toContainText(/Member Book/i)
 
-    // Stat plaques include expected counts
+    // Stat plaques show player-only count (337), letter-year rows (631),
+    // and do NOT advertise a manager plaque publicly.
     const stats = page.getByTestId('member-book-stats')
-    await expect(stats).toContainText('343')
-    await expect(stats).toContainText('330')
+    await expect(stats).toContainText('337')
     await expect(stats).toContainText('631')
-    await expect(stats).toContainText('6')
+    await expect(stats).not.toContainText('Managers')
 
-    // Results count starts at 343
-    await expect(page.getByTestId('member-results-count')).toHaveText('343')
+    // Results count starts at 337 (managers hidden by default)
+    await expect(page.getByTestId('member-results-count')).toHaveText('337')
 
-    // Public copy hygiene — no forbidden vocabulary on the page
+    // Public copy hygiene — verification/status/admin vocabulary must not leak
     const body = (await page.textContent('body')) ?? ''
     expect(body).not.toMatch(/\bdatabase\b/i)
     expect(body).not.toMatch(/\bdashboard\b/i)
     expect(body).not.toMatch(/\bN\/A\b/)
     expect(body).not.toMatch(/\bpipeline\b/i)
     expect(body).not.toMatch(/\benrichment\b/i)
+    expect(body).not.toMatch(/Roster Verified/i)
+    expect(body).not.toMatch(/Needs Roster Check/i)
+    expect(body).not.toMatch(/Letter Winner\b/)
+
+    // Managers should not appear on the public registry
+    const grid = page.getByTestId('member-book-grid')
+    await expect(grid).not.toContainText('Manager')
   })
 
   test('search narrows the registry', async ({ page }) => {
     await page.goto('/member-book')
     await page.waitForLoadState('networkidle')
 
-    const search = page.getByLabel('Search members')
+    const search = page.getByLabel('Search the Member Book')
     await search.fill('Chang')
-    await expect(page.getByTestId('member-results-count')).toHaveText('1')
+    const count = page.getByTestId('member-results-count')
+    await expect(count).not.toHaveText('337')
     await expect(page.getByText('Ryan Chang')).toBeVisible()
   })
 
-  test('letter-year filter selects members by ending year', async ({ page }) => {
+  test('clicking a member navigates to a detail page', async ({ page }) => {
     await page.goto('/member-book')
     await page.waitForLoadState('networkidle')
 
-    await page.getByLabel('Letter year').selectOption('2004')
-    const count = await page.getByTestId('member-results-count').textContent()
-    expect(Number.parseInt(count ?? '0', 10)).toBeGreaterThan(0)
+    const search = page.getByLabel('Search the Member Book')
+    await search.fill('Chang')
+    await page.getByText('Ryan Chang').first().click()
+    await expect(page).toHaveURL(/\/member-book\/[^/]+$/)
+    await expect(page.getByTestId('member-detail-name')).toContainText('Ryan Chang')
+
+    // Detail page should not surface internal verification language
+    const body = (await page.textContent('body')) ?? ''
+    expect(body).not.toMatch(/Roster Verified/i)
+    expect(body).not.toMatch(/Needs Roster Check/i)
+    expect(body).not.toMatch(/\bverification\b/i)
   })
+})
 
-  test('manager filter preserves the 6 manager records', async ({ page }) => {
-    await page.goto('/member-book')
+test.describe('Member Map', () => {
+  test('shows filters, no full directory underneath, and contextual links', async ({ page }) => {
+    await page.goto('/member-map')
     await page.waitForLoadState('networkidle')
 
-    await page.getByRole('button', { name: 'Managers' }).click()
-    await expect(page.getByTestId('member-results-count')).toHaveText('6')
+    // The new role filters: All Players / Current Roster / Alumni
+    await expect(page.getByTestId('role-filter')).toContainText('All Players')
+    await expect(page.getByTestId('role-filter')).toContainText('Current Roster')
+    await expect(page.getByTestId('role-filter')).toContainText('Alumni')
+
+    // The page should not duplicate a member directory underneath the map
+    await expect(page.getByTestId('member-directory')).toHaveCount(0)
+
+    // Contextual panel shows the "Open the Member Book" CTA when nothing selected
+    const panel = page.getByTestId('map-contextual-panel')
+    await expect(panel).toContainText(/Open the Member Book/i)
   })
 })

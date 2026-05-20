@@ -2,6 +2,13 @@ import Link from 'next/link'
 import MemberMapClient from './MemberMapClient'
 import type { MapState, MapMember } from '@/app/api/member-map/route'
 import { hometownToStateCode, enrichmentStateToCode, CODE_TO_NAME } from '@/lib/map/state-lookup'
+import { memberBookEntries } from '@/lib/member-book/data'
+import {
+  isPublicMember,
+  isActiveMember,
+  getMemberStartYear,
+  getMemberEndYear,
+} from '@/lib/member-book/helpers'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -11,6 +18,11 @@ export default async function MemberMapPage() {
   const team = await getTeamBySlug(TEAM_SLUG)
 
   const stateMap = new Map<string, MapState>()
+  const seenCurrentPlayerNames = new Set<string>()
+
+  function normalize(name: string): string {
+    return name.toLowerCase().replace(/[^a-z]/g, '')
+  }
 
   if (team) {
     const enrichMap = new Map(
@@ -45,7 +57,7 @@ export default async function MemberMapPage() {
       if (member.openToGolfRounds) s.openToGolfCount++
     }
 
-    // Current players — use membership hometown
+    // Current players — hometown state
     for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'current_player')) {
       const person = store.people.find(p => p.id === m.personId)
       if (!person) continue
@@ -53,6 +65,7 @@ export default async function MemberMapPage() {
       if (enrichment?.visibleToPlayers === false) continue
       const stateCode = hometownToStateCode(m.hometown)
       if (!stateCode) continue
+      seenCurrentPlayerNames.add(normalize(person.canonicalName))
       addMember(stateCode, {
         personId: person.id,
         canonicalName: person.canonicalName,
@@ -67,7 +80,7 @@ export default async function MemberMapPage() {
       })
     }
 
-    // Published alumni — prefer enrichment state (current location), fall back to hometown
+    // Published alumni — enrichment state, fall back to hometown
     for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'alumni' && x.publishedToNetwork === true)) {
       const person = store.people.find(p => p.id === m.personId)
       if (!person) continue
@@ -91,55 +104,105 @@ export default async function MemberMapPage() {
     }
   }
 
+  function getOrCreateState(code: string): MapState {
+    let s = stateMap.get(code)
+    if (!s) {
+      s = {
+        stateCode: code,
+        stateName: CODE_TO_NAME[code] ?? code,
+        totalCount: 0,
+        currentPlayerCount: 0,
+        alumniCount: 0,
+        openToCoffeeCount: 0,
+        openToGolfCount: 0,
+        members: [],
+      }
+      stateMap.set(code, s)
+    }
+    return s
+  }
+
+  // Member Book alumni — every player record with a mappable hometown state.
+  // Skip active members (already on the map via team-store current_player)
+  // and managers (never public).
+  for (const entry of memberBookEntries) {
+    if (!isPublicMember(entry)) continue
+    if (isActiveMember(entry)) continue
+    if (seenCurrentPlayerNames.has(normalize(entry.displayName))) continue
+    const stateCode = hometownToStateCode(entry.profile.hometown ?? undefined)
+    if (!stateCode) continue
+    const start = getMemberStartYear(entry)
+    const end = getMemberEndYear(entry)
+    const s = getOrCreateState(stateCode)
+    s.members.push({
+      personId: `book:${entry.id}`,
+      bookId: entry.id,
+      canonicalName: entry.displayName,
+      memberRole: 'alumni',
+      classLabel: entry.profile.classYearEstimate ?? undefined,
+      rosterStartYear: start ?? undefined,
+      rosterEndYear: end ?? undefined,
+      hometown: entry.profile.hometown ?? undefined,
+      openToCoffee: false,
+      openToGolfRounds: false,
+    })
+    s.totalCount++
+    s.alumniCount++
+  }
+
   const states = Array.from(stateMap.values()).sort((a, b) => b.totalCount - a.totalCount)
 
   const totalMembers = states.reduce((s, st) => s + st.totalCount, 0)
-  const currentPlayerCount = states.reduce((s, st) => s + st.currentPlayerCount, 0)
+  const totalCurrent = states.reduce((s, st) => s + st.currentPlayerCount, 0)
+  const totalAlumni = states.reduce((s, st) => s + st.alumniCount, 0)
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
-        <div className="max-w-[1320px] mx-auto">
-          <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Member Map</p>
-          <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Member Map</h1>
-          <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
-            See where Penn Golf players and alumni come from, live, and gather.
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
+        <div className="max-w-[1280px] mx-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+            Penn Men&rsquo;s Golf
           </p>
-          <div className="flex gap-6 mt-5">
-            <div>
-              <p className="text-xl font-semibold text-white">{totalMembers}</p>
-              <p className="text-xs text-gray-400">Members mapped</p>
+          <h1
+            className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            The Member Map
+          </h1>
+          <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl">
+            Where Penn Golf players and alumni come from, live, and gather.
+          </p>
+          <div className="mt-10 border-t border-white/10 pt-7 grid grid-cols-3 sm:flex sm:items-start sm:divide-x sm:divide-white/10 gap-y-5">
+            <div className="sm:pr-10">
+              <p className="text-3xl sm:text-4xl font-light text-white leading-none" style={{ fontFamily: 'var(--font-playfair)' }}>
+                {totalMembers}
+              </p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45 mt-1.5">On the Map</p>
             </div>
-            <div>
-              <p className="text-xl font-semibold text-white">{currentPlayerCount}</p>
-              <p className="text-xs text-gray-400">Current players</p>
+            <div className="sm:px-10">
+              <p className="text-3xl sm:text-4xl font-light text-white leading-none" style={{ fontFamily: 'var(--font-playfair)' }}>
+                {totalCurrent}
+              </p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45 mt-1.5">Current Roster</p>
             </div>
-            <div>
-              <p className="text-xl font-semibold text-white">{states.length}</p>
-              <p className="text-xs text-gray-400">States</p>
+            <div className="sm:px-10">
+              <p className="text-3xl sm:text-4xl font-light text-white leading-none" style={{ fontFamily: 'var(--font-playfair)' }}>
+                {totalAlumni}
+              </p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45 mt-1.5">Alumni</p>
+            </div>
+            <div className="sm:px-10">
+              <p className="text-3xl sm:text-4xl font-light text-white leading-none" style={{ fontFamily: 'var(--font-playfair)' }}>
+                {states.length}
+              </p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45 mt-1.5">States</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-8">
+      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 py-10">
         <MemberMapClient stateData={states} />
-
-        <div
-          className="mt-10 bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-        >
-          <div>
-            <p className="font-semibold text-[#0a1628] text-sm">Are you a Penn Golf alum?</p>
-            <p className="text-xs text-[#8a7f70] mt-0.5">Update your city so players can find alumni in their area.</p>
-          </div>
-          <Link
-            href="/alumni"
-            className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap"
-          >
-            Update your city &rarr;
-          </Link>
-        </div>
       </div>
     </div>
   )

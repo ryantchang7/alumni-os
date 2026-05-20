@@ -6,6 +6,7 @@ import type {
   LetterFilter,
   SortMode,
 } from './types'
+import { hometownToStateCode } from '@/lib/map/state-lookup'
 
 // Letter years are ENDING years. 2004 means the 2003-04 season.
 export const LETTER_YEAR_NOTE =
@@ -206,4 +207,70 @@ export function getMembersForLetterYear(
   year: number,
 ): MemberBookEntry[] {
   return members.filter((m) => m.letterWinner.years.includes(year))
+}
+
+// ── Public-facing helpers ─────────────────────────────────────────────────────
+// Managers stay in the data, but never surface on public registry/map.
+
+export function isPublicMember(m: MemberBookEntry): boolean {
+  return m.includeInMemberBook && m.role === 'player'
+}
+
+export function getPublicMembers(
+  members: readonly MemberBookEntry[],
+): MemberBookEntry[] {
+  return members.filter(isPublicMember)
+}
+
+export function getMemberPennGolfYears(m: MemberBookEntry): string | null {
+  const start = getMemberStartYear(m)
+  const end = getMemberEndYear(m)
+  if (start == null && end == null) return null
+  if (start && end && start !== end) return `Penn Golf ${start}–${String(end).slice(-2)}`
+  return `Penn Golf ${start ?? end}`
+}
+
+export function getMemberHometownLabel(m: MemberBookEntry): string | null {
+  return m.profile.hometown?.trim() || null
+}
+
+export function getMemberStateCode(m: MemberBookEntry): string | null {
+  return hometownToStateCode(m.profile.hometown ?? undefined)
+}
+
+export interface PublicMemberStats {
+  members: number
+  letterYears: number
+  earliestYear: number | null
+  latestYear: number | null
+  generations: number
+}
+
+export function getPublicMemberStats(
+  members: readonly MemberBookEntry[],
+): PublicMemberStats {
+  const decades = new Set<number>()
+  let letterYears = 0
+  let earliest: number | null = null
+  let latest: number | null = null
+  for (const m of members) {
+    letterYears += m.letterWinner.years.length
+    const s = getMemberStartYear(m)
+    const e = getMemberEndYear(m)
+    if (s != null) {
+      decades.add(Math.floor(s / 10) * 10)
+      if (earliest == null || s < earliest) earliest = s
+    }
+    if (e != null) {
+      decades.add(Math.floor(e / 10) * 10)
+      if (latest == null || e > latest) latest = e
+    }
+  }
+  return {
+    members: members.length,
+    letterYears,
+    earliestYear: earliest,
+    latestYear: latest,
+    generations: decades.size,
+  }
 }

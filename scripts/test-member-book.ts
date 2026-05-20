@@ -16,11 +16,13 @@ import {
   memberBookCounts,
   verifyMemberBook,
 } from '../src/lib/member-book/data'
+import { getPublicMembers } from '../src/lib/member-book/helpers'
 
 const EXPECTED = {
   membersTotal: 343,
   allTimeLetterWinnerEntriesIncluded: 330,
   managersIncluded: 6,
+  playersIncluded: 337,
   rosterOnlyNoLetterInPdf: 13,
   letterYearRows: 631,
 }
@@ -44,6 +46,11 @@ check(
   'Managers',
   EXPECTED.managersIncluded,
   memberBookEntries.filter((m) => m.role === 'manager').length,
+)
+check(
+  'Players (role === player)',
+  EXPECTED.playersIncluded,
+  memberBookEntries.filter((m) => m.role === 'player').length,
 )
 check(
   'Roster-only records',
@@ -85,6 +92,17 @@ console.log(
   `${droppedManagers === 0 ? '✓' : '✗'} Managers preserved in data: ${droppedManagers === 0 ? 'yes' : `${droppedManagers} dropped`}`,
 )
 if (droppedManagers > 0) failures++
+
+const publicMembers = getPublicMembers(memberBookEntries)
+const publicManagers = publicMembers.filter((m) => m.role === 'manager').length
+console.log(
+  `${publicManagers === 0 ? '✓' : '✗'} Managers hidden from public Member Book by default: ${publicManagers === 0 ? 'yes' : `${publicManagers} leaked`}`,
+)
+if (publicManagers > 0) failures++
+console.log(
+  `${publicMembers.length === EXPECTED.playersIncluded ? '✓' : '✗'} Public member count: expected ${EXPECTED.playersIncluded}, got ${publicMembers.length}`,
+)
+if (publicMembers.length !== EXPECTED.playersIncluded) failures++
 
 const report = verifyMemberBook()
 if (!report.ok) {

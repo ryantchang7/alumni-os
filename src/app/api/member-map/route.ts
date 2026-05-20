@@ -15,6 +15,7 @@ export interface MapMember {
   state?: string
   openToCoffee: boolean
   openToGolfRounds: boolean
+  bookId?: string
 }
 
 export interface MapState {
