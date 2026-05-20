@@ -70,18 +70,18 @@ export default async function TheCoursePage() {
     },
     {
       label: 'Host a Round',
-      description: 'Add yourself to the Member Book as open to hosting a round.',
+      description: 'Mark yourself open to hosting a round at your home course.',
       href: '/alumni',
     },
     {
       label: 'Browse the Map',
       description: 'See where Penn Golf alumni are playing across the country.',
-      href: '/player?tab=map',
+      href: '/member-map',
     },
     {
       label: 'Alumni Clubs',
       description: 'Members at notable clubs who may be able to arrange access.',
-      href: '/player/search?teamSlug=penn-mens-golf',
+      href: '/member-book',
     },
   ]
 

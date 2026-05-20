@@ -6,6 +6,10 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { MessageSquare, Users, Flag, CalendarDays, MapPin, Calendar } from 'lucide-react'
 import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
+import { memberBookEntries } from '@/lib/member-book/data'
+import { getPublicMembers } from '@/lib/member-book/helpers'
+
+const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
 
 interface GatheringSnippet {
   id: string
@@ -343,14 +347,17 @@ function ClubhouseInner() {
                   <div>
                     <h2 className="text-sm font-semibold text-[#0a1628]">Member Book</h2>
                     <p className="text-xs text-[#8a7f70] mt-0.5">
-                      {profiles.length} members · {currentPlayers.length} current players · {alumni.length} alumni
+                      {TOTAL_MEMBERS} members across generations
+                      {currentPlayers.length > 0 && (
+                        <> · {currentPlayers.length} in the Clubhouse this season</>
+                      )}
                     </p>
                   </div>
                   <Link
-                    href={`/player/search?teamSlug=${teamSlug}`}
+                    href="/member-book"
                     className="text-xs font-semibold text-[#990000] hover:underline whitespace-nowrap"
                   >
-                    Browse all &rarr;
+                    Open the Member Book &rarr;
                   </Link>
                 </div>
 
@@ -380,11 +387,11 @@ function ClubhouseInner() {
                       ))}
                       {alumni.length > 12 && (
                         <Link
-                          href={`/player/search?teamSlug=${teamSlug}`}
+                          href="/member-book"
                           className="flex-shrink-0 w-[140px] bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 flex flex-col items-center justify-center hover:bg-white transition-colors"
                         >
-                          <p className="text-xs font-semibold text-[#0a1628]">+{alumni.length - 12} more</p>
-                          <p className="text-[10px] text-[#990000] mt-1">View all alumni &rarr;</p>
+                          <p className="text-xs font-semibold text-[#0a1628]">All {TOTAL_MEMBERS} members</p>
+                          <p className="text-[10px] text-[#990000] mt-1">Open Member Book &rarr;</p>
                         </Link>
                       )}
                     </div>

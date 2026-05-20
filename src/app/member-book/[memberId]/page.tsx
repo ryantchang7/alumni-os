@@ -97,15 +97,9 @@ export default async function MemberDetailPage({
 
           {/* Penn Golf section */}
           <Section title="Penn Golf">
-            {years ? (
+            {years && (
               <p className="text-[14px] text-[#3d4a5c] leading-relaxed">
-                {member.displayName.split(' ')[0]} represented Penn Men&rsquo;s
-                Golf {years.replace('Penn Golf ', 'from ')}.
-              </p>
-            ) : (
-              <p className="text-[14px] text-[#3d4a5c] leading-relaxed">
-                {member.displayName.split(' ')[0]} is part of the Penn Men&rsquo;s
-                Golf family.
+                {years.replace('Penn Golf ', 'On the team from ')}.
               </p>
             )}
             {(totalLetters > 0 || totalSeasons > 0) && (
@@ -123,6 +117,11 @@ export default async function MemberDetailPage({
                   />
                 )}
               </div>
+            )}
+            {!years && totalLetters === 0 && totalSeasons === 0 && (
+              <p className="text-[14px] text-[#8a7f70] italic">
+                Years and letter history coming as the archive is reconciled.
+              </p>
             )}
           </Section>
 
