@@ -236,14 +236,14 @@ export default async function TeamRoomPage() {
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
         >
           <div>
-            <p className="font-semibold text-[#0a1628] text-sm">Browse the Full Member Book</p>
-            <p className="text-xs text-[#8a7f70] mt-0.5">All Penn Golf members who have set up their Clubhouse profile.</p>
+            <p className="font-semibold text-[#0a1628] text-sm">Browse the Member Book</p>
+            <p className="text-xs text-[#8a7f70] mt-0.5">Every Penn Men&rsquo;s Golf member, across generations.</p>
           </div>
           <Link
-            href="/player/search"
+            href="/member-book"
             className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap"
           >
-            Open Member Book &rarr;
+            Open the Member Book &rarr;
           </Link>
         </div>
 

@@ -163,7 +163,21 @@ function ContextualRow({ member }: { member: MapMember }) {
   )
 }
 
-export default function MemberMapClient({ stateData }: { stateData: MapState[] }) {
+type Lens = 'hometown' | 'current'
+
+const LENS_LABELS: Record<Lens, string> = {
+  hometown: 'Hometowns',
+  current: 'Where They Are Now',
+}
+
+export default function MemberMapClient({
+  hometownStates,
+  currentStates,
+}: {
+  hometownStates: MapState[]
+  currentStates: MapState[]
+}) {
+  const [lens, setLens] = useState<Lens>('hometown')
   const [geos, setGeos] = useState<StateGeo[]>([])
   const [geoError, setGeoError] = useState(false)
   const [hovered, setHovered] = useState<string | null>(null)
@@ -171,11 +185,19 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('all')
   const [eraFilter, setEraFilter] = useState<EraFilter>('all')
 
+  const stateData = lens === 'hometown' ? hometownStates : currentStates
   const hasData = stateData.length > 0
   const stateByCode = useMemo(
     () => new Map(stateData.map((s) => [s.stateCode, s])),
     [stateData],
   )
+
+  function handleLensChange(next: Lens) {
+    if (next === lens) return
+    setLens(next)
+    setSelected(null)
+    setRoleFilter('all')
+  }
 
   useEffect(() => {
     fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json')
@@ -234,6 +256,41 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
 
   return (
     <div className="space-y-6">
+      {/* Lens toggle */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3" data-testid="lens-toggle">
+        <div
+          role="tablist"
+          aria-label="Map view"
+          className="inline-flex bg-white border border-[rgba(180,168,150,0.4)] rounded-full p-1"
+          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+        >
+          {(Object.keys(LENS_LABELS) as Lens[]).map((l) => {
+            const active = l === lens
+            return (
+              <button
+                key={l}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => handleLensChange(l)}
+                className={`px-4 sm:px-5 py-1.5 text-[12.5px] font-medium rounded-full transition-colors ${
+                  active
+                    ? 'bg-[#0a1628] text-white'
+                    : 'text-[#3d4a5c] hover:text-[#0a1628]'
+                }`}
+              >
+                {LENS_LABELS[l]}
+              </button>
+            )
+          })}
+        </div>
+        <p className="text-[12px] text-[#8a7f70] sm:text-right max-w-md">
+          {lens === 'hometown'
+            ? 'Where Penn Golf members grew up, drawn from the Member Book.'
+            : 'Where alumni live now — only members who have updated their location appear.'}
+        </p>
+      </div>
+
       {/* Filter panel */}
       <div
         className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4 space-y-3.5"
@@ -321,10 +378,20 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
         >
           {!hasData ? (
-            <div className="flex items-center justify-center" style={{ height: 380 }}>
-              <p className="text-sm text-[#8a7f70]">
-                Member locations will appear as members are placed on the map.
+            <div className="flex flex-col items-center justify-center text-center px-6" style={{ height: 380 }}>
+              <p
+                className="text-[#0a1628] text-lg font-medium"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                {lens === 'current'
+                  ? 'No alumni have updated their location yet.'
+                  : 'No member locations on this map yet.'}
               </p>
+              {lens === 'current' && (
+                <p className="text-[12.5px] text-[#8a7f70] mt-2 max-w-md">
+                  Once alumni add where they live now, they&rsquo;ll appear here. The Hometowns view shows everyone we have data for today.
+                </p>
+              )}
             </div>
           ) : geoError ? (
             <div className="flex items-center justify-center" style={{ height: 380 }}>
@@ -490,6 +557,31 @@ export default function MemberMapClient({ stateData }: { stateData: MapState[] }
             </div>
           )}
         </aside>
+      </div>
+
+      {/* Self-update footer */}
+      <div
+        className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+      >
+        <div>
+          <p
+            className="text-[#0a1628] text-[15px] font-medium"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            Are you on this map?
+          </p>
+          <p className="text-[12.5px] text-[#8a7f70] mt-1">
+            Update your hometown and where you live now so the next class can find you.
+          </p>
+        </div>
+        <Link
+          href="/alumni"
+          data-testid="map-update-location-cta"
+          className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
+        >
+          Update Your Location &rarr;
+        </Link>
       </div>
     </div>
   )

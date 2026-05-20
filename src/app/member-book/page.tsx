@@ -42,16 +42,16 @@ const SORT_OPTIONS: { value: SortMode; label: string }[] = [
   { value: 'first_letter_year', label: 'Earliest Year' },
 ]
 
-function Plaque({ value, label }: { value: number | string; label: string }) {
+function HeroPlaque({ value, label }: { value: number | string; label: string }) {
   return (
-    <div>
+    <div className="flex items-baseline gap-5">
       <p
-        className="text-3xl sm:text-4xl font-light text-white leading-none"
+        className="text-6xl sm:text-7xl font-light text-white leading-none"
         style={{ fontFamily: 'var(--font-playfair)' }}
       >
         {value}
       </p>
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45 mt-1.5">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">
         {label}
       </p>
     </div>
@@ -117,19 +117,15 @@ function RegistryEntry({
 
 function BookHeader({
   members,
-  letterYears,
   earliestYear,
   latestYear,
-  generations,
 }: {
   members: number
-  letterYears: number
   earliestYear: number | null
   latestYear: number | null
-  generations: number
 }) {
   const rangeLabel =
-    earliestYear && latestYear ? `${earliestYear}–${latestYear}` : '—'
+    earliestYear && latestYear ? `${earliestYear} — ${latestYear}` : null
   return (
     <div className="bg-[#0a1628] px-5 sm:px-8 pt-12 pb-16">
       <div className="max-w-[1280px] mx-auto">
@@ -147,24 +143,16 @@ function BookHeader({
           A registry of Penn Men&rsquo;s Golf members, across generations.
         </p>
 
-        <div className="mt-10 border-t border-white/10 pt-7">
-          <div
-            className="grid grid-cols-2 sm:flex sm:items-start sm:divide-x sm:divide-white/10 gap-y-6"
-            data-testid="member-book-stats"
-          >
-            <div className="sm:pr-10">
-              <Plaque value={members} label="Members" />
-            </div>
-            <div className="sm:px-10">
-              <Plaque value={letterYears} label="Letter Years" />
-            </div>
-            <div className="sm:px-10">
-              <Plaque value={rangeLabel} label="Years" />
-            </div>
-            <div className="sm:px-10">
-              <Plaque value={generations} label="Generations" />
-            </div>
-          </div>
+        <div
+          className="mt-10 border-t border-white/10 pt-7"
+          data-testid="member-book-stats"
+        >
+          <HeroPlaque value={members} label="Members" />
+          {rangeLabel && (
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40 mt-3">
+              {rangeLabel}
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -197,10 +185,8 @@ export default function MemberBookPage() {
     <div className="min-h-screen bg-[#f8f5f0]">
       <BookHeader
         members={stats.members}
-        letterYears={stats.letterYears}
         earliestYear={stats.earliestYear}
         latestYear={stats.latestYear}
-        generations={stats.generations}
       />
 
       <div className="max-w-[1280px] mx-auto px-5 sm:px-8">

@@ -166,15 +166,14 @@ export default async function MemberDetailPage({
                 Is this you?
               </p>
               <p className="text-[12.5px] text-[#8a7f70] mt-1 max-w-md">
-                Claim your place in the Member Book and tell the next generation
-                where the game has taken you.
+                Add your hometown, where you live now, and how you can help the next generation.
               </p>
             </div>
             <Link
               href="/alumni"
               className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
             >
-              Claim Profile &rarr;
+              Claim &amp; Update &rarr;
             </Link>
           </div>
         </div>

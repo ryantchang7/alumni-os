@@ -216,13 +216,13 @@ export default async function CareerRoomPage() {
         >
           <div>
             <p className="font-semibold text-[#0a1628] text-sm">Looking for someone in a specific field?</p>
-            <p className="text-xs text-[#8a7f70] mt-0.5">Browse all published alumni in the Member Book.</p>
+            <p className="text-xs text-[#8a7f70] mt-0.5">Browse the Member Book to find Penn Golf alumni by era or hometown.</p>
           </div>
           <Link
-            href="/player/search"
+            href="/member-book"
             className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap"
           >
-            Browse Alumni &rarr;
+            Open the Member Book &rarr;
           </Link>
         </div>
 

@@ -7,12 +7,11 @@ test.describe('Penn Men’s Golf Member Book', () => {
 
     await expect(page.getByTestId('member-book-title')).toContainText(/Member Book/i)
 
-    // Stat plaques show player-only count (337), letter-year rows (631),
-    // and do NOT advertise a manager plaque publicly.
+    // Hero shows player-only count (337) and no admin-y plaques.
     const stats = page.getByTestId('member-book-stats')
     await expect(stats).toContainText('337')
-    await expect(stats).toContainText('631')
     await expect(stats).not.toContainText('Managers')
+    await expect(stats).not.toContainText('Letter Years')
 
     // Results count starts at 337 (managers hidden by default)
     await expect(page.getByTestId('member-results-count')).toHaveText('337')
