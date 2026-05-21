@@ -6,8 +6,11 @@ import {
   getTeamMembershipsForTeam,
   getPersonEnrichment,
   updatePersonEnrichmentSafeFields,
+  readStore,
+  writeStore,
 } from '@/lib/store/local-store'
 import type { PersonEnrichment } from '@/lib/store/types'
+import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 
 const ALLOWED_CONTACT_PREFS: PersonEnrichment['contactPreference'][] = [
   'team_intro',
@@ -46,10 +49,12 @@ export async function GET(request: Request) {
   }
 
   const enrichment = await getPersonEnrichment(personId, team.id)
+  const bookEntry = findBookEntryForTeamStorePerson(person.canonicalName)
 
   return NextResponse.json({
     personId: person.id,
     canonicalName: person.canonicalName,
+    bookId: bookEntry?.id ?? null,
     // Read-only roster truth
     classLabel: membership.classLabel,
     rosterStartYear: membership.rosterStartYear,
@@ -127,6 +132,24 @@ export async function POST(request: Request) {
   const updated = await updatePersonEnrichmentSafeFields(personId, team.id, safeUpdate)
   if (!updated) {
     return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 })
+  }
+
+  // Hometown lives on the team-membership, not the enrichment.
+  // Persist it separately when present in the body.
+  if (typeof body.hometown === 'string') {
+    const hometown = body.hometown.trim()
+    const store = await readStore()
+    const idx = store.teamMemberships.findIndex(
+      (m) => m.personId === personId && m.teamId === team.id,
+    )
+    if (idx !== -1) {
+      store.teamMemberships[idx] = {
+        ...store.teamMemberships[idx],
+        hometown: hometown || undefined,
+        updatedAt: new Date().toISOString(),
+      }
+      await writeStore(store)
+    }
   }
 
   return NextResponse.json({ ok: true, personId })

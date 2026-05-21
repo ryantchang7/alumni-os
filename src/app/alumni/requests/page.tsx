@@ -420,7 +420,7 @@ function AlumniRequestsInner() {
             href={`/alumni?teamSlug=${teamSlug}`}
             className="text-xs text-gray-400 hover:text-gray-200 mb-3 inline-block"
           >
-            &larr; Alumni Mode
+            &larr; Your Profile
           </Link>
           <h1 className="text-white text-2xl font-semibold tracking-tight mt-1">
             Your Clubhouse Inbox

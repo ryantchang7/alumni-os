@@ -95,7 +95,7 @@ export default async function EventsPage() {
             </p>
           </div>
           <Link href="/alumni" className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap">
-            Go to Alumni Mode &rarr;
+            Go to Your Profile &rarr;
           </Link>
         </div>
 

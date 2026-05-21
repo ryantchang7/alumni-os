@@ -8,6 +8,7 @@ import { Suspense } from 'react'
 interface SelfProfile {
   personId: string
   canonicalName: string
+  bookId?: string | null
   classLabel?: string
   rosterStartYear?: number
   rosterEndYear?: number
@@ -52,6 +53,7 @@ function AlumniProfileInner() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
+  const [hometown, setHometown] = useState('')
   const [currentRole, setCurrentRole] = useState('')
   const [currentCompany, setCurrentCompany] = useState('')
   const [city, setCity] = useState('')
@@ -59,6 +61,8 @@ function AlumniProfileInner() {
   const [helpTopics, setHelpTopics] = useState<string[]>([])
   const [contactPref, setContactPref] = useState('team_intro')
   const [visibleToPlayers, setVisibleToPlayers] = useState(true)
+
+  const justClaimed = searchParams.get('claimed') === '1'
 
   useEffect(() => {
     fetch(`/api/alumni/self-profile?teamSlug=${teamSlug}&personId=${personId}`)
@@ -68,6 +72,7 @@ function AlumniProfileInner() {
       })
       .then((data: SelfProfile) => {
         setProfile(data)
+        setHometown(data.hometown ?? '')
         setCurrentRole(data.currentRole ?? '')
         setCurrentCompany(data.currentCompany ?? '')
         setCity(data.city ?? '')
@@ -99,6 +104,7 @@ function AlumniProfileInner() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           personId,
+          hometown,
           currentRole,
           currentCompany,
           city,
@@ -131,7 +137,7 @@ function AlumniProfileInner() {
         <p className="text-base font-semibold text-[#990000] mb-2">Profile not found</p>
         <p className="text-sm text-[#8a7f70] mb-6">{error}</p>
         <Link href="/alumni" className="text-sm font-medium text-[#990000] hover:underline">
-          Back to Alumni Mode
+          Back to Your Profile
         </Link>
       </div>
     )
@@ -154,7 +160,7 @@ function AlumniProfileInner() {
             href={`/alumni?teamSlug=${teamSlug}`}
             className="text-xs text-gray-400 hover:text-gray-200 mb-3 inline-block"
           >
-            &larr; Alumni Mode
+            &larr; Your Profile
           </Link>
           <h1 className="text-white text-2xl font-semibold tracking-tight mt-1">
             {profile.canonicalName}
@@ -171,21 +177,27 @@ function AlumniProfileInner() {
 
       <div className="max-w-[860px] mx-auto px-8 pb-16">
         <div className="-mt-5 relative z-10 space-y-4">
+          {justClaimed && (
+            <div
+              className="bg-white border border-[#2d6a4f]/30 rounded-xl p-5"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+            >
+              <p className="text-sm font-semibold text-[#0a1628]">Profile claimed.</p>
+              <p className="text-xs text-[#8a7f70] mt-1">
+                Add your details below so other Penn Golf members can find you.
+              </p>
+            </div>
+          )}
+
           {/* Read-only roster truth */}
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
-              Roster record — read only
+              From the Penn Golf record
             </p>
             <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-              {profile.hometown && (
-                <div>
-                  <p className="text-xs text-[#8a7f70]">Hometown</p>
-                  <p className="text-sm text-[#0a1628]">{profile.hometown}</p>
-                </div>
-              )}
               {profile.highSchool && (
                 <div>
                   <p className="text-xs text-[#8a7f70]">High school</p>
@@ -206,10 +218,25 @@ function AlumniProfileInner() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
+            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
               Your current info
             </p>
+            <p className="text-xs text-[#8a7f70] mb-4">
+              Updates flow to your Member Book card and the Member Map.
+            </p>
             <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Hometown
+                </label>
+                <input
+                  type="text"
+                  value={hometown}
+                  onChange={e => setHometown(e.target.value)}
+                  placeholder="e.g. Greenwich, CT"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-[#4a5568] mb-1">
@@ -235,7 +262,9 @@ function AlumniProfileInner() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">City</label>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  City (where you live now)
+                </label>
                 <input
                   type="text"
                   value={city}
@@ -335,7 +364,7 @@ function AlumniProfileInner() {
           </div>
 
           {/* Save button */}
-          <div className="flex items-center gap-4 pt-2">
+          <div className="flex flex-wrap items-center gap-4 pt-2">
             <button
               type="button"
               onClick={handleSave}
@@ -346,6 +375,14 @@ function AlumniProfileInner() {
             </button>
             {saved && (
               <span className="text-sm text-emerald-700 font-medium">Changes saved.</span>
+            )}
+            {saved && profile.bookId && (
+              <Link
+                href={`/member-book/${encodeURIComponent(profile.bookId)}`}
+                className="text-xs font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
+              >
+                View your Member Book card &rarr;
+              </Link>
             )}
             {error && !saving && (
               <span className="text-sm text-[#990000]">{error}</span>

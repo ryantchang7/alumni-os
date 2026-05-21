@@ -8,10 +8,39 @@ import {
   getMemberHometownLabel,
   isActiveMember,
 } from '@/lib/member-book/helpers'
+import { findTeamStorePersonForBookEntry } from '@/lib/member-book/bridge'
+import { readStore, getTeamBySlug } from '@/lib/store/local-store'
+import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
 
 // Detail pages render on demand so we don't ship 337 prebuilt HTML payloads
 // in the deploy artifact (caused vercel CLI Upload aborted at ~29 MB).
 export const dynamic = 'force-dynamic'
+
+const TEAM_SLUG = 'penn-mens-golf'
+
+interface StoreMatch {
+  personId: string
+  membership: TeamMembership | undefined
+  enrichment: PersonEnrichment | undefined
+}
+
+async function lookupStoreMatch(displayName: string): Promise<StoreMatch | null> {
+  const team = await getTeamBySlug(TEAM_SLUG)
+  if (!team) return null
+  const store = await readStore()
+  const match = findTeamStorePersonForBookEntry(
+    { displayName } as Parameters<typeof findTeamStorePersonForBookEntry>[0],
+    store.people,
+  )
+  if (!match) return null
+  const membership = store.teamMemberships.find(
+    (m) => m.teamId === team.id && m.personId === match.id,
+  )
+  const enrichment = store.personEnrichments.find(
+    (e) => e.teamId === team.id && e.personId === match.id,
+  )
+  return { personId: match.id, membership, enrichment }
+}
 
 export default async function MemberDetailPage({
   params,
@@ -26,21 +55,38 @@ export default async function MemberDetailPage({
     notFound()
   }
 
+  const storeMatch = await lookupStoreMatch(member.displayName)
+
   const years = getMemberPennGolfYears(member)
-  const hometown = getMemberHometownLabel(member)
+  const hometown =
+    storeMatch?.membership?.hometown ?? getMemberHometownLabel(member)
   const classYear = member.profile.classYearEstimate
-  const isCurrent = isActiveMember(member)
+  const isCurrent =
+    isActiveMember(member) ||
+    storeMatch?.membership?.memberRole === 'current_player'
   const totalLetters = member.letterWinner.years.length
   const totalSeasons =
     member.career.verifiedRosterSeasonCount > 0
       ? member.career.verifiedRosterSeasonCount
       : member.career.inferredLetterSeasons.length
 
+  // Bridged enrichment (team-store) takes precedence over book profile fields.
+  const enr = storeMatch?.enrichment
+  const role = enr?.currentRole ?? member.profile.currentRole ?? null
+  const company = enr?.currentCompany ?? member.profile.currentCompany ?? null
+  const city = enr?.city ?? member.profile.city ?? null
+  const bio = enr?.alumniBio ?? null
+  const helpTopics = enr?.helpTopics ?? []
+  const highSchool = member.profile.highSchool ?? null
+
   const hasProfileDetails =
-    member.profile.currentRole ||
-    member.profile.currentCompany ||
-    member.profile.city ||
-    member.profile.highSchool
+    role || company || city || bio || helpTopics.length > 0 || highSchool
+
+  // Claim CTA destination depends on whether a store record exists.
+  const claimHref = storeMatch
+    ? `/alumni/profile/${storeMatch.personId}?teamSlug=${TEAM_SLUG}`
+    : `/alumni/claim?bookId=${encodeURIComponent(member.id)}`
+  const claimLabel = storeMatch ? 'Update Profile' : 'Claim & Update'
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -128,24 +174,38 @@ export default async function MemberDetailPage({
           {/* Clubhouse Profile */}
           <Section title="Clubhouse Profile">
             {hasProfileDetails ? (
-              <div className="space-y-1.5 text-[14px] text-[#3d4a5c]">
-                {member.profile.currentRole && member.profile.currentCompany && (
+              <div className="space-y-2 text-[14px] text-[#3d4a5c]">
+                {role && company && (
                   <p>
-                    {member.profile.currentRole} ·{' '}
-                    <span className="text-[#0a1628]">
-                      {member.profile.currentCompany}
-                    </span>
+                    {role} ·{' '}
+                    <span className="text-[#0a1628]">{company}</span>
                   </p>
                 )}
-                {member.profile.currentRole && !member.profile.currentCompany && (
-                  <p>{member.profile.currentRole}</p>
+                {role && !company && <p>{role}</p>}
+                {!role && company && <p>{company}</p>}
+                {city && <p>{city}</p>}
+                {bio && (
+                  <p className="text-[#3d4a5c] leading-relaxed pt-1">{bio}</p>
                 )}
-                {!member.profile.currentRole && member.profile.currentCompany && (
-                  <p>{member.profile.currentCompany}</p>
+                {helpTopics.length > 0 && (
+                  <div className="pt-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mb-2">
+                      Open to
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {helpTopics.map((topic) => (
+                        <span
+                          key={topic}
+                          className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#0a1628]/6 text-[#0a1628] border border-[#0a1628]/15"
+                        >
+                          {topic}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 )}
-                {member.profile.city && <p>{member.profile.city}</p>}
-                {member.profile.highSchool && (
-                  <p className="text-[#8a7f70]">{member.profile.highSchool}</p>
+                {highSchool && (
+                  <p className="text-[#8a7f70] pt-1">{highSchool}</p>
                 )}
               </div>
             ) : (
@@ -169,10 +229,11 @@ export default async function MemberDetailPage({
               </p>
             </div>
             <Link
-              href="/alumni"
+              href={claimHref}
+              data-testid="member-detail-claim-cta"
               className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
             >
-              Claim &amp; Update &rarr;
+              {claimLabel} &rarr;
             </Link>
           </div>
         </div>

@@ -24,37 +24,46 @@ export default async function AlumniLandingPage({ searchParams }: PageProps) {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-8 pt-10 pb-14">
+      <div className="bg-[#0a1628] px-8 pt-12 pb-14">
         <div className="max-w-[860px] mx-auto">
-          <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Alumni Mode</p>
-          <h1 className="text-white text-3xl font-semibold tracking-tight">
-            You're a Penn Golf alum.
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+            Penn Men&rsquo;s Golf
+          </p>
+          <h1
+            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            Your Profile
           </h1>
-          <p className="text-gray-300 text-base mt-2 max-w-xl leading-relaxed">
-            Update your profile, choose how you want to help current players, and stay connected
-            to the program.
+          <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl leading-relaxed">
+            Update your hometown, where you live now, and how you can help the next generation.
           </p>
         </div>
       </div>
 
       <div className="max-w-[860px] mx-auto px-8">
         <div className="-mt-5 relative z-10 space-y-4 pb-16">
-          {/* Dev-mode person picker — no auth yet */}
+          {/* Person picker */}
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
-              Dev mode — Select your profile
+              Find your profile
             </p>
             <p className="text-sm text-[#4a5568] mb-4">
-              Authentication is not yet enabled. Select your name to view and edit your profile.
+              Select your name to view and update your profile. If you don&rsquo;t see yourself,
+              open the{' '}
+              <Link href="/member-book" className="text-[#990000] hover:underline font-medium">
+                Member Book
+              </Link>{' '}
+              and click &ldquo;Claim &amp; Update&rdquo; on your card.
             </p>
             {!people || people.length === 0 ? (
               <p className="text-sm text-[#8a7f70]">
-                No alumni in the graph yet.{' '}
-                <Link href="/build" className="text-[#990000] hover:underline font-medium">
-                  Build the network first &rarr;
+                No profiles set up yet.{' '}
+                <Link href="/member-book" className="text-[#990000] hover:underline font-medium">
+                  Browse the Member Book &rarr;
                 </Link>
               </p>
             ) : (
