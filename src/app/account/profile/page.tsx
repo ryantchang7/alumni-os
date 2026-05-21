@@ -33,6 +33,9 @@ export default async function AccountProfilePage() {
   const membership = store.teamMemberships.find(
     (m) => m.teamId === team.id && m.personId === session.linkedPersonId,
   )
+  const enrichment = store.personEnrichments.find(
+    (e) => e.teamId === team.id && e.personId === session.linkedPersonId,
+  )
 
   const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
   // Fallback: look up by id directly in case the team-store person matches a book entry id.
@@ -45,6 +48,17 @@ export default async function AccountProfilePage() {
       : matchedBook
         ? getMemberPennGolfYears(matchedBook)
         : null
+
+  // Profile completeness: 5 quick wins to nudge them toward filling in.
+  const completeness = [
+    { label: 'Hometown', done: !!(membership?.hometown && membership.hometown.trim()) },
+    { label: 'Where you live now', done: !!(enrichment?.city && enrichment.city.trim()) },
+    { label: 'Current role', done: !!(enrichment?.currentRole && enrichment.currentRole.trim()) },
+    { label: 'Company', done: !!(enrichment?.currentCompany && enrichment.currentCompany.trim()) },
+    { label: 'How you can help', done: !!(enrichment?.helpTopics && enrichment.helpTopics.length > 0) },
+  ]
+  const doneCount = completeness.filter((c) => c.done).length
+  const totalCount = completeness.length
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -88,6 +102,43 @@ export default async function AccountProfilePage() {
               <p className="text-[13.5px] text-[#8a7f70] mt-1">{membership.hometown}</p>
             )}
           </div>
+
+          {doneCount < totalCount && (
+            <div className="px-7 sm:px-10 py-7 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
+              <div className="flex items-baseline justify-between mb-3">
+                <p
+                  className="text-[#0a1628] text-base font-medium"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Complete your profile
+                </p>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
+                  {doneCount} / {totalCount}
+                </span>
+              </div>
+              <ul className="space-y-1.5">
+                {completeness.map((c) => (
+                  <li
+                    key={c.label}
+                    className="flex items-center gap-2 text-[13px]"
+                  >
+                    <span
+                      className={`inline-block w-3.5 h-3.5 rounded-full text-[10px] leading-[14px] text-center font-bold ${
+                        c.done
+                          ? 'bg-[#2d6a4f] text-white'
+                          : 'bg-white border border-[rgba(180,168,150,0.5)] text-transparent'
+                      }`}
+                    >
+                      ✓
+                    </span>
+                    <span className={c.done ? 'text-[#8a7f70] line-through' : 'text-[#3d4a5c]'}>
+                      {c.label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="px-7 sm:px-10 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
             <div>
