@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { Search, X } from 'lucide-react'
 
 interface MinimalMember {
@@ -22,6 +23,7 @@ export default function AccountSetupClient({
   signedInEmail: string | null
 }) {
   const router = useRouter()
+  const { update: refreshSession } = useSession()
   const [query, setQuery] = useState(signedInName ?? '')
   const [claiming, setClaiming] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -51,6 +53,9 @@ export default function AccountSetupClient({
         throw new Error(j.error ?? 'Failed to link profile')
       }
       const j = await res.json()
+      // Force NextAuth to re-issue the session cookie so the new
+      // linkedPersonId is on the JWT before the editor page reads it.
+      await refreshSession()
       router.push(
         `/alumni/profile/${j.personId}?teamSlug=penn-mens-golf&claimed=1`,
       )

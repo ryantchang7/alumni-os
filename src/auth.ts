@@ -51,9 +51,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
         }
       }
-      // On subsequent requests, refresh linkedPersonId from the store so
-      // a freshly-linked profile shows up without re-login.
-      if (!token.linkedPersonId && token.googleSub) {
+      // On every subsequent call, refresh linkedPersonId from the store so
+      // a freshly-linked profile shows up without re-login. Always-fresh
+      // beats stale-cached for our scale (~tens of session reads/min).
+      if (token.googleSub) {
         const a = await getAccountByGoogleSub(token.googleSub as string)
         if (a) {
           token.accountId = a.id
