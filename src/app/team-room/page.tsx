@@ -81,12 +81,20 @@ export default async function TeamRoomPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14 overflow-hidden">
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14 overflow-hidden">
         <div className="max-w-[1320px] mx-auto flex items-end justify-between gap-6">
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Team Room</p>
-            <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Team Room</h1>
-            <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+              Penn Men&rsquo;s Golf
+            </p>
+            <h1
+              className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Team Room
+            </h1>
+            <span className="block w-12 h-[2px] bg-[#990000] mt-5 mb-5" />
+            <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
               Current roster, program tradition, and the alumni who carry Penn Golf forward.
             </p>
           </div>

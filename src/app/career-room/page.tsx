@@ -89,11 +89,19 @@ export default async function CareerRoomPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
-          <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Career Room</p>
-          <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Career Room</h1>
-          <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+            Penn Men&rsquo;s Golf
+          </p>
+          <h1
+            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            Career Room
+          </h1>
+          <span className="block w-12 h-[2px] bg-[#990000] mt-5 mb-5" />
+          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
             Advice, introductions, and career paths from Penn Golf alumni.
           </p>
         </div>
