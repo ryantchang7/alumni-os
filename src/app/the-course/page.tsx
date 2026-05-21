@@ -36,6 +36,7 @@ export default async function TheCoursePage() {
 
   let openToRounds: AlumniEntry[] = []
   let rounds: GatheringData[] = []
+  const interestedByGathering = new Map<string, number>()
 
   if (team) {
     const memberships = store.teamMemberships.filter(
@@ -60,6 +61,15 @@ export default async function TheCoursePage() {
     rounds = store.clubhouseGatherings.filter(
       g => g.teamId === team.id && g.type === 'round' && g.status !== 'closed',
     ) as GatheringData[]
+
+    for (const r of store.clubhouseGatheringRequests) {
+      if (r.teamId !== team.id) continue
+      if (r.status === 'declined' || r.status === 'closed') continue
+      interestedByGathering.set(
+        r.gatheringId,
+        (interestedByGathering.get(r.gatheringId) ?? 0) + 1,
+      )
+    }
   }
 
   const actionCards = [
@@ -126,7 +136,11 @@ export default async function TheCoursePage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {rounds.map(g => (
-                <GatheringCard key={g.id} gathering={g} />
+                <GatheringCard
+                  key={g.id}
+                  gathering={g}
+                  interestedCount={interestedByGathering.get(g.id) ?? 0}
+                />
               ))}
             </div>
           </section>

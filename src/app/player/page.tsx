@@ -8,6 +8,7 @@ import { MessageSquare, Users, Flag, CalendarDays, MapPin, Calendar } from 'luci
 import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
 import { memberBookEntries } from '@/lib/member-book/data'
 import { getPublicMembers } from '@/lib/member-book/helpers'
+import ClubhouseActivityFeed from '@/components/ClubhouseActivityFeed'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
 
@@ -322,6 +323,9 @@ function ClubhouseInner() {
             })}
           </div>
         </div>
+
+        {/* Clubhouse Activity Feed */}
+        <ClubhouseActivityFeed />
 
         {/* Penn Golf Tradition */}
         <TraditionSection />

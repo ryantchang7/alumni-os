@@ -19,8 +19,18 @@ export default async function NineteenthHolePage() {
   let openToCoffee: AlumniEntry[] = []
   let cityGroups: { city: string; count: number; coffeeCount: number }[] = []
   let socialGatherings: GatheringData[] = []
+  const interestedByGathering = new Map<string, number>()
 
   if (team) {
+    for (const r of store.clubhouseGatheringRequests) {
+      if (r.teamId !== team.id) continue
+      if (r.status === 'declined' || r.status === 'closed') continue
+      interestedByGathering.set(
+        r.gatheringId,
+        (interestedByGathering.get(r.gatheringId) ?? 0) + 1,
+      )
+    }
+
     const memberships = store.teamMemberships.filter(
       m => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true,
     )
@@ -93,6 +103,7 @@ export default async function NineteenthHolePage() {
         gatherings={socialGatherings}
         openToCoffee={openToCoffee}
         cityGroups={cityGroups}
+        interestedCounts={Object.fromEntries(interestedByGathering)}
       />
     </div>
   )

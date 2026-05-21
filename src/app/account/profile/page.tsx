@@ -37,6 +37,13 @@ export default async function AccountProfilePage() {
     (e) => e.teamId === team.id && e.personId === session.linkedPersonId,
   )
 
+  const incomingRequestCount = store.playerAlumniRequests.filter(
+    (r) =>
+      r.teamId === team.id &&
+      r.alumniPersonId === session.linkedPersonId &&
+      (r.status === 'requested' || r.status === 'seen'),
+  ).length
+
   const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
   // Fallback: look up by id directly in case the team-store person matches a book entry id.
   const bookFromId = !bookEntry && person ? getMemberById(person.id) : null
@@ -181,6 +188,35 @@ export default async function AccountProfilePage() {
               </Link>
             </div>
           )}
+
+          <div className="px-7 sm:px-10 py-7 border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <p
+                  className="text-[#0a1628] text-base font-medium"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Help current players
+                </p>
+                {incomingRequestCount > 0 && (
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full bg-[#990000] text-white">
+                    {incomingRequestCount} new
+                  </span>
+                )}
+              </div>
+              <p className="text-[12.5px] text-[#8a7f70] mt-1">
+                {incomingRequestCount > 0
+                  ? `${incomingRequestCount === 1 ? 'A current player has' : 'Current players have'} reached out to you.`
+                  : 'View incoming mentor requests, coffee chats, and warm intros.'}
+              </p>
+            </div>
+            <Link
+              href="/alumni/requests"
+              className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
+            >
+              {incomingRequestCount > 0 ? 'Open requests' : 'See requests'} &rarr;
+            </Link>
+          </div>
         </div>
 
         <form

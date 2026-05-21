@@ -19,6 +19,7 @@ interface Props {
   gatherings: GatheringData[]
   openToCoffee: AlumniEntry[]
   cityGroups: { city: string; count: number; coffeeCount: number }[]
+  interestedCounts?: Record<string, number>
 }
 
 type TypeFilter = 'all' | 'coffee' | 'drinks' | 'dinner' | 'event'
@@ -31,7 +32,7 @@ const TYPE_LABELS: Record<TypeFilter, string> = {
   event: 'Events',
 }
 
-export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGroups }: Props) {
+export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGroups, interestedCounts }: Props) {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
 
   const filteredGatherings = typeFilter === 'all'
@@ -80,7 +81,11 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {filteredGatherings.map(g => (
-                <GatheringCard key={g.id} gathering={g} />
+                <GatheringCard
+                  key={g.id}
+                  gathering={g}
+                  interestedCount={interestedCounts?.[g.id] ?? 0}
+                />
               ))}
             </div>
           )}

@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import ClaimModule from './ClaimModule'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -175,9 +174,28 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               </dl>
             </div>
 
-            {/* Claim module */}
+            {/* Unclaimed — direct visitors to the Member Book / sign-in flow */}
             {unclaimed && (
-              <ClaimModule memberId={person.id} memberName={person.canonicalName} />
+              <div
+                className="bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] rounded-xl p-5"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+              >
+                <p
+                  className="text-[#0a1628] text-base font-medium"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Is this you?
+                </p>
+                <p className="text-[12.5px] text-[#8a7f70] mt-1.5">
+                  Sign in with Google to claim {person.canonicalName.split(' ')[0]}&rsquo;s card and start sharing your story with the Clubhouse.
+                </p>
+                <Link
+                  href="/login?next=/account/setup"
+                  className="inline-block mt-4 bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold px-5 py-2.5 rounded-lg transition-colors"
+                >
+                  Sign in to claim
+                </Link>
+              </div>
             )}
           </div>
 

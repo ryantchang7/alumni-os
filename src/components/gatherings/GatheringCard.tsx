@@ -54,9 +54,10 @@ export function GatheringStatusPill({ status }: { status: GatheringData['status'
   return null
 }
 
-export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf' }: {
+export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', interestedCount }: {
   gathering: GatheringData
   teamSlug?: string
+  interestedCount?: number
 }) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
@@ -64,6 +65,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf' }
   const [submitting, setSubmitting] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const liveCount = (interestedCount ?? 0) + (sent ? 1 : 0)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -135,10 +137,14 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf' }
               </span>
             </div>
           )}
-          {gathering.capacity && (
+          {(liveCount > 0 || gathering.capacity) && (
             <div className="flex items-center gap-1.5 text-xs text-[#8a7f70]">
               <Users className="w-3 h-3 flex-shrink-0" />
-              <span>Up to {gathering.capacity} members</span>
+              <span>
+                {liveCount > 0 ? `${liveCount} interested` : null}
+                {liveCount > 0 && gathering.capacity ? ' · ' : null}
+                {gathering.capacity ? `Up to ${gathering.capacity} members` : null}
+              </span>
             </div>
           )}
           {gathering.hostName && (

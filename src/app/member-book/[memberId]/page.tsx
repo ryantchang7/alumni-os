@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import { auth } from '@/auth'
 import { getMemberById } from '@/lib/member-book/data'
 import {
   isPublicMember,
@@ -55,7 +56,14 @@ export default async function MemberDetailPage({
     notFound()
   }
 
-  const storeMatch = await lookupStoreMatch(member.displayName)
+  const [storeMatch, session] = await Promise.all([
+    lookupStoreMatch(member.displayName),
+    auth(),
+  ])
+  const isOwner =
+    !!session?.linkedPersonId &&
+    !!storeMatch?.personId &&
+    session.linkedPersonId === storeMatch.personId
 
   const years = getMemberPennGolfYears(member)
   const hometown =
@@ -215,27 +223,71 @@ export default async function MemberDetailPage({
             )}
           </Section>
 
-          {/* Claim Profile */}
-          <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <p
-                className="text-[#0a1628] text-base font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+          {/* Reach out (signed-in non-owner) or Claim Profile */}
+          {isOwner ? (
+            <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p
+                  className="text-[#0a1628] text-base font-medium"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  This is your card.
+                </p>
+                <p className="text-[12.5px] text-[#8a7f70] mt-1 max-w-md">
+                  Update your hometown, location, and how you can help.
+                </p>
+              </div>
+              <Link
+                href={claimHref}
+                data-testid="member-detail-claim-cta"
+                className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
               >
-                Is this you?
-              </p>
-              <p className="text-[12.5px] text-[#8a7f70] mt-1 max-w-md">
-                Add your hometown, where you live now, and how you can help the next generation.
-              </p>
+                Update Profile &rarr;
+              </Link>
             </div>
-            <Link
-              href={claimHref}
-              data-testid="member-detail-claim-cta"
-              className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
-            >
-              {claimLabel} &rarr;
-            </Link>
-          </div>
+          ) : storeMatch && session ? (
+            <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p
+                  className="text-[#0a1628] text-base font-medium"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Reach out to {member.displayName.split(' ')[0]}
+                </p>
+                <p className="text-[12.5px] text-[#8a7f70] mt-1 max-w-md">
+                  Send a note — for career advice, a coffee chat, or an introduction.
+                </p>
+              </div>
+              <Link
+                href={`/ask?personId=${storeMatch.personId}`}
+                data-testid="member-detail-reach-out-cta"
+                className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
+              >
+                Reach out &rarr;
+              </Link>
+            </div>
+          ) : (
+            <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p
+                  className="text-[#0a1628] text-base font-medium"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Is this you?
+                </p>
+                <p className="text-[12.5px] text-[#8a7f70] mt-1 max-w-md">
+                  Sign in to claim your card or reach out to other members.
+                </p>
+              </div>
+              <Link
+                href={claimHref}
+                data-testid="member-detail-claim-cta"
+                className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
+              >
+                {claimLabel} &rarr;
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Back link below card */}
