@@ -27,6 +27,9 @@ interface SelfProfile {
   favoriteCourses?: string
   favoritePennGolfMemory?: string
   interests?: string
+  email?: string
+  phone?: string
+  linkedinUrl?: string
 }
 
 const HELP_TOPIC_OPTIONS = [
@@ -38,6 +41,25 @@ const HELP_TOPIC_OPTIONS = [
   'Resume review',
   'Graduate school',
   'General networking',
+]
+
+const INDUSTRY_OPTIONS = [
+  'Finance',
+  'Investing',
+  'Real Estate',
+  'Tech',
+  'Consulting',
+  'Law',
+  'Healthcare',
+  'Energy',
+  'Sales / BD',
+  'Media',
+  'Government',
+  'Education',
+  'Sports',
+  'Nonprofit',
+  'Entrepreneurship',
+  'Student',
 ]
 
 const CONTACT_PREF_LABELS: Record<string, string> = {
@@ -76,6 +98,9 @@ function AlumniProfileInner() {
   const [favoriteCourses, setFavoriteCourses] = useState('')
   const [favoritePennGolfMemory, setFavoritePennGolfMemory] = useState('')
   const [interests, setInterests] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [linkedinUrl, setLinkedinUrl] = useState('')
 
   const justClaimed = searchParams.get('claimed') === '1'
 
@@ -100,6 +125,9 @@ function AlumniProfileInner() {
         setFavoriteCourses(data.favoriteCourses ?? '')
         setFavoritePennGolfMemory(data.favoritePennGolfMemory ?? '')
         setInterests(data.interests ?? '')
+        setEmail(data.email ?? '')
+        setPhone(data.phone ?? '')
+        setLinkedinUrl(data.linkedinUrl ?? '')
         setLoading(false)
       })
       .catch(err => {
@@ -137,6 +165,9 @@ function AlumniProfileInner() {
           favoriteCourses,
           favoritePennGolfMemory,
           interests,
+          email,
+          phone,
+          linkedinUrl,
         }),
       })
       if (!res.ok) throw new Error('Save failed')
@@ -307,14 +338,38 @@ function AlumniProfileInner() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">Industry</label>
-                <input
-                  type="text"
-                  value={industry}
-                  onChange={e => setIndustry(e.target.value)}
-                  placeholder="e.g. Finance · Real Estate · Healthcare · Tech"
-                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                />
+                <label className="block text-xs font-medium text-[#4a5568] mb-2">Industry</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {INDUSTRY_OPTIONS.map((opt) => {
+                    const active = industry === opt
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setIndustry(active ? '' : opt)}
+                        className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                          active
+                            ? 'bg-[#0a1628] text-white border-[#0a1628]'
+                            : 'bg-white text-[#0a1628] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]'
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    )
+                  })}
+                </div>
+                {industry && !INDUSTRY_OPTIONS.includes(industry) && (
+                  <p className="text-[11px] text-[#8a7f70] mt-2">
+                    Current: <span className="text-[#0a1628] font-medium">{industry}</span>{' '}
+                    <button
+                      type="button"
+                      onClick={() => setIndustry('')}
+                      className="text-[#990000] hover:underline ml-1"
+                    >
+                      Clear
+                    </button>
+                  </p>
+                )}
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
@@ -401,6 +456,58 @@ function AlumniProfileInner() {
                   placeholder="A round, a tournament, a Sunday singles match…"
                   rows={3}
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 resize-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Contact */}
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+              Contact
+            </p>
+            <p className="text-xs text-[#8a7f70] mb-4">
+              Visible to other signed-in Penn Golf members. Leave blank to keep
+              everything routed through the in-app request flow.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Public email (optional)
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="you@firm.com"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Phone (optional)
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  placeholder="+1 555-555-5555"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  LinkedIn URL (optional)
+                </label>
+                <input
+                  type="url"
+                  value={linkedinUrl}
+                  onChange={e => setLinkedinUrl(e.target.value)}
+                  placeholder="https://linkedin.com/in/yourname"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                 />
               </div>
             </div>

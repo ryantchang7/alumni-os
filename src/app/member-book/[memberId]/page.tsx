@@ -91,10 +91,16 @@ export default async function MemberDetailPage({
   const favoritePennGolfMemory = enr?.favoritePennGolfMemory ?? null
   const interests = enr?.interests ?? null
   const highSchool = member.profile.highSchool ?? null
+  // Contact info only surfaces for signed-in viewers (privacy).
+  const showContact = !!session
+  const contactEmail = showContact ? enr?.email ?? null : null
+  const contactPhone = showContact ? enr?.phone ?? null : null
+  const linkedinUrl = showContact ? enr?.linkedinUrl ?? null : null
 
   const hasProfileDetails =
     role || company || industry || city || bio || helpTopics.length > 0 || highSchool || interests
   const hasGolfDetails = homeCourse || favoriteCourses || favoritePennGolfMemory
+  const hasContact = contactEmail || contactPhone || linkedinUrl
 
   // Claim CTA destination depends on whether a store record exists.
   const claimHref = storeMatch
@@ -239,6 +245,46 @@ export default async function MemberDetailPage({
               </p>
             )}
           </Section>
+
+          {/* Contact (signed-in only) */}
+          {hasContact && (
+            <Section title="Contact">
+              <div className="space-y-1.5 text-[14px] text-[#3d4a5c]">
+                {contactEmail && (
+                  <p>
+                    <a
+                      href={`mailto:${contactEmail}`}
+                      className="text-[#0a1628] hover:underline"
+                    >
+                      {contactEmail}
+                    </a>
+                  </p>
+                )}
+                {contactPhone && (
+                  <p>
+                    <a
+                      href={`tel:${contactPhone}`}
+                      className="text-[#0a1628] hover:underline"
+                    >
+                      {contactPhone}
+                    </a>
+                  </p>
+                )}
+                {linkedinUrl && (
+                  <p>
+                    <a
+                      href={linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#0a1628] hover:underline"
+                    >
+                      LinkedIn
+                    </a>
+                  </p>
+                )}
+              </div>
+            </Section>
+          )}
 
           {/* Golf */}
           {hasGolfDetails && (

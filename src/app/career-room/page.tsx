@@ -203,67 +203,6 @@ export default async function CareerRoomPage() {
           )}
         </section>
 
-        {/* How to ask for advice */}
-        <section>
-          <div className="flex items-baseline justify-between mb-1">
-            <h2
-              className="text-xl text-[#0a1628] font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              How to ask for advice
-            </h2>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
-              The right way
-            </span>
-          </div>
-          <p className="text-sm text-[#8a7f70] mb-6">
-            Penn Golf alumni take meetings. The simple things that make them take more of them.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              {
-                title: 'One specific question beats five',
-                body:
-                  'A focused ask — "how did you decide between sales &amp; trading and IB?" — gets a real answer. A "could we chat sometime?" gets a polite delay.',
-              },
-              {
-                title: 'Lead with what you&rsquo;ve done',
-                body:
-                  'Mention the firms you&rsquo;ve interviewed at, the books you&rsquo;ve read, the model you&rsquo;re working on. Alumni invest more in members who&rsquo;ve already invested in themselves.',
-              },
-              {
-                title: 'Suggest a time, not a calendar link',
-                body:
-                  'Offer two windows in the next 7 days. Calendly is fine for a follow-up — the first ask reads warmer when you propose specifics.',
-              },
-              {
-                title: 'Send a written thank-you',
-                body:
-                  'A two-sentence follow-up the same day. Alumni remember names that send notes. Months later they will think of you when an opportunity surfaces.',
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
-              >
-                <div className="flex items-baseline gap-2 mb-1.5">
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#990000] flex-shrink-0" />
-                  <p
-                    className="text-[#0a1628] text-[15px] font-medium leading-snug"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
-                  >
-                    {item.title}
-                  </p>
-                </div>
-                <p
-                  className="text-[12.5px] text-[#3d4a5c] leading-relaxed pl-3.5"
-                  dangerouslySetInnerHTML={{ __html: item.body }}
-                />
-              </div>
-            ))}
-          </div>
-        </section>
 
         {/* CTA */}
         <div

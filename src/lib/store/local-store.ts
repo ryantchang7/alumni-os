@@ -717,7 +717,8 @@ export type AlumniSafeFields = Pick<
   PersonEnrichment,
   'currentRole' | 'currentCompany' | 'industry' | 'city' | 'state' | 'country' |
   'alumniBio' | 'helpTopics' | 'contactPreference' | 'visibleToPlayers' |
-  'homeCourse' | 'favoriteCourses' | 'favoritePennGolfMemory' | 'interests'
+  'homeCourse' | 'favoriteCourses' | 'favoritePennGolfMemory' | 'interests' |
+  'email' | 'phone' | 'linkedinUrl'
 >
 
 export async function updatePersonEnrichmentSafeFields(
@@ -747,6 +748,9 @@ export async function updatePersonEnrichmentSafeFields(
       ...(fields.favoriteCourses !== undefined ? { favoriteCourses: fields.favoriteCourses } : {}),
       ...(fields.favoritePennGolfMemory !== undefined ? { favoritePennGolfMemory: fields.favoritePennGolfMemory } : {}),
       ...(fields.interests !== undefined ? { interests: fields.interests } : {}),
+      ...(fields.email !== undefined ? { email: fields.email } : {}),
+      ...(fields.phone !== undefined ? { phone: fields.phone } : {}),
+      ...(fields.linkedinUrl !== undefined ? { linkedinUrl: fields.linkedinUrl } : {}),
       updatedAt: now,
     }
     await writeStore(store)
@@ -771,6 +775,9 @@ export async function updatePersonEnrichmentSafeFields(
     favoriteCourses: fields.favoriteCourses,
     favoritePennGolfMemory: fields.favoritePennGolfMemory,
     interests: fields.interests,
+    email: fields.email,
+    phone: fields.phone,
+    linkedinUrl: fields.linkedinUrl,
     verificationStatus: 'unverified',
     sourceUrls: [],
     createdAt: now,

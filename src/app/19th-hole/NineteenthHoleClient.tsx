@@ -163,69 +163,6 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
         </section>
       )}
 
-      {/* How a 19th Hole meet works */}
-      <section>
-        <div className="flex items-baseline justify-between mb-1">
-          <h2
-            className="text-xl text-[#0a1628] font-medium"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            How a 19th Hole catch-up works
-          </h2>
-          <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
-            Small rules of thumb
-          </span>
-        </div>
-        <p className="text-sm text-[#8a7f70] mb-6">
-          Coffee, drinks, and dinners between Penn Golf members. The lower the friction, the more
-          they happen — so we keep it simple.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            {
-              title: 'Anyone can host',
-              body:
-                'A coffee in your city counts. Pick a Saturday morning, post it, and let the network find you. Current players and alumni alike can show up.',
-            },
-            {
-              title: 'A two-week heads-up usually works',
-              body:
-                'Most members find time when they have a date and a place. Two weeks gives travelers room to plan; a same-week coffee is fine when momentum is there.',
-            },
-            {
-              title: 'Mark yourself "open to coffee"',
-              body:
-                'On your profile. It tells the network you&rsquo;re available for a casual catch-up — others can reach out without a formal ask.',
-            },
-            {
-              title: 'Travelers, take it as a license',
-              body:
-                'If a member in your destination city is open to coffee or dinner, take the introduction. Penn Golf works because alumni take the meeting.',
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
-            >
-              <div className="flex items-baseline gap-2 mb-1.5">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#990000] flex-shrink-0" />
-                <p
-                  className="text-[#0a1628] text-[15px] font-medium leading-snug"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
-                >
-                  {item.title}
-                </p>
-              </div>
-              <p
-                className="text-[12.5px] text-[#3d4a5c] leading-relaxed pl-3.5"
-                dangerouslySetInnerHTML={{ __html: item.body }}
-              />
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Alumni CTA */}
       <div
         className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"

@@ -140,6 +140,7 @@ export interface PersonEnrichment {
   state?: string
   country?: string
   email?: string
+  phone?: string
   linkedinUrl?: string
   personalWebsiteUrl?: string
   notes?: string

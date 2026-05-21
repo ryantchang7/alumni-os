@@ -232,7 +232,7 @@ export default async function AccountProfilePage() {
                   className="text-[#0a1628] text-base font-medium"
                   style={{ fontFamily: 'var(--font-playfair)' }}
                 >
-                  Help current players
+                  Your Inbox
                 </p>
                 {incomingRequestCount > 0 && (
                   <span className="text-[10px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full bg-[#990000] text-white">
@@ -242,15 +242,15 @@ export default async function AccountProfilePage() {
               </div>
               <p className="text-[12.5px] text-[#8a7f70] mt-1">
                 {incomingRequestCount > 0
-                  ? `${incomingRequestCount === 1 ? 'A current player has' : 'Current players have'} reached out to you.`
-                  : 'View incoming mentor requests, coffee chats, and warm intros.'}
+                  ? `${incomingRequestCount === 1 ? 'A member has' : 'Members have'} reached out to you.`
+                  : 'Notes, intros, and questions from other Penn Golf members will land here.'}
               </p>
             </div>
             <Link
               href="/alumni/requests"
               className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
             >
-              {incomingRequestCount > 0 ? 'Open requests' : 'See requests'} &rarr;
+              {incomingRequestCount > 0 ? 'Open inbox' : 'View inbox'} &rarr;
             </Link>
           </div>
         </div>

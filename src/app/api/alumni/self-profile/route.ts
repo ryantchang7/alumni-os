@@ -76,6 +76,9 @@ export async function GET(request: Request) {
     favoriteCourses: enrichment?.favoriteCourses,
     favoritePennGolfMemory: enrichment?.favoritePennGolfMemory,
     interests: enrichment?.interests,
+    email: enrichment?.email,
+    phone: enrichment?.phone,
+    linkedinUrl: enrichment?.linkedinUrl,
     optedOutAt: enrichment?.optedOutAt,
   })
 }
@@ -138,6 +141,9 @@ export async function POST(request: Request) {
   if (typeof body.favoriteCourses === 'string') safeUpdate.favoriteCourses = body.favoriteCourses.trim()
   if (typeof body.favoritePennGolfMemory === 'string') safeUpdate.favoritePennGolfMemory = body.favoritePennGolfMemory.trim()
   if (typeof body.interests === 'string') safeUpdate.interests = body.interests.trim()
+  if (typeof body.email === 'string') safeUpdate.email = body.email.trim()
+  if (typeof body.phone === 'string') safeUpdate.phone = body.phone.trim()
+  if (typeof body.linkedinUrl === 'string') safeUpdate.linkedinUrl = body.linkedinUrl.trim()
   if (Array.isArray(body.helpTopics) && body.helpTopics.every(t => typeof t === 'string')) {
     safeUpdate.helpTopics = body.helpTopics as string[]
   }

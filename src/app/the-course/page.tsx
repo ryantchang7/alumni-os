@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Flag, MapPin, Users, ArrowRight } from 'lucide-react'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
+import CourseHero from './CourseHero'
 
 interface AlumniEntry {
   person: Person
@@ -189,25 +190,7 @@ export default async function TheCoursePage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      {/* Hero — green tee marker rule */}
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-16 relative overflow-hidden">
-        <div className="max-w-[1320px] mx-auto relative">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
-            Penn Men&rsquo;s Golf
-          </p>
-          <h1
-            className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            The Course
-          </h1>
-          <span className="block w-12 h-[2px] bg-[#2d6a4f] mt-5 mb-5" />
-          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
-            Tee times, foursomes, and home courses across the Penn Golf network.
-            Golf travels well — find a round wherever you land.
-          </p>
-        </div>
-      </div>
+      <CourseHero />
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-12 space-y-14">
         {/* Scorecard-style action row */}
@@ -319,68 +302,6 @@ export default async function TheCoursePage() {
               ))}
             </div>
           )}
-        </section>
-
-        {/* How a Penn Golf round works */}
-        <section>
-          <div className="flex items-baseline justify-between mb-1">
-            <h2
-              className="text-xl text-[#0a1628] font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              How a Penn Golf round works
-            </h2>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
-              The unwritten rules
-            </span>
-          </div>
-          <p className="text-sm text-[#8a7f70] mb-6">
-            Penn Golf has run on a quiet hospitality network for decades. A few notes for first-timers.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              {
-                title: 'Reach out before you travel',
-                body:
-                  'If a tournament or business trip is taking you near a member, send a note a week or two ahead. Hosts plan their members&rsquo; book carefully.',
-              },
-              {
-                title: 'Ask once, accept gracefully',
-                body:
-                  'Members are limited in how often they can host guests under their own membership. One thoughtful ask per visit is the right tempo.',
-              },
-              {
-                title: 'Pay your way, write the note',
-                body:
-                  'Offer to pay for caddie, lunch, and any guest fees. A handwritten thank-you after the round is the Penn Golf way.',
-              },
-              {
-                title: 'Pay it forward',
-                body:
-                  'If you&rsquo;ve been hosted, look for a current player or younger alum to host yourself within the year. The network only works if it cycles.',
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
-              >
-                <div className="flex items-baseline gap-2 mb-1.5">
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#2d6a4f] flex-shrink-0" />
-                  <p
-                    className="text-[#0a1628] text-[15px] font-medium leading-snug"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
-                  >
-                    {item.title}
-                  </p>
-                </div>
-                <p
-                  className="text-[12.5px] text-[#3d4a5c] leading-relaxed pl-3.5"
-                  dangerouslySetInnerHTML={{ __html: item.body }}
-                />
-              </div>
-            ))}
-          </div>
         </section>
 
         {/* Notable Courses */}
