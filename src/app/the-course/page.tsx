@@ -55,14 +55,29 @@ function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
   )
 }
 
-function CourseRollEntry({ course, count }: { course: string; count: number }) {
+function CourseRollEntry({
+  course,
+  count,
+  isHome,
+}: {
+  course: string
+  count: number
+  isHome: boolean
+}) {
   return (
     <li className="flex items-center justify-between gap-3 py-2.5 border-b border-[rgba(180,168,150,0.22)] last:border-b-0">
-      <span
-        className="text-[14px] text-[#0a1628] leading-snug"
-        style={{ fontFamily: 'var(--font-playfair)' }}
-      >
-        {course}
+      <span className="flex items-center gap-2 min-w-0">
+        <span
+          className="text-[14px] text-[#0a1628] leading-snug truncate"
+          style={{ fontFamily: 'var(--font-playfair)' }}
+        >
+          {course}
+        </span>
+        {isHome && (
+          <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+            Home course
+          </span>
+        )}
       </span>
       <span className="text-[11px] font-medium text-[#8a7f70] whitespace-nowrap">
         {count} {count === 1 ? 'member' : 'members'}
@@ -80,6 +95,7 @@ export default async function TheCoursePage() {
   let rounds: GatheringData[] = []
   const interestedByGathering = new Map<string, number>()
   const courseRoll = new Map<string, number>()
+  const homeCourseSet = new Set<string>()
 
   if (team) {
     const memberships = store.teamMemberships.filter(
@@ -101,17 +117,28 @@ export default async function TheCoursePage() {
 
     openToRounds = visible.filter((a) => a.enrichment.openToGolfRounds)
 
-    // Aggregate notable courses from alumni's favorite-course entries.
+    // Aggregate notable courses from alumni's home-course + favorite-course
+    // entries. Each member counts at most once per course; home course gets
+    // ranked first when equal counts.
     for (const v of visible) {
-      const raw = v.enrichment.favoriteCourses
-      if (!raw) continue
-      // Split by comma or ' and ' so "Pine Valley, Merion" yields two courses.
-      const courses = raw
-        .split(/,| and /i)
-        .map((c) => c.trim())
-        .filter((c) => c.length > 2 && c.length < 60)
-      for (const c of courses) {
-        courseRoll.set(c, (courseRoll.get(c) ?? 0) + 1)
+      const candidates: string[] = []
+      if (v.enrichment.homeCourse) candidates.push(v.enrichment.homeCourse)
+      if (v.enrichment.favoriteCourses) {
+        // Split by comma or ' and ' so "Pine Valley, Merion" yields two.
+        candidates.push(
+          ...v.enrichment.favoriteCourses
+            .split(/,| and /i)
+            .map((c) => c.trim())
+            .filter((c) => c.length > 2 && c.length < 60),
+        )
+      }
+      const seenForMember = new Set<string>()
+      for (const c of candidates) {
+        const key = c.trim()
+        if (!key || seenForMember.has(key)) continue
+        seenForMember.add(key)
+        courseRoll.set(key, (courseRoll.get(key) ?? 0) + 1)
+        if (v.enrichment.homeCourse === key) homeCourseSet.add(key)
       }
     }
 
@@ -130,7 +157,13 @@ export default async function TheCoursePage() {
   }
 
   const sortedCourses = Array.from(courseRoll.entries())
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1]
+      // tiebreak: home-course wins
+      const aHome = homeCourseSet.has(a[0]) ? 1 : 0
+      const bHome = homeCourseSet.has(b[0]) ? 1 : 0
+      return bHome - aHome
+    })
     .slice(0, 12)
 
   const actionCards = [
@@ -288,6 +321,68 @@ export default async function TheCoursePage() {
           )}
         </section>
 
+        {/* How a Penn Golf round works */}
+        <section>
+          <div className="flex items-baseline justify-between mb-1">
+            <h2
+              className="text-xl text-[#0a1628] font-medium"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              How a Penn Golf round works
+            </h2>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
+              The unwritten rules
+            </span>
+          </div>
+          <p className="text-sm text-[#8a7f70] mb-6">
+            Penn Golf has run on a quiet hospitality network for decades. A few notes for first-timers.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              {
+                title: 'Reach out before you travel',
+                body:
+                  'If a tournament or business trip is taking you near a member, send a note a week or two ahead. Hosts plan their members&rsquo; book carefully.',
+              },
+              {
+                title: 'Ask once, accept gracefully',
+                body:
+                  'Members are limited in how often they can host guests under their own membership. One thoughtful ask per visit is the right tempo.',
+              },
+              {
+                title: 'Pay your way, write the note',
+                body:
+                  'Offer to pay for caddie, lunch, and any guest fees. A handwritten thank-you after the round is the Penn Golf way.',
+              },
+              {
+                title: 'Pay it forward',
+                body:
+                  'If you&rsquo;ve been hosted, look for a current player or younger alum to host yourself within the year. The network only works if it cycles.',
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+              >
+                <div className="flex items-baseline gap-2 mb-1.5">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#2d6a4f] flex-shrink-0" />
+                  <p
+                    className="text-[#0a1628] text-[15px] font-medium leading-snug"
+                    style={{ fontFamily: 'var(--font-playfair)' }}
+                  >
+                    {item.title}
+                  </p>
+                </div>
+                <p
+                  className="text-[12.5px] text-[#3d4a5c] leading-relaxed pl-3.5"
+                  dangerouslySetInnerHTML={{ __html: item.body }}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Notable Courses */}
         {sortedCourses.length > 0 && (
           <section>
@@ -311,7 +406,12 @@ export default async function TheCoursePage() {
             >
               <ul>
                 {sortedCourses.map(([course, count]) => (
-                  <CourseRollEntry key={course} course={course} count={count} />
+                  <CourseRollEntry
+                    key={course}
+                    course={course}
+                    count={count}
+                    isHome={homeCourseSet.has(course)}
+                  />
                 ))}
               </ul>
             </div>
