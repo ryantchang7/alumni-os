@@ -17,11 +17,16 @@ interface SelfProfile {
   highSchool?: string
   currentRole?: string
   currentCompany?: string
+  industry?: string
   city?: string
   alumniBio?: string
   helpTopics?: string[]
   contactPreference?: string
   visibleToPlayers?: boolean
+  homeCourse?: string
+  favoriteCourses?: string
+  favoritePennGolfMemory?: string
+  interests?: string
 }
 
 const HELP_TOPIC_OPTIONS = [
@@ -61,11 +66,16 @@ function AlumniProfileInner() {
   const [hometown, setHometown] = useState('')
   const [currentRole, setCurrentRole] = useState('')
   const [currentCompany, setCurrentCompany] = useState('')
+  const [industry, setIndustry] = useState('')
   const [city, setCity] = useState('')
   const [alumniBio, setAlumniBio] = useState('')
   const [helpTopics, setHelpTopics] = useState<string[]>([])
   const [contactPref, setContactPref] = useState('team_intro')
   const [visibleToPlayers, setVisibleToPlayers] = useState(true)
+  const [homeCourse, setHomeCourse] = useState('')
+  const [favoriteCourses, setFavoriteCourses] = useState('')
+  const [favoritePennGolfMemory, setFavoritePennGolfMemory] = useState('')
+  const [interests, setInterests] = useState('')
 
   const justClaimed = searchParams.get('claimed') === '1'
 
@@ -80,11 +90,16 @@ function AlumniProfileInner() {
         setHometown(data.hometown ?? '')
         setCurrentRole(data.currentRole ?? '')
         setCurrentCompany(data.currentCompany ?? '')
+        setIndustry(data.industry ?? '')
         setCity(data.city ?? '')
         setAlumniBio(data.alumniBio ?? '')
         setHelpTopics(data.helpTopics ?? [])
         setContactPref(data.contactPreference ?? 'team_intro')
         setVisibleToPlayers(data.visibleToPlayers ?? true)
+        setHomeCourse(data.homeCourse ?? '')
+        setFavoriteCourses(data.favoriteCourses ?? '')
+        setFavoritePennGolfMemory(data.favoritePennGolfMemory ?? '')
+        setInterests(data.interests ?? '')
         setLoading(false)
       })
       .catch(err => {
@@ -112,11 +127,16 @@ function AlumniProfileInner() {
           hometown,
           currentRole,
           currentCompany,
+          industry,
           city,
           alumniBio,
           helpTopics,
           contactPreference: contactPref,
           visibleToPlayers,
+          homeCourse,
+          favoriteCourses,
+          favoritePennGolfMemory,
+          interests,
         }),
       })
       if (!res.ok) throw new Error('Save failed')
@@ -287,6 +307,16 @@ function AlumniProfileInner() {
                 </div>
               </div>
               <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">Industry</label>
+                <input
+                  type="text"
+                  value={industry}
+                  onChange={e => setIndustry(e.target.value)}
+                  placeholder="e.g. Finance · Real Estate · Healthcare · Tech"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+              </div>
+              <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
                   City (where you live now)
                 </label>
@@ -306,6 +336,69 @@ function AlumniProfileInner() {
                   value={alumniBio}
                   onChange={e => setAlumniBio(e.target.value)}
                   placeholder="A sentence or two about what you are up to now."
+                  rows={3}
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 resize-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Other interests
+                </label>
+                <input
+                  type="text"
+                  value={interests}
+                  onChange={e => setInterests(e.target.value)}
+                  placeholder="e.g. Fly fishing · Skiing · Coffee · Distressed credit"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Golf */}
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+              Golf
+            </p>
+            <p className="text-xs text-[#8a7f70] mb-4">
+              Used on The Course and to surface you to alumni wanting to play near you.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Home course
+                </label>
+                <input
+                  type="text"
+                  value={homeCourse}
+                  onChange={e => setHomeCourse(e.target.value)}
+                  placeholder="e.g. Winged Foot Golf Club"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Favorite courses (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  value={favoriteCourses}
+                  onChange={e => setFavoriteCourses(e.target.value)}
+                  placeholder="e.g. Pine Valley, Bandon Dunes, Cypress Point"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Favorite Penn Golf memory (optional)
+                </label>
+                <textarea
+                  value={favoritePennGolfMemory}
+                  onChange={e => setFavoritePennGolfMemory(e.target.value)}
+                  placeholder="A round, a tournament, a Sunday singles match…"
                   rows={3}
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 resize-none"
                 />

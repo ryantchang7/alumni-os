@@ -5,6 +5,7 @@
 
 import { NextResponse } from 'next/server'
 import { readStore, getTeamBySlug } from '@/lib/store/local-store'
+import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 
 const TEAM_SLUG = 'penn-mens-golf'
 const RECENT_DAYS = 30
@@ -12,6 +13,7 @@ const RECENT_DAYS = 30
 interface RecentClaim {
   name: string | null
   personId: string | null
+  bookId: string | null
   createdAt: string
 }
 interface UpcomingGathering {
@@ -41,9 +43,11 @@ export async function GET() {
     const created = Date.parse(account.createdAt)
     if (Number.isNaN(created) || created < cutoff) continue
     const person = store.people.find((p) => p.id === account.linkedPersonId)
+    const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
     recentClaims.push({
       name: person?.canonicalName ?? account.name ?? null,
       personId: account.linkedPersonId,
+      bookId: bookEntry?.id ?? null,
       createdAt: account.createdAt,
     })
   }

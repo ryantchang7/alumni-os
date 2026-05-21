@@ -82,13 +82,19 @@ export default async function MemberDetailPage({
   const enr = storeMatch?.enrichment
   const role = enr?.currentRole ?? member.profile.currentRole ?? null
   const company = enr?.currentCompany ?? member.profile.currentCompany ?? null
+  const industry = enr?.industry ?? null
   const city = enr?.city ?? member.profile.city ?? null
   const bio = enr?.alumniBio ?? null
   const helpTopics = enr?.helpTopics ?? []
+  const homeCourse = enr?.homeCourse ?? null
+  const favoriteCourses = enr?.favoriteCourses ?? null
+  const favoritePennGolfMemory = enr?.favoritePennGolfMemory ?? null
+  const interests = enr?.interests ?? null
   const highSchool = member.profile.highSchool ?? null
 
   const hasProfileDetails =
-    role || company || city || bio || helpTopics.length > 0 || highSchool
+    role || company || industry || city || bio || helpTopics.length > 0 || highSchool || interests
+  const hasGolfDetails = homeCourse || favoriteCourses || favoritePennGolfMemory
 
   // Claim CTA destination depends on whether a store record exists.
   const claimHref = storeMatch
@@ -191,9 +197,20 @@ export default async function MemberDetailPage({
                 )}
                 {role && !company && <p>{role}</p>}
                 {!role && company && <p>{company}</p>}
+                {industry && (
+                  <p className="text-[#8a7f70]">{industry}</p>
+                )}
                 {city && <p>{city}</p>}
                 {bio && (
                   <p className="text-[#3d4a5c] leading-relaxed pt-1">{bio}</p>
+                )}
+                {interests && (
+                  <p className="text-[#3d4a5c] leading-relaxed pt-1">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mr-2">
+                      Interests
+                    </span>
+                    {interests}
+                  </p>
                 )}
                 {helpTopics.length > 0 && (
                   <div className="pt-2">
@@ -222,6 +239,38 @@ export default async function MemberDetailPage({
               </p>
             )}
           </Section>
+
+          {/* Golf */}
+          {hasGolfDetails && (
+            <Section title="Golf">
+              <div className="space-y-2.5 text-[14px] text-[#3d4a5c]">
+                {homeCourse && (
+                  <p>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mr-2">
+                      Home Course
+                    </span>
+                    <span className="text-[#0a1628]">{homeCourse}</span>
+                  </p>
+                )}
+                {favoriteCourses && (
+                  <p>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mr-2">
+                      Favorites
+                    </span>
+                    {favoriteCourses}
+                  </p>
+                )}
+                {favoritePennGolfMemory && (
+                  <div className="pt-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mb-1.5">
+                      Penn Golf Memory
+                    </p>
+                    <p className="leading-relaxed italic">&ldquo;{favoritePennGolfMemory}&rdquo;</p>
+                  </div>
+                )}
+              </div>
+            </Section>
+          )}
 
           {/* Reach out (signed-in non-owner) or Claim Profile */}
           {isOwner ? (

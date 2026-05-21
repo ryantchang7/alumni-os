@@ -157,6 +157,8 @@ export interface PersonEnrichment {
   openToWarmIntroductions?: boolean
   favoritePennGolfMemory?: string
   favoriteCourses?: string
+  homeCourse?: string
+  interests?: string
   memberSince?: string
   visibleToPlayers?: boolean
   optedOutAt?: string

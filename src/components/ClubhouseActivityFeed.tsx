@@ -8,6 +8,7 @@ import { Sparkles } from 'lucide-react'
 interface RecentClaim {
   name: string | null
   personId: string | null
+  bookId: string | null
   createdAt: string
 }
 interface UpcomingGathering {
@@ -95,7 +96,7 @@ export default function ClubhouseActivityFeed() {
               {data.recentClaims.map((c, i) => (
                 <li key={`${c.personId}-${i}`} className="text-[13px] leading-snug">
                   <Link
-                    href={c.personId ? `/member-book/${encodeURIComponent(c.personId)}` : '/member-book'}
+                    href={c.bookId ? `/member-book/${encodeURIComponent(c.bookId)}` : '/member-book'}
                     className="text-[#0a1628] hover:underline"
                     style={{ fontFamily: 'var(--font-playfair)' }}
                   >

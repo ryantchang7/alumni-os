@@ -56,12 +56,14 @@ export default async function AccountProfilePage() {
         ? getMemberPennGolfYears(matchedBook)
         : null
 
-  // Profile completeness: 5 quick wins to nudge them toward filling in.
+  // Profile completeness: quick wins to nudge them toward filling in.
   const completeness = [
     { label: 'Hometown', done: !!(membership?.hometown && membership.hometown.trim()) },
     { label: 'Where you live now', done: !!(enrichment?.city && enrichment.city.trim()) },
     { label: 'Current role', done: !!(enrichment?.currentRole && enrichment.currentRole.trim()) },
     { label: 'Company', done: !!(enrichment?.currentCompany && enrichment.currentCompany.trim()) },
+    { label: 'Industry', done: !!(enrichment?.industry && enrichment.industry.trim()) },
+    { label: 'Home course', done: !!(enrichment?.homeCourse && enrichment.homeCourse.trim()) },
     { label: 'How you can help', done: !!(enrichment?.helpTopics && enrichment.helpTopics.length > 0) },
   ]
   const doneCount = completeness.filter((c) => c.done).length

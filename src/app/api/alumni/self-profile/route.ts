@@ -64,6 +64,7 @@ export async function GET(request: Request) {
     // Editable fields
     currentRole: enrichment?.currentRole,
     currentCompany: enrichment?.currentCompany,
+    industry: enrichment?.industry,
     city: enrichment?.city,
     state: enrichment?.state,
     country: enrichment?.country,
@@ -71,6 +72,10 @@ export async function GET(request: Request) {
     helpTopics: enrichment?.helpTopics ?? [],
     contactPreference: enrichment?.contactPreference ?? 'team_intro',
     visibleToPlayers: enrichment?.visibleToPlayers ?? true,
+    homeCourse: enrichment?.homeCourse,
+    favoriteCourses: enrichment?.favoriteCourses,
+    favoritePennGolfMemory: enrichment?.favoritePennGolfMemory,
+    interests: enrichment?.interests,
     optedOutAt: enrichment?.optedOutAt,
   })
 }
@@ -124,10 +129,15 @@ export async function POST(request: Request) {
 
   if (typeof body.currentRole === 'string') safeUpdate.currentRole = body.currentRole.trim()
   if (typeof body.currentCompany === 'string') safeUpdate.currentCompany = body.currentCompany.trim()
+  if (typeof body.industry === 'string') safeUpdate.industry = body.industry.trim()
   if (typeof body.city === 'string') safeUpdate.city = body.city.trim()
   if (typeof body.state === 'string') safeUpdate.state = body.state.trim()
   if (typeof body.country === 'string') safeUpdate.country = body.country.trim()
   if (typeof body.alumniBio === 'string') safeUpdate.alumniBio = body.alumniBio.trim()
+  if (typeof body.homeCourse === 'string') safeUpdate.homeCourse = body.homeCourse.trim()
+  if (typeof body.favoriteCourses === 'string') safeUpdate.favoriteCourses = body.favoriteCourses.trim()
+  if (typeof body.favoritePennGolfMemory === 'string') safeUpdate.favoritePennGolfMemory = body.favoritePennGolfMemory.trim()
+  if (typeof body.interests === 'string') safeUpdate.interests = body.interests.trim()
   if (Array.isArray(body.helpTopics) && body.helpTopics.every(t => typeof t === 'string')) {
     safeUpdate.helpTopics = body.helpTopics as string[]
   }
