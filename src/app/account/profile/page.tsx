@@ -44,6 +44,40 @@ export default async function AccountProfilePage() {
       (r.status === 'requested' || r.status === 'seen'),
   ).length
 
+  // Penn Golf in your city: other alumni in the same city, excluding self.
+  const myCity = enrichment?.city?.trim().toLowerCase() ?? ''
+  type NearbyAlum = {
+    personId: string
+    name: string
+    industry?: string
+    currentCompany?: string
+    bookId: string | null
+  }
+  const nearbyAlumni: NearbyAlum[] = myCity
+    ? store.personEnrichments
+        .filter(
+          (e) =>
+            e.teamId === team.id &&
+            e.personId !== session.linkedPersonId &&
+            e.visibleToPlayers !== false &&
+            e.city?.trim().toLowerCase() === myCity,
+        )
+        .map((e) => {
+          const p = store.people.find((pp) => pp.id === e.personId)
+          if (!p) return null
+          const b = findBookEntryForTeamStorePerson(p.canonicalName)
+          return {
+            personId: p.id,
+            name: p.canonicalName,
+            industry: e.industry,
+            currentCompany: e.currentCompany,
+            bookId: b?.id ?? null,
+          }
+        })
+        .filter((x): x is NearbyAlum => x !== null)
+        .slice(0, 6)
+    : []
+
   const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
   // Fallback: look up by id directly in case the team-store person matches a book entry id.
   const bookFromId = !bookEntry && person ? getMemberById(person.id) : null
@@ -220,6 +254,52 @@ export default async function AccountProfilePage() {
             </Link>
           </div>
         </div>
+
+        {/* Penn Golf in your city */}
+        {nearbyAlumni.length > 0 && (
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl overflow-hidden"
+            style={{
+              boxShadow:
+                '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)',
+            }}
+          >
+            <div className="px-7 sm:px-10 pt-7 pb-2 border-b border-[rgba(180,168,150,0.3)]">
+              <p
+                className="text-[#0a1628] text-base font-medium"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                Penn Golf in {enrichment?.city}
+              </p>
+              <p className="text-[12.5px] text-[#8a7f70] mt-1 mb-5">
+                Other members nearby. Take the meeting when you&rsquo;re in town.
+              </p>
+            </div>
+            <ul>
+              {nearbyAlumni.map((a) => (
+                <li key={a.personId}>
+                  <Link
+                    href={a.bookId ? `/member-book/${encodeURIComponent(a.bookId)}` : '#'}
+                    className="block px-7 sm:px-10 py-3.5 border-b border-[rgba(180,168,150,0.22)] last:border-b-0 hover:bg-[#faf7f2] transition-colors"
+                  >
+                    <p
+                      className="text-[#0a1628] text-[15px] font-medium"
+                      style={{ fontFamily: 'var(--font-playfair)' }}
+                    >
+                      {a.name}
+                    </p>
+                    {(a.currentCompany || a.industry) && (
+                      <p className="text-[12px] text-[#8a7f70] mt-0.5">
+                        {a.currentCompany ?? a.industry}
+                        {a.currentCompany && a.industry ? ` · ${a.industry}` : ''}
+                      </p>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <form
           action={async () => {
