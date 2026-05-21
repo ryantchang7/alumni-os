@@ -2902,11 +2902,11 @@
       "id": "54369d66-d6ae-4352-a432-5f23243839b5",
       "personId": "9d3e1f66-b95f-4065-b9d8-8a300e84bd89",
       "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "visibleToPlayers": false,
+      "visibleToPlayers": true,
       "verificationStatus": "unverified",
       "sourceUrls": [],
       "createdAt": "2026-05-13T20:43:52.964Z",
-      "updatedAt": "2026-05-13T20:43:52.964Z"
+      "updatedAt": "2026-05-21T01:24:20.217Z"
     },
     {
       "id": "0c715ea2-9314-498f-9b78-146c7d59fb90",
