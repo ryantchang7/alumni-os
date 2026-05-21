@@ -172,6 +172,14 @@ function TraditionSection() {
             </div>
           ))}
         </div>
+        <div className="bg-[#faf7f2] px-5 sm:px-6 py-3 border-t border-[rgba(180,168,150,0.3)] flex items-center justify-end">
+          <Link
+            href="/hall-of-fame"
+            className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline"
+          >
+            Visit the Hall of Fame &rarr;
+          </Link>
+        </div>
       </div>
     </motion.div>
   )

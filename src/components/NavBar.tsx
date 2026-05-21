@@ -12,9 +12,10 @@ const navLinks = [
   { label: 'Clubhouse', href: '/player' },
   { label: 'Member Book', href: '/member-book' },
   { label: 'Member Map', href: '/member-map' },
-  { label: 'Career Room', href: '/career-room' },
   { label: 'The Course', href: '/the-course' },
   { label: '19th Hole', href: '/19th-hole' },
+  { label: 'Hall of Fame', href: '/hall-of-fame' },
+  { label: 'Career Room', href: '/career-room' },
   { label: 'Team Room', href: '/team-room' },
 ]
 
