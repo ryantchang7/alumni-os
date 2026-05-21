@@ -99,7 +99,7 @@ export default function LandingPage() {
             Enter Clubhouse
           </Link>
           <Link
-            href="/player/search?teamSlug=penn-mens-golf"
+            href="/login?next=/account/setup"
             data-testid="claim-alumni-profile"
             className="text-sm font-semibold border border-white/40 text-white/90 px-10 py-3.5 rounded-lg hover:bg-white/10 hover:border-white/60 transition-colors text-center tracking-wide"
           >

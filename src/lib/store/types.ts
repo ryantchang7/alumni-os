@@ -256,6 +256,18 @@ export interface ClubhouseGatheringRequest {
   respondedAt?: string
 }
 
+export interface Account {
+  id: string
+  email: string
+  googleSub: string
+  name?: string
+  image?: string
+  linkedPersonId?: string
+  teamId: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface Store {
   teams: Team[]
   scrapeRuns: ScrapeRun[]
@@ -273,4 +285,5 @@ export interface Store {
   clubhouseGatherings: ClubhouseGathering[]
   clubhouseGatheringRequests: ClubhouseGatheringRequest[]
   profileClaimRequests: ClubhouseProfileClaimRequest[]
+  accounts: Account[]
 }

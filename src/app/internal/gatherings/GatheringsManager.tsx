@@ -255,9 +255,6 @@ export default function GatheringsManager() {
         <Link href="/19th-hole" className="text-xs text-[#990000] hover:underline font-medium">
           View 19th Hole &rarr;
         </Link>
-        <Link href="/events" className="text-xs text-[#990000] hover:underline font-medium">
-          View Events &rarr;
-        </Link>
       </div>
     </div>
   )

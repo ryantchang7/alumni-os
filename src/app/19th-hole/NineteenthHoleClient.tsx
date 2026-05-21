@@ -21,13 +21,14 @@ interface Props {
   cityGroups: { city: string; count: number; coffeeCount: number }[]
 }
 
-type TypeFilter = 'all' | 'coffee' | 'drinks' | 'dinner'
+type TypeFilter = 'all' | 'coffee' | 'drinks' | 'dinner' | 'event'
 
 const TYPE_LABELS: Record<TypeFilter, string> = {
   all: 'All',
   coffee: 'Coffee',
   drinks: 'Drinks',
   dinner: 'Dinner',
+  event: 'Events',
 }
 
 export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGroups }: Props) {
@@ -47,7 +48,7 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
             <div>
               <h2 className="text-base font-semibold text-[#0a1628]">Upcoming Gatherings</h2>
               <p className="text-sm text-[#8a7f70] mt-0.5">
-                Coffee, drinks, and dinners organized by Penn Golf alumni.
+                Coffee, dinners, and signature events organized by Penn Golf alumni.
               </p>
             </div>
           </div>
@@ -139,7 +140,7 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
             {cityGroups.map(({ city, count, coffeeCount }) => (
               <Link
                 key={city}
-                href={`/player/search?teamSlug=penn-mens-golf`}
+                href={`/member-book`}
                 className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 hover:shadow-md transition-shadow group"
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
               >

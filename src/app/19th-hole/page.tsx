@@ -65,19 +65,26 @@ export default async function NineteenthHolePage() {
     socialGatherings = store.clubhouseGatherings.filter(
       g =>
         g.teamId === team.id &&
-        (g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner') &&
+        (g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner' || g.type === 'event') &&
         g.status !== 'closed',
     ) as GatheringData[]
   }
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
-          <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · 19th Hole</p>
-          <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">19th Hole</h1>
-          <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
-            Coffee, drinks, and dinners for Penn Golf members wherever they are.
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+            Penn Men&rsquo;s Golf
+          </p>
+          <h1
+            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            The 19th Hole
+          </h1>
+          <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl">
+            Coffee, dinners, and signature Penn Golf gatherings &mdash; wherever members find each other.
           </p>
         </div>
       </div>

@@ -1,0 +1,152 @@
+// Signed-in dashboard. Shows the linked Member Book card + edit shortcuts.
+
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { auth, signOut } from '@/auth'
+import { getMemberById } from '@/lib/member-book/data'
+import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
+import { isPublicMember, getMemberPennGolfYears } from '@/lib/member-book/helpers'
+import { readStore, getTeamBySlug } from '@/lib/store/local-store'
+
+const TEAM_SLUG = 'penn-mens-golf'
+
+export default async function AccountProfilePage() {
+  const session = await auth()
+  if (!session) {
+    redirect('/login?next=/account/profile')
+  }
+  if (!session.linkedPersonId) {
+    redirect('/account/setup')
+  }
+
+  const team = await getTeamBySlug(TEAM_SLUG)
+  if (!team) {
+    return (
+      <div className="min-h-screen bg-[#f8f5f0] py-20 px-6 text-center">
+        <p className="text-[#990000] text-sm">Team not found.</p>
+      </div>
+    )
+  }
+
+  const store = await readStore()
+  const person = store.people.find((p) => p.id === session.linkedPersonId)
+  const membership = store.teamMemberships.find(
+    (m) => m.teamId === team.id && m.personId === session.linkedPersonId,
+  )
+
+  const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
+  // Fallback: look up by id directly in case the team-store person matches a book entry id.
+  const bookFromId = !bookEntry && person ? getMemberById(person.id) : null
+  const matchedBook = bookEntry ?? (bookFromId && isPublicMember(bookFromId) ? bookFromId : null)
+
+  const yearsLabel =
+    membership?.rosterStartYear && membership?.rosterEndYear
+      ? `Penn Golf ${membership.rosterStartYear}–${String(membership.rosterEndYear).slice(-2)}`
+      : matchedBook
+        ? getMemberPennGolfYears(matchedBook)
+        : null
+
+  return (
+    <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="bg-[#0a1628] px-5 sm:px-8 pt-12 pb-14">
+        <div className="max-w-[820px] mx-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+            Penn Men&rsquo;s Golf
+          </p>
+          <h1
+            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            Your Profile
+          </h1>
+          <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl">
+            Signed in as {session.user?.email}.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-[820px] mx-auto px-5 sm:px-8 -mt-6 relative z-10 pb-16 space-y-5">
+        <div
+          className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl overflow-hidden"
+          style={{
+            boxShadow:
+              '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)',
+          }}
+        >
+          <div className="px-7 sm:px-10 pt-10 pb-8 border-b border-[rgba(180,168,150,0.3)]">
+            <span className="block w-12 h-[2px] bg-[#990000] mb-6" />
+            <h2
+              className="text-[#0a1628] text-3xl font-medium leading-tight"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              {person?.canonicalName ?? 'Your Profile'}
+            </h2>
+            {yearsLabel && (
+              <p className="text-[15px] text-[#3d4a5c] mt-3">{yearsLabel}</p>
+            )}
+            {membership?.hometown && (
+              <p className="text-[13.5px] text-[#8a7f70] mt-1">{membership.hometown}</p>
+            )}
+          </div>
+
+          <div className="px-7 sm:px-10 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div>
+              <p
+                className="text-[#0a1628] text-base font-medium"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                Update your details
+              </p>
+              <p className="text-[12.5px] text-[#8a7f70] mt-1">
+                Hometown, where you live now, role, company, and how you can help.
+              </p>
+            </div>
+            <Link
+              href={`/alumni/profile/${session.linkedPersonId}?teamSlug=${TEAM_SLUG}`}
+              className="bg-[#0a1628] hover:bg-[#112240] text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors text-center whitespace-nowrap"
+            >
+              Manage profile
+            </Link>
+          </div>
+
+          {matchedBook && (
+            <div className="px-7 sm:px-10 py-7 border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+              <div>
+                <p
+                  className="text-[#0a1628] text-base font-medium"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Your Member Book card
+                </p>
+                <p className="text-[12.5px] text-[#8a7f70] mt-1">
+                  How other Penn Golf members see you in the registry.
+                </p>
+              </div>
+              <Link
+                href={`/member-book/${encodeURIComponent(matchedBook.id)}`}
+                className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
+              >
+                View card &rarr;
+              </Link>
+            </div>
+          )}
+        </div>
+
+        <form
+          action={async () => {
+            'use server'
+            await signOut({ redirectTo: '/' })
+          }}
+          className="text-center"
+        >
+          <button
+            type="submit"
+            className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+          >
+            Sign out
+          </button>
+        </form>
+      </div>
+    </div>
+  )
+}

@@ -27,7 +27,7 @@ const GATHERING_HREF: Record<GatheringSnippet['type'], string> = {
   coffee: '/19th-hole',
   drinks: '/19th-hole',
   dinner: '/19th-hole',
-  event: '/events',
+  event: '/19th-hole',
 }
 
 function ThisWeekPanel({ teamSlug }: { teamSlug: string }) {
@@ -204,8 +204,8 @@ const rooms = [
   {
     id: 'gather',
     label: 'Gather',
-    description: 'Upcoming alumni events, outings, and team reunions. Stay in the loop.',
-    href: '/events',
+    description: 'Coffee, dinners, and signature Penn Golf events. Stay in the loop.',
+    href: '/19th-hole',
     icon: CalendarDays,
     cta: 'See what\'s coming up',
   },

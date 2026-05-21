@@ -1,5 +1,5 @@
-// TODO: Replace dev-mode personId param with real auth when auth is added
 import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
 import {
   getTeamBySlug,
   getPeopleForTeam,
@@ -76,7 +76,11 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  // TODO: Enforce identity — verify personId matches authenticated user
+  const session = await auth()
+  if (!session?.accountId) {
+    return NextResponse.json({ error: 'Sign in required' }, { status: 401 })
+  }
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')
 
@@ -99,6 +103,14 @@ export async function POST(request: Request) {
   const personId = typeof body.personId === 'string' ? body.personId : null
   if (!personId) {
     return NextResponse.json({ error: 'Missing required field: personId' }, { status: 400 })
+  }
+
+  // Ownership: the signed-in account must be linked to this personId.
+  if (session.linkedPersonId !== personId) {
+    return NextResponse.json(
+      { error: 'You can only edit your own profile' },
+      { status: 403 },
+    )
   }
 
   const people = await getPeopleForTeam(team.id)

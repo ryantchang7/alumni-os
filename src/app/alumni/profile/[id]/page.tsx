@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
+import { useSession } from 'next-auth/react'
 
 interface SelfProfile {
   personId: string
@@ -46,6 +47,10 @@ function AlumniProfileInner() {
   const searchParams = useSearchParams()
   const personId = params.id as string
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
+  const { data: session, status: sessionStatus } = useSession()
+  const isOwner =
+    sessionStatus === 'authenticated' && session?.linkedPersonId === personId
+  const sessionReady = sessionStatus !== 'loading'
 
   const [profile, setProfile] = useState<SelfProfile | null>(null)
   const [loading, setLoading] = useState(true)
@@ -186,6 +191,26 @@ function AlumniProfileInner() {
               <p className="text-xs text-[#8a7f70] mt-1">
                 Add your details below so other Penn Golf members can find you.
               </p>
+            </div>
+          )}
+
+          {sessionReady && !isOwner && (
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.5)] rounded-xl p-5"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+            >
+              <p className="text-sm font-semibold text-[#0a1628]">View-only</p>
+              <p className="text-xs text-[#8a7f70] mt-1">
+                {sessionStatus === 'authenticated'
+                  ? 'You can only edit your own profile. Manage yours from your account.'
+                  : 'Sign in to claim and edit this profile.'}
+              </p>
+              <Link
+                href={sessionStatus === 'authenticated' ? '/account/profile' : '/login?next=/account/setup'}
+                className="inline-block mt-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline"
+              >
+                {sessionStatus === 'authenticated' ? 'Go to your profile →' : 'Sign in →'}
+              </Link>
             </div>
           )}
 
@@ -368,8 +393,9 @@ function AlumniProfileInner() {
             <button
               type="button"
               onClick={handleSave}
-              disabled={saving}
-              className="text-sm font-semibold bg-[#0a1628] hover:bg-[#112240] text-white px-6 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+              disabled={saving || !isOwner}
+              title={!isOwner && sessionReady ? 'You can only edit your own profile' : undefined}
+              className="text-sm font-semibold bg-[#0a1628] hover:bg-[#112240] text-white px-6 py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? 'Saving...' : 'Save changes'}
             </button>

@@ -19,6 +19,7 @@ import type {
   ClubhouseGathering,
   ClubhouseGatheringRequest,
   ClubhouseProfileClaimRequest,
+  Account,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -44,6 +45,7 @@ const EMPTY_STORE: Store = {
   clubhouseGatherings: [],
   clubhouseGatheringRequests: [],
   profileClaimRequests: [],
+  accounts: [],
 }
 
 function normalizeName(name: string): string {
@@ -115,6 +117,7 @@ export async function readStore(): Promise<Store> {
   if (!parsed.clubhouseGatherings) parsed.clubhouseGatherings = []
   if (!parsed.clubhouseGatheringRequests) parsed.clubhouseGatheringRequests = []
   if (!parsed.profileClaimRequests) parsed.profileClaimRequests = []
+  if (!parsed.accounts) parsed.accounts = []
   return parsed
 }
 
@@ -950,4 +953,91 @@ export async function updateProfileClaimRequestStatus(
   }
   await writeStore(store)
   return store.profileClaimRequests[idx]
+}
+
+// ── Accounts (Google sign-in) ────────────────────────────────────────────────
+
+export async function getAccountByEmail(email: string): Promise<Account | undefined> {
+  const store = await readStore()
+  return store.accounts.find((a) => a.email.toLowerCase() === email.toLowerCase())
+}
+
+export async function getAccountByGoogleSub(googleSub: string): Promise<Account | undefined> {
+  const store = await readStore()
+  return store.accounts.find((a) => a.googleSub === googleSub)
+}
+
+export async function getAccountById(id: string): Promise<Account | undefined> {
+  const store = await readStore()
+  return store.accounts.find((a) => a.id === id)
+}
+
+export async function upsertAccount(input: {
+  email: string
+  googleSub: string
+  name?: string
+  image?: string
+  teamId: string
+}): Promise<Account> {
+  const store = await readStore()
+  const now = new Date().toISOString()
+  const idx = store.accounts.findIndex((a) => a.googleSub === input.googleSub)
+  if (idx !== -1) {
+    store.accounts[idx] = {
+      ...store.accounts[idx],
+      email: input.email,
+      name: input.name ?? store.accounts[idx].name,
+      image: input.image ?? store.accounts[idx].image,
+      updatedAt: now,
+    }
+    await writeStore(store)
+    return store.accounts[idx]
+  }
+  const account: Account = {
+    id: crypto.randomUUID(),
+    email: input.email,
+    googleSub: input.googleSub,
+    name: input.name,
+    image: input.image,
+    teamId: input.teamId,
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.accounts.push(account)
+  await writeStore(store)
+  return account
+}
+
+export async function linkAccountToPerson(
+  accountId: string,
+  personId: string,
+): Promise<Account | null> {
+  const store = await readStore()
+  // Disallow linking the same personId to two different accounts.
+  const conflict = store.accounts.find(
+    (a) => a.linkedPersonId === personId && a.id !== accountId,
+  )
+  if (conflict) return null
+  const idx = store.accounts.findIndex((a) => a.id === accountId)
+  if (idx === -1) return null
+  store.accounts[idx] = {
+    ...store.accounts[idx],
+    linkedPersonId: personId,
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
+  return store.accounts[idx]
+}
+
+export async function unlinkAccount(accountId: string): Promise<Account | null> {
+  const store = await readStore()
+  const idx = store.accounts.findIndex((a) => a.id === accountId)
+  if (idx === -1) return null
+  store.accounts[idx] = {
+    ...store.accounts[idx],
+    linkedPersonId: undefined,
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
+  return store.accounts[idx]
 }

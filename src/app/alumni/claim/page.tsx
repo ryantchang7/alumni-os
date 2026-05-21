@@ -6,6 +6,7 @@
 
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import { auth } from '@/auth'
 import { getMemberById } from '@/lib/member-book/data'
 import { isPublicMember } from '@/lib/member-book/helpers'
 import { findTeamStorePersonForBookEntry } from '@/lib/member-book/bridge'
@@ -13,6 +14,7 @@ import {
   readStore,
   writeStore,
   getTeamBySlug,
+  linkAccountToPerson,
 } from '@/lib/store/local-store'
 import type {
   Person,
@@ -118,6 +120,17 @@ export default async function ClaimRedirectPage({
   searchParams: Promise<{ bookId?: string }>
 }) {
   const { bookId } = await searchParams
+  const session = await auth()
+  if (!session?.accountId) {
+    const next = bookId
+      ? `/alumni/claim?bookId=${encodeURIComponent(bookId)}`
+      : '/account/setup'
+    redirect(`/login?next=${encodeURIComponent(next)}`)
+  }
+  // Already linked? Send them to their profile editor.
+  if (session.linkedPersonId) {
+    redirect(`/alumni/profile/${session.linkedPersonId}?teamSlug=${TEAM_SLUG}`)
+  }
   if (!bookId) {
     return (
       <div className="min-h-screen bg-[#f8f5f0] py-20 px-6 text-center">
@@ -143,6 +156,13 @@ export default async function ClaimRedirectPage({
 
   const personId = await bootstrapFromBookEntry(bookId)
   if (!personId) notFound()
+
+  // Bind the signed-in account to the resolved personId. If another account
+  // already owns this profile, send the user to their own setup instead.
+  const linked = await linkAccountToPerson(session.accountId, personId)
+  if (!linked) {
+    redirect('/account/setup?error=already-claimed')
+  }
 
   redirect(`/alumni/profile/${personId}?teamSlug=${TEAM_SLUG}&claimed=1`)
 }

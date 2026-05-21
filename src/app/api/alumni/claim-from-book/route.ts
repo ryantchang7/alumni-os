@@ -8,7 +8,13 @@
 // (matched by normalized canonical name), return that personId instead.
 
 import { NextResponse } from 'next/server'
-import { readStore, writeStore, getTeamBySlug } from '@/lib/store/local-store'
+import { auth } from '@/auth'
+import {
+  readStore,
+  writeStore,
+  getTeamBySlug,
+  linkAccountToPerson,
+} from '@/lib/store/local-store'
 import { getMemberById } from '@/lib/member-book/data'
 import { isPublicMember } from '@/lib/member-book/helpers'
 import { findTeamStorePersonForBookEntry } from '@/lib/member-book/bridge'
@@ -37,6 +43,17 @@ function storeNormalizeName(name: string): string {
 }
 
 export async function POST(request: Request) {
+  const session = await auth()
+  if (!session?.accountId) {
+    return NextResponse.json({ error: 'Sign in required' }, { status: 401 })
+  }
+  if (session.linkedPersonId) {
+    return NextResponse.json(
+      { error: 'Your account already has a linked profile' },
+      { status: 409 },
+    )
+  }
+
   let body: Record<string, unknown>
   try {
     body = await request.json()
@@ -134,6 +151,15 @@ export async function POST(request: Request) {
   store.personEnrichments.push(newEnrichment)
 
   await writeStore(store)
+
+  // Bind account → person (idempotent if same account already linked).
+  const linked = await linkAccountToPerson(session.accountId, personId)
+  if (!linked) {
+    return NextResponse.json(
+      { error: 'Another account has already claimed this profile' },
+      { status: 409 },
+    )
+  }
 
   return NextResponse.json({ personId, alreadyExisted: false })
 }

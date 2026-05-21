@@ -2,21 +2,92 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 const navLinks = [
   { label: 'Clubhouse', href: '/player' },
   { label: 'Member Book', href: '/member-book' },
+  { label: 'Member Map', href: '/member-map' },
   { label: 'Career Room', href: '/career-room' },
   { label: 'The Course', href: '/the-course' },
   { label: '19th Hole', href: '/19th-hole' },
-  { label: 'Events', href: '/events' },
-  { label: 'Member Map', href: '/member-map' },
   { label: 'Team Room', href: '/team-room' },
-  { label: 'Alumni', href: '/alumni' },
 ]
+
+function AccountAffordance() {
+  const { data: session, status } = useSession()
+  const [open, setOpen] = useState(false)
+
+  if (status === 'loading') return null
+  if (status !== 'authenticated' || !session) {
+    return (
+      <button
+        type="button"
+        onClick={() => signIn('google', { callbackUrl: '/account/profile' })}
+        className="text-[12px] font-medium text-white border border-white/30 hover:border-white/60 px-3 py-1.5 rounded transition-colors"
+      >
+        Sign in
+      </button>
+    )
+  }
+  const name = session.user?.name ?? session.user?.email ?? 'Profile'
+  const initial = (name?.[0] ?? '?').toUpperCase()
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        onBlur={() => setTimeout(() => setOpen(false), 120)}
+        className="flex items-center gap-2 text-[13px] text-gray-200 hover:text-white px-2 py-1 rounded"
+      >
+        {session.user?.image ? (
+          <Image
+            src={session.user.image}
+            alt=""
+            width={24}
+            height={24}
+            className="rounded-full"
+          />
+        ) : (
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/15 text-[11px] font-semibold">
+            {initial}
+          </span>
+        )}
+        <span className="hidden lg:inline">{name?.split(' ')[0]}</span>
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 mt-1 w-48 bg-white border border-[rgba(180,168,150,0.4)] rounded-lg shadow-lg overflow-hidden text-[#0a1628] z-50"
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          <Link
+            href="/account/profile"
+            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+          >
+            Your Profile
+          </Link>
+          <Link
+            href="/member-book"
+            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+          >
+            Member Book
+          </Link>
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="block w-full text-left px-4 py-2 text-[13px] text-[#990000] hover:bg-[#faf7f2] border-t border-[rgba(180,168,150,0.25)]"
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -55,7 +126,8 @@ export default function NavBar() {
         </nav>
 
         {/* Right side */}
-        <div className="hidden md:flex items-center">
+        <div className="hidden md:flex items-center gap-3">
+          <AccountAffordance />
           <Link
             href="/internal"
             className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors px-2 py-1"
@@ -96,7 +168,8 @@ export default function NavBar() {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-3">
+              <div className="pt-3 flex items-center justify-between">
+                <AccountAffordance />
                 <Link
                   href="/internal"
                   className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors"
