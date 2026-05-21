@@ -42,7 +42,6 @@ const nextConfig = {
       { source: '/teams/penn-mens-golf/agent', destination: '/build', permanent: false },
       { source: '/teams/penn-mens-golf/review', destination: '/build', permanent: false },
       { source: '/teams/penn-mens-golf/scraper', destination: '/build', permanent: false },
-      { source: '/login', destination: '/', permanent: false },
       { source: '/app', destination: '/', permanent: false },
       { source: '/player/relationships', destination: '/player', permanent: false },
       // Builder sub-paths → internal
