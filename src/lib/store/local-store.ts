@@ -1,7 +1,14 @@
-// DEV-ONLY LOCAL STORE. Filesystem-based. On Vercel: reads seed from /data, writes to /tmp per-invocation.
+// Persistent store. Three backends, in priority order:
+//   1. Upstash Redis (Vercel KV) — used when KV_REST_API_URL + KV_REST_API_TOKEN
+//      are set. Writes persist across deploys and cold starts. This is the
+//      production path.
+//   2. Local file at data/alumni-os.json — used in dev (no env vars set).
+//   3. /tmp fallback on Vercel without KV — ephemeral, writes survive within
+//      a single warm function instance only. Old behavior; do not rely on it.
 
 import fs from 'fs/promises'
 import path from 'path'
+import { Redis } from '@upstash/redis'
 import type {
   Store,
   Team,
@@ -27,6 +34,46 @@ import type {
 const IS_VERCEL = process.env.VERCEL === '1'
 const SEED_PATH = path.join(process.cwd(), 'data', 'alumni-os.json')
 const STORE_PATH = IS_VERCEL ? '/tmp/alumni-os.json' : SEED_PATH
+const REDIS_KEY = 'alumni-os:store:v1'
+
+// Lazy Redis client. Returns null if env vars aren't configured.
+let _redis: Redis | null | undefined
+function getRedis(): Redis | null {
+  if (_redis !== undefined) return _redis
+  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN
+  if (!url || !token) {
+    _redis = null
+    return null
+  }
+  _redis = new Redis({ url, token })
+  return _redis
+}
+
+function normalizeStore(parsed: Store): Store {
+  // Backfill any new arrays the type added since this store was written.
+  if (!parsed.historicalImportRuns) parsed.historicalImportRuns = []
+  if (!parsed.historicalSeasonResults) parsed.historicalSeasonResults = []
+  if (!parsed.personEnrichments) parsed.personEnrichments = []
+  if (!parsed.enrichmentSources) parsed.enrichmentSources = []
+  if (!parsed.playerAlumniRequests) parsed.playerAlumniRequests = []
+  if (!parsed.pre2000Candidates) parsed.pre2000Candidates = []
+  if (!parsed.clubhouseGatherings) parsed.clubhouseGatherings = []
+  if (!parsed.clubhouseGatheringRequests) parsed.clubhouseGatheringRequests = []
+  if (!parsed.profileClaimRequests) parsed.profileClaimRequests = []
+  if (!parsed.accounts) parsed.accounts = []
+  return parsed
+}
+
+// Read the bundled seed file (read-only on Vercel, but readable for cold init).
+async function readSeed(): Promise<Store> {
+  try {
+    const raw = await fs.readFile(SEED_PATH, 'utf-8')
+    return normalizeStore(JSON.parse(raw) as Store)
+  } catch {
+    return { ...EMPTY_STORE }
+  }
+}
 
 const EMPTY_STORE: Store = {
   teams: [],
@@ -86,11 +133,21 @@ function makeSlug(schoolName: string, gender: string, sport: string): string {
 }
 
 export async function ensureStore(): Promise<void> {
+  const redis = getRedis()
+  if (redis) {
+    // Redis-backed: seed from the committed JSON the first time only.
+    const existing = await redis.get(REDIS_KEY)
+    if (existing == null) {
+      const seed = await readSeed()
+      await redis.set(REDIS_KEY, seed)
+    }
+    return
+  }
+  // File-backed (dev or Vercel-without-KV fallback).
   try {
     await fs.access(STORE_PATH)
   } catch {
     if (IS_VERCEL) {
-      // Cold start: copy committed seed to /tmp so writes stay in /tmp
       try {
         await fs.copyFile(SEED_PATH, STORE_PATH)
       } catch {
@@ -104,24 +161,28 @@ export async function ensureStore(): Promise<void> {
 }
 
 export async function readStore(): Promise<Store> {
+  const redis = getRedis()
+  if (redis) {
+    let parsed = (await redis.get<Store>(REDIS_KEY)) ?? null
+    if (!parsed) {
+      // Cold init — seed Redis from the committed JSON, then return it.
+      parsed = await readSeed()
+      await redis.set(REDIS_KEY, parsed)
+    }
+    return normalizeStore(parsed)
+  }
+  // File-backed fallback
   await ensureStore()
   const raw = await fs.readFile(STORE_PATH, 'utf-8')
-  const parsed = JSON.parse(raw) as Store
-  // normalize legacy stores missing new arrays
-  if (!parsed.historicalImportRuns) parsed.historicalImportRuns = []
-  if (!parsed.historicalSeasonResults) parsed.historicalSeasonResults = []
-  if (!parsed.personEnrichments) parsed.personEnrichments = []
-  if (!parsed.enrichmentSources) parsed.enrichmentSources = []
-  if (!parsed.playerAlumniRequests) parsed.playerAlumniRequests = []
-  if (!parsed.pre2000Candidates) parsed.pre2000Candidates = []
-  if (!parsed.clubhouseGatherings) parsed.clubhouseGatherings = []
-  if (!parsed.clubhouseGatheringRequests) parsed.clubhouseGatheringRequests = []
-  if (!parsed.profileClaimRequests) parsed.profileClaimRequests = []
-  if (!parsed.accounts) parsed.accounts = []
-  return parsed
+  return normalizeStore(JSON.parse(raw) as Store)
 }
 
 export async function writeStore(store: Store): Promise<void> {
+  const redis = getRedis()
+  if (redis) {
+    await redis.set(REDIS_KEY, store)
+    return
+  }
   await fs.writeFile(STORE_PATH, JSON.stringify(store, null, 2))
 }
 

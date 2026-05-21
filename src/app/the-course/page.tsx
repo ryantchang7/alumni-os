@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Flag, MapPin, Users, ArrowRight } from 'lucide-react'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
 
@@ -8,24 +9,65 @@ interface AlumniEntry {
   enrichment: PersonEnrichment
 }
 
-function AlumniCard({ entry }: { entry: AlumniEntry }) {
+function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
   const { person, membership, enrichment } = entry
+  const location =
+    enrichment.city ?? membership.hometown ?? null
   return (
     <Link
       href={`/player/alumni/${person.id}?teamSlug=penn-mens-golf`}
-      className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:shadow-md transition-shadow group"
+      className="group block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden hover:border-[#2d6a4f]/40 hover:shadow-md transition-all"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
-      <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
-      {enrichment.city && <p className="text-xs text-[#8a7f70] mt-0.5">{enrichment.city}</p>}
-      {membership.classLabel && <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>}
-      {enrichment.favoriteCourses && (
-        <p className="text-xs text-[#4a5568] mt-1.5 italic">&ldquo;{enrichment.favoriteCourses}&rdquo;</p>
-      )}
-      <span className="text-xs font-medium text-[#990000] group-hover:underline mt-3 block">
-        View profile &rarr;
-      </span>
+      <div className="border-l-4 border-[#2d6a4f] px-5 py-4">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <div>
+            <p
+              className="text-[#0a1628] text-base font-medium leading-snug"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              {person.canonicalName}
+            </p>
+            {membership.classLabel && (
+              <p className="text-[11.5px] text-[#8a7f70] mt-0.5">{membership.classLabel}</p>
+            )}
+          </div>
+          <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-2 py-1 rounded-full whitespace-nowrap">
+            Open
+          </span>
+        </div>
+        {location && (
+          <div className="flex items-center gap-1.5 text-[12px] text-[#4a5568] mt-1">
+            <MapPin className="w-3 h-3 text-[#8a7f70]" />
+            <span>{location}</span>
+          </div>
+        )}
+        {enrichment.favoriteCourses && (
+          <p className="text-[12px] text-[#3d4a5c] mt-2 italic leading-relaxed">
+            &ldquo;{enrichment.favoriteCourses}&rdquo;
+          </p>
+        )}
+        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#990000] mt-3 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+          Send a note <ArrowRight className="w-3 h-3" />
+        </span>
+      </div>
     </Link>
+  )
+}
+
+function CourseRollEntry({ course, count }: { course: string; count: number }) {
+  return (
+    <li className="flex items-center justify-between gap-3 py-2.5 border-b border-[rgba(180,168,150,0.22)] last:border-b-0">
+      <span
+        className="text-[14px] text-[#0a1628] leading-snug"
+        style={{ fontFamily: 'var(--font-playfair)' }}
+      >
+        {course}
+      </span>
+      <span className="text-[11px] font-medium text-[#8a7f70] whitespace-nowrap">
+        {count} {count === 1 ? 'member' : 'members'}
+      </span>
+    </li>
   )
 }
 
@@ -37,18 +79,19 @@ export default async function TheCoursePage() {
   let openToRounds: AlumniEntry[] = []
   let rounds: GatheringData[] = []
   const interestedByGathering = new Map<string, number>()
+  const courseRoll = new Map<string, number>()
 
   if (team) {
     const memberships = store.teamMemberships.filter(
-      m => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true,
+      (m) => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true,
     )
     const enrichMap = new Map(
-      store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
+      store.personEnrichments.filter((e) => e.teamId === team.id).map((e) => [e.personId, e]),
     )
 
     const visible: AlumniEntry[] = memberships
-      .map(m => {
-        const person = store.people.find(p => p.id === m.personId)
+      .map((m) => {
+        const person = store.people.find((p) => p.id === m.personId)
         const enrichment = enrichMap.get(m.personId)
         if (!person || !enrichment) return null
         if (enrichment.visibleToPlayers === false) return null
@@ -56,10 +99,24 @@ export default async function TheCoursePage() {
       })
       .filter((x): x is AlumniEntry => x !== null)
 
-    openToRounds = visible.filter(a => a.enrichment.openToGolfRounds)
+    openToRounds = visible.filter((a) => a.enrichment.openToGolfRounds)
+
+    // Aggregate notable courses from alumni's favorite-course entries.
+    for (const v of visible) {
+      const raw = v.enrichment.favoriteCourses
+      if (!raw) continue
+      // Split by comma or ' and ' so "Pine Valley, Merion" yields two courses.
+      const courses = raw
+        .split(/,| and /i)
+        .map((c) => c.trim())
+        .filter((c) => c.length > 2 && c.length < 60)
+      for (const c of courses) {
+        courseRoll.set(c, (courseRoll.get(c) ?? 0) + 1)
+      }
+    }
 
     rounds = store.clubhouseGatherings.filter(
-      g => g.teamId === team.id && g.type === 'round' && g.status !== 'closed',
+      (g) => g.teamId === team.id && g.type === 'round' && g.status !== 'closed',
     ) as GatheringData[]
 
     for (const r of store.clubhouseGatheringRequests) {
@@ -72,70 +129,105 @@ export default async function TheCoursePage() {
     }
   }
 
+  const sortedCourses = Array.from(courseRoll.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+
   const actionCards = [
     {
       label: 'Find a Round',
-      description: 'Browse alumni open to hosting or joining. Golf travels well.',
+      description: 'Browse alumni open to hosting or joining a round near you.',
       href: '#open-to-rounds',
+      icon: Flag,
     },
     {
       label: 'Host a Round',
-      description: 'Mark yourself open to hosting a round at your home course.',
+      description: 'Mark yourself open to a tee time at your home course.',
       href: '/alumni',
+      icon: Users,
     },
     {
       label: 'Browse the Map',
-      description: 'See where Penn Golf alumni are playing across the country.',
+      description: 'See where Penn Golf members are playing across the country.',
       href: '/member-map',
-    },
-    {
-      label: 'Alumni Clubs',
-      description: 'Members at notable clubs who may be able to arrange access.',
-      href: '/member-book',
+      icon: MapPin,
     },
   ]
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
-        <div className="max-w-[1320px] mx-auto">
-          <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · The Course</p>
-          <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">The Course</h1>
-          <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl">
-            Find alumni who are open to a round. Golf travels well.
+      {/* Hero — green tee marker rule */}
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-16 relative overflow-hidden">
+        <div className="max-w-[1320px] mx-auto relative">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+            Penn Men&rsquo;s Golf
+          </p>
+          <h1
+            className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            The Course
+          </h1>
+          <span className="block w-12 h-[2px] bg-[#2d6a4f] mt-5 mb-5" />
+          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
+            Tee times, foursomes, and home courses across the Penn Golf network.
+            Golf travels well — find a round wherever you land.
           </p>
         </div>
       </div>
 
-      <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
-
-        {/* Action cards */}
+      <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-12 space-y-14">
+        {/* Scorecard-style action row */}
         <section>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {actionCards.map(card => (
-              <Link
-                key={card.label}
-                href={card.href}
-                className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 hover:shadow-md hover:border-[rgba(10,22,40,0.2)] transition-all group"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-              >
-                <p className="font-semibold text-[#0a1628] text-sm mb-1">{card.label}</p>
-                <p className="text-xs text-[#8a7f70] leading-snug mb-3">{card.description}</p>
-                <span className="text-xs font-medium text-[#990000] group-hover:underline">&rarr;</span>
-              </Link>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {actionCards.map((card) => {
+              const Icon = card.icon
+              return (
+                <Link
+                  key={card.label}
+                  href={card.href}
+                  className="group block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 hover:border-[#2d6a4f]/40 hover:shadow-md transition-all"
+                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#2d6a4f]/8 text-[#2d6a4f] flex-shrink-0">
+                      <Icon className="w-4 h-4" />
+                    </span>
+                    <div>
+                      <p
+                        className="text-[#0a1628] text-[15px] font-medium leading-snug mb-1"
+                        style={{ fontFamily: 'var(--font-playfair)' }}
+                      >
+                        {card.label}
+                      </p>
+                      <p className="text-[12.5px] text-[#8a7f70] leading-snug">{card.description}</p>
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </section>
 
         {/* Organized Rounds */}
         {rounds.length > 0 && (
           <section data-testid="rounds-section">
-            <h2 className="text-base font-semibold text-[#0a1628] mb-1">Upcoming Rounds</h2>
+            <div className="flex items-baseline justify-between mb-1">
+              <h2
+                className="text-xl text-[#0a1628] font-medium"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                Tee Times
+              </h2>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f]">
+                {rounds.length} open
+              </span>
+            </div>
             <p className="text-sm text-[#8a7f70] mb-6">
-              Organized alumni rounds open for members to join.
+              Organized rounds open for members to join.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {rounds.map(g => (
+              {rounds.map((g) => (
                 <GatheringCard
                   key={g.id}
                   gathering={g}
@@ -148,49 +240,107 @@ export default async function TheCoursePage() {
 
         {/* Open to a Round — alumni */}
         <section id="open-to-rounds">
-          <div className="flex items-baseline gap-3 mb-1">
-            <h2 className="text-base font-semibold text-[#0a1628]">Open to a Round</h2>
+          <div className="flex items-baseline justify-between mb-1">
+            <h2
+              className="text-xl text-[#0a1628] font-medium"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Open to a Round
+            </h2>
             {openToRounds.length > 0 && (
-              <span className="text-xs font-medium text-[#2d6a4f] bg-[#2d6a4f]/10 px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f]">
                 {openToRounds.length} available
               </span>
             )}
           </div>
           <p className="text-sm text-[#8a7f70] mb-6">
-            Alumni who have marked themselves open to hosting or joining a round.
+            Alumni who&rsquo;ve marked themselves open to hosting or joining a round.
           </p>
           {openToRounds.length === 0 ? (
             <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+              className="bg-white border border-dashed border-[rgba(180,168,150,0.5)] rounded-xl p-8 text-center"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
             >
-              No alumni have marked themselves open to hosting yet. Alumni can update this in their Clubhouse profile.
+              <Flag className="w-6 h-6 text-[#2d6a4f] mx-auto mb-3" />
+              <p
+                className="text-[#0a1628] text-base font-medium mb-2"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                No one&rsquo;s teed off yet.
+              </p>
+              <p className="text-[13px] text-[#8a7f70] mb-5 max-w-md mx-auto">
+                Be the first. Mark yourself open to hosting a round and players in your
+                city will find you here.
+              </p>
+              <Link
+                href="/alumni"
+                className="inline-block bg-[#2d6a4f] hover:bg-[#234f3a] text-white text-[12.5px] font-semibold uppercase tracking-[0.12em] px-5 py-2.5 rounded-lg transition-colors"
+              >
+                Open Your Tee Box
+              </Link>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {openToRounds.map(entry => (
-                <AlumniCard key={entry.person.id} entry={entry} />
+              {openToRounds.map((entry) => (
+                <AlumniRoundCard key={entry.person.id} entry={entry} />
               ))}
             </div>
           )}
         </section>
 
-        {/* Alumni profile CTA */}
+        {/* Notable Courses */}
+        {sortedCourses.length > 0 && (
+          <section>
+            <div className="flex items-baseline justify-between mb-1">
+              <h2
+                className="text-xl text-[#0a1628] font-medium"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                Where Penn Golf plays
+              </h2>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
+                The course roll
+              </span>
+            </div>
+            <p className="text-sm text-[#8a7f70] mb-6">
+              Home courses across the alumni network — DMs to access often run through these.
+            </p>
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-4"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+            >
+              <ul>
+                {sortedCourses.map(([course, count]) => (
+                  <CourseRollEntry key={course} course={course} count={count} />
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
+        {/* Bottom CTA */}
         <div
           className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
         >
           <div>
-            <p className="font-semibold text-[#0a1628] text-sm">Are you a Penn Golf alum?</p>
-            <p className="text-xs text-[#8a7f70] mt-0.5">
-              Mark yourself open to hosting in your Alumni profile and players will find you here.
+            <p
+              className="text-[#0a1628] text-base font-medium"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Have a home course?
+            </p>
+            <p className="text-[12.5px] text-[#8a7f70] mt-1">
+              Add it to your profile and mark yourself open to hosting. Members and current players will find you.
             </p>
           </div>
-          <Link href="/alumni" className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap">
-            Update your profile &rarr;
+          <Link
+            href="/alumni"
+            className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
+          >
+            Update your card &rarr;
           </Link>
         </div>
-
       </div>
     </div>
   )
