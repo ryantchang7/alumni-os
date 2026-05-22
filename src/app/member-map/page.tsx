@@ -15,6 +15,11 @@ import {
 
 const TEAM_SLUG = 'penn-mens-golf'
 
+// The map reads enrichments + memberships fresh on every request — alumni
+// expect to see their own update reflected immediately after they save.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 function blankState(code: string): MapState {
   return {
     stateCode: code,

@@ -191,7 +191,7 @@ export default async function TheCoursePage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <CourseHero />
+      <CourseHero rounds={rounds} />
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-12 space-y-14">
         {/* Scorecard-style action row */}
@@ -228,7 +228,7 @@ export default async function TheCoursePage() {
 
         {/* Organized Rounds — Hole 1 */}
         {rounds.length > 0 && (
-          <div data-testid="rounds-section">
+          <div id="rounds-section" data-testid="rounds-section">
             <CourseHoleSection
               hole={1}
               title="Tee Times"

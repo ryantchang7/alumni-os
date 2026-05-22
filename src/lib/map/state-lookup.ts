@@ -50,7 +50,14 @@ export function hometownToStateCode(hometown: string | undefined): string | null
   if (!hometown) return null
   const parts = hometown.trim().split(',')
   const statePart = parts[parts.length - 1].trim()
-  return ABBREV_TO_CODE[statePart] ?? NAME_TO_CODE[statePart] ?? null
+  // Strip optional trailing zip ("Houston, TX 77001" → "TX")
+  const stateWord = statePart.split(/\s+/)[0]
+  if (ABBREV_TO_CODE[statePart]) return ABBREV_TO_CODE[statePart]
+  if (NAME_TO_CODE[statePart]) return NAME_TO_CODE[statePart]
+  if (stateWord.length === 2 && CODE_TO_NAME[stateWord.toUpperCase()]) {
+    return stateWord.toUpperCase()
+  }
+  return null
 }
 
 /** Parse enrichment state field — may be "CA", "California", or "Calif." */
