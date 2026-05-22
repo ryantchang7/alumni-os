@@ -43,23 +43,25 @@ const HELP_TOPIC_OPTIONS = [
   'General networking',
 ]
 
+// Differentiated, single-line categories. "Investing" covers banking +
+// markets + PE/HF/VC/asset mgmt. "Finance" was redundant. Multi-select.
 const INDUSTRY_OPTIONS = [
-  'Finance',
   'Investing',
-  'Real Estate',
   'Tech',
-  'Consulting',
+  'Real Estate',
   'Law',
-  'Healthcare',
+  'Consulting',
+  'Healthcare / Biotech',
   'Energy',
-  'Sales / BD',
-  'Media',
-  'Government',
-  'Education',
+  'Consumer / Retail',
+  'Media / Entertainment',
   'Sports',
+  'Government / Policy',
+  'Education / Academia',
   'Nonprofit',
   'Entrepreneurship',
   'Student',
+  'Other',
 ]
 
 const CONTACT_PREF_LABELS: Record<string, string> = {
@@ -338,15 +340,25 @@ function AlumniProfileInner() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-2">Industry</label>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">Industries</label>
+                <p className="text-[11px] text-[#8a7f70] mb-2">Pick any that apply.</p>
                 <div className="flex flex-wrap gap-1.5">
                   {INDUSTRY_OPTIONS.map((opt) => {
-                    const active = industry === opt
+                    const selected = industry
+                      .split(',')
+                      .map((s) => s.trim())
+                      .filter(Boolean)
+                    const active = selected.includes(opt)
                     return (
                       <button
                         key={opt}
                         type="button"
-                        onClick={() => setIndustry(active ? '' : opt)}
+                        onClick={() => {
+                          const next = active
+                            ? selected.filter((s) => s !== opt)
+                            : [...selected, opt]
+                          setIndustry(next.join(', '))
+                        }}
                         className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
                           active
                             ? 'bg-[#0a1628] text-white border-[#0a1628]'
@@ -358,18 +370,6 @@ function AlumniProfileInner() {
                     )
                   })}
                 </div>
-                {industry && !INDUSTRY_OPTIONS.includes(industry) && (
-                  <p className="text-[11px] text-[#8a7f70] mt-2">
-                    Current: <span className="text-[#0a1628] font-medium">{industry}</span>{' '}
-                    <button
-                      type="button"
-                      onClick={() => setIndustry('')}
-                      className="text-[#990000] hover:underline ml-1"
-                    >
-                      Clear
-                    </button>
-                  </p>
-                )}
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">

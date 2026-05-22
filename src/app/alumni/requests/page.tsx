@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
+import { useSession } from 'next-auth/react'
 
 interface AlumniProfile {
   personId: string
@@ -336,9 +337,11 @@ function RequestCard({
 function AlumniRequestsInner() {
   const searchParams = useSearchParams()
   const router = useRouter()
+  const { data: session, status: sessionStatus } = useSession()
 
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
-  const personId = searchParams.get('personId') ?? ''
+  // Inbox is bound to the signed-in account, never a URL param.
+  const personId = session?.linkedPersonId ?? ''
 
   const [profiles, setProfiles] = useState<AlumniProfile[]>([])
   const [requests, setRequests] = useState<AlumniRequest[]>([])
@@ -432,7 +435,7 @@ function AlumniRequestsInner() {
             </p>
           ) : (
             <p className="text-gray-400 text-sm mt-2">
-              Select your profile to view requests from current players.
+              Sign in to view notes and intros sent to you.
             </p>
           )}
         </div>
@@ -441,49 +444,42 @@ function AlumniRequestsInner() {
       <div className="max-w-[860px] mx-auto px-8 pb-16">
         <div className="-mt-5 relative z-10 space-y-4">
 
-          {/* Profile selector */}
-          {!personId && (
+          {/* Not signed in */}
+          {sessionStatus !== 'loading' && !session && (
             <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-center"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
             >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
-                Select your profile to view your inbox
+              <p className="text-sm font-semibold text-[#0a1628] mb-1">Sign in to see your inbox</p>
+              <p className="text-xs text-[#8a7f70] mb-4">
+                Your inbox holds notes and intros sent to you by other Penn Golf members.
               </p>
-              {profiles.length === 0 ? (
-                <p className="text-sm text-[#8a7f70]">No published alumni profiles found.</p>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  {profiles.map(p => (
-                    <button
-                      key={p.personId}
-                      type="button"
-                      onClick={() =>
-                        router.push(`/alumni/requests?teamSlug=${teamSlug}&personId=${p.personId}`)
-                      }
-                      className="text-left px-4 py-3 rounded-lg border border-[rgba(180,168,150,0.4)] hover:border-[#0a1628] hover:bg-[#f8f5f0] transition-colors"
-                    >
-                      <p className="text-sm font-semibold text-[#0a1628]">{p.canonicalName}</p>
-                      {p.classLabel && (
-                        <p className="text-xs text-[#8a7f70] mt-0.5">{p.classLabel}</p>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={() => router.push('/login?next=/alumni/requests')}
+                className="bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold px-5 py-2.5 rounded-lg transition-colors"
+              >
+                Sign in with Google
+              </button>
             </div>
           )}
 
-          {/* Switch profile link */}
-          {personId && (
-            <div className="flex items-center justify-end">
-              <button
-                type="button"
-                onClick={() => router.push(`/alumni/requests?teamSlug=${teamSlug}`)}
-                className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+          {/* Signed in but no linked profile */}
+          {sessionStatus === 'authenticated' && session && !personId && (
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-center"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+            >
+              <p className="text-sm font-semibold text-[#0a1628] mb-1">Claim your profile first</p>
+              <p className="text-xs text-[#8a7f70] mb-4">
+                Find your card in the Member Book to start receiving messages.
+              </p>
+              <Link
+                href="/account/setup"
+                className="inline-block bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold px-5 py-2.5 rounded-lg transition-colors"
               >
-                Switch profile
-              </button>
+                Find your card
+              </Link>
             </div>
           )}
 

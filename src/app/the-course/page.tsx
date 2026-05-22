@@ -3,6 +3,7 @@ import { Flag, MapPin, Users, ArrowRight } from 'lucide-react'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
 import CourseHero from './CourseHero'
+import CourseHoleSection, { CartPathDivider } from './CourseHoleSection'
 
 interface AlumniEntry {
   person: Person
@@ -225,53 +226,37 @@ export default async function TheCoursePage() {
           </div>
         </section>
 
-        {/* Organized Rounds */}
+        {/* Organized Rounds — Hole 1 */}
         {rounds.length > 0 && (
-          <section data-testid="rounds-section">
-            <div className="flex items-baseline justify-between mb-1">
-              <h2
-                className="text-xl text-[#0a1628] font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
-              >
-                Tee Times
-              </h2>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f]">
-                {rounds.length} open
-              </span>
-            </div>
-            <p className="text-sm text-[#8a7f70] mb-6">
-              Organized rounds open for members to join.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {rounds.map((g) => (
-                <GatheringCard
-                  key={g.id}
-                  gathering={g}
-                  interestedCount={interestedByGathering.get(g.id) ?? 0}
-                />
-              ))}
-            </div>
-          </section>
+          <div data-testid="rounds-section">
+            <CourseHoleSection
+              hole={1}
+              title="Tee Times"
+              rightLabel={`${rounds.length} open`}
+              subtitle="Organized rounds open for members to join."
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {rounds.map((g) => (
+                  <GatheringCard
+                    key={g.id}
+                    gathering={g}
+                    interestedCount={interestedByGathering.get(g.id) ?? 0}
+                  />
+                ))}
+              </div>
+            </CourseHoleSection>
+            <CartPathDivider />
+          </div>
         )}
 
-        {/* Open to a Round — alumni */}
-        <section id="open-to-rounds">
-          <div className="flex items-baseline justify-between mb-1">
-            <h2
-              className="text-xl text-[#0a1628] font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              Open to a Round
-            </h2>
-            {openToRounds.length > 0 && (
-              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f]">
-                {openToRounds.length} available
-              </span>
-            )}
-          </div>
-          <p className="text-sm text-[#8a7f70] mb-6">
-            Alumni who&rsquo;ve marked themselves open to hosting or joining a round.
-          </p>
+        {/* Open to a Round — Hole 2 */}
+        <div id="open-to-rounds">
+          <CourseHoleSection
+            hole={rounds.length > 0 ? 2 : 1}
+            title="Open to a Round"
+            rightLabel={openToRounds.length > 0 ? `${openToRounds.length} available` : undefined}
+            subtitle="Alumni who've marked themselves open to hosting or joining a round."
+          >
           {openToRounds.length === 0 ? (
             <div
               className="bg-white border border-dashed border-[rgba(180,168,150,0.5)] rounded-xl p-8 text-center"
@@ -302,41 +287,36 @@ export default async function TheCoursePage() {
               ))}
             </div>
           )}
-        </section>
+          </CourseHoleSection>
+        </div>
 
-        {/* Notable Courses */}
+        {/* Notable Courses — Hole 3 */}
         {sortedCourses.length > 0 && (
-          <section>
-            <div className="flex items-baseline justify-between mb-1">
-              <h2
-                className="text-xl text-[#0a1628] font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
-              >
-                Where Penn Golf plays
-              </h2>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
-                The course roll
-              </span>
-            </div>
-            <p className="text-sm text-[#8a7f70] mb-6">
-              Home courses across the alumni network — DMs to access often run through these.
-            </p>
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-4"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+          <div>
+            <CartPathDivider />
+            <CourseHoleSection
+              hole={rounds.length > 0 ? 3 : 2}
+              title="Where Penn Golf plays"
+              rightLabel="The course roll"
+              subtitle="Home courses across the alumni network — access often runs through these."
             >
-              <ul>
-                {sortedCourses.map(([course, count]) => (
-                  <CourseRollEntry
-                    key={course}
-                    course={course}
-                    count={count}
-                    isHome={homeCourseSet.has(course)}
-                  />
-                ))}
-              </ul>
-            </div>
-          </section>
+              <div
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-4"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+              >
+                <ul>
+                  {sortedCourses.map(([course, count]) => (
+                    <CourseRollEntry
+                      key={course}
+                      course={course}
+                      count={count}
+                      isHome={homeCourseSet.has(course)}
+                    />
+                  ))}
+                </ul>
+              </div>
+            </CourseHoleSection>
+          </div>
         )}
 
         {/* Bottom CTA */}

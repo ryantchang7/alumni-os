@@ -98,7 +98,7 @@ export default async function MemberDetailPage({
   const linkedinUrl = showContact ? enr?.linkedinUrl ?? null : null
 
   const hasProfileDetails =
-    role || company || industry || city || bio || helpTopics.length > 0 || highSchool || interests
+    role || company || industry || city || bio || helpTopics.length > 0 || interests
   const hasGolfDetails = homeCourse || favoriteCourses || favoritePennGolfMemory
   const hasContact = contactEmail || contactPhone || linkedinUrl
 
@@ -152,6 +152,7 @@ export default async function MemberDetailPage({
             )}
             <div className="text-[13.5px] text-[#8a7f70] mt-1 space-y-0.5">
               {classYear && <p>Class of {classYear}</p>}
+              {highSchool && <p>{highSchool}</p>}
               {hometown && <p>{hometown}</p>}
             </div>
             {isCurrent && (
@@ -204,7 +205,20 @@ export default async function MemberDetailPage({
                 {role && !company && <p>{role}</p>}
                 {!role && company && <p>{company}</p>}
                 {industry && (
-                  <p className="text-[#8a7f70]">{industry}</p>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {industry
+                      .split(',')
+                      .map((s) => s.trim())
+                      .filter(Boolean)
+                      .map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#8a7f70]/10 text-[#3d4a5c] border border-[#8a7f70]/25"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                  </div>
                 )}
                 {city && <p>{city}</p>}
                 {bio && (
@@ -234,9 +248,6 @@ export default async function MemberDetailPage({
                       ))}
                     </div>
                   </div>
-                )}
-                {highSchool && (
-                  <p className="text-[#8a7f70] pt-1">{highSchool}</p>
                 )}
               </div>
             ) : (
