@@ -43,10 +43,9 @@ const HELP_TOPIC_OPTIONS = [
   'General networking',
 ]
 
-// Differentiated, single-line categories. "Investing" covers banking +
-// markets + PE/HF/VC/asset mgmt. "Finance" was redundant. Multi-select.
+// Differentiated, single-line categories. Multi-select.
 const INDUSTRY_OPTIONS = [
-  'Investing',
+  'Finance',
   'Tech',
   'Real Estate',
   'Law',

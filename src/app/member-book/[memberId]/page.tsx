@@ -98,7 +98,7 @@ export default async function MemberDetailPage({
   const linkedinUrl = showContact ? enr?.linkedinUrl ?? null : null
 
   const hasProfileDetails =
-    role || company || industry || city || bio || helpTopics.length > 0 || interests
+    role || company || industry || city || bio || interests
   const hasGolfDetails = homeCourse || favoriteCourses || favoritePennGolfMemory
   const hasContact = contactEmail || contactPhone || linkedinUrl
 
@@ -150,11 +150,26 @@ export default async function MemberDetailPage({
                 {years}
               </p>
             )}
-            <div className="text-[13.5px] text-[#8a7f70] mt-1 space-y-0.5">
-              {classYear && <p>Class of {classYear}</p>}
-              {highSchool && <p>{highSchool}</p>}
-              {hometown && <p>{hometown}</p>}
-            </div>
+            <dl className="text-[13.5px] text-[#3d4a5c] mt-3 space-y-0.5">
+              {classYear && (
+                <div className="flex gap-2">
+                  <dt className="text-[#8a7f70]">Class:</dt>
+                  <dd>{classYear}</dd>
+                </div>
+              )}
+              {highSchool && (
+                <div className="flex gap-2">
+                  <dt className="text-[#8a7f70]">High school:</dt>
+                  <dd>{highSchool}</dd>
+                </div>
+              )}
+              {hometown && (
+                <div className="flex gap-2">
+                  <dt className="text-[#8a7f70]">Hometown:</dt>
+                  <dd>{hometown}</dd>
+                </div>
+              )}
+            </dl>
             {isCurrent && (
               <span className="inline-block mt-5 text-[10px] font-medium px-2.5 py-1 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 uppercase tracking-[0.14em]">
                 Current Player
@@ -231,23 +246,6 @@ export default async function MemberDetailPage({
                     </span>
                     {interests}
                   </p>
-                )}
-                {helpTopics.length > 0 && (
-                  <div className="pt-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mb-2">
-                      Open to
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {helpTopics.map((topic) => (
-                        <span
-                          key={topic}
-                          className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#0a1628]/6 text-[#0a1628] border border-[#0a1628]/15"
-                        >
-                          {topic}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
                 )}
               </div>
             ) : (
