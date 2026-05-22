@@ -68,6 +68,7 @@ export async function GET(request: Request) {
     city: enrichment?.city,
     state: enrichment?.state,
     country: enrichment?.country,
+    additionalLocations: enrichment?.additionalLocations ?? [],
     alumniBio: enrichment?.alumniBio,
     helpTopics: enrichment?.helpTopics ?? [],
     contactPreference: enrichment?.contactPreference ?? 'team_intro',
@@ -137,6 +138,18 @@ export async function POST(request: Request) {
   if (typeof body.city === 'string') safeUpdate.city = body.city.trim()
   if (typeof body.state === 'string') safeUpdate.state = body.state.trim()
   if (typeof body.country === 'string') safeUpdate.country = body.country.trim()
+  if (Array.isArray(body.additionalLocations)) {
+    const clean = (body.additionalLocations as unknown[])
+      .filter((row): row is Record<string, unknown> => typeof row === 'object' && row !== null)
+      .map((row) => ({
+        city: typeof row.city === 'string' ? row.city.trim() : undefined,
+        state: typeof row.state === 'string' ? row.state.trim().toUpperCase().slice(0, 2) : undefined,
+        label: typeof row.label === 'string' ? row.label.trim() : undefined,
+      }))
+      .filter((row) => row.city || row.state)
+      .slice(0, 4)
+    safeUpdate.additionalLocations = clean
+  }
   if (typeof body.alumniBio === 'string') safeUpdate.alumniBio = body.alumniBio.trim()
   if (typeof body.homeCourse === 'string') safeUpdate.homeCourse = body.homeCourse.trim()
   if (typeof body.favoriteCourses === 'string') safeUpdate.favoriteCourses = body.favoriteCourses.trim()

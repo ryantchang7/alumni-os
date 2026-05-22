@@ -94,6 +94,8 @@ export default async function MemberDetailPage({
   const company = enr?.currentCompany ?? member.profile.currentCompany ?? null
   const industry = enr?.industry ?? null
   const city = enr?.city ?? member.profile.city ?? null
+  const state = enr?.state ?? null
+  const additionalLocations = enr?.additionalLocations ?? []
   const bio = enr?.alumniBio ?? null
   const helpTopics = enr?.helpTopics ?? []
   const homeCourse = enr?.homeCourse ?? null
@@ -111,7 +113,7 @@ export default async function MemberDetailPage({
   const photoUrl = enr?.photoUrl ?? storeMatch?.accountImage ?? null
 
   const hasProfileDetails =
-    role || company || industry || city || bio || interests
+    role || company || industry || city || additionalLocations.length > 0 || bio || interests
   const hasGolfDetails = homeCourse || favoriteCourses || favoritePennGolfMemory
   const hasContact = contactEmail || contactPhone || linkedinUrl
 
@@ -277,7 +279,24 @@ export default async function MemberDetailPage({
                       ))}
                   </div>
                 )}
-                {city && <p>{city}</p>}
+                {(city || additionalLocations.length > 0) && (
+                  <p>
+                    {city && <span>{[city, state].filter(Boolean).join(', ')}</span>}
+                    {additionalLocations.map((loc, i) => {
+                      const place = [loc.city, loc.state].filter(Boolean).join(', ')
+                      if (!place) return null
+                      return (
+                        <span key={i} className="text-[#8a7f70]">
+                          {city || i > 0 ? ' · ' : ''}
+                          {place}
+                          {loc.label && (
+                            <span className="italic"> ({loc.label})</span>
+                          )}
+                        </span>
+                      )
+                    })}
+                  </p>
+                )}
                 {bio && (
                   <p className="text-[#3d4a5c] leading-relaxed pt-1">{bio}</p>
                 )}

@@ -139,6 +139,10 @@ export interface PersonEnrichment {
   city?: string
   state?: string
   country?: string
+  // Extra locations (e.g. "winters in FL", "summers on Cape Cod"). The primary
+  // city/state above is the home base; these are additional places the member
+  // wants to show up on the Member Map.
+  additionalLocations?: Array<{ city?: string; state?: string; label?: string }>
   email?: string
   phone?: string
   linkedinUrl?: string

@@ -6,6 +6,12 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import { useSession } from 'next-auth/react'
 
+interface LocationRow {
+  city?: string
+  state?: string
+  label?: string
+}
+
 interface SelfProfile {
   personId: string
   canonicalName: string
@@ -19,6 +25,8 @@ interface SelfProfile {
   currentCompany?: string
   industry?: string
   city?: string
+  state?: string
+  additionalLocations?: LocationRow[]
   alumniBio?: string
   helpTopics?: string[]
   contactPreference?: string
@@ -92,6 +100,8 @@ function AlumniProfileInner() {
   const [currentCompany, setCurrentCompany] = useState('')
   const [industry, setIndustry] = useState('')
   const [city, setCity] = useState('')
+  const [state, setState] = useState('')
+  const [additionalLocations, setAdditionalLocations] = useState<LocationRow[]>([])
   const [alumniBio, setAlumniBio] = useState('')
   const [helpTopics, setHelpTopics] = useState<string[]>([])
   const [contactPref, setContactPref] = useState('team_intro')
@@ -120,6 +130,8 @@ function AlumniProfileInner() {
         setCurrentCompany(data.currentCompany ?? '')
         setIndustry(data.industry ?? '')
         setCity(data.city ?? '')
+        setState(data.state ?? '')
+        setAdditionalLocations(data.additionalLocations ?? [])
         setAlumniBio(data.alumniBio ?? '')
         setHelpTopics(data.helpTopics ?? [])
         setContactPref(data.contactPreference ?? 'team_intro')
@@ -161,6 +173,8 @@ function AlumniProfileInner() {
           currentCompany,
           industry,
           city,
+          state,
+          additionalLocations: additionalLocations.filter((l) => l.city || l.state),
           alumniBio,
           helpTopics,
           contactPreference: contactPref,
@@ -376,15 +390,93 @@ function AlumniProfileInner() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                  City (where you live now)
+                  Where you live now
                 </label>
-                <input
-                  type="text"
-                  value={city}
-                  onChange={e => setCity(e.target.value)}
-                  placeholder="e.g. New York"
-                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                />
+                <div className="grid grid-cols-[1fr_88px] gap-2">
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={e => setCity(e.target.value)}
+                    placeholder="City — e.g. New York"
+                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                  <input
+                    type="text"
+                    value={state}
+                    onChange={e => setState(e.target.value.toUpperCase().slice(0, 2))}
+                    placeholder="ST"
+                    maxLength={2}
+                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm uppercase text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                </div>
+
+                {additionalLocations.map((loc, idx) => (
+                  <div key={idx} className="mt-2 grid grid-cols-[1fr_88px_1fr_28px] gap-2 items-center">
+                    <input
+                      type="text"
+                      value={loc.city ?? ''}
+                      onChange={(e) => {
+                        const copy = [...additionalLocations]
+                        copy[idx] = { ...copy[idx], city: e.target.value }
+                        setAdditionalLocations(copy)
+                      }}
+                      placeholder="City"
+                      className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                    />
+                    <input
+                      type="text"
+                      value={loc.state ?? ''}
+                      onChange={(e) => {
+                        const copy = [...additionalLocations]
+                        copy[idx] = { ...copy[idx], state: e.target.value.toUpperCase().slice(0, 2) }
+                        setAdditionalLocations(copy)
+                      }}
+                      placeholder="ST"
+                      maxLength={2}
+                      className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm uppercase text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                    />
+                    <input
+                      type="text"
+                      value={loc.label ?? ''}
+                      onChange={(e) => {
+                        const copy = [...additionalLocations]
+                        copy[idx] = { ...copy[idx], label: e.target.value }
+                        setAdditionalLocations(copy)
+                      }}
+                      placeholder="winters / summers / weekends"
+                      className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setAdditionalLocations(additionalLocations.filter((_, i) => i !== idx))
+                      }
+                      aria-label="Remove location"
+                      className="w-7 h-7 rounded-full text-[#8a7f70] hover:bg-[#faf7f2] hover:text-[#990000] text-base leading-none"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+
+                {additionalLocations.length < 3 && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setAdditionalLocations([
+                        ...additionalLocations,
+                        { city: '', state: '', label: '' },
+                      ])
+                    }
+                    className="mt-2 text-[12px] text-[#990000] hover:underline font-medium"
+                  >
+                    + Add another location
+                  </button>
+                )}
+                <p className="text-[11px] text-[#8a7f70] mt-1.5 leading-snug">
+                  For "winters in FL," "summers on Cape Cod," etc. Up to 3 extra locations
+                  — each appears on the Member Map.
+                </p>
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">

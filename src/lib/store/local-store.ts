@@ -719,6 +719,7 @@ export async function getPublishedPeopleForTeam(teamId: string): Promise<{
 export type AlumniSafeFields = Pick<
   PersonEnrichment,
   'currentRole' | 'currentCompany' | 'industry' | 'city' | 'state' | 'country' |
+  'additionalLocations' |
   'alumniBio' | 'helpTopics' | 'contactPreference' | 'visibleToPlayers' |
   'homeCourse' | 'favoriteCourses' | 'favoritePennGolfMemory' | 'interests' |
   'email' | 'phone' | 'linkedinUrl' | 'photoUrl'
@@ -743,6 +744,7 @@ export async function updatePersonEnrichmentSafeFields(
       ...(fields.city !== undefined ? { city: fields.city } : {}),
       ...(fields.state !== undefined ? { state: fields.state } : {}),
       ...(fields.country !== undefined ? { country: fields.country } : {}),
+      ...(fields.additionalLocations !== undefined ? { additionalLocations: fields.additionalLocations } : {}),
       ...(fields.alumniBio !== undefined ? { alumniBio: fields.alumniBio } : {}),
       ...(fields.helpTopics !== undefined ? { helpTopics: fields.helpTopics } : {}),
       ...(fields.contactPreference !== undefined ? { contactPreference: fields.contactPreference } : {}),
@@ -771,6 +773,7 @@ export async function updatePersonEnrichmentSafeFields(
     city: fields.city,
     state: fields.state,
     country: fields.country,
+    additionalLocations: fields.additionalLocations,
     alumniBio: fields.alumniBio,
     helpTopics: fields.helpTopics,
     contactPreference: fields.contactPreference,

@@ -109,7 +109,6 @@ export default async function MemberMapPage() {
       seenTeamStoreNames.add(normalize(person.canonicalName))
 
       const hometownCode = hometownToStateCode(m.hometown)
-      const currentCode = enrichmentStateToCode(enrichment?.state)
 
       const base: MapMember = {
         personId: person.id,
@@ -126,7 +125,20 @@ export default async function MemberMapPage() {
       }
 
       if (hometownCode) placeMember(hometownByState, hometownCode, base)
-      if (currentCode) placeMember(currentByState, currentCode, base)
+
+      // Current-location lens: primary + each additional location. A member
+      // who lives in NY + winters in FL appears in both states.
+      const placedCurrentCodes = new Set<string>()
+      const placeCurrent = (rawState: string | undefined, locLabel?: string) => {
+        const code = enrichmentStateToCode(rawState)
+        if (!code || placedCurrentCodes.has(code)) return
+        placedCurrentCodes.add(code)
+        placeMember(currentByState, code, { ...base, locationLabel: locLabel })
+      }
+      placeCurrent(enrichment?.state)
+      for (const loc of enrichment?.additionalLocations ?? []) {
+        placeCurrent(loc.state, loc.label)
+      }
     }
   }
 

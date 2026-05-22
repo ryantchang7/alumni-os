@@ -149,6 +149,11 @@ function ContextualRow({ member }: { member: MapMember }) {
             {member.canonicalName}
           </p>
           {years && <p className="text-[12px] text-[#8a7f70] mt-0.5">{years}</p>}
+          {member.locationLabel && (
+            <p className="text-[10px] italic text-[#990000] mt-0.5">
+              {member.locationLabel}
+            </p>
+          )}
         </div>
         {isCP && (
           <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap mt-0.5">

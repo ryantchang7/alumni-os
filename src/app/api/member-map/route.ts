@@ -16,6 +16,9 @@ export interface MapMember {
   openToCoffee: boolean
   openToGolfRounds: boolean
   bookId?: string
+  // When the member appears on the "where they are now" lens because of
+  // an additional location (e.g. "winters" in FL), this is the user's label.
+  locationLabel?: string
 }
 
 export interface MapState {
