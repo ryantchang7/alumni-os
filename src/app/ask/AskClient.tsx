@@ -281,7 +281,7 @@ export default function AskClient() {
               >
                 View your requests &rarr;
               </Link>
-              <Link href="/player/search" className="text-sm font-medium text-[#0a1628] border border-[rgba(180,168,150,0.6)] px-5 py-2.5 rounded-lg hover:border-[#0a1628] transition-colors bg-white">
+              <Link href="/member-book" className="text-sm font-medium text-[#0a1628] border border-[rgba(180,168,150,0.6)] px-5 py-2.5 rounded-lg hover:border-[#0a1628] transition-colors bg-white">
                 Browse more members
               </Link>
               <Link href="/player" className="text-sm font-medium text-[#0a1628] border border-[rgba(180,168,150,0.6)] px-5 py-2.5 rounded-lg hover:border-[#0a1628] transition-colors bg-white">

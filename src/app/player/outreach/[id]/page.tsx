@@ -225,7 +225,7 @@ function OutreachPageInner() {
       <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">
         <div className="text-center">
           <p className="text-lg font-semibold text-[#0a1628] mb-2">Profile not found</p>
-          <Link href="/player/search" className="text-sm text-[#990000] hover:underline">
+          <Link href="/member-book" className="text-sm text-[#990000] hover:underline">
             &larr; Back to search
           </Link>
         </div>

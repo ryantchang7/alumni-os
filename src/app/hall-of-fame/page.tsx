@@ -34,10 +34,23 @@ export default function HallOfFamePage() {
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       {/* Hero */}
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16 relative">
-        <div className="max-w-[1320px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
-            Penn Men&rsquo;s Golf
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16 relative overflow-hidden">
+        {/* Soft gold spotlight on the title */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: '50%',
+            left: '15%',
+            width: '600px',
+            height: '400px',
+            transform: 'translate(-50%, -50%)',
+            background:
+              'radial-gradient(ellipse at center, rgba(200,168,75,0.12) 0%, rgba(200,168,75,0.04) 40%, transparent 70%)',
+          }}
+        />
+        <div className="max-w-[1320px] mx-auto relative">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
+            Penn Men&rsquo;s Golf · The Record Book
           </p>
           <h1
             className="text-white text-4xl sm:text-6xl font-medium tracking-tight leading-[1.05]"

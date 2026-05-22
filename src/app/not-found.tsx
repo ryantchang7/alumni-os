@@ -17,7 +17,7 @@ export default function NotFound() {
             Go home
           </Link>
           <Link
-            href="/player/search"
+            href="/member-book"
             className="text-sm font-medium text-[#990000] border border-[#990000] px-4 py-2 rounded hover:bg-[#990000] hover:text-white transition-colors"
           >
             Search alumni

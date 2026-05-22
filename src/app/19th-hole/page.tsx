@@ -1,4 +1,5 @@
 import NineteenthHoleClient from './NineteenthHoleClient'
+import NineteenthHoleHero from './NineteenthHoleHero'
 import type { GatheringData } from '@/components/gatherings/GatheringCard'
 
 export default async function NineteenthHolePage() {
@@ -82,22 +83,7 @@ export default async function NineteenthHolePage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
-        <div className="max-w-[1320px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
-            Penn Men&rsquo;s Golf
-          </p>
-          <h1
-            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            The 19th Hole
-          </h1>
-          <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl">
-            Coffee, dinners, and signature Penn Golf gatherings &mdash; wherever members find each other.
-          </p>
-        </div>
-      </div>
+      <NineteenthHoleHero />
 
       <NineteenthHoleClient
         gatherings={socialGatherings}

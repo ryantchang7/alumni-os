@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
+import CareerRoomHero from './CareerRoomHero'
 
 interface AlumniEntry {
   person: Person
@@ -89,23 +90,7 @@ export default async function CareerRoomPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
-        <div className="max-w-[1320px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
-            Penn Men&rsquo;s Golf
-          </p>
-          <h1
-            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            Career Room
-          </h1>
-          <span className="block w-12 h-[2px] bg-[#990000] mt-5 mb-5" />
-          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
-            Advice, introductions, and career paths from Penn Golf alumni.
-          </p>
-        </div>
-      </div>
+      <CareerRoomHero />
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
 
