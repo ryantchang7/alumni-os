@@ -102,7 +102,7 @@ export default async function CareerRoomPage() {
             {INDUSTRIES.map(ind => (
               <Link
                 key={ind.slug}
-                href={`/player/search?industry=${ind.slug}`}
+                href={`/member-book?industry=${ind.slug}`}
                 className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 flex flex-col gap-2 hover:shadow-md transition-shadow group"
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
               >

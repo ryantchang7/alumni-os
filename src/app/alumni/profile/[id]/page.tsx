@@ -218,7 +218,7 @@ function AlumniProfileInner() {
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[860px] mx-auto">
           <Link
-            href={`/alumni?teamSlug=${teamSlug}`}
+            href="/account/profile"
             className="text-xs text-gray-400 hover:text-gray-200 mb-3 inline-block"
           >
             &larr; Your Profile

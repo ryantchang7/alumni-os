@@ -73,7 +73,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 mb-6 text-[10px] font-medium uppercase tracking-[0.15em]">
             <Link
-              href="/player/search?teamSlug=penn-mens-golf"
+              href="/member-book"
               className="text-white/35 hover:text-white/60 transition-colors"
             >
               Member Book

@@ -62,8 +62,8 @@ export default function CourseHero() {
             </div>
           </div>
 
-          {/* Aerial of one hole */}
-          <div className="relative">
+          {/* Aerial of one hole — hide on small screens; reads as decoration */}
+          <div className="relative hidden lg:block">
             {/* Yardage-book corner annotation */}
             <div className="absolute -top-1 right-0 z-10 text-right">
               <p

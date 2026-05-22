@@ -25,6 +25,14 @@ interface UpcomingGathering {
   state?: string
   interestedCount: number
 }
+interface RecentMoment {
+  id: string
+  photoUrl: string
+  caption: string
+  postedByName: string
+  postedByBookId: string | null
+  createdAt: string
+}
 
 export async function GET() {
   const team = await getTeamBySlug(TEAM_SLUG)
@@ -75,17 +83,41 @@ export async function GET() {
       interestedCount: interestedByGathering.get(g.id) ?? 0,
     }))
 
+  // Latest moments — only published ones, newest first.
+  const recentMoments: RecentMoment[] = store.moments
+    .filter((m) => m.teamId === team.id && m.status === 'published')
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 3)
+    .map((m) => {
+      const person = m.postedByPersonId
+        ? store.people.find((p) => p.id === m.postedByPersonId)
+        : undefined
+      const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
+      return {
+        id: m.id,
+        photoUrl: m.photoUrl,
+        caption: m.caption,
+        postedByName: m.postedByName,
+        postedByBookId: bookEntry?.id ?? null,
+        createdAt: m.createdAt,
+      }
+    })
+
   const totals = {
     membersClaimed: store.accounts.filter(
       (a) => a.teamId === team.id && a.linkedPersonId,
     ).length,
     openGatherings: upcoming.length,
     upcomingRsvps: upcoming.reduce((s, g) => s + g.interestedCount, 0),
+    publishedMoments: store.moments.filter(
+      (m) => m.teamId === team.id && m.status === 'published',
+    ).length,
   }
 
   return NextResponse.json({
     recentClaims: recentClaims.slice(0, 5),
     upcoming: upcoming.slice(0, 4),
+    recentMoments,
     totals,
   })
 }

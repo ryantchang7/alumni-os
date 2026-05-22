@@ -60,7 +60,7 @@ export default async function CurrentRosterEditorPage() {
           <p className="text-sm text-[#8a7f70]">
             <span className="font-semibold text-[#0a1628]">{players.length}</span> current players — save each card individually.
           </p>
-          <Link href="/player/search?role=current_player" className="text-xs font-medium text-[#990000] hover:underline">
+          <Link href="/member-book?role=current_player" className="text-xs font-medium text-[#990000] hover:underline">
             View in Member Book &rarr;
           </Link>
         </div>

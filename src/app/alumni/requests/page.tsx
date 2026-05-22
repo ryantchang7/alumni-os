@@ -420,7 +420,7 @@ function AlumniRequestsInner() {
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[860px] mx-auto">
           <Link
-            href={`/alumni?teamSlug=${teamSlug}`}
+            href="/account/profile"
             className="text-xs text-gray-400 hover:text-gray-200 mb-3 inline-block"
           >
             &larr; Your Profile
@@ -511,7 +511,7 @@ function AlumniRequestsInner() {
                 >
                   <p className="text-base font-semibold text-[#0a1628] mb-2">Your inbox is clear.</p>
                   <p className="text-sm text-[#8a7f70] max-w-sm mx-auto">
-                    Requests from current players will appear here once they send them.
+                    Notes and intros from other Penn Golf members will land here.
                   </p>
                 </div>
               )}

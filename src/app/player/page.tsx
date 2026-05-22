@@ -198,7 +198,7 @@ const rooms = [
     id: 'meet',
     label: 'Meet',
     description: 'Browse the full member book. Filter by city, industry, class year, or what they\'re open to.',
-    href: '/player/search',
+    href: '/member-book',
     icon: Users,
     cta: 'Browse members',
   },

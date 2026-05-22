@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, Camera } from 'lucide-react'
 
 interface RecentClaim {
   name: string | null
@@ -20,13 +20,23 @@ interface UpcomingGathering {
   state?: string
   interestedCount: number
 }
+interface RecentMoment {
+  id: string
+  photoUrl: string
+  caption: string
+  postedByName: string
+  postedByBookId: string | null
+  createdAt: string
+}
 interface ActivityResponse {
   recentClaims: RecentClaim[]
   upcoming: UpcomingGathering[]
+  recentMoments?: RecentMoment[]
   totals: {
     membersClaimed?: number
     openGatherings?: number
     upcomingRsvps?: number
+    publishedMoments?: number
   }
 }
 
@@ -67,7 +77,8 @@ export default function ClubhouseActivityFeed() {
 
   const hasClaims = data.recentClaims.length > 0
   const hasUpcoming = data.upcoming.length > 0
-  if (!hasClaims && !hasUpcoming) return null
+  const hasMoments = (data.recentMoments?.length ?? 0) > 0
+  if (!hasClaims && !hasUpcoming && !hasMoments) return null
 
   return (
     <motion.div
@@ -81,6 +92,54 @@ export default function ClubhouseActivityFeed() {
         <Sparkles className="w-4 h-4 text-[#990000]" />
         <h2 className="text-base font-semibold text-[#0a1628]">In the Clubhouse</h2>
       </div>
+
+      {hasMoments && (
+        <div
+          className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 mb-4"
+          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Camera className="w-4 h-4 text-[#c8a84b]" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                Latest Moments
+              </p>
+            </div>
+            <Link
+              href="/moments"
+              className="text-[11.5px] font-medium text-[#990000] hover:underline"
+            >
+              See the wall &rarr;
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {data.recentMoments?.map((m) => (
+              <Link
+                key={m.id}
+                href="/moments"
+                className="group block"
+              >
+                <div className="aspect-[4/3] rounded-lg overflow-hidden bg-[#faf7f2] border border-[rgba(180,168,150,0.35)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={m.photoUrl}
+                    alt={m.caption}
+                    className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                  />
+                </div>
+                <p className="text-[12px] text-[#3d4a5c] mt-1.5 line-clamp-2 leading-snug">
+                  {m.caption}
+                </p>
+                <p className="text-[11px] text-[#8a7f70] mt-0.5">
+                  <span style={{ fontFamily: 'var(--font-playfair)' }}>{m.postedByName}</span>
+                  <span className="mx-1.5">·</span>
+                  {timeAgo(m.createdAt)}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div
         className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 grid grid-cols-1 md:grid-cols-3 gap-6"
@@ -154,6 +213,12 @@ export default function ClubhouseActivityFeed() {
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
             The Pulse
           </p>
+          {(data.totals.publishedMoments ?? 0) > 0 && (
+            <p className="text-[13px] text-[#3d4a5c] mb-1.5">
+              <span className="text-[#0a1628] font-semibold">{data.totals.publishedMoments}</span>{' '}
+              {data.totals.publishedMoments === 1 ? 'moment' : 'moments'} on the wall
+            </p>
+          )}
           <div className="space-y-1.5 text-[13px] text-[#3d4a5c]">
             {data.totals.membersClaimed !== undefined && (
               <p>

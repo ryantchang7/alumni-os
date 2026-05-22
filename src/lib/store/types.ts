@@ -272,6 +272,23 @@ export interface Account {
   updatedAt: string
 }
 
+/**
+ * A photo + caption shared to the Penn Golf wall by any signed-in member.
+ * Status defaults to 'published' — first-version moderation is admin-side.
+ */
+export interface ClubhouseMoment {
+  id: string
+  teamId: string
+  postedByAccountId: string
+  postedByPersonId?: string
+  postedByName: string
+  caption: string
+  photoUrl: string
+  taggedPersonIds: string[]
+  status: 'published' | 'pending' | 'removed'
+  createdAt: string
+}
+
 export interface Store {
   teams: Team[]
   scrapeRuns: ScrapeRun[]
@@ -290,4 +307,5 @@ export interface Store {
   clubhouseGatheringRequests: ClubhouseGatheringRequest[]
   profileClaimRequests: ClubhouseProfileClaimRequest[]
   accounts: Account[]
+  moments: ClubhouseMoment[]
 }

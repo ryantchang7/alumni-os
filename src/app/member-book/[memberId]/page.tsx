@@ -159,7 +159,24 @@ export default async function MemberDetailPage({
                   alt={member.displayName}
                   className="w-20 h-20 rounded-full object-cover border border-[rgba(180,168,150,0.4)] flex-shrink-0"
                 />
-              ) : null}
+              ) : (
+                <div
+                  className="w-20 h-20 rounded-full bg-[#0a1628] text-white flex items-center justify-center flex-shrink-0 border border-[rgba(180,168,150,0.4)]"
+                  aria-hidden
+                >
+                  <span
+                    className="text-[26px] font-medium"
+                    style={{ fontFamily: 'var(--font-playfair)' }}
+                  >
+                    {member.displayName
+                      .split(' ')
+                      .filter(Boolean)
+                      .slice(0, 2)
+                      .map((p) => p[0]?.toUpperCase() ?? '')
+                      .join('')}
+                  </span>
+                </div>
+              )}
               <div className="min-w-0 flex-1">
                 <h1
                   className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"

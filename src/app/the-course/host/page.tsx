@@ -49,6 +49,7 @@ export default function HostRoundPage() {
           type: 'round',
           title: course.trim() || 'Penn Golf Round',
           hostName: session?.user?.name ?? 'Penn Golf Member',
+          hostPersonId: session?.linkedPersonId,
           dateText: dateText.trim(),
           timeText: timeText.trim() || undefined,
           city: city.trim() || undefined,
@@ -56,7 +57,9 @@ export default function HostRoundPage() {
           venue: course.trim() || undefined,
           audience,
           vibe,
-          capacity: Number.parseInt(capacity, 10) || undefined,
+          capacity: Number.isFinite(Number.parseInt(capacity, 10))
+            ? Number.parseInt(capacity, 10)
+            : undefined,
           description: description.trim() || undefined,
         }),
       })

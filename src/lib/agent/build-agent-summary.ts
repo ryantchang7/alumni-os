@@ -137,7 +137,7 @@ export function buildAgentSummary(team: TeamInfo, counts: ReadinessCounts): Agen
       ? 'The alumni graph is ready for the player-facing directory and outreach view.'
       : 'Add people to unlock the player view.',
     playerStatus,
-    { href: `/player/search` },
+    { href: `/member-book` },
   )
 
   const steps: AgentRunStep[] = [

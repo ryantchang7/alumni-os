@@ -27,6 +27,7 @@ import type {
   ClubhouseGatheringRequest,
   ClubhouseProfileClaimRequest,
   Account,
+  ClubhouseMoment,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -62,6 +63,7 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.clubhouseGatheringRequests) parsed.clubhouseGatheringRequests = []
   if (!parsed.profileClaimRequests) parsed.profileClaimRequests = []
   if (!parsed.accounts) parsed.accounts = []
+  if (!parsed.moments) parsed.moments = []
   return parsed
 }
 
@@ -93,6 +95,7 @@ const EMPTY_STORE: Store = {
   clubhouseGatheringRequests: [],
   profileClaimRequests: [],
   accounts: [],
+  moments: [],
 }
 
 function normalizeName(name: string): string {
@@ -1108,6 +1111,65 @@ export async function linkAccountToPerson(
   }
   await writeStore(store)
   return store.accounts[idx]
+}
+
+// ── Clubhouse Moments ────────────────────────────────────────────────────────
+
+export async function getMomentsForTeam(
+  teamId: string,
+  opts: { includePending?: boolean } = {},
+): Promise<ClubhouseMoment[]> {
+  const store = await readStore()
+  return store.moments
+    .filter((m) => {
+      if (m.teamId !== teamId) return false
+      if (m.status === 'removed') return false
+      if (m.status === 'pending' && !opts.includePending) return false
+      return true
+    })
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+}
+
+export async function createMoment(input: {
+  teamId: string
+  postedByAccountId: string
+  postedByPersonId?: string
+  postedByName: string
+  caption: string
+  photoUrl: string
+  taggedPersonIds?: string[]
+}): Promise<ClubhouseMoment> {
+  const store = await readStore()
+  const moment: ClubhouseMoment = {
+    id: crypto.randomUUID(),
+    teamId: input.teamId,
+    postedByAccountId: input.postedByAccountId,
+    postedByPersonId: input.postedByPersonId,
+    postedByName: input.postedByName,
+    caption: input.caption.trim(),
+    photoUrl: input.photoUrl.trim(),
+    taggedPersonIds: input.taggedPersonIds ?? [],
+    status: 'published',
+    createdAt: new Date().toISOString(),
+  }
+  store.moments.unshift(moment)
+  await writeStore(store)
+  return moment
+}
+
+export async function deleteMoment(
+  momentId: string,
+  byAccountId: string,
+): Promise<boolean> {
+  // Only the poster can soft-delete their own moment (admin removal is a
+  // separate path that doesn't go through this fn).
+  const store = await readStore()
+  const idx = store.moments.findIndex((m) => m.id === momentId)
+  if (idx === -1) return false
+  if (store.moments[idx].postedByAccountId !== byAccountId) return false
+  store.moments[idx] = { ...store.moments[idx], status: 'removed' }
+  await writeStore(store)
+  return true
 }
 
 export async function unlinkAccount(accountId: string): Promise<Account | null> {
