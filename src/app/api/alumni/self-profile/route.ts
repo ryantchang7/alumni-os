@@ -79,6 +79,7 @@ export async function GET(request: Request) {
     email: enrichment?.email,
     phone: enrichment?.phone,
     linkedinUrl: enrichment?.linkedinUrl,
+    photoUrl: enrichment?.photoUrl,
     optedOutAt: enrichment?.optedOutAt,
   })
 }
@@ -144,6 +145,7 @@ export async function POST(request: Request) {
   if (typeof body.email === 'string') safeUpdate.email = body.email.trim()
   if (typeof body.phone === 'string') safeUpdate.phone = body.phone.trim()
   if (typeof body.linkedinUrl === 'string') safeUpdate.linkedinUrl = body.linkedinUrl.trim()
+  if (typeof body.photoUrl === 'string') safeUpdate.photoUrl = body.photoUrl.trim()
   if (Array.isArray(body.helpTopics) && body.helpTopics.every(t => typeof t === 'string')) {
     safeUpdate.helpTopics = body.helpTopics as string[]
   }

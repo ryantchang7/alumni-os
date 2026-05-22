@@ -177,8 +177,8 @@ export default async function TheCoursePage() {
     },
     {
       label: 'Host a Round',
-      description: 'Mark yourself open to a tee time at your home course.',
-      href: '/alumni',
+      description: 'Open a tee time at your home course on the tee sheet.',
+      href: '/the-course/host',
       icon: Users,
     },
     {

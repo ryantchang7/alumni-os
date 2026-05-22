@@ -142,6 +142,7 @@ export interface PersonEnrichment {
   email?: string
   phone?: string
   linkedinUrl?: string
+  photoUrl?: string
   personalWebsiteUrl?: string
   notes?: string
   relationshipStatus?: 'not_started' | 'identified' | 'drafted' | 'contacted' | 'replied' | 'met' | 'do_not_contact'

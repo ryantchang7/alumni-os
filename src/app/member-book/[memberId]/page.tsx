@@ -23,6 +23,7 @@ interface StoreMatch {
   personId: string
   membership: TeamMembership | undefined
   enrichment: PersonEnrichment | undefined
+  accountImage: string | undefined
 }
 
 async function lookupStoreMatch(displayName: string): Promise<StoreMatch | null> {
@@ -40,7 +41,16 @@ async function lookupStoreMatch(displayName: string): Promise<StoreMatch | null>
   const enrichment = store.personEnrichments.find(
     (e) => e.teamId === team.id && e.personId === match.id,
   )
-  return { personId: match.id, membership, enrichment }
+  // The account that claimed this person (if any) carries their Google avatar.
+  const account = store.accounts.find(
+    (a) => a.teamId === team.id && a.linkedPersonId === match.id,
+  )
+  return {
+    personId: match.id,
+    membership,
+    enrichment,
+    accountImage: account?.image,
+  }
 }
 
 export default async function MemberDetailPage({
@@ -96,6 +106,9 @@ export default async function MemberDetailPage({
   const contactEmail = showContact ? enr?.email ?? null : null
   const contactPhone = showContact ? enr?.phone ?? null : null
   const linkedinUrl = showContact ? enr?.linkedinUrl ?? null : null
+  // Photo: prefer the alum's manually-set URL, fall back to their Google
+  // avatar (stored on their Account at sign-in).
+  const photoUrl = enr?.photoUrl ?? storeMatch?.accountImage ?? null
 
   const hasProfileDetails =
     role || company || industry || city || bio || interests
@@ -138,13 +151,23 @@ export default async function MemberDetailPage({
           {/* Identity */}
           <div className="px-7 sm:px-10 pt-10 pb-8 border-b border-[rgba(180,168,150,0.3)] relative">
             <span className="block w-12 h-[2px] bg-[#990000] mb-6" />
-            <h1
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-              data-testid="member-detail-name"
-            >
-              {member.displayName}
-            </h1>
+            <div className="flex items-start gap-5">
+              {photoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={photoUrl}
+                  alt={member.displayName}
+                  className="w-20 h-20 rounded-full object-cover border border-[rgba(180,168,150,0.4)] flex-shrink-0"
+                />
+              ) : null}
+              <div className="min-w-0 flex-1">
+                <h1
+                  className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  data-testid="member-detail-name"
+                >
+                  {member.displayName}
+                </h1>
             {years && (
               <p className="text-[15px] text-[#3d4a5c] mt-3" data-testid="member-detail-years">
                 {years}
@@ -170,11 +193,13 @@ export default async function MemberDetailPage({
                 </div>
               )}
             </dl>
-            {isCurrent && (
-              <span className="inline-block mt-5 text-[10px] font-medium px-2.5 py-1 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 uppercase tracking-[0.14em]">
-                Current Player
-              </span>
-            )}
+                {isCurrent && (
+                  <span className="inline-block mt-5 text-[10px] font-medium px-2.5 py-1 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 uppercase tracking-[0.14em]">
+                    Current Player
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Penn Golf section */}

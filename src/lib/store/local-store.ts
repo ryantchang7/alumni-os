@@ -718,7 +718,7 @@ export type AlumniSafeFields = Pick<
   'currentRole' | 'currentCompany' | 'industry' | 'city' | 'state' | 'country' |
   'alumniBio' | 'helpTopics' | 'contactPreference' | 'visibleToPlayers' |
   'homeCourse' | 'favoriteCourses' | 'favoritePennGolfMemory' | 'interests' |
-  'email' | 'phone' | 'linkedinUrl'
+  'email' | 'phone' | 'linkedinUrl' | 'photoUrl'
 >
 
 export async function updatePersonEnrichmentSafeFields(
@@ -751,6 +751,7 @@ export async function updatePersonEnrichmentSafeFields(
       ...(fields.email !== undefined ? { email: fields.email } : {}),
       ...(fields.phone !== undefined ? { phone: fields.phone } : {}),
       ...(fields.linkedinUrl !== undefined ? { linkedinUrl: fields.linkedinUrl } : {}),
+      ...(fields.photoUrl !== undefined ? { photoUrl: fields.photoUrl } : {}),
       updatedAt: now,
     }
     await writeStore(store)
@@ -778,6 +779,7 @@ export async function updatePersonEnrichmentSafeFields(
     email: fields.email,
     phone: fields.phone,
     linkedinUrl: fields.linkedinUrl,
+    photoUrl: fields.photoUrl,
     verificationStatus: 'unverified',
     sourceUrls: [],
     createdAt: now,

@@ -30,6 +30,7 @@ interface SelfProfile {
   email?: string
   phone?: string
   linkedinUrl?: string
+  photoUrl?: string
 }
 
 const HELP_TOPIC_OPTIONS = [
@@ -102,6 +103,7 @@ function AlumniProfileInner() {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [linkedinUrl, setLinkedinUrl] = useState('')
+  const [photoUrl, setPhotoUrl] = useState('')
 
   const justClaimed = searchParams.get('claimed') === '1'
 
@@ -129,6 +131,7 @@ function AlumniProfileInner() {
         setEmail(data.email ?? '')
         setPhone(data.phone ?? '')
         setLinkedinUrl(data.linkedinUrl ?? '')
+        setPhotoUrl(data.photoUrl ?? '')
         setLoading(false)
       })
       .catch(err => {
@@ -169,6 +172,7 @@ function AlumniProfileInner() {
           email,
           phone,
           linkedinUrl,
+          photoUrl,
         }),
       })
       if (!res.ok) throw new Error('Save failed')
@@ -456,6 +460,64 @@ function AlumniProfileInner() {
                   rows={3}
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 resize-none"
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Photo */}
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+              Photo
+            </p>
+            <p className="text-xs text-[#8a7f70] mb-4">
+              Shown on your Member Book card. Paste any public image URL — your
+              Google avatar, a LinkedIn photo, etc.
+            </p>
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0">
+                {(photoUrl || session?.user?.image) ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={photoUrl || session?.user?.image || ''}
+                    alt=""
+                    className="w-20 h-20 rounded-full object-cover border border-[rgba(180,168,150,0.4)]"
+                  />
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] flex items-center justify-center text-[24px] text-[#b0a898]"
+                    style={{ fontFamily: 'var(--font-playfair)' }}>
+                    {profile.canonicalName.charAt(0)}
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 space-y-2">
+                <input
+                  type="url"
+                  value={photoUrl}
+                  onChange={e => setPhotoUrl(e.target.value)}
+                  placeholder="https://…"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+                {!photoUrl && session?.user?.image && (
+                  <button
+                    type="button"
+                    onClick={() => setPhotoUrl(session.user!.image!)}
+                    className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
+                  >
+                    Use my Google photo &rarr;
+                  </button>
+                )}
+                {photoUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setPhotoUrl('')}
+                    className="text-[11px] text-[#8a7f70] hover:text-[#0a1628]"
+                  >
+                    Clear
+                  </button>
+                )}
               </div>
             </div>
           </div>
