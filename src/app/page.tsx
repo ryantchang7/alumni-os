@@ -16,15 +16,15 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden">
+    <div className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden bg-[#0a1628]">
 
-      {/* Background image — full composition, bright */}
+      {/* Background image — show full composition, letterbox into navy */}
       <Image
         src="/clubhouse-cover.jpg"
         fill
         priority
         sizes="100vw"
-        className="object-cover object-center"
+        className="object-contain object-center"
         alt="Penn Golf Clubhouse"
         data-testid="cover-image"
       />

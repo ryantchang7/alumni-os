@@ -1,9 +1,7 @@
-import PennGolfCrest from '@/components/PennGolfCrest'
-
 /**
- * The clubhouse signature that closes every page. Thin gold rule + a
- * small crest. Restraint over sitemap — this is the way a country
- * club closes a letter.
+ * The clubhouse signature that closes every page. Just a thin gold
+ * rule — the way a country club closes a letter. Restraint over
+ * sitemap.
  */
 export default function ClubhouseFooter() {
   return (
@@ -18,9 +16,7 @@ export default function ClubhouseFooter() {
           marginTop: '0',
         }}
       />
-      <div className="max-w-[1180px] mx-auto px-6 sm:px-10 py-10 flex flex-col items-center">
-        <PennGolfCrest size={42} tone="navy" />
-      </div>
+      <div className="max-w-[1180px] mx-auto px-6 sm:px-10 py-8" />
     </footer>
   )
 }
