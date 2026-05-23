@@ -90,11 +90,11 @@ export default async function MomentsPage() {
               className="text-[#0a1628] text-lg font-medium mb-2"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
-              No moments yet.
+              Bag&rsquo;s empty.
             </p>
             <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6">
-              Be the first. Post a photo from a round, a tournament, an alumni dinner.
-              The wall grows one moment at a time.
+              Drop the first one. A photo from a round, a tournament, an alumni
+              dinner. The wall grows one moment at a time.
             </p>
             <Link
               href="/moments/new"

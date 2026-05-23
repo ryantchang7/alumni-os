@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import NavBar from '@/components/NavBar'
-import SiteFooter from '@/components/SiteFooter'
+import ClubhouseFooter from '@/components/ClubhouseFooter'
 import SessionProviderWrapper from '@/components/SessionProviderWrapper'
 import './globals.css'
 
@@ -42,7 +42,7 @@ export default function RootLayout({
           <TooltipProvider>
             <NavBar />
             <main className="flex-1">{children}</main>
-            <SiteFooter />
+            <ClubhouseFooter />
           </TooltipProvider>
         </SessionProviderWrapper>
       </body>

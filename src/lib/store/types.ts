@@ -143,6 +143,15 @@ export interface PersonEnrichment {
   // city/state above is the home base; these are additional places the member
   // wants to show up on the Member Map.
   additionalLocations?: Array<{ city?: string; state?: string; label?: string }>
+  // "On the loop" — a current trip the member wants other Penn Golf alumni
+  // in that city to know about. Auto-expires past endDate.
+  inTown?: {
+    city?: string
+    state?: string
+    startDate?: string  // ISO date, e.g. "2026-06-05"
+    endDate?: string
+    note?: string       // "open to a round" / "playing Pine Valley Saturday"
+  }
   email?: string
   phone?: string
   linkedinUrl?: string

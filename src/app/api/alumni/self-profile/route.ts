@@ -69,6 +69,7 @@ export async function GET(request: Request) {
     state: enrichment?.state,
     country: enrichment?.country,
     additionalLocations: enrichment?.additionalLocations ?? [],
+    inTown: enrichment?.inTown ?? null,
     alumniBio: enrichment?.alumniBio,
     helpTopics: enrichment?.helpTopics ?? [],
     contactPreference: enrichment?.contactPreference ?? 'team_intro',
@@ -138,6 +139,27 @@ export async function POST(request: Request) {
   if (typeof body.city === 'string') safeUpdate.city = body.city.trim()
   if (typeof body.state === 'string') safeUpdate.state = body.state.trim()
   if (typeof body.country === 'string') safeUpdate.country = body.country.trim()
+  if (body.inTown === null) {
+    safeUpdate.inTown = undefined
+  } else if (typeof body.inTown === 'object' && body.inTown !== null) {
+    const t = body.inTown as Record<string, unknown>
+    const inTown = {
+      city: typeof t.city === 'string' ? t.city.trim() : undefined,
+      state:
+        typeof t.state === 'string'
+          ? t.state.trim().toUpperCase().slice(0, 2)
+          : undefined,
+      startDate: typeof t.startDate === 'string' ? t.startDate.trim() : undefined,
+      endDate: typeof t.endDate === 'string' ? t.endDate.trim() : undefined,
+      note: typeof t.note === 'string' ? t.note.trim().slice(0, 280) : undefined,
+    }
+    // Treat empty input as a clear.
+    if (!inTown.city && !inTown.state && !inTown.startDate && !inTown.endDate && !inTown.note) {
+      safeUpdate.inTown = undefined
+    } else {
+      safeUpdate.inTown = inTown
+    }
+  }
   if (Array.isArray(body.additionalLocations)) {
     const clean = (body.additionalLocations as unknown[])
       .filter((row): row is Record<string, unknown> => typeof row === 'object' && row !== null)

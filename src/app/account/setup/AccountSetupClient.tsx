@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Search, X } from 'lucide-react'
+import PennGolfCrest from '@/components/PennGolfCrest'
 
 interface MinimalMember {
   bookId: string
@@ -17,11 +18,16 @@ export default function AccountSetupClient({
   members,
   signedInName,
   signedInEmail,
+  claimedCount,
+  monthCount,
 }: {
   members: MinimalMember[]
   signedInName: string | null
   signedInEmail: string | null
+  claimedCount: number
+  monthCount: number
 }) {
+  const firstName = signedInName?.split(' ')[0] ?? null
   const router = useRouter()
   const { update: refreshSession } = useSession()
   const [query, setQuery] = useState(signedInName ?? '')
@@ -57,7 +63,7 @@ export default function AccountSetupClient({
       // linkedPersonId is on the JWT before the editor page reads it.
       await refreshSession()
       router.push(
-        `/alumni/profile/${j.personId}?teamSlug=penn-mens-golf&claimed=1`,
+        `/player?welcome=${encodeURIComponent(firstName ?? 'home')}&personId=${j.personId}`,
       )
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
@@ -67,22 +73,52 @@ export default function AccountSetupClient({
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-5 sm:px-8 pt-12 pb-14">
-        <div className="max-w-[860px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
-            Penn Men&rsquo;s Golf
-          </p>
+      <div className="bg-[#0a1628] px-5 sm:px-8 pt-12 pb-14 relative overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute pointer-events-none"
+          style={{
+            top: '50%',
+            right: '8%',
+            width: '520px',
+            height: '380px',
+            transform: 'translate(40%, -50%)',
+            background:
+              'radial-gradient(ellipse at center, rgba(200,168,75,0.12) 0%, rgba(200,168,75,0.03) 45%, transparent 75%)',
+          }}
+        />
+        <div className="max-w-[860px] mx-auto relative">
+          <div className="flex items-center gap-3 mb-5">
+            <PennGolfCrest size={44} tone="gold" />
+            <span className="block w-8 h-px bg-[#c8a84b]/55" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85">
+              The Clubhouse · Sign-In
+            </p>
+          </div>
           <h1
-            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
+            className="text-white text-3xl sm:text-[40px] font-medium tracking-tight leading-tight"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
-            Find yourself in the Member Book
+            {firstName ? <>Welcome through the gate, {firstName}.</> : 'Welcome through the gate.'}
           </h1>
-          <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl leading-relaxed">
-            {signedInEmail
-              ? `Signed in as ${signedInEmail}. `
-              : ''}
-            Search for your name to claim your card. Once you do, you can edit your hometown, role, and how you can help.
+          {claimedCount > 0 && (
+            <p
+              className="text-white/70 text-[15px] sm:text-base mt-4 max-w-xl leading-relaxed"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              <span className="text-[#c8a84b]">{claimedCount}</span> of your foursome have already
+              checked in
+              {monthCount > 0 ? (
+                <>
+                  {' '}— <span className="italic">{monthCount} came back this month</span>
+                </>
+              ) : null}
+              . Find your card to be found.
+            </p>
+          )}
+          <p className="text-white/45 text-[13px] mt-4 max-w-xl leading-relaxed">
+            {signedInEmail ? <>Signed in as {signedInEmail}. </> : null}
+            Search by name, hometown, or class year. Once you claim, edit your role and how you can help.
           </p>
         </div>
       </div>

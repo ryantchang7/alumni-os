@@ -33,6 +33,25 @@ interface RecentMoment {
   postedByBookId: string | null
   createdAt: string
 }
+interface OnTheLoopMember {
+  personId: string
+  bookId: string | null
+  name: string
+  city?: string
+  state?: string
+  startDate?: string
+  endDate?: string
+  note?: string
+}
+
+// Helper: is this trip currently active? A trip with no endDate is treated
+// as "active until cleared." A trip with no startDate is treated as
+// "starting now."
+function tripIsActive(t: { startDate?: string; endDate?: string }): boolean {
+  const today = new Date().toISOString().slice(0, 10)
+  if (t.endDate && t.endDate < today) return false
+  return true
+}
 
 export async function GET() {
   const team = await getTeamBySlug(TEAM_SLUG)
@@ -103,6 +122,29 @@ export async function GET() {
       }
     })
 
+  // On the Loop — alumni with an active trip
+  const onTheLoop: OnTheLoopMember[] = []
+  for (const e of store.personEnrichments) {
+    if (e.teamId !== team.id) continue
+    if (e.visibleToPlayers === false) continue
+    if (!e.inTown) continue
+    if (!tripIsActive(e.inTown)) continue
+    const person = store.people.find((p) => p.id === e.personId)
+    if (!person) continue
+    const bookEntry = findBookEntryForTeamStorePerson(person.canonicalName)
+    onTheLoop.push({
+      personId: person.id,
+      bookId: bookEntry?.id ?? null,
+      name: person.canonicalName,
+      city: e.inTown.city,
+      state: e.inTown.state,
+      startDate: e.inTown.startDate,
+      endDate: e.inTown.endDate,
+      note: e.inTown.note,
+    })
+  }
+  onTheLoop.sort((a, b) => (a.startDate ?? '').localeCompare(b.startDate ?? ''))
+
   const totals = {
     membersClaimed: store.accounts.filter(
       (a) => a.teamId === team.id && a.linkedPersonId,
@@ -118,6 +160,7 @@ export async function GET() {
     recentClaims: recentClaims.slice(0, 5),
     upcoming: upcoming.slice(0, 4),
     recentMoments,
+    onTheLoop,
     totals,
   })
 }

@@ -169,7 +169,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 onClick={() => setOpen(true)}
                 className="text-xs font-semibold text-[#990000] hover:underline"
               >
-                Express interest &rarr;
+                Pencil me in &rarr;
               </button>
             )}
 
@@ -214,7 +214,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
 
             {sent && (
               <p className="text-xs text-[#2d6a4f] font-medium mt-1">
-                Interest noted. The host will be in touch.
+                You&rsquo;re on the sheet. The host will be in touch.
               </p>
             )}
           </>

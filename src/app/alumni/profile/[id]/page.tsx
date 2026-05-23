@@ -27,6 +27,13 @@ interface SelfProfile {
   city?: string
   state?: string
   additionalLocations?: LocationRow[]
+  inTown?: {
+    city?: string
+    state?: string
+    startDate?: string
+    endDate?: string
+    note?: string
+  } | null
   alumniBio?: string
   helpTopics?: string[]
   contactPreference?: string
@@ -102,6 +109,11 @@ function AlumniProfileInner() {
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
   const [additionalLocations, setAdditionalLocations] = useState<LocationRow[]>([])
+  const [inTownCity, setInTownCity] = useState('')
+  const [inTownState, setInTownState] = useState('')
+  const [inTownStart, setInTownStart] = useState('')
+  const [inTownEnd, setInTownEnd] = useState('')
+  const [inTownNote, setInTownNote] = useState('')
   const [alumniBio, setAlumniBio] = useState('')
   const [helpTopics, setHelpTopics] = useState<string[]>([])
   const [contactPref, setContactPref] = useState('team_intro')
@@ -132,6 +144,11 @@ function AlumniProfileInner() {
         setCity(data.city ?? '')
         setState(data.state ?? '')
         setAdditionalLocations(data.additionalLocations ?? [])
+        setInTownCity(data.inTown?.city ?? '')
+        setInTownState(data.inTown?.state ?? '')
+        setInTownStart(data.inTown?.startDate ?? '')
+        setInTownEnd(data.inTown?.endDate ?? '')
+        setInTownNote(data.inTown?.note ?? '')
         setAlumniBio(data.alumniBio ?? '')
         setHelpTopics(data.helpTopics ?? [])
         setContactPref(data.contactPreference ?? 'team_intro')
@@ -175,6 +192,16 @@ function AlumniProfileInner() {
           city,
           state,
           additionalLocations: additionalLocations.filter((l) => l.city || l.state),
+          inTown:
+            inTownCity || inTownState || inTownStart || inTownEnd || inTownNote
+              ? {
+                  city: inTownCity || undefined,
+                  state: inTownState || undefined,
+                  startDate: inTownStart || undefined,
+                  endDate: inTownEnd || undefined,
+                  note: inTownNote || undefined,
+                }
+              : null,
           alumniBio,
           helpTopics,
           contactPreference: contactPref,
@@ -478,6 +505,72 @@ function AlumniProfileInner() {
                   — each appears on the Member Map.
                 </p>
               </div>
+
+              {/* On the Loop — current trip / passing through */}
+              <div className="border-t border-[rgba(180,168,150,0.35)] pt-5 mt-1">
+                <div className="flex items-baseline justify-between mb-1">
+                  <label className="block text-xs font-medium text-[#4a5568]">
+                    On the loop <span className="text-[#8a7f70] font-normal italic">— passing through somewhere?</span>
+                  </label>
+                  {(inTownCity || inTownState || inTownStart || inTownEnd || inTownNote) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setInTownCity('')
+                        setInTownState('')
+                        setInTownStart('')
+                        setInTownEnd('')
+                        setInTownNote('')
+                      }}
+                      className="text-[11px] text-[#990000] hover:underline"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-[1fr_88px] gap-2">
+                  <input
+                    type="text"
+                    value={inTownCity}
+                    onChange={(e) => setInTownCity(e.target.value)}
+                    placeholder="City — e.g. New York"
+                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                  <input
+                    type="text"
+                    value={inTownState}
+                    onChange={(e) => setInTownState(e.target.value.toUpperCase().slice(0, 2))}
+                    placeholder="ST"
+                    maxLength={2}
+                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm uppercase text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <input
+                    type="date"
+                    value={inTownStart}
+                    onChange={(e) => setInTownStart(e.target.value)}
+                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                  <input
+                    type="date"
+                    value={inTownEnd}
+                    onChange={(e) => setInTownEnd(e.target.value)}
+                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                </div>
+                <input
+                  type="text"
+                  value={inTownNote}
+                  onChange={(e) => setInTownNote(e.target.value)}
+                  placeholder="e.g. open to a round at Winged Foot · drinks Friday night"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] mt-2 focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+                <p className="text-[11px] text-[#8a7f70] mt-1.5 leading-snug">
+                  Surfaces on the Clubhouse for any Penn Golf alum in that city. Auto-clears after the end date.
+                </p>
+              </div>
+
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
                   Short bio (optional)

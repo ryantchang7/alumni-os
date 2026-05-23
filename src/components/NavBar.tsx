@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signIn, signOut } from 'next-auth/react'
+import PennGolfCrest from '@/components/PennGolfCrest'
 
 const navLinks = [
   { label: 'Clubhouse', href: '/player' },
@@ -99,12 +100,15 @@ export default function NavBar() {
     <header className="bg-[#0a1628] border-b border-white/[0.08] sticky top-0 z-50">
       <div className="max-w-[1320px] mx-auto px-6 h-[60px] flex items-center justify-between">
         {/* Wordmark */}
-        <Link href="/" className="flex items-center">
-          <span className="text-white text-sm font-semibold tracking-[0.15em]">
-            PENN GOLF
+        <Link href="/" className="flex items-center gap-2.5">
+          <PennGolfCrest size={28} tone="gold" />
+          <span className="hidden sm:inline-flex items-baseline">
+            <span className="text-white text-sm font-semibold tracking-[0.15em]">
+              PENN GOLF
+            </span>
+            <span className="text-[#c8a84b] text-sm font-bold ml-1.5">&middot;</span>
+            <span className="text-gray-400 text-sm font-medium ml-1.5 tracking-wide">Clubhouse</span>
           </span>
-          <span className="text-[#990000] text-sm font-bold ml-1.5">&middot;</span>
-          <span className="text-gray-400 text-sm font-medium ml-1.5 tracking-wide">Clubhouse</span>
         </Link>
 
         {/* Center nav (desktop) */}

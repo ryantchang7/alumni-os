@@ -9,6 +9,7 @@ import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
 import { memberBookEntries } from '@/lib/member-book/data'
 import { getPublicMembers } from '@/lib/member-book/helpers'
 import ClubhouseActivityFeed from '@/components/ClubhouseActivityFeed'
+import OnTheLoopStrip from '@/components/OnTheLoopStrip'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
 
@@ -250,9 +251,39 @@ function MiniMemberCard({ profile, teamSlug }: { profile: PlayerProfile; teamSlu
   )
 }
 
+function WelcomeBanner({ name }: { name: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="relative bg-white border border-[#c8a84b]/45 rounded-xl px-5 py-4 mb-6"
+      style={{
+        boxShadow:
+          '0 1px 3px rgba(10,22,40,0.06), 0 8px 20px rgba(200,168,75,0.10)',
+      }}
+    >
+      <span
+        aria-hidden
+        className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-sm bg-[#c8a84b]"
+      />
+      <p
+        className="text-[#0a1628] text-[15px] leading-snug pl-2"
+        style={{ fontFamily: 'var(--font-playfair)' }}
+      >
+        Welcome home, {name}.{' '}
+        <span className="text-[#3d4a5c] italic">
+          Here&rsquo;s what&rsquo;s new at the clubhouse.
+        </span>
+      </p>
+    </motion.div>
+  )
+}
+
 function ClubhouseInner() {
   const searchParams = useSearchParams()
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
+  const welcomeName = searchParams.get('welcome')
 
   const [profiles, setProfiles] = useState<PlayerProfile[]>([])
   const [loading, setLoading] = useState(true)
@@ -300,8 +331,13 @@ function ClubhouseInner() {
       </div>
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8">
+        {welcomeName && (
+          <div className="-mt-5 relative z-10">
+            <WelcomeBanner name={welcomeName} />
+          </div>
+        )}
         {/* 4 primary rooms */}
-        <div className="-mt-5 relative z-10 mb-12">
+        <div className={`${welcomeName ? 'mt-2' : '-mt-5'} relative z-10 mb-12`}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {rooms.map((room, i) => {
               const Icon = room.icon
@@ -331,6 +367,9 @@ function ClubhouseInner() {
             })}
           </div>
         </div>
+
+        {/* On the Loop — Penn Golf passing through */}
+        <OnTheLoopStrip />
 
         {/* Clubhouse Activity Feed */}
         <ClubhouseActivityFeed />
