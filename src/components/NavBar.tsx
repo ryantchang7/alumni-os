@@ -99,15 +99,11 @@ export default function NavBar() {
   return (
     <header className="bg-[#0a1628] border-b border-white/[0.08] sticky top-0 z-50">
       <div className="max-w-[1320px] mx-auto px-6 h-[60px] flex items-center justify-between">
-        {/* Wordmark */}
+        {/* Wordmark — shield + PENN GOLF (the "Clubhouse" tab below carries the rest) */}
         <Link href="/" className="flex items-center gap-2.5">
-          <PennGolfCrest size={28} tone="gold" />
-          <span className="hidden sm:inline-flex items-baseline">
-            <span className="text-white text-sm font-semibold tracking-[0.15em]">
-              PENN GOLF
-            </span>
-            <span className="text-[#c8a84b] text-sm font-bold ml-1.5">&middot;</span>
-            <span className="text-gray-400 text-sm font-medium ml-1.5 tracking-wide">Clubhouse</span>
+          <PennGolfCrest size={32} />
+          <span className="hidden sm:inline text-white text-sm font-semibold tracking-[0.15em]">
+            PENN GOLF
           </span>
         </Link>
 
