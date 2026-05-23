@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Search, X } from 'lucide-react'
-import PennGolfCrest from '@/components/PennGolfCrest'
 
 interface MinimalMember {
   bookId: string
@@ -89,7 +88,6 @@ export default function AccountSetupClient({
         />
         <div className="max-w-[860px] mx-auto relative">
           <div className="flex items-center gap-3 mb-5">
-            <PennGolfCrest size={44} tone="gold" />
             <span className="block w-8 h-px bg-[#c8a84b]/55" />
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85">
               The Clubhouse · Sign-In
