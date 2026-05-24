@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import type { TeamNewsItem } from '@/lib/store/types'
 
@@ -17,9 +20,39 @@ function timeAgo(iso?: string): string {
   return `${months}mo ago`
 }
 
+/** Fallback placeholder used when there's no imageUrl or the image fails
+ * to load (Sidearm Sports blocks hot-linking from some domains). */
+function PlaceholderThumb() {
+  return (
+    <div className="w-full h-32 bg-[#0a1628] flex items-center justify-center">
+      <span className="text-[#c8a84b] text-[10px] font-semibold uppercase tracking-[0.22em]">
+        Penn Athletics
+      </span>
+    </div>
+  )
+}
+
+function NewsThumb({ src }: { src: string }) {
+  const [errored, setErrored] = useState(false)
+  if (errored) return <PlaceholderThumb />
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt=""
+      className="w-full h-32 object-cover bg-[#0a1628]"
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setErrored(true)}
+    />
+  )
+}
+
 /**
  * Horizontal news strip pulled from Penn Athletics. Renders nothing if
- * empty so the page doesn't show a hollow shell.
+ * empty so the page doesn't show a hollow shell. Individual thumbs fall
+ * back to a styled placeholder if the source image fails (hot-link
+ * blocking on Sidearm Sports' CDN).
  */
 export default function TeamNewsStrip({ items }: Props) {
   if (items.length === 0) return null
@@ -58,21 +91,7 @@ export default function TeamNewsStrip({ items }: Props) {
             className="group block bg-white border border-[rgba(180,168,150,0.4)] rounded-xl overflow-hidden hover:shadow-md transition-shadow"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            {item.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={item.imageUrl}
-                alt=""
-                className="w-full h-32 object-cover bg-[#0a1628]"
-                loading="lazy"
-              />
-            ) : (
-              <div className="w-full h-32 bg-[#0a1628] flex items-center justify-center">
-                <span className="text-[#c8a84b] text-[10px] font-semibold uppercase tracking-[0.22em]">
-                  Penn Athletics
-                </span>
-              </div>
-            )}
+            {item.imageUrl ? <NewsThumb src={item.imageUrl} /> : <PlaceholderThumb />}
             <div className="p-4">
               <p
                 className="text-[#0a1628] text-[13.5px] font-medium leading-snug line-clamp-3 group-hover:text-[#990000] transition-colors"
