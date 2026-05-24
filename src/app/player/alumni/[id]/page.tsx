@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { Mail, Phone, Linkedin, Lock } from 'lucide-react'
+import { auth } from '@/auth'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -7,6 +9,7 @@ interface PageProps {
 
 export default async function PlayerAlumniProfilePage({ params }: PageProps) {
   const { id } = await params
+  const session = await auth()
 
   const {
     getTeamBySlug,
@@ -62,6 +65,14 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
     !isCurrentPlayer &&
     membership.memberStatus !== 'verified' &&
     membership.memberStatus !== 'active'
+
+  // Contact-info gating: visible only to signed-in members who have
+  // claimed their own card (linkedPersonId on the session). We don't
+  // gate viewing the rest of the profile, only direct contact details.
+  const viewerIsApproved = !!session?.accountId && !!session?.linkedPersonId
+  const hasContactInfo = !!(
+    enrichment?.email || enrichment?.phone || enrichment?.linkedinUrl
+  )
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -316,6 +327,90 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">About</p>
                 </div>
                 <p className="px-5 py-4 text-sm text-[#0a1628] leading-relaxed">{enrichment.alumniBio}</p>
+              </div>
+            )}
+
+            {/* Contact — gated to signed-in members who have claimed their card */}
+            {!isCurrentPlayer && (
+              <div
+                data-testid="contact-card"
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
+                style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
+              >
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2] flex items-center justify-between">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                    Contact
+                  </p>
+                  {!viewerIsApproved && (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#8a7f70]">
+                      <Lock className="w-2.5 h-2.5" />
+                      Members only
+                    </span>
+                  )}
+                </div>
+                {viewerIsApproved ? (
+                  hasContactInfo ? (
+                    <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">
+                      {enrichment?.email && (
+                        <div className="flex items-center justify-between gap-4 py-2.5">
+                          <dt className="text-xs text-[#8a7f70] flex items-center gap-2 flex-shrink-0">
+                            <Mail className="w-3 h-3" /> Email
+                          </dt>
+                          <dd className="text-sm font-medium text-[#0a1628] text-right truncate">
+                            <a href={`mailto:${enrichment.email}`} className="hover:underline">
+                              {enrichment.email}
+                            </a>
+                          </dd>
+                        </div>
+                      )}
+                      {enrichment?.phone && (
+                        <div className="flex items-center justify-between gap-4 py-2.5">
+                          <dt className="text-xs text-[#8a7f70] flex items-center gap-2 flex-shrink-0">
+                            <Phone className="w-3 h-3" /> Phone
+                          </dt>
+                          <dd className="text-sm font-medium text-[#0a1628] text-right">
+                            <a href={`tel:${enrichment.phone}`} className="hover:underline">
+                              {enrichment.phone}
+                            </a>
+                          </dd>
+                        </div>
+                      )}
+                      {enrichment?.linkedinUrl && (
+                        <div className="flex items-center justify-between gap-4 py-2.5">
+                          <dt className="text-xs text-[#8a7f70] flex items-center gap-2 flex-shrink-0">
+                            <Linkedin className="w-3 h-3" /> LinkedIn
+                          </dt>
+                          <dd className="text-sm font-medium text-[#0a1628] text-right truncate">
+                            <a
+                              href={enrichment.linkedinUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline"
+                            >
+                              {enrichment.linkedinUrl.replace(/^https?:\/\/(www\.)?/, '')}
+                            </a>
+                          </dd>
+                        </div>
+                      )}
+                    </dl>
+                  ) : (
+                    <p className="px-5 py-4 text-[12.5px] text-[#8a7f70] italic">
+                      {person.canonicalName.split(' ')[0]} hasn&rsquo;t added contact details yet. Use the request buttons above to start a private conversation.
+                    </p>
+                  )
+                ) : (
+                  <div className="px-5 py-4">
+                    <p className="text-[13px] text-[#0a1628] leading-relaxed">
+                      Direct contact info opens up to <strong>signed-in Penn Golf members</strong> who have claimed their card.
+                    </p>
+                    <Link
+                      href="/login?next=/account/setup"
+                      className="inline-block mt-3 bg-[#0a1628] hover:bg-[#112240] text-white text-[11.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2 rounded-md transition-colors"
+                    >
+                      Sign in to unlock
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
 

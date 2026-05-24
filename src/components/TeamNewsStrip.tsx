@@ -35,10 +35,12 @@ function PlaceholderThumb() {
 function NewsThumb({ src }: { src: string }) {
   const [errored, setErrored] = useState(false)
   if (errored) return <PlaceholderThumb />
-  // Route through our server-side image proxy to bypass Sidearm's
-  // hot-link blocking (no referrer / clean User-Agent on the upstream
-  // fetch). Falls back to the placeholder if the proxy itself fails.
-  const proxied = `/api/team/news-image?url=${encodeURIComponent(src)}`
+  // Route through wsrv.nl — a battle-tested public image proxy. Our own
+  // proxy struggles because pennathletics.com's image_handler.aspx does
+  // server-side checks that our Vercel runtime can't always satisfy.
+  // wsrv strips referrer + auth headers cleanly and caches at the edge.
+  const stripped = src.replace(/^https?:\/\//, '')
+  const proxied = `https://wsrv.nl/?url=${encodeURIComponent(stripped)}&w=480&h=256&fit=cover&output=jpg`
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
