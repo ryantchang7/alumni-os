@@ -36,13 +36,14 @@ export async function GET(req: NextRequest) {
   }
 
   const items = await fetchPennGolfNews()
-  const { added, total } = await upsertTeamNewsItems(team.id, items)
+  const { added, updated, total } = await upsertTeamNewsItems(team.id, items)
 
   return NextResponse.json({
     ok: true,
     teamSlug,
     fetched: items.length,
     added,
+    updated,
     total,
   })
 }

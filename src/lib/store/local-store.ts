@@ -1242,16 +1242,42 @@ export async function updateCareerPost(
 export async function upsertTeamNewsItems(
   teamId: string,
   items: Array<Omit<TeamNewsItem, 'id' | 'teamId' | 'fetchedAt'>>,
-): Promise<{ added: number; total: number }> {
+): Promise<{ added: number; updated: number; total: number }> {
   const store = await readStore()
   const existingByUrl = new Map(
-    store.teamNewsItems.filter(i => i.teamId === teamId).map(i => [i.sourceUrl, i]),
+    store.teamNewsItems
+      .map((i, idx) => ({ i, idx }))
+      .filter(({ i }) => i.teamId === teamId)
+      .map(({ i, idx }) => [i.sourceUrl, idx] as const),
   )
   const now = new Date().toISOString()
   let added = 0
+  let updated = 0
   for (const item of items) {
     if (!item.sourceUrl || !item.title) continue
-    if (existingByUrl.has(item.sourceUrl)) continue
+    const existingIdx = existingByUrl.get(item.sourceUrl)
+    if (existingIdx !== undefined) {
+      // Refresh title / summary / imageUrl in case the parser produced
+      // a better value (e.g. we previously stored an HTML-entity-encoded
+      // URL). Don't touch fetchedAt or id.
+      const prev = store.teamNewsItems[existingIdx]
+      if (
+        prev.title !== item.title ||
+        prev.summary !== item.summary ||
+        prev.imageUrl !== item.imageUrl ||
+        prev.publishedAt !== item.publishedAt
+      ) {
+        store.teamNewsItems[existingIdx] = {
+          ...prev,
+          title: item.title,
+          summary: item.summary,
+          imageUrl: item.imageUrl,
+          publishedAt: item.publishedAt ?? prev.publishedAt,
+        }
+        updated++
+      }
+      continue
+    }
     store.teamNewsItems.push({
       id: crypto.randomUUID(),
       teamId,
@@ -1264,9 +1290,9 @@ export async function upsertTeamNewsItems(
     })
     added++
   }
-  if (added > 0) await writeStore(store)
+  if (added > 0 || updated > 0) await writeStore(store)
   const total = store.teamNewsItems.filter(i => i.teamId === teamId).length
-  return { added, total }
+  return { added, updated, total }
 }
 
 export async function getRecentTeamNewsItems(

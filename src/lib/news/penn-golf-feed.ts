@@ -62,10 +62,13 @@ function parseRss(xml: string): FetchedNewsItem[] {
       undefined
     const summary = description ? stripHtml(description).slice(0, 280) : undefined
     items.push({
-      sourceUrl: link.trim(),
+      sourceUrl: decodeEntities(link.trim()),
       title: decodeEntities(title.trim()),
       summary: summary ? decodeEntities(summary) : undefined,
-      imageUrl: image,
+      // Critical: HTML-decode the image URL. XML attributes encode `&` as
+      // `&amp;`, and a raw `&amp;` in the URL turns ASP querystring params
+      // into garbage (pennathletics' image_handler.aspx then returns nothing).
+      imageUrl: image ? decodeEntities(image) : undefined,
       publishedAt: pubDate ? safeIsoFromRfc822(pubDate) : undefined,
     })
   }
