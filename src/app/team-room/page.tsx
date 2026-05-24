@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import type { Person, TeamMembership } from '@/lib/store/types'
+import type { Person, TeamMembership, TeamNewsItem } from '@/lib/store/types'
+import TeamNewsStrip from '@/components/TeamNewsStrip'
 
 interface PlayerEntry {
   person: Person
@@ -46,14 +47,16 @@ const WAYS_TO_GIVE_BACK = [
 ]
 
 export default async function TeamRoomPage() {
-  const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
+  const { readStore, getTeamBySlug, getRecentTeamNewsItems } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
 
   let currentPlayers: PlayerEntry[] = []
   let recentAlumni: PlayerEntry[] = []
+  let newsItems: TeamNewsItem[] = []
 
   if (team) {
+    newsItems = await getRecentTeamNewsItems(team.id, 4)
     currentPlayers = store.teamMemberships
       .filter(m => m.teamId === team.id && m.memberRole === 'current_player')
       .map(m => {
@@ -113,6 +116,10 @@ export default async function TeamRoomPage() {
       </div>
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
+
+        {/* Latest from Penn Athletics — sits at the top of the Team Room
+            since it's the most "current team" thing here */}
+        {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
 
         {/* 2026-27 Roster */}
         <section>

@@ -4,7 +4,7 @@
 // Clubhouse is alive — recently-joined alumni and gatherings with momentum.
 
 import { NextResponse } from 'next/server'
-import { readStore, getTeamBySlug } from '@/lib/store/local-store'
+import { readStore, getTeamBySlug, getRecentTeamNewsItems } from '@/lib/store/local-store'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 
 const TEAM_SLUG = 'penn-mens-golf'
@@ -156,11 +156,20 @@ export async function GET() {
     ).length,
   }
 
+  // Latest team news (Penn Athletics) — top 2 for the feed.
+  const newsItems = (await getRecentTeamNewsItems(team.id, 2)).map((n) => ({
+    id: n.id,
+    title: n.title,
+    sourceUrl: n.sourceUrl,
+    publishedAt: n.publishedAt,
+  }))
+
   return NextResponse.json({
     recentClaims: recentClaims.slice(0, 5),
     upcoming: upcoming.slice(0, 4),
     recentMoments,
     onTheLoop,
+    newsItems,
     totals,
   })
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Sparkles, Camera } from 'lucide-react'
+import { Sparkles, Camera, ArrowUpRight } from 'lucide-react'
 
 interface RecentClaim {
   name: string | null
@@ -28,10 +28,17 @@ interface RecentMoment {
   postedByBookId: string | null
   createdAt: string
 }
+interface NewsItem {
+  id: string
+  title: string
+  sourceUrl: string
+  publishedAt?: string
+}
 interface ActivityResponse {
   recentClaims: RecentClaim[]
   upcoming: UpcomingGathering[]
   recentMoments?: RecentMoment[]
+  newsItems?: NewsItem[]
   totals: {
     membersClaimed?: number
     openGatherings?: number
@@ -78,7 +85,8 @@ export default function ClubhouseActivityFeed() {
   const hasClaims = data.recentClaims.length > 0
   const hasUpcoming = data.upcoming.length > 0
   const hasMoments = (data.recentMoments?.length ?? 0) > 0
-  if (!hasClaims && !hasUpcoming && !hasMoments) return null
+  const hasNews = (data.newsItems?.length ?? 0) > 0
+  if (!hasClaims && !hasUpcoming && !hasMoments && !hasNews) return null
 
   return (
     <motion.div
@@ -142,9 +150,43 @@ export default function ClubhouseActivityFeed() {
       )}
 
       <div
-        className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 grid grid-cols-1 md:grid-cols-3 gap-6"
+        className={`bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 grid grid-cols-1 md:grid-cols-2 ${hasNews ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6`}
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
       >
+        {/* From the box — latest Penn Athletics news */}
+        {hasNews && (
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#990000] mb-2.5">
+              From the Box
+            </p>
+            <ul className="space-y-2">
+              {data.newsItems!.map((n) => (
+                <li key={n.id}>
+                  <a
+                    href={n.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group"
+                  >
+                    <p
+                      className="text-[13px] text-[#0a1628] group-hover:text-[#990000] leading-snug transition-colors line-clamp-3"
+                      style={{ fontFamily: 'var(--font-playfair)' }}
+                    >
+                      {n.title}
+                      <ArrowUpRight className="inline w-3 h-3 ml-1 opacity-60 align-middle" />
+                    </p>
+                    {n.publishedAt && (
+                      <p className="text-[11px] text-[#8a7f70] mt-0.5">
+                        {timeAgo(n.publishedAt)} · Penn Athletics
+                      </p>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Recently joined */}
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
