@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Mail, Phone, Linkedin, Lock } from 'lucide-react'
+import { Mail, Phone, ExternalLink, Lock } from 'lucide-react'
 import { auth } from '@/auth'
 
 interface PageProps {
@@ -378,7 +378,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                       {enrichment?.linkedinUrl && (
                         <div className="flex items-center justify-between gap-4 py-2.5">
                           <dt className="text-xs text-[#8a7f70] flex items-center gap-2 flex-shrink-0">
-                            <Linkedin className="w-3 h-3" /> LinkedIn
+                            <ExternalLink className="w-3 h-3" /> LinkedIn
                           </dt>
                           <dd className="text-sm font-medium text-[#0a1628] text-right truncate">
                             <a
