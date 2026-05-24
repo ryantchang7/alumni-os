@@ -283,6 +283,23 @@ export interface Account {
   teamId: string
   createdAt: string
   updatedAt: string
+  /** ISO timestamp of the last weekly digest email sent to this account. */
+  lastDigestSentAt?: string
+}
+
+/**
+ * A news/article item pulled from the team's official athletics site
+ * (Penn Athletics for the men's golf program). De-duplicated by sourceUrl.
+ */
+export interface TeamNewsItem {
+  id: string
+  teamId: string
+  sourceUrl: string
+  title: string
+  summary?: string
+  imageUrl?: string
+  publishedAt?: string
+  fetchedAt: string
 }
 
 /**
@@ -358,4 +375,5 @@ export interface Store {
   accounts: Account[]
   moments: ClubhouseMoment[]
   careerPosts: CareerPost[]
+  teamNewsItems: TeamNewsItem[]
 }

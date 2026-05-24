@@ -1,0 +1,176 @@
+/**
+ * Email templates. Pure functions returning { subject, html }. No React,
+ * no MJML — hand-written inline-styled HTML keeps the dep footprint zero
+ * and the templates legible in code review.
+ *
+ * Template aesthetic mirrors the Clubhouse UI: navy + cream + gold accent,
+ * Playfair-feeling serif for display copy (via Georgia fallback in email),
+ * restrained — like a letter from the captain.
+ */
+
+const NAVY = '#0a1628'
+const CREAM = '#faf7f2'
+const GOLD = '#c8a84b'
+const MUTED = '#8a7f70'
+const SERIF = "Georgia, 'Times New Roman', serif"
+const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+
+function shell(inner: string, footerCtaUrl?: string): string {
+  return `<!doctype html>
+<html><body style="margin:0;padding:0;background:${CREAM};font-family:${SANS};color:${NAVY};">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${CREAM};padding:40px 16px;">
+    <tr><td align="center">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px;background:#ffffff;border:1px solid #e8dec9;border-radius:14px;overflow:hidden;">
+        <tr><td style="height:6px;background:${GOLD};"></td></tr>
+        <tr><td style="padding:32px 36px;">
+          <p style="margin:0 0 6px 0;font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:${MUTED};">Penn Men&rsquo;s Golf</p>
+          ${inner}
+          ${
+            footerCtaUrl
+              ? `<p style="margin:32px 0 0 0;font-size:11px;color:${MUTED};">
+                  Replying to this email goes nowhere. Visit the Clubhouse at
+                  <a href="${footerCtaUrl}" style="color:${NAVY};text-decoration:underline;">${footerCtaUrl.replace(/^https?:\/\//, '')}</a>.
+                </p>`
+              : ''
+          }
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`
+}
+
+function btn(href: string, label: string): string {
+  return `<a href="${href}" style="display:inline-block;background:${NAVY};color:#ffffff;font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:13px 22px;border-radius:8px;">${label}</a>`
+}
+
+// ── Welcome ──────────────────────────────────────────────────────────────────
+
+export function renderWelcomeEmail(input: {
+  firstName?: string | null
+  clubhouseUrl: string
+}): { subject: string; html: string } {
+  const name = input.firstName ? `, ${input.firstName}` : ''
+  const subject = 'Welcome to the Penn Golf Clubhouse'
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:28px;line-height:1.2;color:${NAVY};">
+      Welcome through the gate${name}.
+    </h1>
+    <p style="margin:0 0 14px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">
+      Your locker is yours. The Clubhouse is where the Penn Men&rsquo;s Golf
+      brotherhood keeps track of who&rsquo;s where, who&rsquo;s open to a round,
+      and who can throw a warm intro your way.
+    </p>
+    <p style="margin:0 0 24px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">
+      Three things to do this week:
+    </p>
+    <ul style="margin:0 0 28px 0;padding:0 0 0 20px;font-size:14px;line-height:1.7;color:#3d4a5c;">
+      <li>Set your city on your locker card.</li>
+      <li>Mark one availability &mdash; coffee, a round, or a warm intro.</li>
+      <li>Drop a Moment, a tee time, or an ask on the Career Room floor.</li>
+    </ul>
+    <p style="margin:0;">${btn(input.clubhouseUrl, 'Open the Clubhouse')}</p>
+  `
+  return { subject, html: shell(inner, input.clubhouseUrl) }
+}
+
+// ── Weekly Digest ────────────────────────────────────────────────────────────
+
+interface DigestMember { name: string; classLabel?: string }
+interface DigestGathering { title: string; dateText: string; city?: string }
+interface DigestCareerPost { kind: 'ask' | 'offer'; headline: string; sector: string; postedByName: string }
+interface DigestMoment { caption: string; postedByName: string }
+interface DigestNewsItem { title: string; sourceUrl: string }
+
+export function renderWeeklyDigest(input: {
+  teamName: string
+  weekOf: string
+  newMembers: DigestMember[]
+  asks: DigestCareerPost[]
+  offers: DigestCareerPost[]
+  gatherings: DigestGathering[]
+  moments: DigestMoment[]
+  newsItems: DigestNewsItem[]
+  clubhouseUrl: string
+}): { subject: string; html: string } {
+  const counts: string[] = []
+  if (input.newMembers.length) counts.push(`${input.newMembers.length} joined`)
+  if (input.gatherings.length) counts.push(`${input.gatherings.length} on the books`)
+  if (input.asks.length || input.offers.length) {
+    counts.push(`${input.asks.length + input.offers.length} on the floor`)
+  }
+  const subject = counts.length
+    ? `${input.teamName} · This week: ${counts.join(' · ')}`
+    : `${input.teamName} · A quiet week at the Clubhouse`
+
+  const sec = (title: string, body: string): string => `
+    <div style="margin:24px 0 0 0;">
+      <p style="margin:0 0 8px 0;font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:${MUTED};">${title}</p>
+      ${body}
+    </div>
+  `
+  const li = (s: string): string => `<p style="margin:0 0 6px 0;font-size:14px;line-height:1.55;color:#0a1628;">${s}</p>`
+
+  const sections: string[] = []
+  if (input.newMembers.length) {
+    sections.push(sec('New members',
+      input.newMembers.map(m => li(
+        `<strong>${escapeHtml(m.name)}</strong>${m.classLabel ? ` <span style="color:${MUTED}">· ${escapeHtml(m.classLabel)}</span>` : ''}`
+      )).join('')
+    ))
+  }
+  if (input.gatherings.length) {
+    sections.push(sec('On the books',
+      input.gatherings.map(g => li(
+        `<strong>${escapeHtml(g.title)}</strong> <span style="color:${MUTED}">· ${escapeHtml(g.dateText)}${g.city ? ' · ' + escapeHtml(g.city) : ''}</span>`
+      )).join('')
+    ))
+  }
+  if (input.asks.length) {
+    sections.push(sec('Asks on the floor',
+      input.asks.map(p => li(
+        `<strong>${escapeHtml(p.headline)}</strong> <span style="color:${MUTED}">· ${escapeHtml(p.sector)} · ${escapeHtml(p.postedByName)}</span>`
+      )).join('')
+    ))
+  }
+  if (input.offers.length) {
+    sections.push(sec('Offers on the floor',
+      input.offers.map(p => li(
+        `<strong>${escapeHtml(p.headline)}</strong> <span style="color:${MUTED}">· ${escapeHtml(p.sector)} · ${escapeHtml(p.postedByName)}</span>`
+      )).join('')
+    ))
+  }
+  if (input.moments.length) {
+    sections.push(sec('Moments',
+      input.moments.map(m => li(
+        `<em style="color:#3d4a5c">${escapeHtml(m.caption.slice(0, 100))}${m.caption.length > 100 ? '…' : ''}</em> <span style="color:${MUTED}">· ${escapeHtml(m.postedByName)}</span>`
+      )).join('')
+    ))
+  }
+  if (input.newsItems.length) {
+    sections.push(sec('From the box · Penn Athletics',
+      input.newsItems.map(n => li(
+        `<a href="${n.sourceUrl}" style="color:${NAVY};text-decoration:underline;">${escapeHtml(n.title)}</a>`
+      )).join('')
+    ))
+  }
+
+  const inner = `
+    <h1 style="margin:6px 0 4px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      This week at the Clubhouse
+    </h1>
+    <p style="margin:0 0 8px 0;font-size:13px;color:${MUTED};">${escapeHtml(input.weekOf)}</p>
+    ${sections.join('')}
+    <div style="margin:32px 0 0 0;">${btn(input.clubhouseUrl, 'Open the Clubhouse')}</div>
+  `
+  return { subject, html: shell(inner, input.clubhouseUrl) }
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}

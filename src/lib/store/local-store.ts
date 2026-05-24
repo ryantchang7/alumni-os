@@ -29,6 +29,7 @@ import type {
   Account,
   ClubhouseMoment,
   CareerPost,
+  TeamNewsItem,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -66,6 +67,7 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.accounts) parsed.accounts = []
   if (!parsed.moments) parsed.moments = []
   if (!parsed.careerPosts) parsed.careerPosts = []
+  if (!parsed.teamNewsItems) parsed.teamNewsItems = []
   return parsed
 }
 
@@ -99,6 +101,7 @@ const EMPTY_STORE: Store = {
   accounts: [],
   moments: [],
   careerPosts: [],
+  teamNewsItems: [],
 }
 
 function normalizeName(name: string): string {
@@ -1232,4 +1235,70 @@ export async function updateCareerPost(
   }
   await writeStore(store)
   return store.careerPosts[idx]
+}
+
+// ── Team News (Penn Athletics ingestion) ──────────────────────────────────────
+
+export async function upsertTeamNewsItems(
+  teamId: string,
+  items: Array<Omit<TeamNewsItem, 'id' | 'teamId' | 'fetchedAt'>>,
+): Promise<{ added: number; total: number }> {
+  const store = await readStore()
+  const existingByUrl = new Map(
+    store.teamNewsItems.filter(i => i.teamId === teamId).map(i => [i.sourceUrl, i]),
+  )
+  const now = new Date().toISOString()
+  let added = 0
+  for (const item of items) {
+    if (!item.sourceUrl || !item.title) continue
+    if (existingByUrl.has(item.sourceUrl)) continue
+    store.teamNewsItems.push({
+      id: crypto.randomUUID(),
+      teamId,
+      sourceUrl: item.sourceUrl,
+      title: item.title,
+      summary: item.summary,
+      imageUrl: item.imageUrl,
+      publishedAt: item.publishedAt,
+      fetchedAt: now,
+    })
+    added++
+  }
+  if (added > 0) await writeStore(store)
+  const total = store.teamNewsItems.filter(i => i.teamId === teamId).length
+  return { added, total }
+}
+
+export async function getRecentTeamNewsItems(
+  teamId: string,
+  limit = 8,
+): Promise<TeamNewsItem[]> {
+  const store = await readStore()
+  return store.teamNewsItems
+    .filter(i => i.teamId === teamId)
+    .sort((a, b) => {
+      const aTs = a.publishedAt ?? a.fetchedAt
+      const bTs = b.publishedAt ?? b.fetchedAt
+      return bTs.localeCompare(aTs)
+    })
+    .slice(0, limit)
+}
+
+// ── Digest send tracking ──────────────────────────────────────────────────────
+
+export async function getAllLinkedAccountsForTeam(teamId: string): Promise<Account[]> {
+  const store = await readStore()
+  return store.accounts.filter(a => a.teamId === teamId && a.linkedPersonId)
+}
+
+export async function stampDigestSent(accountId: string): Promise<void> {
+  const store = await readStore()
+  const idx = store.accounts.findIndex(a => a.id === accountId)
+  if (idx === -1) return
+  store.accounts[idx] = {
+    ...store.accounts[idx],
+    lastDigestSentAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
 }

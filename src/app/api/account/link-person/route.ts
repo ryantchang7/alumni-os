@@ -177,5 +177,24 @@ export async function POST(request: Request) {
     )
   }
 
+  // Fire-and-forget welcome email. Wrapped in try/catch + .catch so a
+  // provider failure never blocks the claim response.
+  try {
+    const { sendEmail } = await import('@/lib/email/send')
+    const { renderWelcomeEmail } = await import('@/lib/email/templates')
+    const clubhouseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alumni-os.vercel.app'
+    const firstName = splitName(entry.displayName).firstName ?? null
+    const { subject, html } = renderWelcomeEmail({
+      firstName,
+      clubhouseUrl: `${clubhouseUrl}/player`,
+    })
+    void sendEmail({ to: linked.email, subject, html }).catch((e) =>
+      console.warn('[welcome-email] background send failed:', e),
+    )
+  } catch (e) {
+    console.warn('[welcome-email] setup failed:', e)
+  }
+
   return NextResponse.json({ personId, accountId: linked.id })
 }

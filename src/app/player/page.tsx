@@ -10,6 +10,9 @@ import { memberBookEntries } from '@/lib/member-book/data'
 import { getPublicMembers } from '@/lib/member-book/helpers'
 import ClubhouseActivityFeed from '@/components/ClubhouseActivityFeed'
 import OnTheLoopStrip from '@/components/OnTheLoopStrip'
+import ClubhouseChecklist from '@/components/ClubhouseChecklist'
+import TeamNewsStrip from '@/components/TeamNewsStrip'
+import type { TeamNewsItem } from '@/lib/store/types'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
 
@@ -280,6 +283,13 @@ function WelcomeBanner({ name }: { name: string }) {
   )
 }
 
+interface OnboardingStatus {
+  linked: boolean
+  hasCity?: boolean
+  hasAvailability?: boolean
+  hasFirstPost?: boolean
+}
+
 function ClubhouseInner() {
   const searchParams = useSearchParams()
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
@@ -287,6 +297,8 @@ function ClubhouseInner() {
 
   const [profiles, setProfiles] = useState<PlayerProfile[]>([])
   const [loading, setLoading] = useState(true)
+  const [newsItems, setNewsItems] = useState<TeamNewsItem[]>([])
+  const [onboarding, setOnboarding] = useState<OnboardingStatus | null>(null)
 
   useEffect(() => {
     fetch(`/api/player/profiles?teamSlug=${teamSlug}`)
@@ -296,6 +308,16 @@ function ClubhouseInner() {
         setLoading(false)
       })
       .catch(() => setLoading(false))
+
+    fetch(`/api/team/news?teamSlug=${teamSlug}&limit=4`)
+      .then(r => (r.ok ? r.json() : { items: [] }))
+      .then(data => setNewsItems(data.items ?? []))
+      .catch(() => {})
+
+    fetch('/api/account/onboarding-status')
+      .then(r => (r.ok ? r.json() : { linked: false }))
+      .then((data: OnboardingStatus) => setOnboarding(data))
+      .catch(() => setOnboarding({ linked: false }))
   }, [teamSlug])
 
   return (
@@ -336,8 +358,27 @@ function ClubhouseInner() {
             <WelcomeBanner name={welcomeName} />
           </div>
         )}
+
+        {/* First-week locker checklist — only when signed in + linked */}
+        {onboarding?.linked && (
+          <div className={`${welcomeName ? 'mt-4' : '-mt-5'} relative z-10 mb-6`}>
+            <ClubhouseChecklist
+              hasCity={!!onboarding.hasCity}
+              hasAvailability={!!onboarding.hasAvailability}
+              hasFirstPost={!!onboarding.hasFirstPost}
+            />
+          </div>
+        )}
+
+        {/* From the box — Penn Athletics news */}
+        {newsItems.length > 0 && (
+          <div className="mb-10">
+            <TeamNewsStrip items={newsItems} />
+          </div>
+        )}
+
         {/* 4 primary rooms */}
-        <div className={`${welcomeName ? 'mt-2' : '-mt-5'} relative z-10 mb-12`}>
+        <div className={`${welcomeName || onboarding?.linked || newsItems.length > 0 ? 'mt-2' : '-mt-5'} relative z-10 mb-12`}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {rooms.map((room, i) => {
               const Icon = room.icon
