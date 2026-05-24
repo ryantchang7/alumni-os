@@ -35,14 +35,17 @@ function PlaceholderThumb() {
 function NewsThumb({ src }: { src: string }) {
   const [errored, setErrored] = useState(false)
   if (errored) return <PlaceholderThumb />
+  // Route through our server-side image proxy to bypass Sidearm's
+  // hot-link blocking (no referrer / clean User-Agent on the upstream
+  // fetch). Falls back to the placeholder if the proxy itself fails.
+  const proxied = `/api/team/news-image?url=${encodeURIComponent(src)}`
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={src}
+      src={proxied}
       alt=""
       className="w-full h-32 object-cover bg-[#0a1628]"
       loading="lazy"
-      referrerPolicy="no-referrer"
       onError={() => setErrored(true)}
     />
   )
