@@ -18,8 +18,19 @@ export default function LandingPage() {
   return (
     <div className="relative w-full h-[calc(100dvh-60px)] flex flex-col overflow-hidden bg-[#0a1628]">
 
-      {/* Background image — full composition, letterboxed into navy so
-          the whole clubhouse + skyline is always visible at any aspect */}
+      {/* Blurred backdrop — same image, scaled + heavily blurred so the
+          warm sunset tones extend out to any aspect ratio. No hard bars. */}
+      <Image
+        src="/clubhouse-cover.jpg"
+        fill
+        sizes="100vw"
+        aria-hidden
+        alt=""
+        className="object-cover scale-110 opacity-80"
+        style={{ filter: 'blur(48px)' }}
+      />
+
+      {/* Crisp image — full composition always visible, centered */}
       <Image
         src="/clubhouse-cover.jpg"
         fill
