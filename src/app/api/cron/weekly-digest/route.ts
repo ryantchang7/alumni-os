@@ -26,7 +26,10 @@ function checkAuth(req: NextRequest): boolean {
     return process.env.NODE_ENV !== 'production'
   }
   const header = req.headers.get('authorization') ?? ''
-  return header === `Bearer ${secret}`
+  if (header === `Bearer ${secret}`) return true
+  // Also accept ?secret=... so the cron can be manually triggered from a
+  // browser (useful for the first run + dryRun inspection).
+  return req.nextUrl.searchParams.get('secret') === secret
 }
 
 function formatWeekOf(now: Date): string {
