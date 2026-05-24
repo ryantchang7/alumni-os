@@ -18,25 +18,13 @@ export default function LandingPage() {
   return (
     <div className="relative w-full h-[calc(100dvh-60px)] flex flex-col overflow-hidden bg-[#0a1628]">
 
-      {/* Blurred backdrop — same image, scaled + heavily blurred so the
-          warm sunset tones extend out to any aspect ratio. No hard bars. */}
-      <Image
-        src="/clubhouse-cover.jpg"
-        fill
-        sizes="100vw"
-        aria-hidden
-        alt=""
-        className="object-cover scale-110 opacity-80"
-        style={{ filter: 'blur(48px)' }}
-      />
-
-      {/* Crisp image — full composition always visible, centered */}
+      {/* Background image — full-bleed, clubhouse stays centered */}
       <Image
         src="/clubhouse-cover.jpg"
         fill
         priority
         sizes="100vw"
-        className="object-contain object-center"
+        className="object-cover object-center"
         alt="Penn Golf Clubhouse"
         data-testid="cover-image"
       />
