@@ -130,7 +130,7 @@ export default async function CareerRoomPage() {
             Alumni who have offered to mentor current players.
           </p>
           {openToMentorship.length === 0 ? (
-            <EmptyState label="Alumni will appear here once they have set up their profile." />
+            <EmptyState label="This list grows as alumni open up their network." />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {openToMentorship.map(entry => (
@@ -154,7 +154,7 @@ export default async function CareerRoomPage() {
             Alumni who can connect you with someone in their network.
           </p>
           {openToIntros.length === 0 ? (
-            <EmptyState label="Alumni will appear here once they have set up their profile." />
+            <EmptyState label="This list grows as alumni open up their network." />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {openToIntros.map(entry => (
@@ -178,7 +178,7 @@ export default async function CareerRoomPage() {
             Alumni open to an informal chat over coffee.
           </p>
           {openToCoffee.length === 0 ? (
-            <EmptyState label="Alumni will appear here once they have set up their profile." />
+            <EmptyState label="This list grows as alumni open up their network." />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {openToCoffee.map(entry => (

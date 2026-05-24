@@ -159,11 +159,6 @@ export default async function TeamRoomPage() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-medium text-[#8a7f70] bg-[#f8f5f0] px-2 py-0.5 rounded-full border border-[rgba(180,168,150,0.35)]">
-                Coming soon
-              </span>
-            </div>
             <p className="text-sm text-[#8a7f70] leading-relaxed">
               A note from this year&apos;s captain will appear here each season.
             </p>

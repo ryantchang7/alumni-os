@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Search, X } from 'lucide-react'
@@ -61,9 +62,9 @@ export default function AccountSetupClient({
       // Force NextAuth to re-issue the session cookie so the new
       // linkedPersonId is on the JWT before the editor page reads it.
       await refreshSession()
-      router.push(
-        `/player?welcome=${encodeURIComponent(firstName ?? 'home')}&personId=${j.personId}`,
-      )
+      const params = new URLSearchParams({ personId: j.personId })
+      if (firstName) params.set('welcome', firstName)
+      router.push(`/player?${params.toString()}`)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
       setClaiming(null)
@@ -160,13 +161,35 @@ export default function AccountSetupClient({
         )}
 
         {filtered.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="max-w-md mx-auto text-center py-10">
             <p className="text-[#0a1628] text-base" style={{ fontFamily: 'var(--font-playfair)' }}>
               No match found.
             </p>
-            <p className="text-sm text-[#8a7f70] mt-2">
+            <p className="text-sm text-[#8a7f70] mt-2 mb-6">
               Try just a first or last name. The Member Book holds every Penn Men&rsquo;s Golf player from 1948 onward.
             </p>
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 text-left"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 6px 16px rgba(10,22,40,0.04)' }}
+            >
+              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mb-2">
+                Still stuck?
+              </p>
+              <p className="text-sm text-[#0a1628] leading-relaxed">
+                Email{' '}
+                <a
+                  href="mailto:rtchang@upenn.edu?subject=Penn%20Golf%20Member%20Book%20%E2%80%94%20add%20me"
+                  className="text-[#990000] font-medium hover:underline"
+                >
+                  rtchang@upenn.edu
+                </a>{' '}
+                to get added, or{' '}
+                <Link href="/member-book" className="text-[#990000] font-medium hover:underline">
+                  browse the full Member Book
+                </Link>
+                .
+              </p>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

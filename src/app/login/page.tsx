@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 function LoginInner() {
   const params = useSearchParams()
-  const next = params.get('next') ?? '/account/profile'
+  const next = params.get('next') ?? '/account/setup'
   const error = params.get('error')
 
   return (
