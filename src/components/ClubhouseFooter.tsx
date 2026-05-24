@@ -1,9 +1,17 @@
+'use client'
+
+import { usePathname } from 'next/navigation'
+
 /**
  * The clubhouse signature that closes every page. Just a thin gold
  * rule — the way a country club closes a letter. Restraint over
- * sitemap.
+ * sitemap. Hidden on the landing route so the cover image goes
+ * full-bleed.
  */
 export default function ClubhouseFooter() {
+  const pathname = usePathname()
+  if (pathname === '/') return null
+
   return (
     <footer className="bg-[#f4ecdb] border-t border-[#d9c8a8]/40 mt-16">
       <div

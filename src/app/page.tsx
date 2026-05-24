@@ -16,7 +16,7 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden bg-[#0a1628]">
+    <div className="relative w-full h-[calc(100dvh-60px)] flex flex-col overflow-hidden bg-[#0a1628]">
 
       {/* Background image — fills the entire viewport */}
       <Image
