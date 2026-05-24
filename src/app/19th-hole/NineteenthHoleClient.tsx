@@ -42,6 +42,38 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
   return (
     <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
 
+      {/* Host CTA — top-of-page when no gatherings yet */}
+      {gatherings.length === 0 && (
+        <section>
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-6 py-7 sm:px-8 sm:py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 8px 24px rgba(10,22,40,0.05)' }}
+          >
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#b8860b] mb-2">
+                Open the wall
+              </p>
+              <p
+                className="text-[#0a1628] text-xl sm:text-2xl font-medium leading-snug"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                Pick a spot. Penn Golf finds you there.
+              </p>
+              <p className="text-[13px] text-[#8a7f70] mt-1.5">
+                Drinks, dinner, coffee, or a watch party — host it and members will show up.
+              </p>
+            </div>
+            <Link
+              href="/19th-hole/host"
+              data-testid="host-the-19th"
+              className="bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-colors whitespace-nowrap"
+            >
+              Host the 19th
+            </Link>
+          </div>
+        </section>
+      )}
+
       {/* Type filter pills + gatherings */}
       {gatherings.length > 0 && (
         <section data-testid="social-gatherings-section">
@@ -52,6 +84,13 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
                 Coffee, dinners, and signature events organized by Penn Golf alumni.
               </p>
             </div>
+            <Link
+              href="/19th-hole/host"
+              data-testid="host-the-19th"
+              className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
+            >
+              Host the 19th
+            </Link>
           </div>
 
           {/* Filter pills */}

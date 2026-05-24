@@ -28,6 +28,7 @@ import type {
   ClubhouseProfileClaimRequest,
   Account,
   ClubhouseMoment,
+  CareerPost,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -64,6 +65,7 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.profileClaimRequests) parsed.profileClaimRequests = []
   if (!parsed.accounts) parsed.accounts = []
   if (!parsed.moments) parsed.moments = []
+  if (!parsed.careerPosts) parsed.careerPosts = []
   return parsed
 }
 
@@ -96,6 +98,7 @@ const EMPTY_STORE: Store = {
   profileClaimRequests: [],
   accounts: [],
   moments: [],
+  careerPosts: [],
 }
 
 function normalizeName(name: string): string {
@@ -1188,4 +1191,45 @@ export async function unlinkAccount(accountId: string): Promise<Account | null> 
   }
   await writeStore(store)
   return store.accounts[idx]
+}
+
+// ── Career Posts (Asks & Offers) ──────────────────────────────────────────────
+
+export async function createCareerPost(
+  input: Omit<CareerPost, 'id' | 'createdAt' | 'updatedAt'>,
+): Promise<CareerPost> {
+  const store = await readStore()
+  const now = new Date().toISOString()
+  const post: CareerPost = {
+    id: crypto.randomUUID(),
+    ...input,
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.careerPosts.push(post)
+  await writeStore(store)
+  return post
+}
+
+export async function getCareerPostsForTeam(teamId: string): Promise<CareerPost[]> {
+  const store = await readStore()
+  return store.careerPosts
+    .filter((p) => p.teamId === teamId && p.status === 'open')
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+}
+
+export async function updateCareerPost(
+  id: string,
+  patch: Partial<Omit<CareerPost, 'id' | 'teamId' | 'createdAt'>>,
+): Promise<CareerPost | null> {
+  const store = await readStore()
+  const idx = store.careerPosts.findIndex((p) => p.id === id)
+  if (idx === -1) return null
+  store.careerPosts[idx] = {
+    ...store.careerPosts[idx],
+    ...patch,
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
+  return store.careerPosts[idx]
 }

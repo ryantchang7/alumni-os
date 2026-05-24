@@ -302,6 +302,42 @@ export interface ClubhouseMoment {
   createdAt: string
 }
 
+/**
+ * Asks-and-Offers board for the Career Room. An "ask" is something an
+ * alumnus is looking for (warm intro, role, advice); an "offer" is
+ * something an alumnus is willing to give (intros at their firm, seat
+ * at a dinner, a job referral). Designed to be the active, signal-rich
+ * surface vs. the passive "open to mentorship" booleans on profiles.
+ */
+export type CareerPostSector =
+  | 'finance'
+  | 'consulting'
+  | 'real-estate'
+  | 'law'
+  | 'technology'
+  | 'startups'
+  | 'sports'
+  | 'medicine'
+  | 'media'
+  | 'public-service'
+  | 'other'
+
+export interface CareerPost {
+  id: string
+  teamId: string
+  kind: 'ask' | 'offer'
+  sector: CareerPostSector
+  headline: string
+  body?: string
+  postedByAccountId: string
+  postedByPersonId?: string
+  postedByName: string
+  contactEmail: string
+  status: 'open' | 'closed'
+  createdAt: string
+  updatedAt: string
+}
+
 export interface Store {
   teams: Team[]
   scrapeRuns: ScrapeRun[]
@@ -321,4 +357,5 @@ export interface Store {
   profileClaimRequests: ClubhouseProfileClaimRequest[]
   accounts: Account[]
   moments: ClubhouseMoment[]
+  careerPosts: CareerPost[]
 }
