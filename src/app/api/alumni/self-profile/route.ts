@@ -168,13 +168,22 @@ export async function POST(request: Request) {
     }
   }
   if (Array.isArray(body.additionalLocations)) {
+    const { enrichmentStateToCode } = await import('@/lib/map/state-lookup')
     const clean = (body.additionalLocations as unknown[])
       .filter((row): row is Record<string, unknown> => typeof row === 'object' && row !== null)
-      .map((row) => ({
-        city: typeof row.city === 'string' ? row.city.trim() : undefined,
-        state: typeof row.state === 'string' ? row.state.trim().toUpperCase().slice(0, 2) : undefined,
-        label: typeof row.label === 'string' ? row.label.trim() : undefined,
-      }))
+      .map((row) => {
+        const rawState =
+          typeof row.state === 'string' ? row.state.trim() : undefined
+        return {
+          city: typeof row.city === 'string' ? row.city.trim() : undefined,
+          // Normalize "Massachusetts" / "Mass." / "ma" → "MA" so the member
+          // map can place this location in the right state.
+          state: rawState
+            ? enrichmentStateToCode(rawState) ?? rawState.toUpperCase().slice(0, 2)
+            : undefined,
+          label: typeof row.label === 'string' ? row.label.trim() : undefined,
+        }
+      })
       .filter((row) => row.city || row.state)
       .slice(0, 4)
     safeUpdate.additionalLocations = clean

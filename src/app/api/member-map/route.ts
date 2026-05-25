@@ -98,29 +98,61 @@ export async function GET(request: Request) {
     })
   }
 
-  // Published alumni — prefer enrichment state (current location), fall back to hometown
+  // Published alumni — prefer enrichment state (current location), fall back to hometown.
+  // Then also add them to each additional location (e.g. summer home, winter base).
   for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'alumni' && x.publishedToNetwork === true)) {
     const person = store.people.find(p => p.id === m.personId)
     if (!person) continue
     const enrichment = enrichMap.get(m.personId)
     if (enrichment?.visibleToPlayers === false) continue
 
-    const stateCode = enrichmentStateToCode(enrichment?.state) ?? hometownToStateCode(m.hometown)
-    if (!stateCode) continue
+    // Track every state code we've already added this alum to, so two
+    // additional-location rows in the same state don't double-count.
+    const seenStates = new Set<string>()
 
-    addMember(stateCode, {
-      personId: person.id,
-      canonicalName: person.canonicalName,
-      memberRole: 'alumni',
-      classLabel: m.classLabel,
-      rosterStartYear: m.rosterStartYear,
-      rosterEndYear: m.rosterEndYear,
-      hometown: m.hometown,
-      city: enrichment?.city,
-      state: enrichment?.state,
-      openToCoffee: enrichment?.openToCoffee ?? false,
-      openToGolfRounds: enrichment?.openToGolfRounds ?? false,
-    })
+    const primaryCode = enrichmentStateToCode(enrichment?.state) ?? hometownToStateCode(m.hometown)
+    if (primaryCode) {
+      addMember(primaryCode, {
+        personId: person.id,
+        canonicalName: person.canonicalName,
+        memberRole: 'alumni',
+        classLabel: m.classLabel,
+        rosterStartYear: m.rosterStartYear,
+        rosterEndYear: m.rosterEndYear,
+        hometown: m.hometown,
+        city: enrichment?.city,
+        state: enrichment?.state,
+        openToCoffee: enrichment?.openToCoffee ?? false,
+        openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+      })
+      seenStates.add(primaryCode)
+    }
+
+    // Additional locations — surface the same alum in each state, with the
+    // user's label ("Summer in Maine", "Winter base", etc.) so the marker
+    // doesn't read as a contradiction.
+    if (Array.isArray(enrichment?.additionalLocations)) {
+      for (const loc of enrichment.additionalLocations) {
+        const code = enrichmentStateToCode(loc.state)
+        if (!code) continue
+        if (seenStates.has(code)) continue
+        seenStates.add(code)
+        addMember(code, {
+          personId: person.id,
+          canonicalName: person.canonicalName,
+          memberRole: 'alumni',
+          classLabel: m.classLabel,
+          rosterStartYear: m.rosterStartYear,
+          rosterEndYear: m.rosterEndYear,
+          hometown: m.hometown,
+          city: loc.city,
+          state: loc.state,
+          openToCoffee: enrichment?.openToCoffee ?? false,
+          openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+          locationLabel: loc.label,
+        })
+      }
+    }
   }
 
   const states = Array.from(stateMap.values()).sort((a, b) => b.totalCount - a.totalCount)
