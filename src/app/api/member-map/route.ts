@@ -74,28 +74,59 @@ export async function GET(request: Request) {
     if (member.openToGolfRounds) s.openToGolfCount++
   }
 
-  // Current players — use membership hometown
+  // Current players — prefer enrichment state (e.g. Philadelphia while at
+  // Penn), fall back to hometown. Then also surface them in each
+  // additional location they've added. Mirrors the alumni logic so a
+  // current player based in Philly with home in Boston shows in both.
   for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'current_player')) {
     const person = store.people.find(p => p.id === m.personId)
     if (!person) continue
     const enrichment = enrichMap.get(m.personId)
     if (enrichment?.visibleToPlayers === false) continue
 
-    const stateCode = hometownToStateCode(m.hometown)
-    if (!stateCode) continue
+    const seenStates = new Set<string>()
+    const primaryCode =
+      enrichmentStateToCode(enrichment?.state) ?? hometownToStateCode(m.hometown)
+    if (primaryCode) {
+      addMember(primaryCode, {
+        personId: person.id,
+        canonicalName: person.canonicalName,
+        memberRole: 'current_player',
+        classLabel: m.classLabel,
+        classYearEstimate: m.classYearEstimate,
+        rosterStartYear: m.rosterStartYear,
+        rosterEndYear: m.rosterEndYear,
+        hometown: m.hometown,
+        city: enrichment?.city,
+        state: enrichment?.state,
+        openToCoffee: enrichment?.openToCoffee ?? false,
+        openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+      })
+      seenStates.add(primaryCode)
+    }
 
-    addMember(stateCode, {
-      personId: person.id,
-      canonicalName: person.canonicalName,
-      memberRole: 'current_player',
-      classLabel: m.classLabel,
-      classYearEstimate: m.classYearEstimate,
-      rosterStartYear: m.rosterStartYear,
-      rosterEndYear: m.rosterEndYear,
-      hometown: m.hometown,
-      openToCoffee: enrichment?.openToCoffee ?? false,
-      openToGolfRounds: enrichment?.openToGolfRounds ?? false,
-    })
+    if (Array.isArray(enrichment?.additionalLocations)) {
+      for (const loc of enrichment.additionalLocations) {
+        const code = enrichmentStateToCode(loc.state)
+        if (!code || seenStates.has(code)) continue
+        seenStates.add(code)
+        addMember(code, {
+          personId: person.id,
+          canonicalName: person.canonicalName,
+          memberRole: 'current_player',
+          classLabel: m.classLabel,
+          classYearEstimate: m.classYearEstimate,
+          rosterStartYear: m.rosterStartYear,
+          rosterEndYear: m.rosterEndYear,
+          hometown: m.hometown,
+          city: loc.city,
+          state: loc.state,
+          openToCoffee: enrichment?.openToCoffee ?? false,
+          openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+          locationLabel: loc.label,
+        })
+      }
+    }
   }
 
   // Published alumni — prefer enrichment state (current location), fall back to hometown.
