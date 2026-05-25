@@ -178,10 +178,10 @@ export default function AccountSetupClient({
               <p className="text-sm text-[#0a1628] leading-relaxed">
                 Email{' '}
                 <a
-                  href="mailto:rtchang@upenn.edu?subject=Penn%20Golf%20Member%20Book%20%E2%80%94%20add%20me"
+                  href="mailto:rtchang@sas.upenn.edu?subject=Penn%20Golf%20Member%20Book%20%E2%80%94%20add%20me"
                   className="text-[#990000] font-medium hover:underline"
                 >
-                  rtchang@upenn.edu
+                  rtchang@sas.upenn.edu
                 </a>{' '}
                 to get added, or{' '}
                 <Link href="/member-book" className="text-[#990000] font-medium hover:underline">

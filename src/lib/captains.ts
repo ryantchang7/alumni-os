@@ -6,7 +6,10 @@
  */
 
 const CAPTAIN_EMAILS_BY_TEAM: Record<string, string[]> = {
-  'penn-mens-golf': ['rtchang@upenn.edu'],
+  'penn-mens-golf': [
+    'rtchang@sas.upenn.edu',
+    'ryan.taylor.chang@gmail.com',
+  ],
 }
 
 export function isCaptain(email: string | null | undefined, teamSlug: string): boolean {
