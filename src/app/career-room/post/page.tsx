@@ -54,12 +54,13 @@ export default function PostCareerEntryPage() {
   const [error, setError] = useState<string | null>(null)
 
   const signedIn = sessionStatus === 'authenticated'
+  const approved = signedIn && !!session?.linkedPersonId
   const currentKind = KIND_OPTIONS.find(k => k.value === kind)!
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!signedIn) {
-      router.push('/login?next=/career-room/post')
+    if (!approved) {
+      router.push(signedIn ? '/account/setup' : '/login?next=/career-room/post')
       return
     }
     setSubmitting(true)
@@ -154,15 +155,17 @@ export default function PostCareerEntryPage() {
             </p>
           </div>
 
-          {!signedIn && sessionStatus !== 'loading' && (
+          {!approved && sessionStatus !== 'loading' && (
             <div className="px-7 sm:px-10 py-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
               <p className="text-[13px] text-[#3d4a5c]">
-                Sign in with Google to post.{' '}
+                {signedIn
+                  ? 'Claim your Member Book card to post to the floor. The captain approves new members within a day or two. '
+                  : 'Sign in and claim your card to post an ask or offer. '}
                 <Link
-                  href="/login?next=/career-room/post"
+                  href={signedIn ? '/account/setup' : '/login?next=/career-room/post'}
                   className="text-[#990000] hover:underline font-semibold"
                 >
-                  Sign in &rarr;
+                  {signedIn ? 'Claim your card' : 'Sign in'} &rarr;
                 </Link>
               </p>
             </div>
@@ -288,7 +291,7 @@ export default function PostCareerEntryPage() {
             <div className="flex items-center gap-4 pt-2">
               <button
                 type="submit"
-                disabled={submitting || !signedIn}
+                disabled={submitting || !approved}
                 className="bg-[#0a1628] hover:bg-[#112240] text-white text-[13px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? 'Posting…' : 'Post to the floor'}

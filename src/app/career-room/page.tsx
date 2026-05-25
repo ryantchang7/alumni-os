@@ -7,6 +7,8 @@ import type {
   CareerPost,
   CareerPostSector,
 } from '@/lib/store/types'
+import { getApprovalState } from '@/lib/access/approval'
+import GatedPreview from '@/components/GatedPreview'
 import CareerRoomHero from './CareerRoomHero'
 
 const SECTOR_LABEL: Record<CareerPostSector, string> = {
@@ -143,6 +145,7 @@ function EmptyState({ label }: { label: string }) {
 }
 
 export default async function CareerRoomPage() {
+  const approval = await getApprovalState()
   const { readStore, getTeamBySlug, getCareerPostsForTeam } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
@@ -175,6 +178,26 @@ export default async function CareerRoomPage() {
   const openToCoffee = alumni.filter(a => a.enrichment.openToCoffee)
   const asks = careerPosts.filter(p => p.kind === 'ask')
   const offers = careerPosts.filter(p => p.kind === 'offer')
+
+  if (!approval.approved) {
+    return (
+      <div className="min-h-screen bg-[#f8f5f0]">
+        <CareerRoomHero />
+        <GatedPreview
+          signedIn={approval.signedIn}
+          eyebrow="Members only · Career Room"
+          headline="The floor stays inside the room."
+          blurb="The Career Room is where Penn Golf alumni post real asks and real offers — warm intros, referrals, mentorship. Replies are private. Claim your card to see and post."
+          stats={[
+            { label: 'On the floor', value: careerPosts.length },
+            { label: 'Mentors', value: openToMentorship.length },
+            { label: 'Open to intros', value: openToIntros.length },
+            { label: 'Open to coffee', value: openToCoffee.length },
+          ]}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">

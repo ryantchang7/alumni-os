@@ -1,8 +1,11 @@
 import NineteenthHoleClient from './NineteenthHoleClient'
 import NineteenthHoleHero from './NineteenthHoleHero'
 import type { GatheringData } from '@/components/gatherings/GatheringCard'
+import { getApprovalState } from '@/lib/access/approval'
+import GatedPreview from '@/components/GatedPreview'
 
 export default async function NineteenthHolePage() {
+  const approval = await getApprovalState()
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
@@ -79,6 +82,25 @@ export default async function NineteenthHolePage() {
         (g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner' || g.type === 'event') &&
         g.status !== 'closed',
     ) as GatheringData[]
+  }
+
+  if (!approval.approved) {
+    return (
+      <div className="min-h-screen bg-[#f8f5f0]">
+        <NineteenthHoleHero />
+        <GatedPreview
+          signedIn={approval.signedIn}
+          eyebrow="Members only · 19th Hole"
+          headline="The wall opens to the brotherhood."
+          blurb="The 19th Hole is where Penn Golf alumni drop drinks, dinners, and watch-party invites. Claim your card to see what's on the wall and add your own."
+          stats={[
+            { label: 'On the wall', value: socialGatherings.length },
+            { label: 'Cities', value: cityGroups.length },
+            { label: 'Open to coffee', value: openToCoffee.length },
+          ]}
+        />
+      </div>
+    )
   }
 
   return (

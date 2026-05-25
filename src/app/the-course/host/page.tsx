@@ -31,11 +31,12 @@ export default function HostRoundPage() {
   const [error, setError] = useState<string | null>(null)
 
   const signedIn = sessionStatus === 'authenticated'
+  const approved = signedIn && !!session?.linkedPersonId
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!signedIn) {
-      router.push('/login?next=/the-course/host')
+    if (!approved) {
+      router.push(signedIn ? '/account/setup' : '/login?next=/the-course/host')
       return
     }
     setSubmitting(true)
@@ -143,15 +144,17 @@ export default function HostRoundPage() {
             </p>
           </div>
 
-          {!signedIn && sessionStatus !== 'loading' && (
+          {!approved && sessionStatus !== 'loading' && (
             <div className="px-7 sm:px-10 py-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
               <p className="text-[13px] text-[#3d4a5c]">
-                Sign in with Google to host a round.{' '}
+                {signedIn
+                  ? 'Claim your Member Book card to host. The captain approves new members within a day or two. '
+                  : 'Sign in and claim your card to host a round. '}
                 <Link
-                  href="/login?next=/the-course/host"
+                  href={signedIn ? '/account/setup' : '/login?next=/the-course/host'}
                   className="text-[#990000] hover:underline font-semibold"
                 >
-                  Sign in &rarr;
+                  {signedIn ? 'Claim your card' : 'Sign in'} &rarr;
                 </Link>
               </p>
             </div>
@@ -327,7 +330,7 @@ export default function HostRoundPage() {
             <div className="flex items-center gap-4 pt-2">
               <button
                 type="submit"
-                disabled={submitting || !signedIn}
+                disabled={submitting || !approved}
                 className="bg-[#5a7a3e] hover:bg-[#4a6a35] text-white text-[13px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? 'Opening tee box…' : 'Open the tee box'}

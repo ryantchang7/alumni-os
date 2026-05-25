@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/auth'
 
 export async function POST(request: NextRequest) {
+  // Member-only — only an approved (linked) account can RSVP.
+  const session = await auth()
+  if (!session?.accountId || !session.linkedPersonId) {
+    return NextResponse.json(
+      { error: 'Approved members only — claim your card to RSVP.' },
+      { status: 403 },
+    )
+  }
+
   let body: Record<string, unknown>
   try {
     body = await request.json()

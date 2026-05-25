@@ -9,6 +9,8 @@ import {
 } from '@/lib/store/local-store'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import { Camera } from 'lucide-react'
+import { getApprovalState } from '@/lib/access/approval'
+import GatedPreview from '@/components/GatedPreview'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -24,9 +26,42 @@ function timeAgo(iso: string): string {
 }
 
 export default async function MomentsPage() {
+  const approval = await getApprovalState()
   const team = await getTeamBySlug(TEAM_SLUG)
   const moments = team ? await getMomentsForTeam(team.id) : []
   const store = team ? await readStore() : null
+
+  if (!approval.approved) {
+    const uniquePosters = new Set(moments.map((m) => m.postedByAccountId)).size
+    return (
+      <div className="min-h-screen bg-[#f8f5f0]">
+        <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
+          <div className="max-w-[820px] mx-auto">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
+              Penn Men&rsquo;s Golf · The Wall
+            </p>
+            <h1
+              className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Moments
+            </h1>
+            <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5" />
+          </div>
+        </div>
+        <GatedPreview
+          signedIn={approval.signedIn}
+          eyebrow="Members only · The Wall"
+          headline="Moments stay between members."
+          blurb="The Wall is where Penn Golf alumni share rounds, dinners, championship cuttings — the stuff that makes a brotherhood feel like one. Claim your card to see and post."
+          stats={[
+            { label: 'On the wall', value: moments.length },
+            { label: 'Posters', value: uniquePosters },
+          ]}
+        />
+      </div>
+    )
+  }
 
   // Resolve poster -> Member Book bookId for linking.
   function bookIdForPerson(personId: string | undefined): string | null {

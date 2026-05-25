@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/auth'
 
 const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const VALID_AUDIENCES = ['players', 'alumni', 'both'] as const
@@ -26,6 +27,15 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // Member-only — only an approved (linked) account can host.
+  const session = await auth()
+  if (!session?.accountId || !session.linkedPersonId) {
+    return NextResponse.json(
+      { error: 'Approved members only — claim your card to host.' },
+      { status: 403 },
+    )
+  }
+
   let body: Record<string, unknown>
   try {
     body = await request.json()

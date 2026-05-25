@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { Flag, MapPin, Users, ArrowRight } from 'lucide-react'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
+import { getApprovalState } from '@/lib/access/approval'
+import GatedPreview from '@/components/GatedPreview'
 import CourseHero from './CourseHero'
 import CourseHoleSection, { CartPathDivider } from './CourseHoleSection'
 
@@ -89,6 +91,7 @@ function CourseRollEntry({
 }
 
 export default async function TheCoursePage() {
+  const approval = await getApprovalState()
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
@@ -188,6 +191,29 @@ export default async function TheCoursePage() {
       icon: MapPin,
     },
   ]
+
+  if (!approval.approved) {
+    const cityCount = new Set(
+      [...rounds.map((r) => r.city).filter(Boolean), ...openToRounds.map((e) => e.enrichment.city).filter(Boolean)],
+    ).size
+    return (
+      <div className="min-h-screen bg-[#f8f5f0]">
+        <CourseHero rounds={[]} />
+        <GatedPreview
+          signedIn={approval.signedIn}
+          eyebrow="Members only · The Course"
+          headline="Tee times open up to the brotherhood."
+          blurb="The Course is where Penn Golf alumni post home-course rounds and find players nearby. Claim your card to see open tee times and add your own."
+          stats={[
+            { label: 'Open rounds', value: rounds.length },
+            { label: 'Cities', value: cityCount },
+            { label: 'Hosting', value: openToRounds.length },
+            { label: 'Courses', value: sortedCourses.length },
+          ]}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">

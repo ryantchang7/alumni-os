@@ -42,6 +42,12 @@ export async function POST(request: NextRequest) {
   if (!session?.accountId) {
     return NextResponse.json({ error: 'Sign in required' }, { status: 401 })
   }
+  if (!session.linkedPersonId) {
+    return NextResponse.json(
+      { error: 'Approved members only — claim your card to post.' },
+      { status: 403 },
+    )
+  }
 
   let body: Record<string, unknown>
   try {

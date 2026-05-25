@@ -16,11 +16,12 @@ export default function NewMomentPage() {
   const [error, setError] = useState<string | null>(null)
 
   const signedIn = sessionStatus === 'authenticated'
+  const approved = signedIn && !!session?.linkedPersonId
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!signedIn) {
-      router.push('/login?next=/moments/new')
+    if (!approved) {
+      router.push(signedIn ? '/account/setup' : '/login?next=/moments/new')
       return
     }
     setSubmitting(true)
@@ -81,15 +82,17 @@ export default function NewMomentPage() {
             </p>
           </div>
 
-          {!signedIn && sessionStatus !== 'loading' && (
+          {!approved && sessionStatus !== 'loading' && (
             <div className="px-7 sm:px-10 py-6 bg-[#faf7f2] border-b border-[rgba(180,168,150,0.3)]">
               <p className="text-[13px] text-[#3d4a5c]">
-                Sign in with Google to post.{' '}
+                {signedIn
+                  ? 'Claim your Member Book card to post a Moment. The captain approves new members within a day or two. '
+                  : 'Sign in and claim your card to post a Moment. '}
                 <Link
-                  href="/login?next=/moments/new"
+                  href={signedIn ? '/account/setup' : '/login?next=/moments/new'}
                   className="text-[#990000] hover:underline font-semibold"
                 >
-                  Sign in &rarr;
+                  {signedIn ? 'Claim your card' : 'Sign in'} &rarr;
                 </Link>
               </p>
             </div>
@@ -153,7 +156,7 @@ export default function NewMomentPage() {
             <div className="flex items-center gap-4 pt-2">
               <button
                 type="submit"
-                disabled={submitting || !signedIn || !photoUrl || !caption.trim()}
+                disabled={submitting || !approved || !photoUrl || !caption.trim()}
                 className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628] text-[13px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Camera className="w-4 h-4" />
