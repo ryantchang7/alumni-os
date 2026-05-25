@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
 import { Search, X } from 'lucide-react'
 
 interface MinimalMember {
@@ -29,7 +28,6 @@ export default function AccountSetupClient({
 }) {
   const firstName = signedInName?.split(' ')[0] ?? null
   const router = useRouter()
-  const { update: refreshSession } = useSession()
   const [query, setQuery] = useState(signedInName ?? '')
   const [claiming, setClaiming] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -56,15 +54,17 @@ export default function AccountSetupClient({
       })
       if (!res.ok) {
         const j = await res.json().catch(() => ({}))
-        throw new Error(j.error ?? 'Failed to link profile')
+        // 409 with claimId means a pending claim already exists — send the
+        // user to the same waiting page rather than showing an error.
+        if (res.status === 409 && j.claimId) {
+          router.push(`/account/pending?claimId=${j.claimId}`)
+          return
+        }
+        throw new Error(j.error ?? 'Failed to submit claim')
       }
       const j = await res.json()
-      // Force NextAuth to re-issue the session cookie so the new
-      // linkedPersonId is on the JWT before the editor page reads it.
-      await refreshSession()
-      const params = new URLSearchParams({ personId: j.personId })
-      if (firstName) params.set('welcome', firstName)
-      router.push(`/player?${params.toString()}`)
+      // New flow: claim is now pending captain review, not auto-linked.
+      router.push(`/account/pending?claimId=${j.claimId}`)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
       setClaiming(null)

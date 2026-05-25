@@ -1,7 +1,39 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { auth } from '@/auth'
+import { isCaptain } from '@/lib/captains'
 import ClaimsManager from './ClaimsManager'
 
-export default function InternalClaimsPage() {
+const TEAM_SLUG = 'penn-mens-golf'
+
+export default async function InternalClaimsPage() {
+  const session = await auth()
+  if (!session?.user?.email) {
+    redirect('/login?next=/internal/claims')
+  }
+  if (!isCaptain(session.user.email, TEAM_SLUG)) {
+    return (
+      <div className="min-h-[calc(100dvh-60px)] bg-[#f8f5f0] flex items-center justify-center px-6">
+        <div className="max-w-md text-center bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-3">
+            Restricted
+          </p>
+          <h1
+            className="text-[#0a1628] text-2xl font-medium mb-2"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            Captains only.
+          </h1>
+          <p className="text-[13px] text-[#3d4a5c]">
+            This page is reserved for Penn Golf captains who approve new
+            profile claims. If that should be you, email the existing captain
+            to be added to the list.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
@@ -9,10 +41,10 @@ export default function InternalClaimsPage() {
           <Link href="/internal" className="text-xs text-gray-400 hover:text-gray-200 mb-3 inline-block">
             &larr; Internal
           </Link>
-          <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Internal</p>
+          <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Captain</p>
           <h1 className="text-white text-2xl font-semibold tracking-tight">Profile Claims</h1>
           <p className="text-gray-400 text-sm mt-2">
-            Review requests from alumni who want to claim their imported profile.
+            Review requests from alumni who want to claim their Member Book card.
           </p>
         </div>
       </div>

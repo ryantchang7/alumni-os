@@ -12,7 +12,8 @@ import {
   readStore,
   writeStore,
   getTeamBySlug,
-  linkAccountToPerson,
+  createProfileClaimRequest,
+  getAccountById,
 } from '@/lib/store/local-store'
 import { getMemberById } from '@/lib/member-book/data'
 import { isPublicMember } from '@/lib/member-book/helpers'
@@ -167,34 +168,86 @@ export async function POST(request: Request) {
     await writeStore(store)
   }
 
-  // Bind the account to this personId. Returns null if another account is
-  // already linked to this person.
-  const linked = await linkAccountToPerson(session.accountId, personId)
-  if (!linked) {
+  // Don't link directly anymore — queue a claim for the captain to review.
+  // The person/membership/enrichment records are now in place; the captain's
+  // approval handler just calls linkAccountToPerson when they say yes.
+  const account = await getAccountById(session.accountId)
+  if (!account) {
+    return NextResponse.json({ error: 'Account not found' }, { status: 404 })
+  }
+
+  // Block submitting a second claim while one is already pending.
+  const existing = store.profileClaimRequests.find(
+    r =>
+      r.teamId === team.id &&
+      r.requesterAccountId === session.accountId &&
+      r.status === 'pending',
+  )
+  if (existing) {
     return NextResponse.json(
-      { error: 'Another account has already claimed this profile' },
+      {
+        error: 'You already have a claim in front of the captain',
+        claimId: existing.id,
+      },
       { status: 409 },
     )
   }
 
-  // Fire-and-forget welcome email. Wrapped in try/catch + .catch so a
-  // provider failure never blocks the claim response.
+  const requesterName = account.name ?? entry.displayName
+  const claim = await createProfileClaimRequest({
+    teamId: team.id,
+    memberId: bookId,
+    personId,
+    requesterName,
+    requesterEmail: account.email,
+    requesterAccountId: session.accountId,
+  })
+
+  // Fire-and-forget captain notification. Heuristic match-hint: weak if the
+  // Google name and book displayName don't share at least one surname token.
   try {
     const { sendEmail } = await import('@/lib/email/send')
-    const { renderWelcomeEmail } = await import('@/lib/email/templates')
-    const clubhouseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alumni-os.vercel.app'
-    const firstName = splitName(entry.displayName).firstName ?? null
-    const { subject, html } = renderWelcomeEmail({
-      firstName,
-      clubhouseUrl: `${clubhouseUrl}/player`,
-    })
-    void sendEmail({ to: linked.email, subject, html }).catch((e) =>
-      console.warn('[welcome-email] background send failed:', e),
-    )
+    const { renderClaimNotification } = await import('@/lib/email/templates')
+    const { getCaptainEmails } = await import('@/lib/captains')
+    const captains = getCaptainEmails(TEAM_SLUG)
+    if (captains.length > 0) {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alumni-os.vercel.app'
+      const matchHint = matchesNameLoosely(account.name, entry.displayName)
+        ? 'strong'
+        : 'weak'
+      const yearsLabel =
+        entry.career.startYear && entry.career.finishYear
+          ? `${entry.career.startYear}–${entry.career.finishYear}`
+          : undefined
+      const { subject, html } = renderClaimNotification({
+        requesterName,
+        requesterEmail: account.email,
+        claimedName: entry.displayName,
+        claimedYears: yearsLabel,
+        adminUrl: `${baseUrl}/internal/claims`,
+        matchHint,
+      })
+      void sendEmail({ to: captains, subject, html }).catch((e) =>
+        console.warn('[claim-notify] background send failed:', e),
+      )
+    }
   } catch (e) {
-    console.warn('[welcome-email] setup failed:', e)
+    console.warn('[claim-notify] setup failed:', e)
   }
 
-  return NextResponse.json({ personId, accountId: linked.id })
+  return NextResponse.json({
+    pending: true,
+    claimId: claim.id,
+    personId,
+  })
+}
+
+function matchesNameLoosely(googleName: string | undefined, bookName: string): boolean {
+  if (!googleName) return false
+  const tokenize = (s: string) =>
+    s.toLowerCase().split(/\s+/).filter(t => t.length >= 3)
+  const g = new Set(tokenize(googleName))
+  const b = tokenize(bookName)
+  return b.some(t => g.has(t))
 }

@@ -74,6 +74,69 @@ export function renderWelcomeEmail(input: {
   return { subject, html: shell(inner, input.clubhouseUrl) }
 }
 
+// ── Captain notification: new claim ──────────────────────────────────────────
+
+export function renderClaimNotification(input: {
+  requesterName: string
+  requesterEmail: string
+  claimedName: string
+  claimedYears?: string
+  adminUrl: string
+  /** Set when the Google profile name doesn't match the book entry well —
+   * the captain should look twice. */
+  matchHint?: 'strong' | 'weak'
+}): { subject: string; html: string } {
+  const subject = `Penn Golf · Claim request from ${input.requesterName}`
+  const matchLine =
+    input.matchHint === 'weak'
+      ? `<p style="margin:0 0 12px 0;font-size:13px;color:#990000;background:#990000;background:rgba(153,0,0,0.06);border:1px solid rgba(153,0,0,0.25);border-radius:6px;padding:10px 12px;">
+          Google profile name doesn&rsquo;t closely match the Member Book entry. Double-check before approving.
+        </p>`
+      : ''
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      New claim waiting for review
+    </h1>
+    ${matchLine}
+    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.55;color:#3d4a5c;">
+      <strong>${escapeHtml(input.requesterName)}</strong>
+      <span style="color:${MUTED}">(${escapeHtml(input.requesterEmail)})</span>
+      is asking to claim:
+    </p>
+    <p style="margin:0 0 20px 0;font-size:15px;line-height:1.4;color:${NAVY};font-family:${SERIF};">
+      ${escapeHtml(input.claimedName)}${input.claimedYears ? ` <span style="color:${MUTED}">· Penn Golf ${escapeHtml(input.claimedYears)}</span>` : ''}
+    </p>
+    <p style="margin:0;">${btn(input.adminUrl, 'Review in admin')}</p>
+  `
+  return { subject, html: shell(inner, input.adminUrl) }
+}
+
+// ── User notification: claim declined ────────────────────────────────────────
+
+export function renderClaimDeclined(input: {
+  firstName?: string | null
+  claimedName: string
+  captainEmail: string
+}): { subject: string; html: string } {
+  const greeting = input.firstName ? `Hi ${input.firstName},` : 'Hi,'
+  const subject = 'Penn Golf · Your claim needs a closer look'
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      One more step on your claim
+    </h1>
+    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${escapeHtml(greeting)} the captain wasn&rsquo;t able to confirm your request to claim
+      <strong>${escapeHtml(input.claimedName)}</strong> from the Member Book.
+    </p>
+    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      Most often this is because the Google account name didn&rsquo;t match the book entry.
+      Email <a href="mailto:${input.captainEmail}" style="color:${NAVY};text-decoration:underline;">${escapeHtml(input.captainEmail)}</a>
+      with a quick note (graduation year, team you were on) and we&rsquo;ll get you sorted.
+    </p>
+  `
+  return { subject, html: shell(inner) }
+}
+
 // ── Weekly Digest ────────────────────────────────────────────────────────────
 
 interface DigestMember { name: string; classLabel?: string }

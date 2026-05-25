@@ -6,8 +6,10 @@ import Link from 'next/link'
 interface ClaimRequest {
   id: string
   memberId: string
+  personId?: string
   requesterName: string
   requesterEmail: string
+  requesterAccountId?: string
   pennGolfYears?: string
   note?: string
   status: 'pending' | 'approved' | 'declined'
@@ -84,8 +86,15 @@ export default function ClaimsManager() {
               <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${STATUS_STYLES[claim.status]}`}>
                 {claim.status}
               </span>
+              {claim.requesterAccountId && (
+                <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/10 border border-[#2d6a4f]/25 px-2 py-0.5 rounded-full">
+                  Google verified
+                </span>
+              )}
             </div>
-            <p className="text-xs text-[#8a7f70]">{claim.requesterEmail}</p>
+            <p className="text-xs text-[#8a7f70]">
+              <span className="font-mono">{claim.requesterEmail}</span>
+            </p>
             {claim.pennGolfYears && (
               <p className="text-xs text-[#4a5568]">Penn Golf years: {claim.pennGolfYears}</p>
             )}
@@ -94,11 +103,11 @@ export default function ClaimsManager() {
             )}
             <div className="flex items-center gap-3 mt-1.5">
               <Link
-                href={`/player/alumni/${claim.memberId}?teamSlug=penn-mens-golf`}
+                href={`/member-book/${encodeURIComponent(claim.memberId)}`}
                 target="_blank"
                 className="text-xs text-[#990000] hover:underline"
               >
-                View profile &rarr;
+                View Member Book entry &rarr;
               </Link>
               <span className="text-[10px] text-[#8a7f70]">
                 {new Date(claim.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}

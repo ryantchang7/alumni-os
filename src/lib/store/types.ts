@@ -228,9 +228,16 @@ export interface PlayerAlumniRequest {
 export interface ClubhouseProfileClaimRequest {
   id: string
   teamId: string
+  /** Member Book entry id (the public directory). */
   memberId: string
+  /** Resolved team-store person id, captured at claim time so the captain
+   * approval handler can link the account without re-doing the bridge. */
+  personId?: string
   requesterName: string
   requesterEmail: string
+  /** Account id of the signed-in claimer. Present for the new captain-
+   * gated flow; absent for legacy public-form claims. */
+  requesterAccountId?: string
   pennGolfYears?: string
   note?: string
   status: 'pending' | 'approved' | 'declined'

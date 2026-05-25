@@ -988,8 +988,10 @@ export async function updateClubhouseGatheringRequestStatus(
 export async function createProfileClaimRequest(input: {
   teamId: string
   memberId: string
+  personId?: string
   requesterName: string
   requesterEmail: string
+  requesterAccountId?: string
   pennGolfYears?: string
   note?: string
 }): Promise<ClubhouseProfileClaimRequest> {
@@ -999,8 +1001,10 @@ export async function createProfileClaimRequest(input: {
     id: crypto.randomUUID(),
     teamId: input.teamId,
     memberId: input.memberId,
+    personId: input.personId,
     requesterName: input.requesterName.trim(),
     requesterEmail: input.requesterEmail.trim().toLowerCase(),
+    requesterAccountId: input.requesterAccountId,
     pennGolfYears: input.pennGolfYears?.trim() || undefined,
     note: input.note?.trim() || undefined,
     status: 'pending',
@@ -1010,6 +1014,13 @@ export async function createProfileClaimRequest(input: {
   store.profileClaimRequests.push(claim)
   await writeStore(store)
   return claim
+}
+
+export async function getProfileClaimRequestById(
+  id: string,
+): Promise<ClubhouseProfileClaimRequest | undefined> {
+  const store = await readStore()
+  return store.profileClaimRequests.find(r => r.id === id)
 }
 
 export async function getProfileClaimRequestsForTeam(
