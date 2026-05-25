@@ -137,7 +137,14 @@ export async function POST(request: Request) {
   if (typeof body.currentCompany === 'string') safeUpdate.currentCompany = body.currentCompany.trim()
   if (typeof body.industry === 'string') safeUpdate.industry = body.industry.trim()
   if (typeof body.city === 'string') safeUpdate.city = body.city.trim()
-  if (typeof body.state === 'string') safeUpdate.state = body.state.trim()
+  if (typeof body.state === 'string') {
+    // Normalize "New York" / "Calif." / "ny" → "NY" so the member map can
+    // bucket the alum into the right state. Falls back to raw uppercase
+    // 2-letter if no match (so we don't lose data on unusual input).
+    const { enrichmentStateToCode } = await import('@/lib/map/state-lookup')
+    const raw = body.state.trim()
+    safeUpdate.state = enrichmentStateToCode(raw) ?? raw.toUpperCase().slice(0, 2)
+  }
   if (typeof body.country === 'string') safeUpdate.country = body.country.trim()
   if (body.inTown === null) {
     safeUpdate.inTown = undefined
