@@ -187,6 +187,11 @@ function AlumniProfileInner() {
     if (!currentRole.trim()) missing.push('Current role')
     if (!currentCompany.trim()) missing.push('Company')
     if (!industry.trim()) missing.push('Industries')
+    if (!homeCourse.trim()) missing.push('Home course')
+    // At least one contact method so other members can reach you.
+    if (!email.trim() && !phone.trim() && !linkedinUrl.trim()) {
+      missing.push('A contact method (email, phone, or LinkedIn)')
+    }
     return missing
   }
 
@@ -615,13 +620,14 @@ function AlumniProfileInner() {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                  Home course
+                  Home course <span className="text-[#990000]">*</span>
                 </label>
                 <input
                   type="text"
                   value={homeCourse}
                   onChange={e => setHomeCourse(e.target.value)}
                   placeholder="e.g. Winged Foot Golf Club"
+                  required
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                 />
               </div>
@@ -693,13 +699,14 @@ function AlumniProfileInner() {
               Contact
             </p>
             <p className="text-xs text-[#8a7f70] mb-4">
-              Visible to other signed-in Penn Golf members. Leave blank to keep
-              everything routed through the in-app request flow.
+              Visible to other approved Penn Golf members.{' '}
+              <span className="text-[#990000] font-semibold">At least one</span>{' '}
+              is required so people can actually reach you.
             </p>
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                  Public email (optional)
+                  Public email
                 </label>
                 <input
                   type="email"
@@ -711,7 +718,7 @@ function AlumniProfileInner() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                  Phone (optional)
+                  Phone
                 </label>
                 <input
                   type="tel"
@@ -723,7 +730,7 @@ function AlumniProfileInner() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                  LinkedIn URL (optional)
+                  LinkedIn URL
                 </label>
                 <input
                   type="url"
