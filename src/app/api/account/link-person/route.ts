@@ -1,0 +1,253 @@
+// Link the authenticated account to a Member Book entry.
+//
+// 1. Verify session.
+// 2. Verify the book entry exists + is public.
+// 3. If the book entry has no team-store record yet, bootstrap one
+//    (re-using the same logic as /alumni/claim).
+// 4. Bind the account.linkedPersonId to the team-store personId.
+
+import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
+import {
+  readStore,
+  writeStore,
+  getTeamBySlug,
+  createProfileClaimRequest,
+  getAccountById,
+} from '@/lib/store/local-store'
+import { getMemberById } from '@/lib/member-book/data'
+import { isPublicMember } from '@/lib/member-book/helpers'
+import { findTeamStorePersonForBookEntry } from '@/lib/member-book/bridge'
+import type {
+  Person,
+  TeamMembership,
+  PersonEnrichment,
+} from '@/lib/store/types'
+
+const TEAM_SLUG = 'penn-mens-golf'
+
+function splitName(displayName: string): { firstName?: string; lastName?: string } {
+  const parts = displayName.trim().split(/\s+/)
+  if (parts.length === 0) return {}
+  if (parts.length === 1) return { firstName: parts[0] }
+  return { firstName: parts[0], lastName: parts.slice(1).join(' ') }
+}
+
+function storeNormalizeName(name: string): string {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+export async function POST(request: Request) {
+  const session = await auth()
+  if (!session?.accountId) {
+    return NextResponse.json({ error: 'Sign in required' }, { status: 401 })
+  }
+
+  let body: Record<string, unknown>
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+
+  const bookId = typeof body.bookId === 'string' ? body.bookId : null
+  if (!bookId) {
+    return NextResponse.json({ error: 'Missing bookId' }, { status: 400 })
+  }
+
+  const entry = getMemberById(bookId)
+  if (!entry || !isPublicMember(entry)) {
+    return NextResponse.json({ error: 'Member Book entry not found' }, { status: 404 })
+  }
+
+  const team = await getTeamBySlug(TEAM_SLUG)
+  if (!team) {
+    return NextResponse.json({ error: 'Team not found' }, { status: 404 })
+  }
+
+  const store = await readStore()
+
+  // Resolve a team-store person. If none matches by name, bootstrap one
+  // from the Member Book entry.
+  let personId: string
+  const matched = findTeamStorePersonForBookEntry(entry, store.people)
+  if (matched) {
+    const onThisTeam = store.teamMemberships.some(
+      (m) => m.personId === matched.id && m.teamId === team.id,
+    )
+    if (onThisTeam) {
+      personId = matched.id
+    } else {
+      // Person record exists but no membership on this team — create one.
+      personId = matched.id
+      const now = new Date().toISOString()
+      const newMembership: TeamMembership = {
+        id: crypto.randomUUID(),
+        personId,
+        teamId: team.id,
+        memberRole: 'alumni',
+        memberStatus: 'verified',
+        rosterStartYear:
+          entry.career.startYear ?? entry.letterWinner.firstYear ?? undefined,
+        rosterEndYear:
+          entry.career.finishYear ?? entry.letterWinner.lastYear ?? undefined,
+        classYearEstimate: entry.profile.classYearEstimate ?? undefined,
+        classLabel: entry.profile.latestRosterClass ?? undefined,
+        hometown: entry.profile.hometown ?? undefined,
+        highSchool: entry.profile.highSchool ?? undefined,
+        bioUrls: [],
+        sourceUrls: [...entry.sources.sourceUrls],
+        confidence: 1,
+        publishedToNetwork: true,
+        publishedAt: now,
+        publishedByRole: 'admin',
+        createdAt: now,
+        updatedAt: now,
+      }
+      store.teamMemberships.push(newMembership)
+      await writeStore(store)
+    }
+  } else {
+    // Brand-new person record.
+    personId = crypto.randomUUID()
+    const now = new Date().toISOString()
+    const { firstName, lastName } = splitName(entry.displayName)
+
+    const newPerson: Person = {
+      id: personId,
+      canonicalName: entry.displayName,
+      normalizedName: storeNormalizeName(entry.displayName),
+      firstName,
+      lastName,
+      createdAt: now,
+    }
+    store.people.push(newPerson)
+
+    const newMembership: TeamMembership = {
+      id: crypto.randomUUID(),
+      personId,
+      teamId: team.id,
+      memberRole: 'alumni',
+      memberStatus: 'verified',
+      rosterStartYear:
+        entry.career.startYear ?? entry.letterWinner.firstYear ?? undefined,
+      rosterEndYear:
+        entry.career.finishYear ?? entry.letterWinner.lastYear ?? undefined,
+      classYearEstimate: entry.profile.classYearEstimate ?? undefined,
+      classLabel: entry.profile.latestRosterClass ?? undefined,
+      hometown: entry.profile.hometown ?? undefined,
+      highSchool: entry.profile.highSchool ?? undefined,
+      bioUrls: [],
+      sourceUrls: [...entry.sources.sourceUrls],
+      confidence: 1,
+      publishedToNetwork: true,
+      publishedAt: now,
+      publishedByRole: 'admin',
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.teamMemberships.push(newMembership)
+
+    const newEnrichment: PersonEnrichment = {
+      id: crypto.randomUUID(),
+      personId,
+      teamId: team.id,
+      visibleToPlayers: true,
+      verificationStatus: 'unverified',
+      sourceUrls: [],
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.personEnrichments.push(newEnrichment)
+
+    await writeStore(store)
+  }
+
+  // Don't link directly anymore — queue a claim for the captain to review.
+  // The person/membership/enrichment records are now in place; the captain's
+  // approval handler just calls linkAccountToPerson when they say yes.
+  const account = await getAccountById(session.accountId)
+  if (!account) {
+    return NextResponse.json({ error: 'Account not found' }, { status: 404 })
+  }
+
+  // Block submitting a second claim while one is already pending.
+  const existing = store.profileClaimRequests.find(
+    r =>
+      r.teamId === team.id &&
+      r.requesterAccountId === session.accountId &&
+      r.status === 'pending',
+  )
+  if (existing) {
+    return NextResponse.json(
+      {
+        error: 'You already have a claim in front of the captain',
+        claimId: existing.id,
+      },
+      { status: 409 },
+    )
+  }
+
+  const requesterName = account.name ?? entry.displayName
+  const claim = await createProfileClaimRequest({
+    teamId: team.id,
+    memberId: bookId,
+    personId,
+    requesterName,
+    requesterEmail: account.email,
+    requesterAccountId: session.accountId,
+  })
+
+  // Fire-and-forget captain notification. Heuristic match-hint: weak if the
+  // Google name and book displayName don't share at least one surname token.
+  try {
+    const { sendEmail } = await import('@/lib/email/send')
+    const { renderClaimNotification } = await import('@/lib/email/templates')
+    const { getCaptainEmails } = await import('@/lib/captains')
+    const captains = getCaptainEmails(TEAM_SLUG)
+    if (captains.length > 0) {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alumni-os.vercel.app'
+      const matchHint = matchesNameLoosely(account.name, entry.displayName)
+        ? 'strong'
+        : 'weak'
+      const yearsLabel =
+        entry.career.startYear && entry.career.finishYear
+          ? `${entry.career.startYear}–${entry.career.finishYear}`
+          : undefined
+      const { subject, html } = renderClaimNotification({
+        requesterName,
+        requesterEmail: account.email,
+        claimedName: entry.displayName,
+        claimedYears: yearsLabel,
+        adminUrl: `${baseUrl}/internal/claims`,
+        matchHint,
+      })
+      void sendEmail({ to: captains, subject, html }).catch((e) =>
+        console.warn('[claim-notify] background send failed:', e),
+      )
+    }
+  } catch (e) {
+    console.warn('[claim-notify] setup failed:', e)
+  }
+
+  return NextResponse.json({
+    pending: true,
+    claimId: claim.id,
+    personId,
+  })
+}
+
+function matchesNameLoosely(googleName: string | undefined, bookName: string): boolean {
+  if (!googleName) return false
+  const tokenize = (s: string) =>
+    s.toLowerCase().split(/\s+/).filter(t => t.length >= 3)
+  const g = new Set(tokenize(googleName))
+  const b = tokenize(bookName)
+  return b.some(t => g.has(t))
+}
