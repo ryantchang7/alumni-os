@@ -7,6 +7,7 @@ import { Suspense } from 'react'
 import { useSession } from 'next-auth/react'
 import CityStateInput from '@/components/CityStateInput'
 import HometownInput from '@/components/HometownInput'
+import PhotoUpload from '@/components/PhotoUpload'
 
 interface LocationRow {
   city?: string
@@ -660,53 +661,27 @@ function AlumniProfileInner() {
               Photo
             </p>
             <p className="text-xs text-[#8a7f70] mb-4">
-              Shown on your Member Book card. Paste any public image URL — your
-              Google avatar, a LinkedIn photo, etc.
+              Shown on your Member Book card. Upload from your camera roll or paste a URL.
             </p>
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0">
-                {(photoUrl || session?.user?.image) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={photoUrl || session?.user?.image || ''}
-                    alt=""
-                    className="w-20 h-20 rounded-full object-cover border border-[rgba(180,168,150,0.4)]"
-                  />
-                ) : (
-                  <div className="w-20 h-20 rounded-full bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] flex items-center justify-center text-[24px] text-[#b0a898]"
-                    style={{ fontFamily: 'var(--font-playfair)' }}>
-                    {profile.canonicalName.charAt(0)}
-                  </div>
-                )}
-              </div>
-              <div className="flex-1 space-y-2">
-                <input
-                  type="url"
-                  value={photoUrl}
-                  onChange={e => setPhotoUrl(e.target.value)}
-                  placeholder="https://…"
-                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                />
-                {!photoUrl && session?.user?.image && (
-                  <button
-                    type="button"
-                    onClick={() => setPhotoUrl(session.user!.image!)}
-                    className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
-                  >
-                    Use my Google photo &rarr;
-                  </button>
-                )}
-                {photoUrl && (
-                  <button
-                    type="button"
-                    onClick={() => setPhotoUrl('')}
-                    className="text-[11px] text-[#8a7f70] hover:text-[#0a1628]"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-            </div>
+            <PhotoUpload value={photoUrl} onChange={setPhotoUrl} label="Profile photo" />
+            {!photoUrl && session?.user?.image && (
+              <button
+                type="button"
+                onClick={() => setPhotoUrl(session.user!.image!)}
+                className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
+              >
+                Use my Google photo &rarr;
+              </button>
+            )}
+            {photoUrl && (
+              <button
+                type="button"
+                onClick={() => setPhotoUrl('')}
+                className="mt-2 ml-3 text-[11px] text-[#8a7f70] hover:text-[#0a1628]"
+              >
+                Clear
+              </button>
+            )}
           </div>
 
           {/* Contact */}

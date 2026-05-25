@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { ArrowLeft, Camera } from 'lucide-react'
+import PhotoUpload from '@/components/PhotoUpload'
 
 export default function NewMomentPage() {
   const { data: session, status: sessionStatus } = useSession()
@@ -99,35 +100,12 @@ export default function NewMomentPage() {
           )}
 
           <form onSubmit={handleSubmit} className="px-7 sm:px-10 py-8 space-y-6">
-            <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
-                Photo URL
-              </label>
-              <input
-                type="url"
-                value={photoUrl}
-                onChange={(e) => setPhotoUrl(e.target.value)}
-                placeholder="https://…"
-                required
-                className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30 focus:border-[#c8a84b]"
-              />
-              <p className="text-[11px] text-[#8a7f70] mt-2">
-                Paste any image URL. Direct uploads coming soon.
-              </p>
-            </div>
-
-            {/* Photo preview */}
-            {photoUrl && (
-              <div className="rounded-lg overflow-hidden bg-[#faf7f2] border border-[rgba(180,168,150,0.4)]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photoUrl}
-                  alt="preview"
-                  className="w-full max-h-[420px] object-cover"
-                  onError={() => setError('That URL didn\'t load as an image. Try a different one.')}
-                />
-              </div>
-            )}
+            <PhotoUpload
+              value={photoUrl}
+              onChange={setPhotoUrl}
+              label="Photo"
+              shape="wide"
+            />
 
             <div>
               <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">

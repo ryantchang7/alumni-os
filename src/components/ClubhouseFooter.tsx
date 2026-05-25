@@ -3,10 +3,9 @@
 import { usePathname } from 'next/navigation'
 
 /**
- * The clubhouse signature that closes every page. Just a thin gold
- * rule — the way a country club closes a letter. Restraint over
- * sitemap. Hidden on the landing route so the cover image goes
- * full-bleed.
+ * The clubhouse signature that closes every page. Thin gold rule + a
+ * whisper-quiet attribution. Restraint over sitemap. Hidden on the
+ * landing route so the cover image goes full-bleed.
  */
 export default function ClubhouseFooter() {
   const pathname = usePathname()
@@ -24,7 +23,20 @@ export default function ClubhouseFooter() {
           marginTop: '0',
         }}
       />
-      <div className="max-w-[1180px] mx-auto px-6 sm:px-10 py-8" />
+      <div className="max-w-[1180px] mx-auto px-6 sm:px-10 py-6 text-center">
+        <p className="text-[10.5px] text-[#8a7f70] tracking-[0.06em]">
+          Built by{' '}
+          <a
+            href="https://www.linkedin.com/in/ryantchang/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#0a1628] hover:text-[#990000] hover:underline transition-colors"
+          >
+            Ryan Chang
+          </a>
+          .
+        </p>
+      </div>
     </footer>
   )
 }
