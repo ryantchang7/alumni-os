@@ -409,8 +409,8 @@ function ClubhouseInner() {
           </div>
         </div>
 
-        {/* On the Loop — Penn Golf passing through */}
-        <OnTheLoopStrip />
+        {/* On the Loop — Penn Golf passing through. Tease for non-members. */}
+        <OnTheLoopStrip approved={!!onboarding?.linked} />
 
         {/* Clubhouse Activity Feed */}
         <ClubhouseActivityFeed />
