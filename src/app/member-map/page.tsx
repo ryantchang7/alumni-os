@@ -72,8 +72,9 @@ export default async function MemberMapPage() {
         .map((e) => [e.personId, e]),
     )
 
-    // Current players — hometown lens shows them; current-location lens skips
-    // them (their current location is just Penn).
+    // Current players — hometown lens uses membership.hometown. Current-
+    // location lens uses enrichment.state + additionalLocations (e.g. a
+    // current player based in Philly with a Boston home shows in both).
     for (const m of store.teamMemberships.filter(
       (x) => x.teamId === team.id && x.memberRole === 'current_player',
     )) {
@@ -82,9 +83,8 @@ export default async function MemberMapPage() {
       const enrichment = enrichMap.get(m.personId)
       if (enrichment?.visibleToPlayers === false) continue
       seenTeamStoreNames.add(normalize(person.canonicalName))
-      const hometownCode = hometownToStateCode(m.hometown)
-      if (!hometownCode) continue
-      placeMember(hometownByState, hometownCode, {
+
+      const base: MapMember = {
         personId: person.id,
         canonicalName: person.canonicalName,
         memberRole: 'current_player',
@@ -93,9 +93,26 @@ export default async function MemberMapPage() {
         rosterStartYear: m.rosterStartYear,
         rosterEndYear: m.rosterEndYear,
         hometown: m.hometown,
+        city: enrichment?.city,
+        state: enrichment?.state,
         openToCoffee: enrichment?.openToCoffee ?? false,
         openToGolfRounds: enrichment?.openToGolfRounds ?? false,
-      })
+      }
+
+      const hometownCode = hometownToStateCode(m.hometown)
+      if (hometownCode) placeMember(hometownByState, hometownCode, base)
+
+      const placedCurrentCodes = new Set<string>()
+      const placeCurrent = (rawState: string | undefined, locLabel?: string) => {
+        const code = enrichmentStateToCode(rawState)
+        if (!code || placedCurrentCodes.has(code)) return
+        placedCurrentCodes.add(code)
+        placeMember(currentByState, code, { ...base, locationLabel: locLabel })
+      }
+      placeCurrent(enrichment?.state)
+      for (const loc of enrichment?.additionalLocations ?? []) {
+        placeCurrent(loc.state, loc.label)
+      }
     }
 
     // Published alumni — go in BOTH lenses; current-location only if they have
