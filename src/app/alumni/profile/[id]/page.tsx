@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { useSession } from 'next-auth/react'
+import CityStateInput from '@/components/CityStateInput'
 
 interface LocationRow {
   city?: string
@@ -419,48 +420,26 @@ function AlumniProfileInner() {
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
                   Where you live now
                 </label>
-                <div className="grid grid-cols-[1fr_88px] gap-2">
-                  <input
-                    type="text"
-                    value={city}
-                    onChange={e => setCity(e.target.value)}
-                    placeholder="City — e.g. New York"
-                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                  />
-                  <input
-                    type="text"
-                    value={state}
-                    onChange={e => setState(e.target.value.toUpperCase().slice(0, 2))}
-                    placeholder="ST"
-                    maxLength={2}
-                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm uppercase text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                  />
-                </div>
+                <CityStateInput
+                  city={city}
+                  state={state}
+                  onChange={({ city: c, state: s }) => {
+                    setCity(c)
+                    setState(s)
+                  }}
+                />
 
                 {additionalLocations.map((loc, idx) => (
-                  <div key={idx} className="mt-2 grid grid-cols-[1fr_88px_1fr_28px] gap-2 items-center">
-                    <input
-                      type="text"
-                      value={loc.city ?? ''}
-                      onChange={(e) => {
+                  <div key={idx} className="mt-2 grid grid-cols-[1fr_1fr_28px] gap-2 items-center">
+                    <CityStateInput
+                      city={loc.city ?? ''}
+                      state={loc.state ?? ''}
+                      cityPlaceholder="City"
+                      onChange={({ city: c, state: s }) => {
                         const copy = [...additionalLocations]
-                        copy[idx] = { ...copy[idx], city: e.target.value }
+                        copy[idx] = { ...copy[idx], city: c, state: s }
                         setAdditionalLocations(copy)
                       }}
-                      placeholder="City"
-                      className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                    />
-                    <input
-                      type="text"
-                      value={loc.state ?? ''}
-                      onChange={(e) => {
-                        const copy = [...additionalLocations]
-                        copy[idx] = { ...copy[idx], state: e.target.value.toUpperCase().slice(0, 2) }
-                        setAdditionalLocations(copy)
-                      }}
-                      placeholder="ST"
-                      maxLength={2}
-                      className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm uppercase text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                     />
                     <input
                       type="text"
