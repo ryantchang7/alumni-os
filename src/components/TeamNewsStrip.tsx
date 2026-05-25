@@ -40,7 +40,8 @@ function NewsThumb({ src }: { src: string }) {
   // server-side checks that our Vercel runtime can't always satisfy.
   // wsrv strips referrer + auth headers cleanly and caches at the edge.
   const stripped = src.replace(/^https?:\/\//, '')
-  const proxied = `https://wsrv.nl/?url=${encodeURIComponent(stripped)}&w=480&h=256&fit=cover&output=jpg`
+  // Request 2x for retina displays — display is 240x128 css, source 480x256.
+  const proxied = `https://wsrv.nl/?url=${encodeURIComponent(stripped)}&w=600&h=320&fit=cover&output=jpg&q=85`
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img

@@ -54,10 +54,13 @@ function parseRss(xml: string): FetchedNewsItem[] {
     if (!title || !link) continue
     const pubDate = pickTag(block, 'pubDate')
     const description = pickTag(block, 'description')
+    // Prefer media:content (rp_primary, article-hero size) over
+    // media:thumbnail (rp_system, ~200px and visibly blurry when scaled up).
+    // Fall back to enclosure or whatever inline <img> the description has.
     const image =
-      pickAttr(block, 'media:thumbnail', 'url') ??
       pickAttr(block, 'media:content', 'url') ??
       pickAttr(block, 'enclosure', 'url') ??
+      pickAttr(block, 'media:thumbnail', 'url') ??
       pickImgFromHtml(description) ??
       undefined
     const summary = description ? stripHtml(description).slice(0, 280) : undefined
@@ -68,7 +71,11 @@ function parseRss(xml: string): FetchedNewsItem[] {
       // Critical: HTML-decode the image URL. XML attributes encode `&` as
       // `&amp;`, and a raw `&amp;` in the URL turns ASP querystring params
       // into garbage (pennathletics' image_handler.aspx then returns nothing).
-      imageUrl: image ? decodeEntities(image) : undefined,
+      // Also upgrade any rp_system to rp_primary in case a fallback URL
+      // points at the tiny system thumbnail.
+      imageUrl: image
+        ? decodeEntities(image).replace(/thumb_prefix=rp_system\b/, 'thumb_prefix=rp_primary')
+        : undefined,
       publishedAt: pubDate ? safeIsoFromRfc822(pubDate) : undefined,
     })
   }
