@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import { useSession } from 'next-auth/react'
 import CityStateInput from '@/components/CityStateInput'
+import HometownInput from '@/components/HometownInput'
 
 interface LocationRow {
   city?: string
@@ -176,8 +177,25 @@ function AlumniProfileInner() {
     )
   }
 
+  // Required fields for a useful profile. Validated before save and
+  // visualized with red asterisks in the labels.
+  const requiredMissing = (): string[] => {
+    const missing: string[] = []
+    if (!hometown.trim()) missing.push('Hometown')
+    if (!city.trim() || !state.trim()) missing.push('Where you live now')
+    if (!currentRole.trim()) missing.push('Current role')
+    if (!currentCompany.trim()) missing.push('Company')
+    if (!industry.trim()) missing.push('Industries')
+    return missing
+  }
+
   async function handleSave() {
     if (!profile) return
+    const missing = requiredMissing()
+    if (missing.length > 0) {
+      setError(`Please fill in: ${missing.join(', ')}.`)
+      return
+    }
     setSaving(true)
     setSaved(false)
     try {
@@ -350,42 +368,47 @@ function AlumniProfileInner() {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                  Hometown
+                  Hometown <span className="text-[#990000]">*</span>
                 </label>
-                <input
-                  type="text"
+                <HometownInput
                   value={hometown}
-                  onChange={e => setHometown(e.target.value)}
+                  onChange={setHometown}
                   placeholder="e.g. Greenwich, CT"
-                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  required
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                    Current role
+                    Current role <span className="text-[#990000]">*</span>
                   </label>
                   <input
                     type="text"
                     value={currentRole}
                     onChange={e => setCurrentRole(e.target.value)}
                     placeholder="Current role or title"
+                    required
                     className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">Company</label>
+                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                    Company <span className="text-[#990000]">*</span>
+                  </label>
                   <input
                     type="text"
                     value={currentCompany}
                     onChange={e => setCurrentCompany(e.target.value)}
                     placeholder="Company name"
+                    required
                     className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">Industries</label>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Industries <span className="text-[#990000]">*</span>
+                </label>
                 <p className="text-[11px] text-[#8a7f70] mb-2">Pick any that apply.</p>
                 <div className="flex flex-wrap gap-1.5">
                   {INDUSTRY_OPTIONS.map((opt) => {
@@ -418,7 +441,7 @@ function AlumniProfileInner() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                  Where you live now
+                  Where you live now <span className="text-[#990000]">*</span>
                 </label>
                 <CityStateInput
                   city={city}
