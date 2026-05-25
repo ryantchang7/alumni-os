@@ -12,6 +12,11 @@ const tools = [
     href: '/internal/claims',
   },
   {
+    label: 'Add a Member',
+    description: 'Drop a new alumnus or current player into the roster by hand.',
+    href: '/internal/add-member',
+  },
+  {
     label: 'Current Roster Editor',
     description: 'Edit the current Penn Golf roster and player profile details.',
     href: '/internal/current-roster',
@@ -25,11 +30,6 @@ const tools = [
     label: 'Gatherings',
     description: 'Manage rounds, coffees, drinks, dinners, and events.',
     href: '/internal/gatherings',
-  },
-  {
-    label: 'Build',
-    description: 'Import historical rosters and publish alumni profiles.',
-    href: '/build',
   },
 ]
 
