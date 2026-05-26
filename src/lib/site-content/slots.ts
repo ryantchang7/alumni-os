@@ -27,9 +27,9 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   {
     id: 'landing.cover-image',
     label: 'Landing cover image',
-    hint: 'The clubhouse photo on the splash page. URL or Vercel Blob upload.',
+    hint: 'The clubhouse photo on the splash page. Upload or paste a URL.',
     kind: 'image',
-    default: '/final clubhouse cover.png',
+    default: '/clubhouse-cover.jpg',
   },
   {
     id: 'landing.headline',
