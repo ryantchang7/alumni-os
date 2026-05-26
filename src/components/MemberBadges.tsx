@@ -36,12 +36,21 @@ export default function MemberBadges({ badges, size = 'sm', iconOnly = false }: 
         const meta = BADGE_META[b]
         if (!meta) return null
         const Icon = ICONS[meta.icon]
+        const isFounder = b === 'founder'
         return (
           <span
             key={b}
             title={meta.tooltip}
             aria-label={meta.tooltip}
             className={`${padding} ${text} ${meta.className} rounded-full inline-flex items-center gap-1 font-semibold uppercase tracking-[0.08em] whitespace-nowrap`}
+            style={
+              isFounder
+                ? {
+                    boxShadow:
+                      '0 0 0 1px rgba(200,168,75,0.25), 0 1px 2px rgba(10,22,40,0.18), 0 4px 14px rgba(200,168,75,0.22)',
+                  }
+                : undefined
+            }
           >
             {Icon ? <Icon className={iconSize} /> : null}
             {iconOnly ? null : meta.label}

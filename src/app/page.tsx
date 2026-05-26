@@ -135,7 +135,7 @@ export default function LandingPage() {
             href="/parent-signup"
             className="text-[12px] text-white/65 hover:text-white/95 transition-colors underline underline-offset-4 decoration-white/30 hover:decoration-white/70"
           >
-            Parent or affiliate? Join here.
+            Family or affiliate? Join here.
           </Link>
         </motion.div>
       </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Check, Heart, ShieldCheck } from 'lucide-react'
+import { Check, Heart, ShieldCheck, Star, Crown } from 'lucide-react'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 
 interface Props {
@@ -61,18 +61,18 @@ const TIERS: TierConfig[] = [
   },
   {
     id: 'parent',
-    name: 'Parent / Affiliate',
+    name: 'Family & Affiliate',
     price: 15,
     tagline:
-      'For parents, family, and longtime affiliates. Support the program and stay close to the Clubhouse.',
+      'For family, parents, and longtime affiliates. Support the program and stay close to the Clubhouse.',
     features: [
-      'Parent badge on your Member Book card',
+      'Family & Affiliate badge on your Member Book card',
       'Full access to follow rounds, events, and Moments',
       'Direct support for Penn Men’s Golf',
       'Cancel anytime',
     ],
-    cta: 'Support as a Parent',
-    ctaActive: 'Parent / Affiliate',
+    cta: 'Support the program',
+    ctaActive: 'Family & Affiliate',
     accent: false,
   },
 ]
@@ -88,6 +88,9 @@ export default function SupportClient({ status }: Props) {
   const [signedIn, setSignedIn] = useState(false)
   const [subscribed, setSubscribed] = useState(false)
   const [currentTier, setCurrentTier] = useState<Tier | null>(null)
+  const [founders, setFounders] = useState<
+    Array<{ name: string; classLabel?: string; isProgramFounder: boolean; bookId: string | null }>
+  >([])
   const [busyTier, setBusyTier] = useState<Tier | null>(null)
   const [portalBusy, setPortalBusy] = useState(false)
   const [donBusy, setDonBusy] = useState(false)
@@ -108,6 +111,13 @@ export default function SupportClient({ status }: Props) {
         setCurrentTier(d.tier ?? null)
       })
       .catch(() => setConfigured(false))
+
+    fetch('/api/founders')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (d?.founders) setFounders(d.founders)
+      })
+      .catch(() => {})
   }, [])
 
   async function subscribe(tier: Tier) {
@@ -437,6 +447,63 @@ export default function SupportClient({ status }: Props) {
             {donBusy ? 'Starting…' : 'Contribute'}
           </button>
         </div>
+
+        {/* Founders Wall */}
+        {founders.length > 0 && (
+          <div
+            className="bg-gradient-to-br from-[#0a1628] to-[#1a2d4a] text-white rounded-2xl px-7 py-9 sm:px-10 sm:py-10 border border-[#c8a84b]/30"
+            style={{
+              boxShadow: '0 4px 14px rgba(10,22,40,0.18), 0 18px 40px rgba(10,22,40,0.10)',
+            }}
+          >
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-3">
+              The Founders Wall
+            </p>
+            <h2
+              className="text-white text-2xl sm:text-3xl font-medium leading-tight mb-2"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Backers of the Clubhouse.
+            </h2>
+            <p className="text-[13.5px] text-white/65 leading-relaxed mb-6 max-w-md">
+              The members who stood up early to support Penn Men&rsquo;s Golf and
+              the Clubhouse. Founding Members and the program Founder.
+            </p>
+            <ul className="space-y-2.5">
+              {founders.map(f => (
+                <li
+                  key={f.name}
+                  className="flex items-center gap-3 text-[14.5px]"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  {f.isProgramFounder ? (
+                    <Crown className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
+                  ) : (
+                    <Star className="w-3.5 h-3.5 text-[#c8a84b] flex-shrink-0" />
+                  )}
+                  {f.bookId ? (
+                    <Link
+                      href={`/member-book/${encodeURIComponent(f.bookId)}`}
+                      className="text-white hover:text-[#c8a84b] transition-colors"
+                    >
+                      {f.name}
+                    </Link>
+                  ) : (
+                    <span className="text-white">{f.name}</span>
+                  )}
+                  {f.classLabel && (
+                    <span className="text-[12px] text-white/45">{f.classLabel}</span>
+                  )}
+                  {f.isProgramFounder && (
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#c8a84b] ml-1">
+                      · Founder
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Footer note */}
         <div className="text-center pt-2">

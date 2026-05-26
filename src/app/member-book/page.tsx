@@ -343,7 +343,7 @@ export default function MemberBookPage() {
                 <div className="flex items-baseline justify-between mb-3">
                   <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000]">
-                      Parents &amp; Affiliates
+                      Family &amp; Affiliates
                     </p>
                     <p className="text-[12px] text-[#8a7f70] mt-0.5">
                       Family and longtime supporters of Penn Men&rsquo;s Golf.
@@ -353,7 +353,7 @@ export default function MemberBookPage() {
                     href="/parent-signup"
                     className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline whitespace-nowrap"
                   >
-                    Join as a parent &rarr;
+                    Join as family &rarr;
                   </Link>
                 </div>
                 <ul className="space-y-2">
@@ -386,17 +386,17 @@ export default function MemberBookPage() {
               >
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000]">
-                    Parents &amp; Affiliates
+                    Family &amp; Affiliates
                   </p>
                   <p className="text-[12.5px] text-[#3d4a5c] mt-0.5">
-                    Parents, family, and longtime supporters can join the Clubhouse too.
+                    Family, parents, and longtime supporters can join the Clubhouse too.
                   </p>
                 </div>
                 <Link
                   href="/parent-signup"
                   className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
                 >
-                  Join as a parent &rarr;
+                  Join as family &rarr;
                 </Link>
               </div>
             )}

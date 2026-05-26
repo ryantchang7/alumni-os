@@ -58,7 +58,7 @@ export default function ParentSignupPage() {
             <span>Back home</span>
           </Link>
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85">
-            Penn Golf · Parent &amp; Affiliate
+            Penn Golf · Family &amp; Affiliate
           </p>
         </div>
       </div>
@@ -70,7 +70,7 @@ export default function ParentSignupPage() {
             className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
-            Join as a Parent or Affiliate
+            Join as Family or Affiliate
           </h1>
         </div>
         <p className="text-[14.5px] text-[#3d4a5c] mb-8 leading-relaxed max-w-xl">

@@ -33,44 +33,52 @@ export interface BadgeMeta {
 }
 
 export const BADGE_META: Record<BadgeId, BadgeMeta> = {
+  // Founder is intentionally elaborate — gradient navy with gold text, gold
+  // border + shadow halo. The renderer keys off `id === 'founder'` for the
+  // extra shadow that Tailwind classNames can't easily express.
   founder: {
     id: 'founder',
     label: 'Founder',
-    tooltip: 'Built the Clubhouse',
+    tooltip: 'Built the Penn Golf Clubhouse',
     className:
-      'bg-[#0a1628] text-[#c8a84b] border border-[#c8a84b]/40',
+      'bg-gradient-to-r from-[#0a1628] to-[#1a2d4a] text-[#c8a84b] border border-[#c8a84b]/70',
     icon: 'crown',
   },
+  // Captain — navy outline, matches the brand's primary surface chrome.
   captain: {
     id: 'captain',
     label: 'PGC Captain',
     tooltip: 'Penn Golf Clubhouse Captain',
     className:
-      'bg-[#0a1628]/8 text-[#0a1628] border border-[#0a1628]/25',
+      'bg-[#0a1628] text-white border border-[#0a1628]',
     icon: 'shield',
   },
+  // Founding Member — gold accent, the brand's prestige color.
   'founding-member': {
     id: 'founding-member',
     label: 'Founding Member',
     tooltip: 'Founding Member of the Clubhouse',
     className:
-      'bg-[#c8a84b]/15 text-[#7a6420] border border-[#c8a84b]/40',
+      'bg-[#c8a84b]/20 text-[#7a6420] border border-[#c8a84b]/55',
     icon: 'star',
   },
+  // Member — cream/muted, soft brand tone.
   member: {
     id: 'member',
     label: 'Member',
     tooltip: 'Supporting Member',
     className:
-      'bg-[#f5f2ee] text-[#3d4a5c] border border-[rgba(180,168,150,0.55)]',
+      'bg-[#faf7f2] text-[#3d4a5c] border border-[rgba(180,168,150,0.55)]',
     icon: 'check',
   },
+  // Family & Affiliate — Penn red, the brand's warmth/accent color, but
+  // softer than a Captain's navy.
   parent: {
     id: 'parent',
-    label: 'Parent',
-    tooltip: 'Parent or affiliate of the program',
+    label: 'Family & Affiliate',
+    tooltip: 'Family or longtime affiliate of the program',
     className:
-      'bg-[#990000]/8 text-[#990000] border border-[#990000]/25',
+      'bg-[#990000]/8 text-[#990000] border border-[#990000]/30',
     icon: 'heart',
   },
 }
@@ -92,8 +100,14 @@ export function getBadgesForAccount(account: Account | null | undefined): BadgeI
   if (!account) return []
   const out: BadgeId[] = []
   const email = (account.email ?? '').toLowerCase().trim()
+  const isFounder = FOUNDER_EMAILS.has(email)
 
-  if (FOUNDER_EMAILS.has(email)) out.push('founder')
+  if (isFounder) {
+    out.push('founder')
+    // The Founder is the founding-est member by definition. Auto-grant the
+    // Founding Member badge so it shows even without an active subscription.
+    out.push('founding-member')
+  }
   if (isCaptain(email, TEAM_SLUG)) out.push('captain')
 
   const sub = account.subscription

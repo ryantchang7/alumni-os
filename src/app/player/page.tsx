@@ -335,6 +335,11 @@ function ClubhouseInner() {
   const [loading, setLoading] = useState(true)
   const [newsItems, setNewsItems] = useState<TeamNewsItem[]>([])
   const [onboarding, setOnboarding] = useState<OnboardingStatus | null>(null)
+  const [billingStatus, setBillingStatus] = useState<{
+    signedIn: boolean
+    subscribed: boolean
+    configured: boolean
+  } | null>(null)
 
   useEffect(() => {
     fetch(`/api/player/profiles?teamSlug=${teamSlug}`)
@@ -354,6 +359,18 @@ function ClubhouseInner() {
       .then(r => (r.ok ? r.json() : { linked: false }))
       .then((data: OnboardingStatus) => setOnboarding(data))
       .catch(() => setOnboarding({ linked: false }))
+
+    fetch('/api/billing/status')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (!d) return
+        setBillingStatus({
+          signedIn: !!d.signedIn,
+          subscribed: !!d.subscribed,
+          configured: !!d.configured,
+        })
+      })
+      .catch(() => {})
   }, [teamSlug])
 
   return (
@@ -405,6 +422,39 @@ function ClubhouseInner() {
             />
           </div>
         )}
+
+        {/* Support nudge — approved members who haven't subscribed yet. */}
+        {onboarding?.linked &&
+          billingStatus?.configured &&
+          !billingStatus.subscribed && (
+            <div
+              className="mb-8 bg-gradient-to-r from-[#0a1628] to-[#1a2d4a] text-white rounded-2xl px-6 py-5 sm:px-7 sm:py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-[#c8a84b]/25"
+              style={{
+                boxShadow: '0 4px 14px rgba(10,22,40,0.15), 0 18px 40px rgba(10,22,40,0.08)',
+              }}
+            >
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-1.5">
+                  Back the program
+                </p>
+                <p
+                  className="text-white text-base sm:text-lg font-medium leading-snug"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Membership keeps the Clubhouse running and 70% goes to Penn Men&rsquo;s Golf.
+                </p>
+                <p className="text-[12.5px] text-white/65 mt-1">
+                  Founding Members get a place on the Founders Wall.
+                </p>
+              </div>
+              <Link
+                href="/support"
+                className="bg-[#c8a84b] hover:bg-[#d4b75a] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+              >
+                See membership &rarr;
+              </Link>
+            </div>
+          )}
 
         {/* From the box — Penn Athletics news */}
         {newsItems.length > 0 && (
