@@ -182,19 +182,17 @@ function AlumniProfileInner() {
   }
 
   // Required fields for a useful profile. Validated before save and
-  // visualized with red asterisks in the labels. Current players skip
-  // the corporate trio (role / company / industry) — they're students.
+  // visualized with red asterisks in the labels.
   const isCurrentPlayer = profile?.memberRole === 'current_player'
   const requiredMissing = (): string[] => {
     const missing: string[] = []
     if (!hometown.trim()) missing.push('Hometown')
     if (!city.trim() || !state.trim()) missing.push('Where you live now')
-    if (!isCurrentPlayer) {
-      if (!currentRole.trim()) missing.push('Current role')
-      if (!currentCompany.trim()) missing.push('Company')
-      if (!industry.trim()) missing.push('Industries')
-    }
+    if (!currentRole.trim()) missing.push('Current role')
+    if (!currentCompany.trim()) missing.push('Company')
+    if (!industry.trim()) missing.push('Industries')
     if (!homeCourse.trim()) missing.push('Home course')
+    // At least one contact method so other members can reach you.
     if (!email.trim() && !phone.trim() && !linkedinUrl.trim()) {
       missing.push('A contact method (email, phone, or LinkedIn)')
     }
@@ -746,34 +744,37 @@ function AlumniProfileInner() {
             </div>
           </div>
 
-          {/* How I can help */}
-          <div
-            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-          >
-            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
-              How I can help
-            </p>
-            <p className="text-xs text-[#8a7f70] mb-4">
-              Players see which topics you are open to. Pick all that apply.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {HELP_TOPIC_OPTIONS.map(topic => (
-                <button
-                  key={topic}
-                  type="button"
-                  onClick={() => toggleTopic(topic)}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
-                    helpTopics.includes(topic)
-                      ? 'bg-[#0a1628] text-white border-[#0a1628]'
-                      : 'bg-white text-[#0a1628] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]'
-                  }`}
-                >
-                  {topic}
-                </button>
-              ))}
+          {/* How I can help — alumni-only. Current players don't offer
+              mentorship/intros to alumni; alumni offer it to them. */}
+          {!isCurrentPlayer && (
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+            >
+              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+                How I can help
+              </p>
+              <p className="text-xs text-[#8a7f70] mb-4">
+                Players see which topics you are open to. Pick all that apply.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {HELP_TOPIC_OPTIONS.map(topic => (
+                  <button
+                    key={topic}
+                    type="button"
+                    onClick={() => toggleTopic(topic)}
+                    className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                      helpTopics.includes(topic)
+                        ? 'bg-[#0a1628] text-white border-[#0a1628]'
+                        : 'bg-white text-[#0a1628] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]'
+                    }`}
+                  >
+                    {topic}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Contact preference */}
           <div
