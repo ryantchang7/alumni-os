@@ -25,7 +25,7 @@ export function getStripe(): Stripe | null {
 
 export const MEMBER_PRICE_USD_CENTS = 1000  // $10 / month
 export const FOUNDING_PRICE_USD_CENTS = 2000  // $20 / month
-export const TEAM_SHARE = 0.5  // 50% goes to Penn Men's Golf, 50% keeps the Clubhouse running
+export const TEAM_SHARE = 0.7  // 70% goes to Penn Men's Golf, 30% keeps the Clubhouse running
 
 export type SubscriptionTier = 'member' | 'founding' | 'parent'
 

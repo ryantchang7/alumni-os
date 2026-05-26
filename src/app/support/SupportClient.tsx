@@ -31,7 +31,7 @@ const TIERS: TierConfig[] = [
     name: 'Member',
     price: 10,
     tagline:
-      'Membership in the Clubhouse. Half goes to Penn Men’s Golf, half keeps the platform running.',
+      'Membership in the Clubhouse. 70% goes to Penn Men’s Golf, 30% keeps the platform running.',
     features: [
       'Direct support for the program',
       'Member status on your profile',
@@ -80,7 +80,7 @@ const TIERS: TierConfig[] = [
 export default function SupportClient({ status }: Props) {
   const heroBlurb = useSiteContent(
     'support.hero-blurb',
-    'The Penn Golf Clubhouse is the private alumni network for the program. Half of every membership and contribution goes directly to Penn Men’s Golf; the other half maintains the platform. Cancel anytime.',
+    'The Penn Golf Clubhouse is the private alumni network for the program. 70% of every membership and contribution goes directly to Penn Men’s Golf; the remaining 30% maintains the platform. Cancel anytime.',
   )
   const [configured, setConfigured] = useState<boolean | null>(null)
   const [foundingConfigured, setFoundingConfigured] = useState(false)
@@ -388,7 +388,7 @@ export default function SupportClient({ status }: Props) {
             Or contribute directly.
           </h2>
           <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-6 max-w-md">
-            Prefer not to subscribe? Make a one-time contribution. Same 50/50 split
+            Prefer not to subscribe? Make a one-time contribution. Same 70/30 split
             between the program and the platform.
           </p>
 
@@ -442,7 +442,7 @@ export default function SupportClient({ status }: Props) {
         <div className="text-center pt-2">
           <p className="text-[11.5px] text-[#8a7f70] max-w-md mx-auto leading-relaxed">
             Payments processed by Stripe. Penn Men&rsquo;s Golf is not a registered
-            501(c)(3), so contributions are not tax-deductible. The 50% transfer to
+            501(c)(3), so contributions are not tax-deductible. The 70% transfer to
             the program is reconciled quarterly by the captain.{' '}
             <Link href="/player" className="text-[#0a1628] hover:underline">
               Back to the Clubhouse

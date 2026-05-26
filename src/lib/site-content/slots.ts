@@ -69,7 +69,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Paragraph under the headline on /support.',
     kind: 'longtext',
     default:
-      'The Penn Golf Clubhouse is the private alumni network for the program. Half of every membership and contribution goes directly to Penn Men’s Golf; the other half maintains the platform. Cancel anytime.',
+      'The Penn Golf Clubhouse is the private alumni network for the program. 70% of every membership and contribution goes directly to Penn Men’s Golf; the remaining 30% maintains the platform. Cancel anytime.',
   },
 ]
 
