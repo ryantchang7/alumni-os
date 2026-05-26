@@ -12,6 +12,8 @@ import {
 import { findTeamStorePersonForBookEntry } from '@/lib/member-book/bridge'
 import { readStore, getTeamBySlug } from '@/lib/store/local-store'
 import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
+import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
+import MemberBadges from '@/components/MemberBadges'
 
 // Detail pages render on demand so we don't ship 337 prebuilt HTML payloads
 // in the deploy artifact (caused vercel CLI Upload aborted at ~29 MB).
@@ -24,6 +26,7 @@ interface StoreMatch {
   membership: TeamMembership | undefined
   enrichment: PersonEnrichment | undefined
   accountImage: string | undefined
+  badges: BadgeId[]
 }
 
 async function lookupStoreMatch(displayName: string): Promise<StoreMatch | null> {
@@ -50,6 +53,7 @@ async function lookupStoreMatch(displayName: string): Promise<StoreMatch | null>
     membership,
     enrichment,
     accountImage: account?.image,
+    badges: getBadgesForAccount(account),
   }
 }
 
@@ -187,6 +191,11 @@ export default async function MemberDetailPage({
                 >
                   {member.displayName}
                 </h1>
+                {storeMatch?.badges && storeMatch.badges.length > 0 && (
+                  <div className="mt-3">
+                    <MemberBadges badges={storeMatch.badges} size="md" />
+                  </div>
+                )}
             {years && (
               <p className="text-[15px] text-[#3d4a5c] mt-3" data-testid="member-detail-years">
                 {years}

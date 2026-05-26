@@ -43,12 +43,16 @@ export async function GET(request: Request) {
       const hasCareer = !!(enrichment?.currentRole || enrichment?.currentCompany)
 
       const bookEntry = findBookEntryForTeamStorePerson(person.canonicalName)
+      // Prefer the alum's manually-set photo; fall back to their Google avatar.
+      const linkedAccount = store.accounts.find(a => a.linkedPersonId === person.id)
+      const photoUrl = enrichment?.photoUrl ?? linkedAccount?.image ?? null
       return {
         personId: person.id,
         canonicalName: person.canonicalName,
         firstName: person.firstName,
         lastName: person.lastName,
         bookId: bookEntry?.id ?? null,
+        photoUrl,
         memberRole: membership.memberRole ?? 'alumni',
         memberStatus: membership.memberStatus,
         parentRelationship: membership.parentRelationship,

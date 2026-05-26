@@ -64,10 +64,12 @@ function RegistryEntry({
   member,
   index,
   badges,
+  photoUrl,
 }: {
   member: MemberBookEntry
   index: number
   badges?: BadgeId[]
+  photoUrl?: string | null
 }) {
   const years = getMemberPennGolfYears(member)
   const hometown = getMemberHometownLabel(member)
@@ -75,6 +77,12 @@ function RegistryEntry({
   const classYear = member.profile.classYearEstimate
     ? `Class of ${member.profile.classYearEstimate}`
     : null
+  const initials = member.displayName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(p => p[0]?.toUpperCase() ?? '')
+    .join('')
 
   return (
     <motion.div
@@ -90,24 +98,46 @@ function RegistryEntry({
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04), 0 2px 8px rgba(10,22,40,0.03)' }}
       >
         <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <p
-              className="text-[#0a1628] text-[17px] font-medium leading-snug"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              {member.displayName}
-            </p>
-            {badges && badges.length > 0 && (
-              <div className="mt-1.5">
-                <MemberBadges badges={badges} size="sm" />
+          <div className="flex items-start gap-3 min-w-0 flex-1">
+            {photoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={photoUrl}
+                alt={member.displayName}
+                className="w-12 h-12 rounded-full object-cover border border-[rgba(180,168,150,0.5)] flex-shrink-0"
+              />
+            ) : (
+              <div
+                className="w-12 h-12 rounded-full bg-[#0a1628] text-white flex items-center justify-center flex-shrink-0 border border-[rgba(180,168,150,0.5)]"
+                aria-hidden
+              >
+                <span
+                  className="text-[14px] font-medium"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  {initials}
+                </span>
               </div>
             )}
-            {years && (
-              <p className="text-[13px] text-[#3d4a5c] mt-1.5">{years}</p>
-            )}
-            <div className="text-[12.5px] text-[#8a7f70] mt-0.5 leading-relaxed">
-              {classYear && <p>{classYear}</p>}
-              {hometown && <p>{hometown}</p>}
+            <div className="min-w-0 flex-1">
+              <p
+                className="text-[#0a1628] text-[17px] font-medium leading-snug"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                {member.displayName}
+              </p>
+              {badges && badges.length > 0 && (
+                <div className="mt-1.5">
+                  <MemberBadges badges={badges} size="sm" />
+                </div>
+              )}
+              {years && (
+                <p className="text-[13px] text-[#3d4a5c] mt-1.5">{years}</p>
+              )}
+              <div className="text-[12.5px] text-[#8a7f70] mt-0.5 leading-relaxed">
+                {classYear && <p>{classYear}</p>}
+                {hometown && <p>{hometown}</p>}
+              </div>
             </div>
           </div>
           {isCurrent && (
@@ -187,6 +217,7 @@ export default function MemberBookPage() {
     DEFAULT_PUBLIC_FILTERS,
   )
   const [badgesByBookId, setBadgesByBookId] = useState<Record<string, BadgeId[]>>({})
+  const [photosByBookId, setPhotosByBookId] = useState<Record<string, string>>({})
   const [parents, setParents] = useState<ParentEntry[]>([])
   const [founders, setFounders] = useState<FounderEntry[]>([])
 
@@ -195,7 +226,8 @@ export default function MemberBookPage() {
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (!d?.profiles) return
-        const next: Record<string, BadgeId[]> = {}
+        const nextBadges: Record<string, BadgeId[]> = {}
+        const nextPhotos: Record<string, string> = {}
         const nextParents: ParentEntry[] = []
         for (const p of d.profiles as Array<{
           personId: string
@@ -203,10 +235,14 @@ export default function MemberBookPage() {
           memberRole?: string
           parentRelationship?: string
           bookId?: string | null
+          photoUrl?: string | null
           badges?: BadgeId[]
         }>) {
           if (p.bookId && p.badges && p.badges.length > 0) {
-            next[p.bookId] = p.badges
+            nextBadges[p.bookId] = p.badges
+          }
+          if (p.bookId && p.photoUrl) {
+            nextPhotos[p.bookId] = p.photoUrl
           }
           if (p.memberRole === 'parent') {
             nextParents.push({
@@ -217,7 +253,8 @@ export default function MemberBookPage() {
             })
           }
         }
-        setBadgesByBookId(next)
+        setBadgesByBookId(nextBadges)
+        setPhotosByBookId(nextPhotos)
         setParents(nextParents)
       })
       .catch(() => {})
@@ -515,6 +552,7 @@ export default function MemberBookPage() {
                     member={m}
                     index={i}
                     badges={badgesByBookId[m.id]}
+                    photoUrl={photosByBookId[m.id]}
                   />
                 ))}
               </div>
