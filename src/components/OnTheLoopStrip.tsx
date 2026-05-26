@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Plane, Lock } from 'lucide-react'
+import { Plane } from 'lucide-react'
+import MemberOnlyTease from './MemberOnlyTease'
 
 interface OnTheLoopMember {
   personId: string
@@ -73,41 +74,17 @@ export default function OnTheLoopStrip({ approved }: Props) {
         transition={{ duration: 0.4, delay: 0.25 }}
         className="pb-8"
       >
-        <div className="flex items-baseline gap-2 mb-3">
-          <Plane className="w-4 h-4 text-[#c8a84b]" />
-          <h2 className="text-base font-semibold text-[#0a1628]">On the Loop</h2>
-          <p className="text-[12px] text-[#8a7f70] italic ml-1">
-            — Penn Golf passing through
-          </p>
-        </div>
-        <div
-          className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-5 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-        >
-          <div className="flex items-start gap-3">
-            <span
-              className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-[#0a1628] text-white flex-shrink-0 mt-0.5"
-              aria-hidden
-            >
-              <Lock className="w-4 h-4" />
-            </span>
-            <div>
-              <p className="text-[#0a1628] text-[14px] font-medium leading-snug">
-                <span className="text-[#c8a84b]">{members.length}</span>{' '}
-                {members.length === 1 ? 'alum is' : 'alumni are'} traveling right now.
-              </p>
-              <p className="text-[12.5px] text-[#8a7f70] mt-0.5">
-                Members see cities, dates, and who&rsquo;s in town to say hello to.
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/account/setup"
-            className="bg-[#0a1628] hover:bg-[#112240] text-white text-[11.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap"
-          >
-            Claim to see
-          </Link>
-        </div>
+        <MemberOnlyTease
+          icon={Plane}
+          title="On the Loop — Penn Golf passing through"
+          count={members.length}
+          countLabel={
+            members.length === 1
+              ? 'alum is traveling right now'
+              : 'alumni are traveling right now'
+          }
+          valueProp="Members see cities, dates, and who's in town to say hello to."
+        />
       </motion.section>
     )
   }

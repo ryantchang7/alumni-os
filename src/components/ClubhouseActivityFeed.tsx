@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Sparkles, Camera, ArrowUpRight } from 'lucide-react'
+import { Sparkles, Camera, ArrowUpRight, UserPlus, Calendar } from 'lucide-react'
+import MemberOnlyTease from './MemberOnlyTease'
 
 interface RecentClaim {
   name: string | null
@@ -65,7 +66,14 @@ function timeAgo(iso: string): string {
   return `${Math.floor(days / 30)}mo ago`
 }
 
-export default function ClubhouseActivityFeed() {
+interface ClubhouseActivityFeedProps {
+  /** True if the viewer is signed in + captain-approved. Non-approved viewers
+   * see teased counts in place of Latest Moments / Recently Joined / Upcoming
+   * Gatherings. The Pulse and From the Box stay visible to everyone. */
+  approved: boolean
+}
+
+export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFeedProps) {
   const [data, setData] = useState<ActivityResponse | null>(null)
   const [loaded, setLoaded] = useState(false)
 
@@ -102,58 +110,116 @@ export default function ClubhouseActivityFeed() {
       </div>
 
       {hasMoments && (
-        <div
-          className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 mb-4"
-          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Camera className="w-4 h-4 text-[#c8a84b]" />
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
-                Latest Moments
-              </p>
-            </div>
-            <Link
-              href="/moments"
-              className="text-[11.5px] font-medium text-[#990000] hover:underline"
-            >
-              See the wall &rarr;
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {data.recentMoments?.map((m) => (
+        approved ? (
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 mb-4"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Camera className="w-4 h-4 text-[#c8a84b]" />
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                  Latest Moments
+                </p>
+              </div>
               <Link
-                key={m.id}
                 href="/moments"
-                className="group block"
+                className="text-[11.5px] font-medium text-[#990000] hover:underline"
               >
-                <div className="aspect-[4/3] rounded-lg overflow-hidden bg-[#faf7f2] border border-[rgba(180,168,150,0.35)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={m.photoUrl}
-                    alt={m.caption}
-                    className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                  />
-                </div>
-                <p className="text-[12px] text-[#3d4a5c] mt-1.5 line-clamp-2 leading-snug">
-                  {m.caption}
-                </p>
-                <p className="text-[11px] text-[#8a7f70] mt-0.5">
-                  <span style={{ fontFamily: 'var(--font-playfair)' }}>{m.postedByName}</span>
-                  <span className="mx-1.5">·</span>
-                  {timeAgo(m.createdAt)}
-                </p>
+                See the wall &rarr;
               </Link>
-            ))}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {data.recentMoments?.map((m) => (
+                <Link
+                  key={m.id}
+                  href="/moments"
+                  className="group block"
+                >
+                  <div className="aspect-[4/3] rounded-lg overflow-hidden bg-[#faf7f2] border border-[rgba(180,168,150,0.35)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={m.photoUrl}
+                      alt={m.caption}
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                    />
+                  </div>
+                  <p className="text-[12px] text-[#3d4a5c] mt-1.5 line-clamp-2 leading-snug">
+                    {m.caption}
+                  </p>
+                  <p className="text-[11px] text-[#8a7f70] mt-0.5">
+                    <span style={{ fontFamily: 'var(--font-playfair)' }}>{m.postedByName}</span>
+                    <span className="mx-1.5">·</span>
+                    {timeAgo(m.createdAt)}
+                  </p>
+                </Link>
+              ))}
+            </div>
           </div>
+        ) : (
+          <div className="mb-4">
+            <MemberOnlyTease
+              icon={Camera}
+              title="Latest Moments"
+              count={data.totals.publishedMoments ?? data.recentMoments?.length ?? 0}
+              countLabel={
+                (data.totals.publishedMoments ?? data.recentMoments?.length ?? 0) === 1
+                  ? 'moment on the wall'
+                  : 'moments on the wall'
+              }
+              valueProp="Members see the photos, captions, and who posted them."
+            />
+          </div>
+        )
+      )}
+
+      {/* Non-approved: stack the two member-only teases above the public grid. */}
+      {!approved && hasClaims && (
+        <div className="mb-4">
+          <MemberOnlyTease
+            icon={UserPlus}
+            title="Recently Joined"
+            count={data.recentClaims.length}
+            countLabel={
+              data.recentClaims.length === 1
+                ? 'member just claimed their card'
+                : 'members just claimed their cards'
+            }
+            valueProp="Members see who just joined."
+          />
+        </div>
+      )}
+      {!approved && hasUpcoming && (
+        <div className="mb-4">
+          <MemberOnlyTease
+            icon={Calendar}
+            title="Upcoming Gatherings"
+            count={data.upcoming.length}
+            countLabel={
+              data.upcoming.length === 1
+                ? 'gathering on the books'
+                : 'gatherings on the books'
+            }
+            valueProp="Members see hosts, cities, and can RSVP."
+          />
         </div>
       )}
 
+      {/* Public grid: From the Box + The Pulse always; Recently Joined +
+          Upcoming Gatherings only when approved. */}
       <div
-        className={`bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 grid grid-cols-1 md:grid-cols-2 ${hasNews ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6`}
+        className={`bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 grid grid-cols-1 md:grid-cols-2 ${
+          approved
+            ? hasNews
+              ? 'lg:grid-cols-4'
+              : 'lg:grid-cols-3'
+            : hasNews
+              ? 'lg:grid-cols-2'
+              : 'lg:grid-cols-1'
+        } gap-6`}
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
       >
-        {/* From the box — latest Penn Athletics news */}
+        {/* From the box — latest Penn Athletics news (public) */}
         {hasNews && (
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#990000] mb-2.5">
@@ -187,70 +253,74 @@ export default function ClubhouseActivityFeed() {
           </div>
         )}
 
-        {/* Recently joined */}
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
-            Recently Joined
-          </p>
-          {hasClaims ? (
-            <ul className="space-y-1.5">
-              {data.recentClaims.map((c, i) => (
-                <li key={`${c.personId}-${i}`} className="text-[13px] leading-snug">
-                  <Link
-                    href={c.bookId ? `/member-book/${encodeURIComponent(c.bookId)}` : '/member-book'}
-                    className="text-[#0a1628] hover:underline"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
-                  >
-                    {c.name ?? 'A new member'}
-                  </Link>
-                  <span className="text-[#8a7f70] text-[12px] ml-2">{timeAgo(c.createdAt)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-[12.5px] text-[#8a7f70] italic">
-              Be one of the first to claim a card &mdash;{' '}
-              <Link href="/login?next=/account/setup" className="text-[#990000] hover:underline">
-                sign in
-              </Link>
-              .
+        {/* Recently joined — approved only */}
+        {approved && (
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
+              Recently Joined
             </p>
-          )}
-        </div>
+            {hasClaims ? (
+              <ul className="space-y-1.5">
+                {data.recentClaims.map((c, i) => (
+                  <li key={`${c.personId}-${i}`} className="text-[13px] leading-snug">
+                    <Link
+                      href={c.bookId ? `/member-book/${encodeURIComponent(c.bookId)}` : '/member-book'}
+                      className="text-[#0a1628] hover:underline"
+                      style={{ fontFamily: 'var(--font-playfair)' }}
+                    >
+                      {c.name ?? 'A new member'}
+                    </Link>
+                    <span className="text-[#8a7f70] text-[12px] ml-2">{timeAgo(c.createdAt)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[12.5px] text-[#8a7f70] italic">
+                Be one of the first to claim a card &mdash;{' '}
+                <Link href="/login?next=/account/setup" className="text-[#990000] hover:underline">
+                  sign in
+                </Link>
+                .
+              </p>
+            )}
+          </div>
+        )}
 
-        {/* Upcoming gatherings */}
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
-            Upcoming Gatherings
-          </p>
-          {hasUpcoming ? (
-            <ul className="space-y-2">
-              {data.upcoming.map((g) => (
-                <li key={g.id}>
-                  <Link
-                    href={GATHERING_HREF[g.type]}
-                    className="block group"
-                  >
-                    <p className="text-[13px] text-[#0a1628] group-hover:underline leading-snug">
-                      {g.title}
-                    </p>
-                    <p className="text-[12px] text-[#8a7f70]">
-                      {g.dateText}
-                      {g.city ? ` · ${g.city}${g.state ? `, ${g.state}` : ''}` : ''}
-                      {g.interestedCount > 0 ? ` · ${g.interestedCount} interested` : ''}
-                    </p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-[12.5px] text-[#8a7f70] italic">
-              No gatherings scheduled yet. Captains and hosts add them anytime.
+        {/* Upcoming gatherings — approved only */}
+        {approved && (
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
+              Upcoming Gatherings
             </p>
-          )}
-        </div>
+            {hasUpcoming ? (
+              <ul className="space-y-2">
+                {data.upcoming.map((g) => (
+                  <li key={g.id}>
+                    <Link
+                      href={GATHERING_HREF[g.type]}
+                      className="block group"
+                    >
+                      <p className="text-[13px] text-[#0a1628] group-hover:underline leading-snug">
+                        {g.title}
+                      </p>
+                      <p className="text-[12px] text-[#8a7f70]">
+                        {g.dateText}
+                        {g.city ? ` · ${g.city}${g.state ? `, ${g.state}` : ''}` : ''}
+                        {g.interestedCount > 0 ? ` · ${g.interestedCount} interested` : ''}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[12.5px] text-[#8a7f70] italic">
+                No gatherings scheduled yet. Captains and hosts add them anytime.
+              </p>
+            )}
+          </div>
+        )}
 
-        {/* Totals */}
+        {/* Totals — public, aggregate only */}
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
             The Pulse

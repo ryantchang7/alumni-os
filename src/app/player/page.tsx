@@ -12,6 +12,7 @@ import ClubhouseActivityFeed from '@/components/ClubhouseActivityFeed'
 import OnTheLoopStrip from '@/components/OnTheLoopStrip'
 import ClubhouseChecklist from '@/components/ClubhouseChecklist'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
+import MemberOnlyTease from '@/components/MemberOnlyTease'
 import type { TeamNewsItem } from '@/lib/store/types'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
@@ -35,8 +36,9 @@ const GATHERING_HREF: Record<GatheringSnippet['type'], string> = {
   event: '/19th-hole',
 }
 
-function ThisWeekPanel({ teamSlug }: { teamSlug: string }) {
+function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boolean }) {
   const [gatherings, setGatherings] = useState<GatheringSnippet[]>([])
+  const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -44,6 +46,7 @@ function ThisWeekPanel({ teamSlug }: { teamSlug: string }) {
       .then(r => r.ok ? r.json() : { gatherings: [] })
       .then(d => {
         const all: GatheringSnippet[] = d.gatherings ?? []
+        setTotalCount(all.length)
         // Pick one of each type class: round, social (coffee/drinks/dinner), event
         const round = all.find(g => g.type === 'round')
         const social = all.find(g => g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner')
@@ -55,6 +58,26 @@ function ThisWeekPanel({ teamSlug }: { teamSlug: string }) {
   }, [teamSlug])
 
   if (loading || gatherings.length === 0) return null
+
+  if (!approved) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...spring, delay: 0.55 }}
+        className="pb-8"
+        data-testid="this-week-panel"
+      >
+        <MemberOnlyTease
+          icon={CalendarDays}
+          title="This Week in the Clubhouse"
+          count={totalCount}
+          countLabel={totalCount === 1 ? 'gathering this week' : 'gatherings this week'}
+          valueProp="Members see what's on, who's hosting, and can RSVP."
+        />
+      </motion.div>
+    )
+  }
 
   return (
     <motion.div
@@ -412,8 +435,8 @@ function ClubhouseInner() {
         {/* On the Loop — Penn Golf passing through. Tease for non-members. */}
         <OnTheLoopStrip approved={!!onboarding?.linked} />
 
-        {/* Clubhouse Activity Feed */}
-        <ClubhouseActivityFeed />
+        {/* Clubhouse Activity Feed. Tease for non-members. */}
+        <ClubhouseActivityFeed approved={!!onboarding?.linked} />
 
         {/* Penn Golf Tradition */}
         <TraditionSection />
@@ -494,8 +517,8 @@ function ClubhouseInner() {
           )
         })()}
 
-        {/* This Week in the Clubhouse */}
-        <ThisWeekPanel teamSlug={teamSlug} />
+        {/* This Week in the Clubhouse. Tease for non-members. */}
+        <ThisWeekPanel teamSlug={teamSlug} approved={!!onboarding?.linked} />
 
         {/* Your Requests */}
         <div className="pb-8">
