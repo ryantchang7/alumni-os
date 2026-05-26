@@ -66,7 +66,7 @@ interface ApiProfile {
 // ── Step indicator ────────────────────────────────────────────────────────────
 
 function StepBar({ step }: { step: number }) {
-  const labels = ['What you need', 'Context', 'Choose member', 'Send request']
+  const labels = ['Purpose', 'Context', 'Pick', 'Send']
   return (
     <div className="flex items-center gap-0 mb-8">
       {labels.map((label, i) => {
@@ -264,15 +264,15 @@ export default function AskClient() {
           <div className="max-w-[680px] mx-auto">
             <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Clubhouse</p>
             <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Request sent.</h1>
-            <p className="text-gray-400 text-sm mt-2">Your request has been delivered to {first}.</p>
+            <p className="text-gray-400 text-sm mt-2">Your message is in {first}&rsquo;s Clubhouse inbox.</p>
           </div>
         </div>
         <div className="max-w-[680px] mx-auto px-6 sm:px-8 py-10">
           <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
-            <p className="text-base font-semibold text-[#0a1628] mb-2">Your request has been sent.</p>
+            <p className="text-base font-semibold text-[#0a1628] mb-2">In their inbox.</p>
             <p className="text-sm text-[#8a7f70] max-w-sm mx-auto mb-6">
-              {first} will see your message in their Clubhouse inbox. Give it a few days — Penn Golf members are busy.
+              {first} gets pinged on the Clubhouse. Give it a few days — Penn Golf members have day jobs.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
               <Link
@@ -302,9 +302,9 @@ export default function AskClient() {
           <Link href="/player" className="text-xs text-gray-400 hover:text-gray-200 mb-3 inline-block">
             &larr; Clubhouse
           </Link>
-          <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Ask for Help</h1>
+          <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Send a request</h1>
           <p className="text-gray-400 text-sm mt-2">
-            Send a thoughtful request to a Penn Golf member in a few steps.
+            Pick a Penn Golf alum, pick what you need, send a private message. Four quick steps.
           </p>
         </div>
       </div>
@@ -318,7 +318,7 @@ export default function AskClient() {
             <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1">What are you looking for?</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Choose what kind of help you need from a Penn Golf member.</p>
+              <p className="text-xs text-[#8a7f70] mb-5">Pick the closest match.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {PURPOSES.map(p => (
                   <button
@@ -361,7 +361,7 @@ export default function AskClient() {
                   <span className="text-xs font-medium text-[#8a7f70]">· {purposeObj.label}</span>
                 )}
               </div>
-              <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">What is the context?</h2>
+              <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Why are you reaching out?</h2>
               <p className="text-xs text-[#8a7f70] mb-5">This helps us suggest the right member and write a better message.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {CONTEXTS.map(c => (
@@ -426,8 +426,8 @@ export default function AskClient() {
                   </span>
                 )}
               </div>
-              <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Choose a Penn Golf member</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Sorted by fit for your request. Pick whoever feels right.</p>
+              <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Pick someone to ask.</h2>
+              <p className="text-xs text-[#8a7f70] mb-5">Sorted by fit. Anyone here is happy to be asked.</p>
 
               {loadingProfiles ? (
                 <p className="text-sm text-[#8a7f70] py-6 text-center">Loading members…</p>
@@ -518,9 +518,9 @@ export default function AskClient() {
                   type="button"
                   disabled={submitting || !draft.trim() || !fromName.trim()}
                   onClick={handleSubmit}
-                  className="text-sm font-semibold bg-[#990000] hover:bg-[#b30000] text-white px-6 py-2.5 rounded-lg disabled:opacity-40 transition-colors whitespace-nowrap"
+                  className="text-sm font-semibold bg-[#0a1628] hover:bg-[#112240] text-white px-6 py-2.5 rounded-lg disabled:opacity-40 transition-colors whitespace-nowrap"
                 >
-                  {submitting ? 'Sending…' : 'Send Request'}
+                  {submitting ? 'Sending…' : 'Send request'}
                 </button>
               </div>
             </div>

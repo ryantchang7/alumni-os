@@ -362,6 +362,37 @@ export interface CareerPost {
   updatedAt: string
 }
 
+/**
+ * 1-on-1 or group chat between approved members. Direct chats are
+ * deduped on creation by exact member set so we never end up with two
+ * threads between the same pair.
+ */
+export interface ChatConversation {
+  id: string
+  teamId: string
+  type: 'direct' | 'group'
+  /** Optional name for group chats. */
+  name?: string
+  memberAccountIds: string[]
+  createdByAccountId: string
+  /** Bumps on every new message so list-sort by activity is cheap. */
+  lastMessageAt?: string
+  createdAt: string
+}
+
+export interface ChatMessage {
+  id: string
+  conversationId: string
+  teamId: string
+  fromAccountId: string
+  /** Snapshot of sender name at send time — survives later renames. */
+  fromName: string
+  body: string
+  createdAt: string
+  /** Account ids that have read this message. */
+  readByAccountIds: string[]
+}
+
 export interface Store {
   teams: Team[]
   scrapeRuns: ScrapeRun[]
@@ -383,4 +414,6 @@ export interface Store {
   moments: ClubhouseMoment[]
   careerPosts: CareerPost[]
   teamNewsItems: TeamNewsItem[]
+  chatConversations: ChatConversation[]
+  chatMessages: ChatMessage[]
 }

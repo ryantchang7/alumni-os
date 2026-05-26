@@ -18,6 +18,7 @@ const navLinks = [
   { label: 'Hall of Fame', href: '/hall-of-fame' },
   { label: 'Career Room', href: '/career-room' },
   { label: 'Team Room', href: '/team-room' },
+  { label: 'Chat', href: '/chat' },
 ]
 
 function AccountAffordance() {

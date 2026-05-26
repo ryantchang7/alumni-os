@@ -30,6 +30,8 @@ import type {
   ClubhouseMoment,
   CareerPost,
   TeamNewsItem,
+  ChatConversation,
+  ChatMessage,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -68,6 +70,8 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.moments) parsed.moments = []
   if (!parsed.careerPosts) parsed.careerPosts = []
   if (!parsed.teamNewsItems) parsed.teamNewsItems = []
+  if (!parsed.chatConversations) parsed.chatConversations = []
+  if (!parsed.chatMessages) parsed.chatMessages = []
   return parsed
 }
 
@@ -102,6 +106,8 @@ const EMPTY_STORE: Store = {
   moments: [],
   careerPosts: [],
   teamNewsItems: [],
+  chatConversations: [],
+  chatMessages: [],
 }
 
 function normalizeName(name: string): string {
@@ -1338,4 +1344,130 @@ export async function stampDigestSent(accountId: string): Promise<void> {
     updatedAt: new Date().toISOString(),
   }
   await writeStore(store)
+}
+
+// ── Chat ──────────────────────────────────────────────────────────────────────
+
+/** Sort + JSON-encode a member set for direct-chat dedupe. */
+function memberSetKey(ids: string[]): string {
+  return [...ids].sort().join('|')
+}
+
+export async function createChatConversation(input: {
+  teamId: string
+  type: 'direct' | 'group'
+  name?: string
+  memberAccountIds: string[]
+  createdByAccountId: string
+}): Promise<ChatConversation> {
+  const store = await readStore()
+  const now = new Date().toISOString()
+
+  // Idempotent direct: return existing thread for the same exact 2-member set.
+  if (input.type === 'direct') {
+    const wantKey = memberSetKey(input.memberAccountIds)
+    const existing = store.chatConversations.find(
+      c =>
+        c.teamId === input.teamId &&
+        c.type === 'direct' &&
+        c.memberAccountIds.length === input.memberAccountIds.length &&
+        memberSetKey(c.memberAccountIds) === wantKey,
+    )
+    if (existing) return existing
+  }
+
+  const convo: ChatConversation = {
+    id: crypto.randomUUID(),
+    teamId: input.teamId,
+    type: input.type,
+    name: input.name?.trim() || undefined,
+    memberAccountIds: input.memberAccountIds,
+    createdByAccountId: input.createdByAccountId,
+    lastMessageAt: now,
+    createdAt: now,
+  }
+  store.chatConversations.push(convo)
+  await writeStore(store)
+  return convo
+}
+
+export async function listChatConversationsForAccount(
+  accountId: string,
+  teamId: string,
+): Promise<ChatConversation[]> {
+  const store = await readStore()
+  return store.chatConversations
+    .filter(c => c.teamId === teamId && c.memberAccountIds.includes(accountId))
+    .sort((a, b) => (b.lastMessageAt ?? b.createdAt).localeCompare(a.lastMessageAt ?? a.createdAt))
+}
+
+export async function getChatConversationById(
+  id: string,
+): Promise<ChatConversation | undefined> {
+  const store = await readStore()
+  return store.chatConversations.find(c => c.id === id)
+}
+
+export async function listChatMessages(
+  conversationId: string,
+  since?: string,
+  limit = 100,
+): Promise<ChatMessage[]> {
+  const store = await readStore()
+  let msgs = store.chatMessages.filter(m => m.conversationId === conversationId)
+  if (since) msgs = msgs.filter(m => m.createdAt > since)
+  msgs.sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+  if (msgs.length > limit) msgs = msgs.slice(msgs.length - limit)
+  return msgs
+}
+
+export async function createChatMessage(input: {
+  conversationId: string
+  teamId: string
+  fromAccountId: string
+  fromName: string
+  body: string
+}): Promise<ChatMessage | null> {
+  const store = await readStore()
+  const convoIdx = store.chatConversations.findIndex(c => c.id === input.conversationId)
+  if (convoIdx === -1) return null
+  const now = new Date().toISOString()
+  const msg: ChatMessage = {
+    id: crypto.randomUUID(),
+    conversationId: input.conversationId,
+    teamId: input.teamId,
+    fromAccountId: input.fromAccountId,
+    fromName: input.fromName,
+    body: input.body,
+    createdAt: now,
+    // Sender has read their own message by definition.
+    readByAccountIds: [input.fromAccountId],
+  }
+  store.chatMessages.push(msg)
+  // Bump parent in the same write so list-sort by activity stays consistent.
+  store.chatConversations[convoIdx] = {
+    ...store.chatConversations[convoIdx],
+    lastMessageAt: now,
+  }
+  await writeStore(store)
+  return msg
+}
+
+export async function markChatConversationRead(
+  conversationId: string,
+  accountId: string,
+): Promise<void> {
+  const store = await readStore()
+  let dirty = false
+  for (let i = 0; i < store.chatMessages.length; i++) {
+    const m = store.chatMessages[i]
+    if (m.conversationId !== conversationId) continue
+    if (m.readByAccountIds.includes(accountId)) continue
+    store.chatMessages[i] = {
+      ...m,
+      readByAccountIds: [...m.readByAccountIds, accountId],
+    }
+    dirty = true
+  }
+  if (dirty) await writeStore(store)
 }
