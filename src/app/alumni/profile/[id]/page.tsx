@@ -21,6 +21,7 @@ interface SelfProfile {
   personId: string
   canonicalName: string
   bookId?: string | null
+  memberRole?: 'current_player' | 'alumni'
   classLabel?: string
   rosterStartYear?: number
   rosterEndYear?: number
@@ -181,16 +182,19 @@ function AlumniProfileInner() {
   }
 
   // Required fields for a useful profile. Validated before save and
-  // visualized with red asterisks in the labels.
+  // visualized with red asterisks in the labels. Current players skip
+  // the corporate trio (role / company / industry) — they're students.
+  const isCurrentPlayer = profile?.memberRole === 'current_player'
   const requiredMissing = (): string[] => {
     const missing: string[] = []
     if (!hometown.trim()) missing.push('Hometown')
     if (!city.trim() || !state.trim()) missing.push('Where you live now')
-    if (!currentRole.trim()) missing.push('Current role')
-    if (!currentCompany.trim()) missing.push('Company')
-    if (!industry.trim()) missing.push('Industries')
+    if (!isCurrentPlayer) {
+      if (!currentRole.trim()) missing.push('Current role')
+      if (!currentCompany.trim()) missing.push('Company')
+      if (!industry.trim()) missing.push('Industries')
+    }
     if (!homeCourse.trim()) missing.push('Home course')
-    // At least one contact method so other members can reach you.
     if (!email.trim() && !phone.trim() && !linkedinUrl.trim()) {
       missing.push('A contact method (email, phone, or LinkedIn)')
     }

@@ -9,6 +9,7 @@ import type {
 } from '@/lib/store/types'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
+import ExampleCard from '@/components/ExampleCard'
 import CareerRoomHero from './CareerRoomHero'
 
 const SECTOR_LABEL: Record<CareerPostSector, string> = {
@@ -183,6 +184,41 @@ export default async function CareerRoomPage() {
     return (
       <div className="min-h-screen bg-[#f8f5f0]">
         <CareerRoomHero />
+        <div className="max-w-[820px] mx-auto px-6 sm:px-8 pt-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-3">
+            What you&rsquo;d see inside
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <ExampleCard
+              kind="Ask"
+              kindAccent="#990000"
+              title="Warm intro to PE associate in NYC"
+              subtitle="Finance · Posted by an alum, '17"
+              body="Targeting middle-market funds. Especially Centerview, Evercore, or boutiques with healthcare practice."
+            />
+            <ExampleCard
+              kind="Offer"
+              kindAccent="#2d6a4f"
+              title="Can intro 1 alum/month to MDs at Centerview"
+              subtitle="Finance · Posted by an alum, '08"
+              body="If you're working through a banking recruiting cycle or thinking about a switch, I can make it happen."
+            />
+            <ExampleCard
+              kind="Ask"
+              kindAccent="#990000"
+              title="Coffee with someone in PM at OpenAI"
+              subtitle="Tech · Posted by an alum, '21"
+              body="Considering jumping over from a similar-stage startup. 30 min call would mean a lot."
+            />
+            <ExampleCard
+              kind="Offer"
+              kindAccent="#2d6a4f"
+              title="Recruiting chats for Penn '27 / '28"
+              subtitle="Consulting · Posted by an alum, '19"
+              body="Happy to share what BCG case prep looked like + which alumni reached out to me when I was in your shoes."
+            />
+          </div>
+        </div>
         <GatedPreview
           signedIn={approval.signedIn}
           eyebrow="Members only · Career Room"

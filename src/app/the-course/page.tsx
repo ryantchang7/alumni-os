@@ -4,6 +4,7 @@ import GatheringCard, { type GatheringData } from '@/components/gatherings/Gathe
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
+import ExampleCard from '@/components/ExampleCard'
 import CourseHero from './CourseHero'
 import CourseHoleSection, { CartPathDivider } from './CourseHoleSection'
 
@@ -199,6 +200,41 @@ export default async function TheCoursePage() {
     return (
       <div className="min-h-screen bg-[#f8f5f0]">
         <CourseHero rounds={[]} />
+        <div className="max-w-[820px] mx-auto px-6 sm:px-8 pt-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-3">
+            What you&rsquo;d see inside
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <ExampleCard
+              kind="Round"
+              kindAccent="#2d6a4f"
+              title="Sunday at Winged Foot West"
+              subtitle="Mamaroneck, NY · Sun Jun 14 · 7:30 AM"
+              meta="Hosted by an alum · 2 spots open · 4 interested"
+            />
+            <ExampleCard
+              kind="Round"
+              kindAccent="#2d6a4f"
+              title="Father's Day at Merion East"
+              subtitle="Ardmore, PA · Sun Jun 22 · 9:00 AM"
+              meta="Hosted by an alum · 1 spot open"
+            />
+            <ExampleCard
+              kind="Tee Box"
+              kindAccent="#2d6a4f"
+              title="Open to playing in Greenwich"
+              subtitle="An alum hosting at his home club"
+              meta="Open to a round · Coffee chat ok"
+            />
+            <ExampleCard
+              kind="Course"
+              kindAccent="#2d6a4f"
+              title="Pine Valley Golf Club"
+              subtitle="Pine Valley, NJ"
+              meta="3 Penn alumni call this home"
+            />
+          </div>
+        </div>
         <GatedPreview
           signedIn={approval.signedIn}
           eyebrow="Members only · The Course"

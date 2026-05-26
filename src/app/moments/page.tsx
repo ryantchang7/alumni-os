@@ -11,6 +11,7 @@ import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import { Camera } from 'lucide-react'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
+import ExampleCard from '@/components/ExampleCard'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -47,6 +48,41 @@ export default async function MomentsPage() {
               Moments
             </h1>
             <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5" />
+          </div>
+        </div>
+        <div className="max-w-[820px] mx-auto px-6 sm:px-8 pt-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-3">
+            What you&rsquo;d see inside
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <ExampleCard
+              kind="Moment"
+              kindAccent="#c8a84b"
+              title="Ivies at Yale GC — back-to-back."
+              subtitle="Posted by an alum, '24"
+              meta="May 2024"
+            />
+            <ExampleCard
+              kind="Moment"
+              kindAccent="#c8a84b"
+              title="First tee at Sebonack with three legends."
+              subtitle="Posted by an alum, '12"
+              meta="July 2024"
+            />
+            <ExampleCard
+              kind="Moment"
+              kindAccent="#c8a84b"
+              title="Class of '18 reunion at Aronimink."
+              subtitle="Posted by an alum, '18"
+              meta="September 2024"
+            />
+            <ExampleCard
+              kind="Moment"
+              kindAccent="#c8a84b"
+              title="Sunday singles, dawn patrol."
+              subtitle="Posted by an alum, '07"
+              meta="Memorial Day weekend"
+            />
           </div>
         </div>
         <GatedPreview

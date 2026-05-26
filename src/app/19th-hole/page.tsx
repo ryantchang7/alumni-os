@@ -3,6 +3,7 @@ import NineteenthHoleHero from './NineteenthHoleHero'
 import type { GatheringData } from '@/components/gatherings/GatheringCard'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
+import ExampleCard from '@/components/ExampleCard'
 
 export default async function NineteenthHolePage() {
   const approval = await getApprovalState()
@@ -88,6 +89,41 @@ export default async function NineteenthHolePage() {
     return (
       <div className="min-h-screen bg-[#f8f5f0]">
         <NineteenthHoleHero />
+        <div className="max-w-[820px] mx-auto px-6 sm:px-8 pt-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-3">
+            What you&rsquo;d see inside
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <ExampleCard
+              kind="Drinks"
+              kindAccent="#b8860b"
+              title="Drinks at The Continental"
+              subtitle="Philadelphia · Fri Jun 13 · 7:30 PM"
+              meta="Hosted by an alum · 6 going"
+            />
+            <ExampleCard
+              kind="Dinner"
+              kindAccent="#b8860b"
+              title="Dinner at Le Coucou"
+              subtitle="NYC · Sat Jun 21 · 7:00 PM"
+              meta="Hosted by an alum · 3 spots open"
+            />
+            <ExampleCard
+              kind="Event"
+              kindAccent="#b8860b"
+              title="Masters watch party"
+              subtitle="Greenwich, CT · Sun Apr 13 · 12 PM"
+              meta="Hosted at home · 12 going"
+            />
+            <ExampleCard
+              kind="Coffee"
+              kindAccent="#b8860b"
+              title="Coffee in Hudson Yards"
+              subtitle="An alum open to a catch-up"
+              meta="Anytime · Drop a note"
+            />
+          </div>
+        </div>
         <GatedPreview
           signedIn={approval.signedIn}
           eyebrow="Members only · 19th Hole"

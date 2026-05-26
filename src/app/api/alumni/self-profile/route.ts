@@ -56,6 +56,7 @@ export async function GET(request: Request) {
     canonicalName: person.canonicalName,
     bookId: bookEntry?.id ?? null,
     // Read-only roster truth
+    memberRole: membership.memberRole,
     classLabel: membership.classLabel,
     rosterStartYear: membership.rosterStartYear,
     rosterEndYear: membership.rosterEndYear,
