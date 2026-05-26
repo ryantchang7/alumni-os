@@ -49,6 +49,20 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // Career Room asks/offers are alumni-to-alumni networking. Parents and
+  // affiliates can read the room but can't post.
+  const { readStore } = await import('@/lib/store/local-store')
+  const store = await readStore()
+  const membership = store.teamMemberships.find(
+    m => m.personId === session.linkedPersonId,
+  )
+  if (membership?.memberRole === 'parent') {
+    return NextResponse.json(
+      { error: 'Career Room posts are open to alumni and current players only.' },
+      { status: 403 },
+    )
+  }
+
   let body: Record<string, unknown>
   try {
     body = await request.json()

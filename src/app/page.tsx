@@ -124,6 +124,20 @@ export default function LandingPage() {
             Claim Alumni Profile
           </Link>
         </motion.div>
+
+        <motion.div
+          className="mt-6"
+          initial={{ opacity: 0 }}
+          animate={ready ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ delay: 1.8, duration: 0.7, ease }}
+        >
+          <Link
+            href="/parent-signup"
+            className="text-[12px] text-white/65 hover:text-white/95 transition-colors underline underline-offset-4 decoration-white/30 hover:decoration-white/70"
+          >
+            Parent or affiliate? Join here.
+          </Link>
+        </motion.div>
       </div>
     </div>
   )

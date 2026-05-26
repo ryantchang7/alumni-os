@@ -1293,6 +1293,31 @@ export async function upsertAccount(input: {
   return account
 }
 
+/** Flip publishedToNetwork=true on every membership for this person on the
+ * given team. Used by the captain claim-approval handler so parent/affiliate
+ * memberships (which start unpublished) appear in lists after approval. */
+export async function publishMembershipsForPerson(
+  personId: string,
+  teamId: string,
+): Promise<void> {
+  const store = await readStore()
+  let touched = false
+  for (let i = 0; i < store.teamMemberships.length; i++) {
+    const m = store.teamMemberships[i]
+    if (m.personId !== personId || m.teamId !== teamId) continue
+    if (m.publishedToNetwork) continue
+    store.teamMemberships[i] = {
+      ...m,
+      publishedToNetwork: true,
+      publishedAt: new Date().toISOString(),
+      publishedByRole: 'captain',
+      updatedAt: new Date().toISOString(),
+    }
+    touched = true
+  }
+  if (touched) await writeStore(store)
+}
+
 export async function linkAccountToPerson(
   accountId: string,
   personId: string,

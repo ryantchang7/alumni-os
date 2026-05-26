@@ -65,7 +65,11 @@ export interface TeamMembership {
   id: string
   personId: string
   teamId: string
-  memberRole?: 'current_player' | 'alumni'
+  memberRole?: 'current_player' | 'alumni' | 'parent'
+  /** Free-text relationship label for parents/affiliates (e.g. "Parent of
+   * John Smith C'24", "Affiliate — long-time supporter"). Shown on their
+   * Member Book entry; ignored for current_player and alumni. */
+  parentRelationship?: string
   memberStatus?: 'imported' | 'verified' | 'active'
   rosterStartYear?: number
   rosterEndYear?: number

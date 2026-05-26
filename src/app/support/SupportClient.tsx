@@ -11,11 +11,12 @@ interface Props {
 
 const QUICK_AMOUNTS = [25, 50, 100, 250]
 
-type Tier = 'member' | 'founding'
+type Tier = 'member' | 'founding' | 'parent'
 
 interface TierConfig {
   id: Tier
   name: string
+  /** Price in USD. Use 0 if you want the tier to appear as "Set in Stripe" — but Stripe is the source of truth for the actual charge. */
   price: number
   tagline: string
   features: string[]
@@ -58,6 +59,22 @@ const TIERS: TierConfig[] = [
     ctaActive: 'Founding Member',
     accent: true,
   },
+  {
+    id: 'parent',
+    name: 'Parent / Affiliate',
+    price: 15,
+    tagline:
+      'For parents, family, and longtime affiliates. Support the program and stay close to the Clubhouse.',
+    features: [
+      'Parent badge on your Member Book card',
+      'Full access to follow rounds, events, and Moments',
+      'Direct support for Penn Men’s Golf',
+      'Cancel anytime',
+    ],
+    cta: 'Support as a Parent',
+    ctaActive: 'Parent / Affiliate',
+    accent: false,
+  },
 ]
 
 export default function SupportClient({ status }: Props) {
@@ -67,6 +84,7 @@ export default function SupportClient({ status }: Props) {
   )
   const [configured, setConfigured] = useState<boolean | null>(null)
   const [foundingConfigured, setFoundingConfigured] = useState(false)
+  const [parentConfigured, setParentConfigured] = useState(false)
   const [signedIn, setSignedIn] = useState(false)
   const [subscribed, setSubscribed] = useState(false)
   const [currentTier, setCurrentTier] = useState<Tier | null>(null)
@@ -84,6 +102,7 @@ export default function SupportClient({ status }: Props) {
         if (!d) return
         setConfigured(!!d.configured)
         setFoundingConfigured(!!d.foundingConfigured)
+        setParentConfigured(!!d.parentConfigured)
         setSignedIn(!!d.signedIn)
         setSubscribed(!!d.subscribed)
         setCurrentTier(d.tier ?? null)
@@ -250,10 +269,15 @@ export default function SupportClient({ status }: Props) {
         )}
 
         {/* Tier cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TIERS.map(tier => {
             const isActive = subscribed && currentTier === tier.id
-            const tierAvailable = tier.id === 'founding' ? foundingConfigured : configured !== false
+            const tierAvailable =
+              tier.id === 'founding'
+                ? foundingConfigured
+                : tier.id === 'parent'
+                  ? parentConfigured
+                  : configured !== false
             const busy = busyTier === tier.id
             return (
               <div

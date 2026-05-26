@@ -10,6 +10,7 @@ import { auth } from '@/auth'
 import {
   getProfileClaimRequestById,
   linkAccountToPerson,
+  publishMembershipsForPerson,
   updateProfileClaimRequestStatus,
 } from '@/lib/store/local-store'
 import { isCaptain, getCaptainEmails } from '@/lib/captains'
@@ -49,7 +50,9 @@ export async function POST(request: Request, { params }: RouteParams) {
   }
 
   // On approve, do the actual account ↔ person link before flipping status,
-  // so a link conflict doesn't leave an approved-but-unlinked claim.
+  // so a link conflict doesn't leave an approved-but-unlinked claim. Also
+  // publish any unpublished memberships for the linked person (parents and
+  // affiliates start unpublished).
   if (status === 'approved' && claim.requesterAccountId && claim.personId) {
     const linked = await linkAccountToPerson(claim.requesterAccountId, claim.personId)
     if (!linked) {
@@ -58,6 +61,7 @@ export async function POST(request: Request, { params }: RouteParams) {
         { status: 409 },
       )
     }
+    await publishMembershipsForPerson(claim.personId, claim.teamId)
   }
 
   const updated = await updateProfileClaimRequestStatus(id, status)

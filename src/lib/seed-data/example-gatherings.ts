@@ -19,12 +19,21 @@ export const EXAMPLE_GATHERING_IDS = new Set<string>([
   '9945ab95-163d-439a-a681-5ccb8b8b9271',
   // Career Night (/19th-hole)
   '6bb361bd-0f0d-4f39-a8ef-2b8133cbe57c',
-  // NYC summer dinner (/19th-hole)
-  '8951fd85-1d3b-452f-81f5-5da9eedc879f',
   // Alumni Weekend (/19th-hole)
   '254018cd-04e0-4790-9ddb-fe1adf42cef6',
 ])
 
+/** Seeded ids we want hidden from the live UI (e.g. Summer Clubhouse —
+ * intentionally retired to declutter). The API filters these out before
+ * returning so the existing KV data doesn't need a manual delete. */
+export const HIDDEN_GATHERING_IDS = new Set<string>([
+  '8951fd85-1d3b-452f-81f5-5da9eedc879f', // Summer Clubhouse — NYC dinner
+])
+
 export function isExampleGathering(id: string, dataFlag?: boolean): boolean {
   return !!dataFlag || EXAMPLE_GATHERING_IDS.has(id)
+}
+
+export function isHiddenGathering(id: string): boolean {
+  return HIDDEN_GATHERING_IDS.has(id)
 }

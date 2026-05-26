@@ -2994,6 +2994,7 @@
       "audience": "both",
       "vibe": "casual",
       "status": "open",
+      "isExample": true,
       "createdAt": "2026-05-15T00:11:36.372Z",
       "updatedAt": "2026-05-15T00:11:36.372Z"
     },
@@ -3012,6 +3013,7 @@
       "audience": "alumni",
       "vibe": "social",
       "status": "open",
+      "isExample": true,
       "createdAt": "2026-05-15T00:11:36.372Z",
       "updatedAt": "2026-05-15T00:11:36.372Z"
     },
@@ -3030,6 +3032,7 @@
       "audience": "both",
       "vibe": "casual",
       "status": "open",
+      "isExample": true,
       "createdAt": "2026-05-15T00:11:36.372Z",
       "updatedAt": "2026-05-15T00:11:36.372Z"
     },
@@ -3049,25 +3052,7 @@
       "audience": "both",
       "vibe": "career",
       "status": "open",
-      "createdAt": "2026-05-15T00:11:36.372Z",
-      "updatedAt": "2026-05-15T00:11:36.372Z"
-    },
-    {
-      "id": "8951fd85-1d3b-452f-81f5-5da9eedc879f",
-      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
-      "type": "dinner",
-      "title": "Summer Clubhouse — New York",
-      "description": "Annual summer alumni dinner in New York City. A tradition for Penn Golf alumni in the Northeast to reconnect.",
-      "hostName": "Penn Golf Alumni",
-      "city": "New York",
-      "state": "NY",
-      "venue": "Manhattan — venue TBD",
-      "dateText": "Friday, July 18, 2026",
-      "timeText": "7:30 PM",
-      "capacity": 24,
-      "audience": "alumni",
-      "vibe": "social",
-      "status": "open",
+      "isExample": true,
       "createdAt": "2026-05-15T00:11:36.372Z",
       "updatedAt": "2026-05-15T00:11:36.372Z"
     },
@@ -3086,6 +3071,7 @@
       "audience": "alumni",
       "vibe": "social",
       "status": "open",
+      "isExample": true,
       "createdAt": "2026-05-15T00:11:36.372Z",
       "updatedAt": "2026-05-15T00:11:36.372Z"
     }

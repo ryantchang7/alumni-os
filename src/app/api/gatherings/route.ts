@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
-import { isExampleGathering } from '@/lib/seed-data/example-gatherings'
+import { isExampleGathering, isHiddenGathering } from '@/lib/seed-data/example-gatherings'
 
 const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const VALID_AUDIENCES = ['players', 'alumni', 'both'] as const
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
   const store = await readStore()
   let gatherings = store.clubhouseGatherings.filter(
-    g => g.teamId === team.id && g.status !== 'closed',
+    g => g.teamId === team.id && g.status !== 'closed' && !isHiddenGathering(g.id),
   )
   if (typeFilter && VALID_TYPES.includes(typeFilter)) {
     gatherings = gatherings.filter(g => g.type === typeFilter)

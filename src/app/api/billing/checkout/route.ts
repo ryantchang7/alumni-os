@@ -19,14 +19,19 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => ({}))
-  const tier: SubscriptionTier = body?.tier === 'founding' ? 'founding' : 'member'
+  const rawTier = body?.tier
+  const tier: SubscriptionTier =
+    rawTier === 'founding' || rawTier === 'parent' ? rawTier : 'member'
 
   const stripe = getStripe()
   const priceId = priceIdForTier(tier)
   if (!stripe || !priceId) {
-    const msg = tier === 'founding'
-      ? 'Founding Member tier isn\'t configured yet. Try the Member tier or check back soon.'
-      : 'Billing isn\'t configured yet. Check back soon.'
+    const msg =
+      tier === 'founding'
+        ? "Founding Member tier isn't configured yet. Try the Member tier or check back soon."
+        : tier === 'parent'
+          ? "Parent / Affiliate tier isn't configured yet. Check back soon."
+          : "Billing isn't configured yet. Check back soon."
     return NextResponse.json({ error: msg }, { status: 503 })
   }
 

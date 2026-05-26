@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getTeamBySlug, readStore } from '@/lib/store/local-store'
+import { badgesForPerson } from '@/lib/badges'
+import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 
 function rosterYearsLabel(start?: number, end?: number): string {
   if (start !== undefined && end !== undefined) return `${start}–${end}`
@@ -40,13 +42,17 @@ export async function GET(request: Request) {
 
       const hasCareer = !!(enrichment?.currentRole || enrichment?.currentCompany)
 
+      const bookEntry = findBookEntryForTeamStorePerson(person.canonicalName)
       return {
         personId: person.id,
         canonicalName: person.canonicalName,
         firstName: person.firstName,
         lastName: person.lastName,
+        bookId: bookEntry?.id ?? null,
         memberRole: membership.memberRole ?? 'alumni',
         memberStatus: membership.memberStatus,
+        parentRelationship: membership.parentRelationship,
+        badges: badgesForPerson(person.id, store.accounts),
         classLabel: membership.classLabel,
         classYearEstimate: membership.classYearEstimate,
         rosterStartYear: membership.rosterStartYear,

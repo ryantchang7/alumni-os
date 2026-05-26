@@ -1,10 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, X } from 'lucide-react'
 import { memberBookEntries } from '@/lib/member-book/data'
+import MemberBadges from '@/components/MemberBadges'
+import type { BadgeId } from '@/lib/badges'
 import {
   filterPublicMembers,
   DEFAULT_PUBLIC_FILTERS,
@@ -61,9 +63,11 @@ function HeroPlaque({ value, label }: { value: number | string; label: string })
 function RegistryEntry({
   member,
   index,
+  badges,
 }: {
   member: MemberBookEntry
   index: number
+  badges?: BadgeId[]
 }) {
   const years = getMemberPennGolfYears(member)
   const hometown = getMemberHometownLabel(member)
@@ -93,6 +97,11 @@ function RegistryEntry({
             >
               {member.displayName}
             </p>
+            {badges && badges.length > 0 && (
+              <div className="mt-1.5">
+                <MemberBadges badges={badges} size="sm" />
+              </div>
+            )}
             {years && (
               <p className="text-[13px] text-[#3d4a5c] mt-1.5">{years}</p>
             )}
@@ -159,10 +168,52 @@ function BookHeader({
   )
 }
 
+interface ParentEntry {
+  personId: string
+  canonicalName: string
+  parentRelationship?: string
+  badges?: BadgeId[]
+}
+
 export default function MemberBookPage() {
   const [filters, setFilters] = useState<PublicMemberFilters>(
     DEFAULT_PUBLIC_FILTERS,
   )
+  const [badgesByBookId, setBadgesByBookId] = useState<Record<string, BadgeId[]>>({})
+  const [parents, setParents] = useState<ParentEntry[]>([])
+
+  useEffect(() => {
+    fetch('/api/player/profiles?teamSlug=penn-mens-golf')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (!d?.profiles) return
+        const next: Record<string, BadgeId[]> = {}
+        const nextParents: ParentEntry[] = []
+        for (const p of d.profiles as Array<{
+          personId: string
+          canonicalName: string
+          memberRole?: string
+          parentRelationship?: string
+          bookId?: string | null
+          badges?: BadgeId[]
+        }>) {
+          if (p.bookId && p.badges && p.badges.length > 0) {
+            next[p.bookId] = p.badges
+          }
+          if (p.memberRole === 'parent') {
+            nextParents.push({
+              personId: p.personId,
+              canonicalName: p.canonicalName,
+              parentRelationship: p.parentRelationship,
+              badges: p.badges,
+            })
+          }
+        }
+        setBadgesByBookId(next)
+        setParents(nextParents)
+      })
+      .catch(() => {})
+  }, [])
 
   const publicMembers = useMemo(() => getPublicMembers(memberBookEntries), [])
   const stats = useMemo(() => getPublicMemberStats(publicMembers), [publicMembers])
@@ -282,6 +333,75 @@ export default function MemberBookPage() {
             </div>
           </div>
 
+          {/* Parents & Affiliates — small banner with self-serve CTA */}
+          <div className="mb-7">
+            {parents.length > 0 ? (
+              <div
+                className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-6 py-5"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 4px 12px rgba(10,22,40,0.04)' }}
+              >
+                <div className="flex items-baseline justify-between mb-3">
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000]">
+                      Parents &amp; Affiliates
+                    </p>
+                    <p className="text-[12px] text-[#8a7f70] mt-0.5">
+                      Family and longtime supporters of Penn Men&rsquo;s Golf.
+                    </p>
+                  </div>
+                  <Link
+                    href="/parent-signup"
+                    className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline whitespace-nowrap"
+                  >
+                    Join as a parent &rarr;
+                  </Link>
+                </div>
+                <ul className="space-y-2">
+                  {parents.map(p => (
+                    <li key={p.personId} className="flex items-baseline justify-between gap-3 flex-wrap">
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        <span
+                          className="text-[14px] text-[#0a1628]"
+                          style={{ fontFamily: 'var(--font-playfair)' }}
+                        >
+                          {p.canonicalName}
+                        </span>
+                        {p.badges && p.badges.length > 0 && (
+                          <MemberBadges badges={p.badges} size="sm" />
+                        )}
+                      </div>
+                      {p.parentRelationship && (
+                        <span className="text-[12px] text-[#8a7f70]">
+                          {p.parentRelationship}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <div
+                className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-6 py-4 flex items-center justify-between gap-3 flex-wrap"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 4px 12px rgba(10,22,40,0.04)' }}
+              >
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000]">
+                    Parents &amp; Affiliates
+                  </p>
+                  <p className="text-[12.5px] text-[#3d4a5c] mt-0.5">
+                    Parents, family, and longtime supporters can join the Clubhouse too.
+                  </p>
+                </div>
+                <Link
+                  href="/parent-signup"
+                  className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
+                >
+                  Join as a parent &rarr;
+                </Link>
+              </div>
+            )}
+          </div>
+
           {/* Results */}
           {filtered.length === 0 ? (
             <div className="text-center py-20">
@@ -308,7 +428,12 @@ export default function MemberBookPage() {
                 className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
               >
                 {filtered.map((m, i) => (
-                  <RegistryEntry key={m.id} member={m} index={i} />
+                  <RegistryEntry
+                    key={m.id}
+                    member={m}
+                    index={i}
+                    badges={badgesByBookId[m.id]}
+                  />
                 ))}
               </div>
             </AnimatePresence>

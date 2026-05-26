@@ -13,6 +13,7 @@ import OnTheLoopStrip from '@/components/OnTheLoopStrip'
 import ClubhouseChecklist from '@/components/ClubhouseChecklist'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import MemberOnlyTease from '@/components/MemberOnlyTease'
+import MemberBadges from '@/components/MemberBadges'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import type { TeamNewsItem } from '@/lib/store/types'
 
@@ -130,7 +131,7 @@ interface PlayerProfile {
   canonicalName: string
   firstName?: string
   lastName?: string
-  memberRole?: 'current_player' | 'alumni'
+  memberRole?: 'current_player' | 'alumni' | 'parent'
   classLabel?: string
   classYearEstimate?: string
   rosterStartYear?: number
@@ -147,6 +148,7 @@ interface PlayerProfile {
   alumniBio?: string
   helpTopics?: string[]
   contactPreference?: string
+  badges?: import('@/lib/badges').BadgeId[]
 }
 
 const spring = { type: 'spring' as const, stiffness: 120, damping: 22, mass: 0.8 }
@@ -272,6 +274,11 @@ function MiniMemberCard({ profile, teamSlug }: { profile: PlayerProfile; teamSlu
           </span>
         )}
       </div>
+      {profile.badges && profile.badges.length > 0 && (
+        <div className="mb-1">
+          <MemberBadges badges={profile.badges} size="sm" iconOnly />
+        </div>
+      )}
       {subline && <p className="text-[10px] text-[#8a7f70]">{subline}</p>}
       {careerLine && <p className="text-[10px] text-[#4a5568] mt-0.5 truncate">{careerLine}</p>}
     </Link>
