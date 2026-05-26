@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { Upload, ImageIcon } from 'lucide-react'
+import PhotoCropper from './PhotoCropper'
 
 interface Props {
   /** Current photo URL (may be empty). */
@@ -9,17 +10,17 @@ interface Props {
   onChange: (url: string) => void
   /** Display label above the upload row. */
   label?: string
-  /** Aspect ratio for the preview. 'square' for profile, 'wide' for moments. */
+  /** Aspect ratio for the preview + crop. 'square' for profile, 'wide' for moments. */
   shape?: 'square' | 'wide'
 }
 
 /**
- * Photo upload with built-in file picker + preview + "paste a URL" fallback.
- * On mobile, the file picker pulls up the camera roll / camera directly.
+ * Photo upload with built-in file picker + crop modal + preview +
+ * "paste a URL" fallback. On mobile, the file picker pulls up the
+ * camera roll / camera directly.
  *
- * Uploads to /api/upload/image (Vercel Blob). If the backend returns 503
- * (Blob not configured), the user falls back to pasting a URL — the
- * URL field stays editable either way.
+ * Flow: pick file → crop modal (drag + zoom) → upload cropped JPEG →
+ * URL stored in `value`. URL paste field stays editable as a fallback.
  */
 export default function PhotoUpload({
   value,
@@ -28,15 +29,16 @@ export default function PhotoUpload({
   shape = 'square',
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
+  const [pickedFile, setPickedFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function handleFile(file: File) {
+  async function uploadBlob(blob: Blob, filename: string) {
     setUploading(true)
     setError(null)
     try {
       const form = new FormData()
-      form.append('file', file)
+      form.append('file', new File([blob], filename, { type: 'image/jpeg' }))
       const res = await fetch('/api/upload/image', { method: 'POST', body: form })
       const j = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -47,8 +49,24 @@ export default function PhotoUpload({
       setError(e instanceof Error ? e.message : 'Upload failed')
     } finally {
       setUploading(false)
-      if (fileRef.current) fileRef.current.value = ''
     }
+  }
+
+  function onFilePicked(file: File) {
+    setError(null)
+    setPickedFile(file)
+  }
+
+  async function onCropComplete(blob: Blob) {
+    const filename = `crop-${Date.now()}.jpg`
+    setPickedFile(null)
+    await uploadBlob(blob, filename)
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  function onCropCancel() {
+    setPickedFile(null)
+    if (fileRef.current) fileRef.current.value = ''
   }
 
   const previewClass =
@@ -87,7 +105,7 @@ export default function PhotoUpload({
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0]
-              if (f) void handleFile(f)
+              if (f) onFilePicked(f)
             }}
           />
           <button
@@ -100,7 +118,7 @@ export default function PhotoUpload({
             {uploading ? 'Uploading…' : value ? 'Replace photo' : 'Upload photo'}
           </button>
           <p className="text-[11px] text-[#8a7f70]">
-            JPEG / PNG / HEIC, up to 8 MB. Or paste a URL below.
+            Pick from your camera roll, crop it, done. Or paste a URL below.
           </p>
           <input
             type="url"
@@ -114,6 +132,15 @@ export default function PhotoUpload({
           )}
         </div>
       </div>
+
+      {pickedFile && (
+        <PhotoCropper
+          file={pickedFile}
+          shape={shape}
+          onComplete={onCropComplete}
+          onCancel={onCropCancel}
+        />
+      )}
     </div>
   )
 }

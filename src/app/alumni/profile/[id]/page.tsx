@@ -8,6 +8,8 @@ import { useSession } from 'next-auth/react'
 import CityStateInput from '@/components/CityStateInput'
 import HometownInput from '@/components/HometownInput'
 import PhotoUpload from '@/components/PhotoUpload'
+import CourseAutocomplete from '@/components/CourseAutocomplete'
+import { US_GOLF_COURSES } from '@/lib/courses/us-golf-courses'
 
 interface LocationRow {
   city?: string
@@ -536,23 +538,14 @@ function AlumniProfileInner() {
                     </button>
                   )}
                 </div>
-                <div className="grid grid-cols-[1fr_88px] gap-2">
-                  <input
-                    type="text"
-                    value={inTownCity}
-                    onChange={(e) => setInTownCity(e.target.value)}
-                    placeholder="City — e.g. New York"
-                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                  />
-                  <input
-                    type="text"
-                    value={inTownState}
-                    onChange={(e) => setInTownState(e.target.value.toUpperCase().slice(0, 2))}
-                    placeholder="ST"
-                    maxLength={2}
-                    className="border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm uppercase text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                  />
-                </div>
+                <CityStateInput
+                  city={inTownCity}
+                  state={inTownState}
+                  onChange={({ city: c, state: s }) => {
+                    setInTownCity(c)
+                    setInTownState(s)
+                  }}
+                />
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <input
                     type="date"
@@ -622,13 +615,11 @@ function AlumniProfileInner() {
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
                   Home course <span className="text-[#990000]">*</span>
                 </label>
-                <input
-                  type="text"
+                <CourseAutocomplete
                   value={homeCourse}
-                  onChange={e => setHomeCourse(e.target.value)}
+                  onChange={setHomeCourse}
                   placeholder="e.g. Winged Foot Golf Club"
                   required
-                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                 />
               </div>
               <div>
@@ -639,9 +630,17 @@ function AlumniProfileInner() {
                   type="text"
                   value={favoriteCourses}
                   onChange={e => setFavoriteCourses(e.target.value)}
-                  placeholder="e.g. Pine Valley, Bandon Dunes, Cypress Point"
+                  placeholder="Type to autocomplete; comma to add another"
+                  list="penn-golf-courses-datalist"
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                 />
+                <datalist id="penn-golf-courses-datalist">
+                  {US_GOLF_COURSES.slice(0, 60).map((c) => (
+                    <option key={`${c.name}-${c.state}`} value={c.name}>
+                      {c.state}
+                    </option>
+                  ))}
+                </datalist>
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
