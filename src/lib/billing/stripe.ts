@@ -23,9 +23,22 @@ export function getStripe(): Stripe | null {
   return _client
 }
 
-export const SUBSCRIPTION_PRICE_USD_CENTS = 1000  // $10 / month
+export const MEMBER_PRICE_USD_CENTS = 1000  // $10 / month
+export const FOUNDING_PRICE_USD_CENTS = 2000  // $20 / month
 export const TEAM_SHARE = 0.5  // 50% goes to Penn Men's Golf, 50% keeps the Clubhouse running
+
+export type SubscriptionTier = 'member' | 'founding'
 
 export function isBillingConfigured(): boolean {
   return !!process.env.STRIPE_SECRET_KEY && !!process.env.STRIPE_PRICE_ID
+}
+
+export function isFoundingTierConfigured(): boolean {
+  return !!process.env.STRIPE_FOUNDING_PRICE_ID
+}
+
+export function priceIdForTier(tier: SubscriptionTier): string | undefined {
+  return tier === 'founding'
+    ? process.env.STRIPE_FOUNDING_PRICE_ID
+    : process.env.STRIPE_PRICE_ID
 }

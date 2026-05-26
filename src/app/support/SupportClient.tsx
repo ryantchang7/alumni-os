@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Check, Heart, Flag, ShieldCheck } from 'lucide-react'
+import { Check, Heart, ShieldCheck } from 'lucide-react'
 
 interface Props {
   status?: string
@@ -10,11 +10,63 @@ interface Props {
 
 const QUICK_AMOUNTS = [25, 50, 100, 250]
 
+type Tier = 'member' | 'founding'
+
+interface TierConfig {
+  id: Tier
+  name: string
+  price: number
+  tagline: string
+  features: string[]
+  cta: string
+  ctaActive: string
+  accent: boolean
+}
+
+const TIERS: TierConfig[] = [
+  {
+    id: 'member',
+    name: 'Member',
+    price: 10,
+    tagline:
+      'Membership in the Clubhouse. Half goes to Penn Men’s Golf, half keeps the platform running.',
+    features: [
+      'Direct support for the program',
+      'Member status on your profile',
+      'Full access to all Clubhouse features',
+      'No ads, ever',
+    ],
+    cta: 'Become a member',
+    ctaActive: 'Member',
+    accent: false,
+  },
+  {
+    id: 'founding',
+    name: 'Founding Member',
+    price: 20,
+    tagline:
+      'Recognized as a Founding Member of the Clubhouse. Twice the support for the program.',
+    features: [
+      'Everything in Member',
+      '2x the contribution to Penn Men’s Golf',
+      'Founding Member badge on your profile',
+      'Listed on the Clubhouse founders wall',
+      'First look at new features',
+    ],
+    cta: 'Become a Founding Member',
+    ctaActive: 'Founding Member',
+    accent: true,
+  },
+]
+
 export default function SupportClient({ status }: Props) {
   const [configured, setConfigured] = useState<boolean | null>(null)
+  const [foundingConfigured, setFoundingConfigured] = useState(false)
   const [signedIn, setSignedIn] = useState(false)
   const [subscribed, setSubscribed] = useState(false)
-  const [subBusy, setSubBusy] = useState(false)
+  const [currentTier, setCurrentTier] = useState<Tier | null>(null)
+  const [busyTier, setBusyTier] = useState<Tier | null>(null)
+  const [portalBusy, setPortalBusy] = useState(false)
   const [donBusy, setDonBusy] = useState(false)
   const [donAmount, setDonAmount] = useState<number>(50)
   const [donCustom, setDonCustom] = useState('')
@@ -26,34 +78,40 @@ export default function SupportClient({ status }: Props) {
       .then(d => {
         if (!d) return
         setConfigured(!!d.configured)
+        setFoundingConfigured(!!d.foundingConfigured)
         setSignedIn(!!d.signedIn)
         setSubscribed(!!d.subscribed)
+        setCurrentTier(d.tier ?? null)
       })
       .catch(() => setConfigured(false))
   }, [])
 
-  async function subscribe() {
+  async function subscribe(tier: Tier) {
     if (!signedIn) {
       window.location.href = '/login?next=/support'
       return
     }
-    setSubBusy(true)
+    setBusyTier(tier)
     setError(null)
     try {
-      const res = await fetch('/api/billing/checkout', { method: 'POST' })
+      const res = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier }),
+      })
       const j = await res.json().catch(() => ({}))
       if (!res.ok || !j.url) {
-        throw new Error(j.error ?? `Couldn't start checkout (${res.status})`)
+        throw new Error(j.error ?? `Checkout unavailable (${res.status})`)
       }
       window.location.href = j.url
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
-      setSubBusy(false)
+      setBusyTier(null)
     }
   }
 
   async function openPortal() {
-    setSubBusy(true)
+    setPortalBusy(true)
     setError(null)
     try {
       const res = await fetch('/api/billing/portal', { method: 'POST' })
@@ -64,7 +122,7 @@ export default function SupportClient({ status }: Props) {
       window.location.href = j.url
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
-      setSubBusy(false)
+      setPortalBusy(false)
     }
   }
 
@@ -81,7 +139,7 @@ export default function SupportClient({ status }: Props) {
       })
       const j = await res.json().catch(() => ({}))
       if (!res.ok || !j.url) {
-        throw new Error(j.error ?? `Couldn't start donation (${res.status})`)
+        throw new Error(j.error ?? `Donation unavailable (${res.status})`)
       }
       window.location.href = j.url
     } catch (e) {
@@ -107,53 +165,53 @@ export default function SupportClient({ status }: Props) {
               'radial-gradient(ellipse at center, rgba(200,168,75,0.16) 0%, rgba(200,168,75,0.04) 45%, transparent 75%)',
           }}
         />
-        <div className="max-w-[760px] mx-auto relative">
+        <div className="max-w-[920px] mx-auto relative">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-4">
-            Back the Brotherhood
+            Membership
           </p>
           <h1
             className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
-            Keep Penn Golf on the bag.
+            Support Penn Men&rsquo;s Golf.
           </h1>
           <span className="block w-12 h-[2px] bg-[#c8a84b] mt-6 mb-5" />
-          <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[600px]">
-            $10/month. <span className="text-[#c8a84b] font-medium">Half</span> goes
-            directly to Penn Men&rsquo;s Golf. The other half keeps the Clubhouse
-            running — the app you&rsquo;re reading this in.
+          <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px]">
+            The Penn Golf Clubhouse is the private alumni network for the program.
+            Half of every membership and contribution goes directly to Penn Men&rsquo;s
+            Golf; the other half maintains the platform. Cancel anytime.
           </p>
         </div>
       </div>
 
-      {/* Success / canceled banners */}
+      {/* Banners */}
       {status === 'success' && (
-        <div className="max-w-[760px] mx-auto px-6 sm:px-8 mt-6">
+        <div className="max-w-[920px] mx-auto px-6 sm:px-8 mt-6">
           <div className="bg-[#2d6a4f]/10 border border-[#2d6a4f]/30 rounded-xl px-5 py-4 text-[13px] text-[#2d6a4f]">
-            🎉 You&rsquo;re a Founding Member. Welcome. We&rsquo;ll send a receipt to your inbox.
+            Your membership is active. A receipt is on its way to your inbox.
           </div>
         </div>
       )}
       {status === 'thanks' && (
-        <div className="max-w-[760px] mx-auto px-6 sm:px-8 mt-6">
+        <div className="max-w-[920px] mx-auto px-6 sm:px-8 mt-6">
           <div className="bg-[#c8a84b]/15 border border-[#c8a84b]/40 rounded-xl px-5 py-4 text-[13px] text-[#0a1628]">
-            🙏 Thank you. Receipt in your inbox.
+            Thank you for your contribution. A receipt is on its way to your inbox.
           </div>
         </div>
       )}
       {status === 'canceled' && (
-        <div className="max-w-[760px] mx-auto px-6 sm:px-8 mt-6">
+        <div className="max-w-[920px] mx-auto px-6 sm:px-8 mt-6">
           <div className="bg-[#8a7f70]/10 border border-[#8a7f70]/30 rounded-xl px-5 py-4 text-[13px] text-[#3d4a5c]">
-            No worries — checkout was canceled. The brotherhood is still here.
+            Checkout was canceled. You can pick this back up whenever.
           </div>
         </div>
       )}
 
-      <div className="max-w-[760px] mx-auto px-6 sm:px-8 py-12 space-y-8">
+      <div className="max-w-[920px] mx-auto px-6 sm:px-8 py-12 space-y-8">
 
         {configured === false && (
           <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl px-5 py-4 text-[13px]">
-            Billing isn&rsquo;t configured yet. The captain needs to add Stripe keys on Vercel.
+            Billing isn&rsquo;t configured yet. Check back soon.
           </div>
         )}
 
@@ -163,89 +221,148 @@ export default function SupportClient({ status }: Props) {
           </div>
         )}
 
-        {/* Subscription card */}
-        <div
-          className="bg-white border border-[#c8a84b]/40 rounded-2xl overflow-hidden"
-          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 12px 28px rgba(200,168,75,0.10)' }}
-        >
-          <div className="border-t-4 border-[#c8a84b]" />
-          <div className="px-7 py-8 sm:px-10 sm:py-10">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-3">
-              Founding Member · Subscription
-            </p>
-            <div className="flex items-baseline gap-2 mb-2">
-              <p
-                className="text-[#0a1628] text-5xl font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
-              >
-                $10
-              </p>
-              <p className="text-[#8a7f70] text-base">/ month</p>
-            </div>
-            <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-6 max-w-md">
-              Cancel anytime. 50% to Penn Men&rsquo;s Golf, 50% to the Clubhouse.
-              Founding Members get a small recognition on their profile.
-            </p>
-            <ul className="space-y-2 mb-7">
-              {[
-                'Direct support for the team',
-                'Keeps the Clubhouse running (no ads, ever)',
-                'Founding Member badge on your profile',
-                'First look at new features',
-              ].map(item => (
-                <li key={item} className="flex items-start gap-2 text-[14px] text-[#0a1628]">
-                  <Check className="w-4 h-4 text-[#2d6a4f] flex-shrink-0 mt-0.5" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            {subscribed ? (
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 bg-[#2d6a4f]/10 border border-[#2d6a4f]/30 text-[#2d6a4f] text-[12px] font-semibold uppercase tracking-[0.14em] px-3 py-1.5 rounded-full">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  Founding Member
-                </span>
-                <button
-                  type="button"
-                  onClick={openPortal}
-                  disabled={subBusy}
-                  className="text-[12.5px] font-semibold uppercase tracking-[0.14em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-4 py-2 rounded-lg transition-colors"
-                >
-                  {subBusy ? 'Opening…' : 'Manage subscription'}
-                </button>
+        {/* Active subscription summary */}
+        {subscribed && (
+          <div className="bg-white border border-[#2d6a4f]/30 rounded-2xl px-7 py-6 sm:px-10 sm:py-7 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="w-5 h-5 text-[#2d6a4f]" />
+              <div>
+                <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f]">
+                  Active subscription
+                </p>
+                <p className="text-[14.5px] text-[#0a1628] mt-0.5">
+                  {currentTier === 'founding' ? 'Founding Member' : 'Member'} &middot; Thank you for supporting the program.
+                </p>
               </div>
-            ) : (
-              <button
-                type="button"
-                onClick={subscribe}
-                disabled={subBusy || configured === false}
-                className="inline-flex items-center gap-2 bg-[#0a1628] hover:bg-[#112240] text-white text-[13px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-colors disabled:opacity-50"
-              >
-                <Flag className="w-4 h-4" />
-                {subBusy ? 'Starting…' : 'Become a Founding Member'}
-              </button>
-            )}
+            </div>
+            <button
+              type="button"
+              onClick={openPortal}
+              disabled={portalBusy}
+              className="text-[12.5px] font-semibold uppercase tracking-[0.14em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+            >
+              {portalBusy ? 'Opening…' : 'Manage subscription'}
+            </button>
           </div>
+        )}
+
+        {/* Tier cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {TIERS.map(tier => {
+            const isActive = subscribed && currentTier === tier.id
+            const tierAvailable = tier.id === 'founding' ? foundingConfigured : configured !== false
+            const busy = busyTier === tier.id
+            return (
+              <div
+                key={tier.id}
+                className={`bg-white rounded-2xl overflow-hidden flex flex-col ${
+                  tier.accent
+                    ? 'border border-[#c8a84b]/50'
+                    : 'border border-[rgba(180,168,150,0.4)]'
+                }`}
+                style={{
+                  boxShadow: tier.accent
+                    ? '0 1px 3px rgba(10,22,40,0.06), 0 12px 28px rgba(200,168,75,0.12)'
+                    : '0 1px 3px rgba(10,22,40,0.05), 0 4px 12px rgba(10,22,40,0.04)',
+                }}
+              >
+                {tier.accent && <div className="border-t-4 border-[#c8a84b]" />}
+                <div className="px-7 py-8 sm:px-8 sm:py-9 flex flex-col flex-1">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <p
+                      className={`text-[10px] font-semibold uppercase tracking-[0.22em] ${
+                        tier.accent ? 'text-[#c8a84b]' : 'text-[#8a7f70]'
+                      }`}
+                    >
+                      {tier.name}
+                    </p>
+                    {tier.accent && (
+                      <span className="text-[9.5px] font-semibold uppercase tracking-[0.14em] bg-[#c8a84b]/15 text-[#7a6420] px-2 py-1 rounded-full">
+                        Most support
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-baseline gap-2 mb-3">
+                    <p
+                      className="text-[#0a1628] text-5xl font-medium"
+                      style={{ fontFamily: 'var(--font-playfair)' }}
+                    >
+                      ${tier.price}
+                    </p>
+                    <p className="text-[#8a7f70] text-base">/ month</p>
+                  </div>
+                  <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-6">
+                    {tier.tagline}
+                  </p>
+                  <ul className="space-y-2 mb-7 flex-1">
+                    {tier.features.map(item => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-2 text-[14px] text-[#0a1628]"
+                      >
+                        <Check className="w-4 h-4 text-[#2d6a4f] flex-shrink-0 mt-0.5" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {isActive ? (
+                    <span className="inline-flex items-center justify-center gap-1.5 bg-[#2d6a4f]/10 border border-[#2d6a4f]/30 text-[#2d6a4f] text-[12px] font-semibold uppercase tracking-[0.14em] px-3 py-2.5 rounded-lg w-full">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      {tier.ctaActive}
+                    </span>
+                  ) : subscribed ? (
+                    <button
+                      type="button"
+                      onClick={openPortal}
+                      disabled={portalBusy}
+                      className="w-full inline-flex items-center justify-center gap-2 bg-white border border-[#0a1628]/25 text-[#0a1628] hover:bg-[#0a1628] hover:text-white text-[13px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {portalBusy ? 'Opening…' : 'Change tier'}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => subscribe(tier.id)}
+                      disabled={busy || !tierAvailable}
+                      className={`w-full inline-flex items-center justify-center gap-2 text-[13px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-colors disabled:opacity-50 ${
+                        tier.accent
+                          ? 'bg-[#0a1628] hover:bg-[#112240] text-white'
+                          : 'bg-white border border-[#0a1628]/30 text-[#0a1628] hover:bg-[#0a1628] hover:text-white'
+                      }`}
+                    >
+                      {busy
+                        ? 'Starting…'
+                        : tierAvailable
+                        ? tier.cta
+                        : 'Coming soon'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )
+          })}
         </div>
 
         {/* Donation card */}
         <div
           className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-8 sm:px-10 sm:py-10"
-          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 4px 12px rgba(10,22,40,0.04)' }}
+          style={{
+            boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 4px 12px rgba(10,22,40,0.04)',
+          }}
         >
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-3">
-            One-time gift
+            One-time contribution
           </p>
           <h2
             className="text-[#0a1628] text-2xl sm:text-3xl font-medium leading-tight mb-2"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
-            Or just drop something in the tip jar.
+            Or contribute directly.
           </h2>
           <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-6 max-w-md">
-            Not ready for a subscription? Make a one-time contribution — every
-            dollar goes the same 50/50 split.
+            Prefer not to subscribe? Make a one-time contribution. Same 50/50 split
+            between the program and the platform.
           </p>
 
           <div className="flex flex-wrap gap-2 mb-3">
@@ -290,16 +407,16 @@ export default function SupportClient({ status }: Props) {
             className="inline-flex items-center gap-2 bg-[#990000] hover:bg-[#b30000] text-white text-[13px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-colors disabled:opacity-50"
           >
             <Heart className="w-4 h-4" />
-            {donBusy ? 'Starting…' : 'Donate'}
+            {donBusy ? 'Starting…' : 'Contribute'}
           </button>
         </div>
 
         {/* Footer note */}
         <div className="text-center pt-2">
           <p className="text-[11.5px] text-[#8a7f70] max-w-md mx-auto leading-relaxed">
-            Payments processed by Stripe. Penn Men&rsquo;s Golf isn&rsquo;t a registered 501(c)(3),
-            so contributions aren&rsquo;t tax-deductible. The 50% transfer to the program
-            is reconciled quarterly by the captain.{' '}
+            Payments processed by Stripe. Penn Men&rsquo;s Golf is not a registered
+            501(c)(3), so contributions are not tax-deductible. The 50% transfer to
+            the program is reconciled quarterly by the captain.{' '}
             <Link href="/player" className="text-[#0a1628] hover:underline">
               Back to the Clubhouse
             </Link>
