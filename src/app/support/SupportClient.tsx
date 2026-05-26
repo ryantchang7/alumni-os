@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Check, Heart, ShieldCheck } from 'lucide-react'
+import { useSiteContent } from '@/lib/site-content/use-site-content'
 
 interface Props {
   status?: string
@@ -60,6 +61,10 @@ const TIERS: TierConfig[] = [
 ]
 
 export default function SupportClient({ status }: Props) {
+  const heroBlurb = useSiteContent(
+    'support.hero-blurb',
+    'The Penn Golf Clubhouse is the private alumni network for the program. Half of every membership and contribution goes directly to Penn Men’s Golf; the other half maintains the platform. Cancel anytime.',
+  )
   const [configured, setConfigured] = useState<boolean | null>(null)
   const [foundingConfigured, setFoundingConfigured] = useState(false)
   const [signedIn, setSignedIn] = useState(false)
@@ -176,10 +181,8 @@ export default function SupportClient({ status }: Props) {
             Support Penn Men&rsquo;s Golf.
           </h1>
           <span className="block w-12 h-[2px] bg-[#c8a84b] mt-6 mb-5" />
-          <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px]">
-            The Penn Golf Clubhouse is the private alumni network for the program.
-            Half of every membership and contribution goes directly to Penn Men&rsquo;s
-            Golf; the other half maintains the platform. Cancel anytime.
+          <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line">
+            {heroBlurb}
           </p>
         </div>
       </div>

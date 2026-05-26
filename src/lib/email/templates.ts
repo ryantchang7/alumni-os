@@ -229,6 +229,93 @@ export function renderWeeklyDigest(input: {
   return { subject, html: shell(inner, input.clubhouseUrl) }
 }
 
+// ── RSVP confirmation (to the attendee) ─────────────────────────────────────
+
+export function renderRsvpConfirmation(input: {
+  firstName?: string | null
+  gatheringTitle: string
+  gatheringType: 'round' | 'coffee' | 'drinks' | 'dinner' | 'event'
+  dateText: string
+  timeText?: string
+  city?: string
+  state?: string
+  venue?: string
+  hostName: string
+  googleCalUrl: string
+  clubhouseUrl: string
+}): { subject: string; html: string } {
+  const greeting = input.firstName ? `Hi ${input.firstName},` : 'Hi,'
+  const subject = `You're on the sheet · ${input.gatheringTitle}`
+  const locationLine = [input.venue, input.city, input.state].filter(Boolean).join(', ')
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      You&rsquo;re on the sheet.
+    </h1>
+    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${escapeHtml(greeting)} the host has been notified. Here&rsquo;s what you signed up for:
+    </p>
+    <div style="margin:0 0 20px 0;padding:14px 16px;background:${CREAM};border:1px solid #e8dec9;border-radius:8px;">
+      <p style="margin:0 0 6px 0;font-size:16px;line-height:1.3;color:${NAVY};font-family:${SERIF};font-weight:500;">
+        ${escapeHtml(input.gatheringTitle)}
+      </p>
+      <p style="margin:0 0 4px 0;font-size:13px;color:#3d4a5c;">
+        ${escapeHtml(input.dateText)}${input.timeText ? ' · ' + escapeHtml(input.timeText) : ''}
+      </p>
+      ${locationLine ? `<p style="margin:0 0 4px 0;font-size:13px;color:${MUTED};">${escapeHtml(locationLine)}</p>` : ''}
+      <p style="margin:0;font-size:12px;color:${MUTED};">Hosted by ${escapeHtml(input.hostName)}</p>
+    </div>
+    <p style="margin:0 0 12px 0;font-size:13.5px;line-height:1.55;color:#3d4a5c;">
+      We attached an .ics file to this email &mdash; click it to add the event to Apple Calendar, Outlook,
+      or any other calendar app. For Gmail users:
+    </p>
+    <p style="margin:0 0 24px 0;">${btn(input.googleCalUrl, 'Add to Google Calendar')}</p>
+    <p style="margin:0 0 0 0;font-size:12.5px;color:${MUTED};">
+      Plans change? Open the gathering in the
+      <a href="${input.clubhouseUrl}" style="color:${NAVY};text-decoration:underline;">Clubhouse</a>
+      to message the host.
+    </p>
+  `
+  return { subject, html: shell(inner, input.clubhouseUrl) }
+}
+
+// ── Host notification (a new RSVP just came in) ─────────────────────────────
+
+export function renderHostRsvpNotification(input: {
+  hostFirstName?: string | null
+  gatheringTitle: string
+  dateText: string
+  attendeeName: string
+  attendeeEmail?: string
+  attendeeNote?: string
+  clubhouseUrl: string
+}): { subject: string; html: string } {
+  const greeting = input.hostFirstName ? `Hi ${input.hostFirstName},` : 'Hi,'
+  const subject = `New RSVP · ${input.gatheringTitle}`
+  const noteBlock = input.attendeeNote
+    ? `<p style="margin:0 0 14px 0;padding:10px 12px;background:${CREAM};border-left:3px solid ${GOLD};font-size:13.5px;line-height:1.55;color:#3d4a5c;font-style:italic;">
+        &ldquo;${escapeHtml(input.attendeeNote)}&rdquo;
+      </p>`
+    : ''
+  const emailLine = input.attendeeEmail
+    ? `<p style="margin:0 0 14px 0;font-size:13px;color:${MUTED};">
+        Reach them at <a href="mailto:${escapeHtml(input.attendeeEmail)}" style="color:${NAVY};text-decoration:underline;">${escapeHtml(input.attendeeEmail)}</a>.
+      </p>`
+    : ''
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      Someone&rsquo;s in.
+    </h1>
+    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${escapeHtml(greeting)} <strong>${escapeHtml(input.attendeeName)}</strong> just RSVP&rsquo;d to your
+      gathering: <strong>${escapeHtml(input.gatheringTitle)}</strong> &middot; ${escapeHtml(input.dateText)}.
+    </p>
+    ${noteBlock}
+    ${emailLine}
+    <p style="margin:0;">${btn(input.clubhouseUrl, 'Open the gathering')}</p>
+  `
+  return { subject, html: shell(inner, input.clubhouseUrl) }
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, '&amp;')

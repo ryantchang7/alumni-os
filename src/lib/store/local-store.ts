@@ -74,6 +74,7 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.chatConversations) parsed.chatConversations = []
   if (!parsed.chatMessages) parsed.chatMessages = []
   if (!parsed.donations) parsed.donations = []
+  if (!parsed.siteContent) parsed.siteContent = {}
   return parsed
 }
 
@@ -111,6 +112,7 @@ const EMPTY_STORE: Store = {
   chatConversations: [],
   chatMessages: [],
   donations: [],
+  siteContent: {},
 }
 
 function normalizeName(name: string): string {
@@ -1091,6 +1093,7 @@ export async function updateClubhouseGathering(
 export async function createClubhouseGatheringRequest(input: {
   gatheringId: string
   teamId: string
+  fromAccountId?: string
   fromName: string
   fromEmail?: string
   note?: string
@@ -1101,6 +1104,7 @@ export async function createClubhouseGatheringRequest(input: {
     id: crypto.randomUUID(),
     gatheringId: input.gatheringId,
     teamId: input.teamId,
+    fromAccountId: input.fromAccountId,
     fromName: input.fromName.trim(),
     fromEmail: input.fromEmail?.trim() || undefined,
     note: input.note?.trim() || undefined,
@@ -1111,6 +1115,28 @@ export async function createClubhouseGatheringRequest(input: {
   store.clubhouseGatheringRequests.push(req)
   await writeStore(store)
   return req
+}
+
+export async function getSiteContent(slot: string): Promise<string | undefined> {
+  const store = await readStore()
+  return store.siteContent?.[slot]
+}
+
+export async function getAllSiteContent(): Promise<Record<string, string>> {
+  const store = await readStore()
+  return { ...(store.siteContent ?? {}) }
+}
+
+export async function setSiteContent(slot: string, value: string): Promise<void> {
+  const store = await readStore()
+  if (!store.siteContent) store.siteContent = {}
+  const trimmed = value.trim()
+  if (trimmed.length === 0) {
+    delete store.siteContent[slot]
+  } else {
+    store.siteContent[slot] = trimmed
+  }
+  await writeStore(store)
 }
 
 export async function getRequestsForGathering(gatheringId: string): Promise<ClubhouseGatheringRequest[]> {

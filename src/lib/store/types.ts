@@ -274,6 +274,9 @@ export interface ClubhouseGatheringRequest {
   id: string
   gatheringId: string
   teamId: string
+  /** Account that submitted the RSVP (set when an approved member RSVPs).
+   * Lets us de-dup, link to profiles, and email the attendee later. */
+  fromAccountId?: string
   fromName: string
   fromEmail?: string
   note?: string
@@ -453,4 +456,8 @@ export interface Store {
   chatConversations: ChatConversation[]
   chatMessages: ChatMessage[]
   donations: Donation[]
+  /** Captain-editable text + image overrides for content slots across the
+   * site. Keys come from src/lib/site-content/slots.ts; values are either
+   * plain strings (text slots) or URLs (image slots). */
+  siteContent: Record<string, string>
 }

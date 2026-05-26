@@ -6,6 +6,15 @@
 
 import { Resend } from 'resend'
 
+interface EmailAttachment {
+  /** File name as it should appear in the recipient's inbox. */
+  filename: string
+  /** UTF-8 string body (for text/calendar, text/plain, etc.). For binary,
+   * pre-base64-encode and set content to the string. */
+  content: string
+  contentType?: string
+}
+
 interface SendArgs {
   to: string | string[]
   subject: string
@@ -14,6 +23,8 @@ interface SendArgs {
   text?: string
   /** Optional reply-to header (e.g. captain's email). */
   replyTo?: string
+  /** Optional file attachments (e.g. an .ics calendar invite). */
+  attachments?: EmailAttachment[]
 }
 
 interface SendResult {
@@ -55,6 +66,11 @@ export async function sendEmail(args: SendArgs): Promise<SendResult> {
       html: args.html,
       text: args.text,
       replyTo: args.replyTo,
+      attachments: args.attachments?.map(a => ({
+        filename: a.filename,
+        content: a.content,
+        contentType: a.contentType,
+      })),
     })
     if (error) {
       console.error('[email] send failed:', error)

@@ -31,6 +31,11 @@ const tools = [
     description: 'Manage rounds, coffees, drinks, dinners, and events.',
     href: '/internal/gatherings',
   },
+  {
+    label: 'Studio',
+    description: 'Edit text and images across the site — headlines, hero images, page copy.',
+    href: '/internal/studio',
+  },
 ]
 
 export default async function InternalPage() {

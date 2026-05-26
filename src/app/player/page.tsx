@@ -13,6 +13,7 @@ import OnTheLoopStrip from '@/components/OnTheLoopStrip'
 import ClubhouseChecklist from '@/components/ClubhouseChecklist'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import MemberOnlyTease from '@/components/MemberOnlyTease'
+import { useSiteContent } from '@/lib/site-content/use-site-content'
 import type { TeamNewsItem } from '@/lib/store/types'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
@@ -318,6 +319,11 @@ function ClubhouseInner() {
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
   const welcomeName = searchParams.get('welcome')
 
+  const welcomeLine = useSiteContent(
+    'player.welcome-line',
+    'Member Book, career connections, and the Penn Golf community in one place.',
+  )
+
   const [profiles, setProfiles] = useState<PlayerProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [newsItems, setNewsItems] = useState<TeamNewsItem[]>([])
@@ -370,7 +376,7 @@ function ClubhouseInner() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.35 }}
           >
-            Member Book, career connections, and the Penn Golf community in one place.
+            {welcomeLine}
           </motion.p>
         </div>
       </div>

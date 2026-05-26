@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { MapPin, Clock, Users, Calendar } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import { MapPin, Clock, Users, Calendar, Lock } from 'lucide-react'
 
 export interface GatheringData {
   id: string
@@ -19,6 +21,15 @@ export interface GatheringData {
   vibe?: 'casual' | 'competitive' | 'career' | 'social' | 'formal'
   status: 'open' | 'full' | 'closed'
   isExample?: boolean
+}
+
+interface Attendee {
+  requestId: string
+  bookId: string | null
+  name: string
+  note?: string
+  status: 'requested' | 'accepted' | 'declined' | 'closed'
+  createdAt: string
 }
 
 const TYPE_LABEL: Record<GatheringData['type'], string> = {
@@ -60,18 +71,35 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   teamSlug?: string
   interestedCount?: number
 }) {
-  const [open, setOpen] = useState(false)
-  const [name, setName] = useState('')
+  const { data: session, status: sessionStatus } = useSession()
+  const approved = sessionStatus === 'authenticated' && !!session?.linkedPersonId
+
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const liveCount = (interestedCount ?? 0) + (sent ? 1 : 0)
+
+  const [attendees, setAttendees] = useState<Attendee[] | null>(null)
+  const liveCount = attendees ? attendees.length : (interestedCount ?? 0) + (sent ? 1 : 0)
+
+  // Approved members can see the attendee list. Re-fetch after a successful
+  // RSVP so the user sees themselves on the sheet.
+  useEffect(() => {
+    if (!approved || gathering.isExample) return
+    let alive = true
+    fetch(`/api/gatherings/${gathering.id}/attendees`)
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (alive && d?.attendees) setAttendees(d.attendees as Attendee[])
+      })
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+  }, [approved, gathering.id, gathering.isExample, sent])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const trimmed = name.trim()
-    if (!trimmed) return
     setSubmitting(true)
     setError(null)
     try {
@@ -81,7 +109,6 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         body: JSON.stringify({
           teamSlug,
           gatheringId: gathering.id,
-          fromName: trimmed,
           note: note.trim() || undefined,
         }),
       })
@@ -150,7 +177,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             <div className="flex items-center gap-1.5 text-xs text-[#8a7f70]">
               <Users className="w-3 h-3 flex-shrink-0" />
               <span>
-                {liveCount > 0 ? `${liveCount} interested` : null}
+                {liveCount > 0 ? `${liveCount} on the sheet` : null}
                 {liveCount > 0 && gathering.capacity ? ' · ' : null}
                 {gathering.capacity ? `Up to ${gathering.capacity} members` : null}
               </span>
@@ -169,6 +196,32 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
           <p className="text-xs text-[#4a5568] leading-relaxed mb-4">{gathering.description}</p>
         )}
 
+        {/* Attendee list (approved members only) */}
+        {approved && !gathering.isExample && attendees && attendees.length > 0 && (
+          <div className="mb-4 pt-3 border-t border-[rgba(180,168,150,0.3)]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70] mb-1.5">
+              On the sheet
+            </p>
+            <ul className="flex flex-wrap gap-x-3 gap-y-1">
+              {attendees.map(a => (
+                <li key={a.requestId} className="text-[12.5px] text-[#0a1628]">
+                  {a.bookId ? (
+                    <Link
+                      href={`/member-book/${encodeURIComponent(a.bookId)}`}
+                      className="hover:underline"
+                      style={{ fontFamily: 'var(--font-playfair)' }}
+                    >
+                      {a.name}
+                    </Link>
+                  ) : (
+                    <span style={{ fontFamily: 'var(--font-playfair)' }}>{a.name}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Action */}
         {gathering.isExample && (
           <p className="text-xs text-[#8a7f70] italic">
@@ -177,27 +230,19 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         )}
         {gathering.status === 'open' && !gathering.isExample && (
           <>
-            {!open && !sent && (
-              <button
-                type="button"
-                onClick={() => setOpen(true)}
-                className="text-xs font-semibold text-[#990000] hover:underline"
-              >
-                Pencil me in &rarr;
-              </button>
+            {!approved && sessionStatus !== 'loading' && (
+              <p className="inline-flex items-center gap-1.5 text-xs text-[#8a7f70]">
+                <Lock className="w-3 h-3" />
+                <Link
+                  href={sessionStatus === 'authenticated' ? '/account/setup' : '/login?next=/19th-hole'}
+                  className="text-[#990000] hover:underline font-semibold"
+                >
+                  Claim your card to RSVP &rarr;
+                </Link>
+              </p>
             )}
-
-            {open && !sent && (
+            {approved && !sent && (
               <form onSubmit={handleSubmit} className="mt-2 space-y-2">
-                <input
-                  type="text"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  placeholder="Your name"
-                  maxLength={100}
-                  required
-                  className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 focus:outline-none focus:border-[#0a1628] transition-colors"
-                />
                 <textarea
                   value={note}
                   onChange={e => setNote(e.target.value)}
@@ -207,28 +252,18 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                   className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 focus:outline-none focus:border-[#0a1628] transition-colors resize-none"
                 />
                 {error && <p className="text-xs text-[#990000]">{error}</p>}
-                <div className="flex gap-2">
-                  <button
-                    type="submit"
-                    disabled={submitting || !name.trim()}
-                    className="text-xs font-semibold bg-[#0a1628] text-white px-4 py-2 rounded-lg disabled:opacity-40 hover:bg-[#0a1628]/85 transition-colors"
-                  >
-                    {submitting ? 'Sending…' : 'Send'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setOpen(false); setError(null) }}
-                    className="text-xs text-[#8a7f70] hover:text-[#0a1628] px-3 py-2"
-                  >
-                    Cancel
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="text-xs font-semibold bg-[#0a1628] text-white px-4 py-2 rounded-lg disabled:opacity-40 hover:bg-[#0a1628]/85 transition-colors"
+                >
+                  {submitting ? 'Sending…' : 'Pencil me in'}
+                </button>
               </form>
             )}
-
             {sent && (
               <p className="text-xs text-[#2d6a4f] font-medium mt-1">
-                You&rsquo;re on the sheet. The host will be in touch.
+                You&rsquo;re on the sheet. Confirmation + calendar invite sent to your inbox.
               </p>
             )}
           </>

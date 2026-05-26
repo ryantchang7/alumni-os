@@ -4,11 +4,15 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { useSiteContent } from '@/lib/site-content/use-site-content'
 
 const ease = [0.25, 0.1, 0.25, 1] as const
 
 export default function LandingPage() {
   const [ready, setReady] = useState(false)
+  const coverImage = useSiteContent('landing.cover-image', '/clubhouse-cover.jpg')
+  const headline = useSiteContent('landing.headline', 'Penn Golf Clubhouse')
+  const subtitle = useSiteContent('landing.subtitle', '')
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 120)
@@ -18,15 +22,17 @@ export default function LandingPage() {
   return (
     <div className="relative w-full h-[calc(100dvh-60px)] flex flex-col overflow-hidden bg-[#0a1628]">
 
-      {/* Background image — full-bleed, clubhouse stays centered */}
+      {/* Background image — full-bleed, clubhouse stays centered.
+          Captain can swap via /internal/studio → "Landing cover image". */}
       <Image
-        src="/clubhouse-cover.jpg"
+        src={coverImage}
         fill
         priority
         sizes="100vw"
         className="object-cover object-center"
         alt="Penn Golf Clubhouse"
         data-testid="cover-image"
+        unoptimized={!coverImage.startsWith('/')}
       />
 
       {/* Very light navy tint — preserves image brightness */}
@@ -70,7 +76,7 @@ export default function LandingPage() {
 
         {/* Title */}
         <motion.h1
-          className="text-white text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] leading-[1.05] tracking-tight mb-10 sm:mb-12"
+          className="text-white text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] leading-[1.05] tracking-tight mb-6 sm:mb-8"
           style={{
             fontFamily: 'var(--font-playfair)',
             fontWeight: 500,
@@ -81,8 +87,20 @@ export default function LandingPage() {
           transition={{ delay: 1.1, duration: 0.8, ease }}
           data-testid="landing-title"
         >
-          Penn Golf Clubhouse
+          {headline}
         </motion.h1>
+
+        {subtitle && (
+          <motion.p
+            className="text-white/85 text-sm sm:text-base max-w-md mb-10 sm:mb-12"
+            style={{ textShadow: '0 1px 12px rgba(10,22,40,0.55)' }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            transition={{ delay: 1.3, duration: 0.7, ease }}
+          >
+            {subtitle}
+          </motion.p>
+        )}
 
         {/* Buttons — private-club stationery feel */}
         <motion.div
