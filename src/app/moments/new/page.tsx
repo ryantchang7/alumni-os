@@ -12,6 +12,7 @@ export default function NewMomentPage() {
   const router = useRouter()
 
   const [photoUrl, setPhotoUrl] = useState('')
+  const [mediaType, setMediaType] = useState<'image' | 'video'>('image')
   const [caption, setCaption] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -31,7 +32,7 @@ export default function NewMomentPage() {
       const res = await fetch('/api/moments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ photoUrl, caption }),
+        body: JSON.stringify({ photoUrl, mediaType, caption }),
       })
       if (!res.ok) {
         const j = await res.json().catch(() => ({}))
@@ -102,9 +103,16 @@ export default function NewMomentPage() {
           <form onSubmit={handleSubmit} className="px-7 sm:px-10 py-8 space-y-6">
             <PhotoUpload
               value={photoUrl}
-              onChange={setPhotoUrl}
-              label="Photo"
+              onChange={(url) => {
+                setPhotoUrl(url)
+                // Re-sniff in case the user pasted a URL directly.
+                if (/\.(mp4|mov|m4v|webm)(\?|$)/i.test(url)) setMediaType('video')
+                else if (url) setMediaType('image')
+              }}
+              onMediaTypeChange={setMediaType}
+              label="Photo or video"
               shape="wide"
+              allowVideo
             />
 
             <div>

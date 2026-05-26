@@ -151,14 +151,24 @@ export default async function MomentsPage() {
                       '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)',
                   }}
                 >
-                  {/* Photo */}
+                  {/* Photo or video */}
                   <div className="relative bg-[#faf7f2]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={m.photoUrl}
-                      alt={m.caption}
-                      className="w-full max-h-[640px] object-cover"
-                    />
+                    {m.mediaType === 'video' ? (
+                      <video
+                        src={m.photoUrl}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        className="w-full max-h-[640px] object-contain bg-black"
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={m.photoUrl}
+                        alt={m.caption}
+                        className="w-full max-h-[640px] object-cover"
+                      />
+                    )}
                   </div>
                   {/* Caption + meta */}
                   <div className="px-6 sm:px-8 py-5">

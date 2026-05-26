@@ -18,6 +18,7 @@ export interface GatheringData {
   audience: 'players' | 'alumni' | 'both'
   vibe?: 'casual' | 'competitive' | 'career' | 'social' | 'formal'
   status: 'open' | 'full' | 'closed'
+  isExample?: boolean
 }
 
 const TYPE_LABEL: Record<GatheringData['type'], string> = {
@@ -116,6 +117,14 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 </span>
               )}
               <GatheringStatusPill status={gathering.status} />
+              {gathering.isExample && (
+                <span
+                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a7f70] bg-[#faf7f2] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
+                  title="Sample gathering — host a real one to replace it."
+                >
+                  Example
+                </span>
+              )}
             </div>
             <p className="font-semibold text-[#0a1628] text-sm leading-snug">{gathering.title}</p>
           </div>
@@ -161,7 +170,12 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         )}
 
         {/* Action */}
-        {gathering.status === 'open' && (
+        {gathering.isExample && (
+          <p className="text-xs text-[#8a7f70] italic">
+            Sample gathering — host a real one to replace it.
+          </p>
+        )}
+        {gathering.status === 'open' && !gathering.isExample && (
           <>
             {!open && !sent && (
               <button

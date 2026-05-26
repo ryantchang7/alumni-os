@@ -263,6 +263,9 @@ export interface ClubhouseGathering {
   audience: 'players' | 'alumni' | 'both'
   vibe?: 'casual' | 'competitive' | 'career' | 'social' | 'formal'
   status: 'open' | 'full' | 'closed'
+  /** Marks a seeded/demo gathering so the UI can label it "Example". Real
+   * gatherings created by hosts never get this flag. */
+  isExample?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -347,7 +350,13 @@ export interface ClubhouseMoment {
   postedByPersonId?: string
   postedByName: string
   caption: string
+  /** The hosted asset URL. Despite the name, this may point at an image OR
+   *  a video — `mediaType` disambiguates. Kept as `photoUrl` for backwards
+   *  compatibility with seed data. */
   photoUrl: string
+  /** 'image' (default) or 'video'. Older records without this field are
+   *  treated as 'image' by the UI. */
+  mediaType?: 'image' | 'video'
   taggedPersonIds: string[]
   status: 'published' | 'pending' | 'removed'
   createdAt: string

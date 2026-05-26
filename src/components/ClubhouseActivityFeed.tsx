@@ -24,6 +24,7 @@ interface UpcomingGathering {
 interface RecentMoment {
   id: string
   photoUrl: string
+  mediaType?: 'image' | 'video'
   caption: string
   postedByName: string
   postedByBookId: string | null
@@ -137,12 +138,22 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
                   className="group block"
                 >
                   <div className="aspect-[4/3] rounded-lg overflow-hidden bg-[#faf7f2] border border-[rgba(180,168,150,0.35)]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={m.photoUrl}
-                      alt={m.caption}
-                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                    />
+                    {m.mediaType === 'video' ? (
+                      <video
+                        src={m.photoUrl}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        className="w-full h-full object-cover bg-black"
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={m.photoUrl}
+                        alt={m.caption}
+                        className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      />
+                    )}
                   </div>
                   <p className="text-[12px] text-[#3d4a5c] mt-1.5 line-clamp-2 leading-snug">
                     {m.caption}

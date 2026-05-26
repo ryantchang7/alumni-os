@@ -19,7 +19,7 @@ export async function GET() {
   return NextResponse.json({ moments })
 }
 
-function isValidImageUrl(url: string): boolean {
+function isValidMediaUrl(url: string): boolean {
   try {
     const u = new URL(url)
     if (u.protocol !== 'https:' && u.protocol !== 'http:') return false
@@ -28,6 +28,8 @@ function isValidImageUrl(url: string): boolean {
     return false
   }
 }
+
+const VIDEO_EXT_RE = /\.(mp4|mov|m4v|webm)(\?|$)/i
 
 export async function POST(request: Request) {
   const session = await auth()
@@ -47,11 +49,20 @@ export async function POST(request: Request) {
   if (!caption) {
     return NextResponse.json({ error: 'caption required' }, { status: 400 })
   }
-  if (!photoUrl || !isValidImageUrl(photoUrl)) {
+  if (!photoUrl || !isValidMediaUrl(photoUrl)) {
     return NextResponse.json({ error: 'photoUrl must be a valid http(s) URL' }, { status: 400 })
   }
   if (caption.length > 800) {
     return NextResponse.json({ error: 'caption too long' }, { status: 400 })
+  }
+
+  // Resolve mediaType from the body, falling back to URL extension sniffing
+  // so pasted video URLs still render as video without an explicit flag.
+  let mediaType: 'image' | 'video' = 'image'
+  if (body.mediaType === 'video' || body.mediaType === 'image') {
+    mediaType = body.mediaType
+  } else if (VIDEO_EXT_RE.test(photoUrl)) {
+    mediaType = 'video'
   }
 
   const team = await getTeamBySlug(TEAM_SLUG)
@@ -69,6 +80,7 @@ export async function POST(request: Request) {
     postedByName: account.name ?? session.user?.name ?? 'Penn Golf Member',
     caption,
     photoUrl,
+    mediaType,
     taggedPersonIds: Array.isArray(body.taggedPersonIds)
       ? (body.taggedPersonIds as unknown[]).filter((x): x is string => typeof x === 'string')
       : [],

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { isExampleGathering } from '@/lib/seed-data/example-gatherings'
 
 const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const VALID_AUDIENCES = ['players', 'alumni', 'both'] as const
@@ -22,7 +23,9 @@ export async function GET(request: NextRequest) {
     gatherings = gatherings.filter(g => g.type === typeFilter)
   }
 
-  const sorted = gatherings.sort((a, b) => a.dateText.localeCompare(b.dateText))
+  const sorted = gatherings
+    .sort((a, b) => a.dateText.localeCompare(b.dateText))
+    .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) }))
   return NextResponse.json({ gatherings: sorted })
 }
 

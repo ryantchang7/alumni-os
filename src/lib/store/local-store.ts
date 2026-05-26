@@ -1312,6 +1312,7 @@ export async function createMoment(input: {
   postedByName: string
   caption: string
   photoUrl: string
+  mediaType?: 'image' | 'video'
   taggedPersonIds?: string[]
 }): Promise<ClubhouseMoment> {
   const store = await readStore()
@@ -1323,6 +1324,7 @@ export async function createMoment(input: {
     postedByName: input.postedByName,
     caption: input.caption.trim(),
     photoUrl: input.photoUrl.trim(),
+    mediaType: input.mediaType ?? 'image',
     taggedPersonIds: input.taggedPersonIds ?? [],
     status: 'published',
     createdAt: new Date().toISOString(),

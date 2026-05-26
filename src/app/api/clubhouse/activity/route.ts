@@ -28,6 +28,7 @@ interface UpcomingGathering {
 interface RecentMoment {
   id: string
   photoUrl: string
+  mediaType: 'image' | 'video'
   caption: string
   postedByName: string
   postedByBookId: string | null
@@ -115,6 +116,7 @@ export async function GET() {
       return {
         id: m.id,
         photoUrl: m.photoUrl,
+        mediaType: m.mediaType ?? 'image',
         caption: m.caption,
         postedByName: m.postedByName,
         postedByBookId: bookEntry?.id ?? null,

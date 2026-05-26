@@ -1,7 +1,15 @@
 /**
- * Image upload endpoint backed by Vercel Blob. Members (signed in) can
- * upload a profile photo or a Moment photo. Returns the permanent public
- * URL of the stored blob.
+ * Media upload endpoint backed by Vercel Blob. Members (signed in) can
+ * upload an image (profile photo, Moment photo) OR a video clip (Moment
+ * video). Returns the permanent public URL of the stored blob plus the
+ * resolved mediaType so the client knows what it just uploaded.
+ *
+ * NOTE: Vercel serverless function body size caps server-side uploads
+ * around 4.5 MB on Hobby and Pro by default. That's enough for cropped
+ * JPEGs and short compressed phone videos, but anything bigger needs the
+ * client-side direct upload pattern (`@vercel/blob/client`'s
+ * `handleUpload`). Out of scope for now — the route returns a clear 413
+ * if a user hits the limit.
  *
  * Requires BLOB_READ_WRITE_TOKEN env var. Without it the route 503s with
  * a clear message so the UI can fall back to "paste a URL."
@@ -11,8 +19,23 @@ import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { auth } from '@/auth'
 
-const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'])
-const MAX_BYTES = 8 * 1024 * 1024 // 8 MB
+const IMAGE_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/heic',
+  'image/heif',
+])
+const VIDEO_TYPES = new Set([
+  'video/mp4',
+  'video/quicktime',
+  'video/webm',
+  'video/x-m4v',
+])
+
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024 // 8 MB
+const MAX_VIDEO_BYTES = 4 * 1024 * 1024 // 4 MB (Vercel function body cap)
 
 export async function POST(request: Request) {
   const session = await auth()
@@ -22,7 +45,7 @@ export async function POST(request: Request) {
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json(
-      { error: 'Image uploads not configured yet — paste a URL instead.' },
+      { error: 'Media uploads not configured yet — paste a URL instead.' },
       { status: 503 },
     )
   }
@@ -35,22 +58,33 @@ export async function POST(request: Request) {
   if (!(file instanceof File)) {
     return NextResponse.json({ error: 'No file in "file" field' }, { status: 400 })
   }
-  if (!ALLOWED_TYPES.has(file.type)) {
+
+  const isImage = IMAGE_TYPES.has(file.type)
+  const isVideo = VIDEO_TYPES.has(file.type)
+  if (!isImage && !isVideo) {
     return NextResponse.json(
-      { error: `Unsupported file type (${file.type}). Try JPEG, PNG, WebP, or HEIC.` },
+      {
+        error: `Unsupported file type (${file.type}). Images: JPEG/PNG/WebP/HEIC. Videos: MP4/MOV/WebM.`,
+      },
       { status: 415 },
     )
   }
-  if (file.size > MAX_BYTES) {
+
+  const limit = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES
+  if (file.size > limit) {
+    const mb = (file.size / 1024 / 1024).toFixed(1)
+    const max = (limit / 1024 / 1024).toFixed(0)
     return NextResponse.json(
-      { error: `Too big (${(file.size / 1024 / 1024).toFixed(1)} MB). Max 8 MB.` },
+      {
+        error: isVideo
+          ? `Video too big (${mb} MB). Max ${max} MB — try a shorter clip.`
+          : `Image too big (${mb} MB). Max ${max} MB.`,
+      },
       { status: 413 },
     )
   }
 
-  // Filename scoped per-account to avoid collisions; Vercel Blob adds a
-  // random suffix anyway with addRandomSuffix=true.
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? (isVideo ? 'mp4' : 'jpg')
   const safeName = `${session.accountId}/${Date.now()}.${ext}`
 
   try {
@@ -59,7 +93,10 @@ export async function POST(request: Request) {
       addRandomSuffix: true,
       contentType: file.type,
     })
-    return NextResponse.json({ url: blob.url })
+    return NextResponse.json({
+      url: blob.url,
+      mediaType: isVideo ? 'video' : 'image',
+    })
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Upload failed'
     console.error('[upload/image] put failed:', msg)

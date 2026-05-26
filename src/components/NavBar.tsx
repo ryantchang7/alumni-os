@@ -8,6 +8,9 @@ import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signIn, signOut } from 'next-auth/react'
 
+// Hall of Fame is intentionally not a top-level tab — it lives under the
+// Clubhouse landing (/player has a "Visit the Hall of Fame" CTA) so the
+// nav stays tight.
 const navLinks = [
   { label: 'Clubhouse', href: '/player' },
   { label: 'Member Book', href: '/member-book' },
@@ -15,7 +18,6 @@ const navLinks = [
   { label: 'The Course', href: '/the-course' },
   { label: '19th Hole', href: '/19th-hole' },
   { label: 'Moments', href: '/moments' },
-  { label: 'Hall of Fame', href: '/hall-of-fame' },
   { label: 'Career Room', href: '/career-room' },
   { label: 'Team Room', href: '/team-room' },
   { label: 'Chat', href: '/chat' },

@@ -12,7 +12,14 @@ interface Props {
   label?: string
   /** Aspect ratio for the preview + crop. 'square' for profile, 'wide' for moments. */
   shape?: 'square' | 'wide'
+  /** If true, also accept video files (.mp4/.mov/.webm). Skips the cropper
+   * for videos and uploads them raw. Defaults to false (image-only). */
+  allowVideo?: boolean
+  /** Notified when the picker resolves a media type ('image' | 'video'). */
+  onMediaTypeChange?: (mediaType: 'image' | 'video') => void
 }
+
+const VIDEO_EXT_RE = /\.(mp4|mov|m4v|webm)(\?|$)/i
 
 /**
  * Photo upload with built-in file picker + crop modal + preview +
@@ -27,24 +34,31 @@ export default function PhotoUpload({
   onChange,
   label = 'Photo',
   shape = 'square',
+  allowVideo = false,
+  onMediaTypeChange,
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
   const [pickedFile, setPickedFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function uploadBlob(blob: Blob, filename: string) {
+  const isVideoValue = !!value && VIDEO_EXT_RE.test(value)
+
+  async function uploadFile(file: File) {
     setUploading(true)
     setError(null)
     try {
       const form = new FormData()
-      form.append('file', new File([blob], filename, { type: 'image/jpeg' }))
+      form.append('file', file)
       const res = await fetch('/api/upload/image', { method: 'POST', body: form })
       const j = await res.json().catch(() => ({}))
       if (!res.ok) {
         throw new Error(j.error ?? `Upload failed (${res.status})`)
       }
       onChange(j.url as string)
+      if (j.mediaType && onMediaTypeChange) {
+        onMediaTypeChange(j.mediaType as 'image' | 'video')
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Upload failed')
     } finally {
@@ -54,14 +68,22 @@ export default function PhotoUpload({
 
   function onFilePicked(file: File) {
     setError(null)
+    if (file.type.startsWith('video/')) {
+      // Skip the cropper for videos — upload raw.
+      void uploadFile(file)
+      if (fileRef.current) fileRef.current.value = ''
+      return
+    }
     setPickedFile(file)
   }
 
   async function onCropComplete(blob: Blob) {
     const filename = `crop-${Date.now()}.jpg`
     setPickedFile(null)
-    await uploadBlob(blob, filename)
+    const file = new File([blob], filename, { type: 'image/jpeg' })
+    await uploadFile(file)
     if (fileRef.current) fileRef.current.value = ''
+    onMediaTypeChange?.('image')
   }
 
   function onCropCancel() {
@@ -84,13 +106,23 @@ export default function PhotoUpload({
           className={`${previewClass} rounded-lg overflow-hidden bg-[#faf7f2] border border-dashed border-[rgba(180,168,150,0.55)] flex items-center justify-center`}
         >
           {value ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={value}
-              alt="preview"
-              className="w-full h-full object-cover"
-              onError={() => setError("Couldn't load that image URL.")}
-            />
+            isVideoValue ? (
+              <video
+                src={value}
+                controls
+                playsInline
+                className="w-full h-full object-cover bg-black"
+                onError={() => setError("Couldn't load that video URL.")}
+              />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={value}
+                alt="preview"
+                className="w-full h-full object-cover"
+                onError={() => setError("Couldn't load that image URL.")}
+              />
+            )
           ) : (
             <ImageIcon className="w-8 h-8 text-[#8a7f70]" />
           )}
@@ -101,7 +133,7 @@ export default function PhotoUpload({
           <input
             ref={fileRef}
             type="file"
-            accept="image/*"
+            accept={allowVideo ? 'image/*,video/*' : 'image/*'}
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0]
@@ -115,10 +147,20 @@ export default function PhotoUpload({
             className="inline-flex items-center gap-2 bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded-lg transition-colors disabled:opacity-50"
           >
             <Upload className="w-3.5 h-3.5" />
-            {uploading ? 'Uploading…' : value ? 'Replace photo' : 'Upload photo'}
+            {uploading
+              ? 'Uploading…'
+              : value
+                ? allowVideo
+                  ? 'Replace media'
+                  : 'Replace photo'
+                : allowVideo
+                  ? 'Upload photo or video'
+                  : 'Upload photo'}
           </button>
           <p className="text-[11px] text-[#8a7f70]">
-            Pick from your camera roll, crop it, done. Or paste a URL below.
+            {allowVideo
+              ? 'Photo or short video clip from your camera roll. Or paste a URL below.'
+              : 'Pick from your camera roll, crop it, done. Or paste a URL below.'}
           </p>
           <input
             type="url"
