@@ -65,11 +65,12 @@ export async function POST(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: 'Claim request not found' }, { status: 404 })
   }
 
-  // Fire-and-forget notification emails. Doesn't block the captain response.
+  // Send notification email. Awaited so the serverless function doesn't
+  // terminate before the network request completes.
   try {
     const { sendEmail } = await import('@/lib/email/send')
     const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alumni-os.vercel.app'
+      process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
 
     if (status === 'approved') {
       const { renderWelcomeEmail } = await import('@/lib/email/templates')
@@ -78,9 +79,10 @@ export async function POST(request: Request, { params }: RouteParams) {
         firstName,
         clubhouseUrl: `${baseUrl}/player`,
       })
-      void sendEmail({ to: claim.requesterEmail, subject, html }).catch((e) =>
-        console.warn('[claim-approve-email] failed:', e),
-      )
+      const result = await sendEmail({ to: claim.requesterEmail, subject, html })
+      if (!result.ok) console.warn('[claim-approve-email] send failed:', result.error)
+      else if (result.skipped) console.warn('[claim-approve-email] skipped — RESEND_API_KEY or EMAIL_FROM unset')
+      else console.log(`[claim-approve-email] sent ok id=${result.id}`)
     } else if (status === 'declined') {
       const { renderClaimDeclined } = await import('@/lib/email/templates')
       const firstName = claim.requesterName.split(/\s+/)[0]
@@ -91,9 +93,10 @@ export async function POST(request: Request, { params }: RouteParams) {
         claimedName: claim.requesterName,
         captainEmail,
       })
-      void sendEmail({ to: claim.requesterEmail, subject, html }).catch((e) =>
-        console.warn('[claim-decline-email] failed:', e),
-      )
+      const result = await sendEmail({ to: claim.requesterEmail, subject, html })
+      if (!result.ok) console.warn('[claim-decline-email] send failed:', result.error)
+      else if (result.skipped) console.warn('[claim-decline-email] skipped — RESEND_API_KEY or EMAIL_FROM unset')
+      else console.log(`[claim-decline-email] sent ok id=${result.id}`)
     }
   } catch (e) {
     console.warn('[claim-status-email] setup failed:', e)

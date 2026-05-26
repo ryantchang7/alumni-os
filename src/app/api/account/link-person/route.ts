@@ -203,16 +203,18 @@ export async function POST(request: Request) {
     requesterAccountId: session.accountId,
   })
 
-  // Fire-and-forget captain notification. Heuristic match-hint: weak if the
-  // Google name and book displayName don't share at least one surname token.
+  // Send captain notification. Awaited so the serverless function doesn't
+  // terminate before the network request completes (Vercel kills background
+  // promises the moment the response returns).
   try {
     const { sendEmail } = await import('@/lib/email/send')
     const { renderClaimNotification } = await import('@/lib/email/templates')
     const { getCaptainEmails } = await import('@/lib/captains')
     const captains = getCaptainEmails(TEAM_SLUG)
+    console.log(`[claim-notify] captains=${captains.length} resendKeySet=${!!process.env.RESEND_API_KEY} emailFromSet=${!!process.env.EMAIL_FROM}`)
     if (captains.length > 0) {
       const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alumni-os.vercel.app'
+        process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
       const matchHint = matchesNameLoosely(account.name, entry.displayName)
         ? 'strong'
         : 'weak'
@@ -228,9 +230,14 @@ export async function POST(request: Request) {
         adminUrl: `${baseUrl}/internal/claims`,
         matchHint,
       })
-      void sendEmail({ to: captains, subject, html }).catch((e) =>
-        console.warn('[claim-notify] background send failed:', e),
-      )
+      const result = await sendEmail({ to: captains, subject, html })
+      if (!result.ok) {
+        console.warn('[claim-notify] send failed:', result.error)
+      } else if (result.skipped) {
+        console.warn('[claim-notify] skipped — RESEND_API_KEY or EMAIL_FROM unset at runtime')
+      } else {
+        console.log(`[claim-notify] sent ok id=${result.id}`)
+      }
     }
   } catch (e) {
     console.warn('[claim-notify] setup failed:', e)
