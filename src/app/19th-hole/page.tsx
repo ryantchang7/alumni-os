@@ -76,12 +76,16 @@ export default async function NineteenthHolePage() {
       .sort((a, b) => b[1].count - a[1].count)
       .map(([city, s]) => ({ city, ...s }))
 
-    socialGatherings = store.clubhouseGatherings.filter(
-      g =>
-        g.teamId === team.id &&
-        (g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner' || g.type === 'event') &&
-        g.status !== 'closed',
-    ) as GatheringData[]
+    const { isExampleGathering, isHiddenGathering } = await import('@/lib/seed-data/example-gatherings')
+    socialGatherings = store.clubhouseGatherings
+      .filter(
+        g =>
+          g.teamId === team.id &&
+          (g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner' || g.type === 'event') &&
+          g.status !== 'closed' &&
+          !isHiddenGathering(g.id),
+      )
+      .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) })) as GatheringData[]
   }
 
   if (!approval.approved) {

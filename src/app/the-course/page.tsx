@@ -147,9 +147,16 @@ export default async function TheCoursePage() {
       }
     }
 
-    rounds = store.clubhouseGatherings.filter(
-      (g) => g.teamId === team.id && g.type === 'round' && g.status !== 'closed',
-    ) as GatheringData[]
+    const { isExampleGathering, isHiddenGathering } = await import('@/lib/seed-data/example-gatherings')
+    rounds = store.clubhouseGatherings
+      .filter(
+        (g) =>
+          g.teamId === team.id &&
+          g.type === 'round' &&
+          g.status !== 'closed' &&
+          !isHiddenGathering(g.id),
+      )
+      .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) })) as GatheringData[]
 
     for (const r of store.clubhouseGatheringRequests) {
       if (r.teamId !== team.id) continue

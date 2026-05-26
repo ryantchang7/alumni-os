@@ -43,8 +43,8 @@ export const BADGE_META: Record<BadgeId, BadgeMeta> = {
   },
   captain: {
     id: 'captain',
-    label: 'Captain',
-    tooltip: 'Team captain',
+    label: 'PGC Captain',
+    tooltip: 'Penn Golf Clubhouse Captain',
     className:
       'bg-[#0a1628]/8 text-[#0a1628] border border-[#0a1628]/25',
     icon: 'shield',
