@@ -19,6 +19,7 @@ const navLinks = [
   { label: 'Career Room', href: '/career-room' },
   { label: 'Team Room', href: '/team-room' },
   { label: 'Chat', href: '/chat' },
+  { label: 'Support', href: '/support' },
 ]
 
 function AccountAffordance() {

@@ -292,6 +292,33 @@ export interface Account {
   updatedAt: string
   /** ISO timestamp of the last weekly digest email sent to this account. */
   lastDigestSentAt?: string
+  /** Stripe customer id, set the first time this account interacts with billing. */
+  stripeCustomerId?: string
+  /** Active subscription state (Founding Member tier). */
+  subscription?: {
+    status: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete'
+    priceId: string
+    /** ISO. */
+    currentPeriodEnd?: string
+    canceledAt?: string
+  }
+}
+
+/**
+ * One-time donations (separate from the subscription). Recorded on
+ * Stripe Checkout completion via webhook.
+ */
+export interface Donation {
+  id: string
+  teamId: string
+  accountId?: string  // null for anonymous donations
+  donorEmail: string
+  donorName?: string
+  amountCents: number
+  currency: string
+  stripeCheckoutSessionId: string
+  stripePaymentIntentId?: string
+  createdAt: string
 }
 
 /**
@@ -416,4 +443,5 @@ export interface Store {
   teamNewsItems: TeamNewsItem[]
   chatConversations: ChatConversation[]
   chatMessages: ChatMessage[]
+  donations: Donation[]
 }

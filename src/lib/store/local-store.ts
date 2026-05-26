@@ -32,6 +32,7 @@ import type {
   TeamNewsItem,
   ChatConversation,
   ChatMessage,
+  Donation,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -72,6 +73,7 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.teamNewsItems) parsed.teamNewsItems = []
   if (!parsed.chatConversations) parsed.chatConversations = []
   if (!parsed.chatMessages) parsed.chatMessages = []
+  if (!parsed.donations) parsed.donations = []
   return parsed
 }
 
@@ -108,6 +110,7 @@ const EMPTY_STORE: Store = {
   teamNewsItems: [],
   chatConversations: [],
   chatMessages: [],
+  donations: [],
 }
 
 function normalizeName(name: string): string {
@@ -229,15 +232,66 @@ async function ensureBootstrapMembers(store: Store): Promise<boolean> {
     const team = store.teams.find(t => t.slug === m.teamSlug)
     if (!team) continue
     const norm = normalizeName(m.name)
-    const alreadyOnTeam = store.people.some(
+
+    // Look up any existing person on this team with the same normalized name.
+    const existingPerson = store.people.find(
       p =>
         p.normalizedName === norm &&
         store.teamMemberships.some(
           tm => tm.personId === p.id && tm.teamId === team.id,
         ),
     )
-    if (alreadyOnTeam) continue
 
+    if (existingPerson) {
+      // Upgrade their membership to match desired role/years if it doesn't
+      // already match — covers the case where a recent grad is still
+      // listed as a current player from the historical roster scrape.
+      const idx = store.teamMemberships.findIndex(
+        tm => tm.personId === existingPerson.id && tm.teamId === team.id,
+      )
+      if (idx === -1) continue
+      const current = store.teamMemberships[idx]
+      const needsUpdate =
+        current.memberRole !== m.memberRole ||
+        current.rosterEndYear !== m.rosterEndYear ||
+        (m.rosterStartYear !== undefined && current.rosterStartYear !== m.rosterStartYear) ||
+        (m.classLabel !== undefined && current.classLabel !== m.classLabel) ||
+        !current.publishedToNetwork
+      if (!needsUpdate) continue
+      store.teamMemberships[idx] = {
+        ...current,
+        memberRole: m.memberRole,
+        memberStatus: 'verified',
+        classLabel: m.classLabel ?? current.classLabel,
+        rosterStartYear: m.rosterStartYear ?? current.rosterStartYear,
+        rosterEndYear: m.rosterEndYear ?? current.rosterEndYear,
+        publishedToNetwork: true,
+        publishedAt: current.publishedAt ?? now,
+        publishedByRole: current.publishedByRole ?? 'captain',
+        updatedAt: now,
+      }
+      // Make sure they have an enrichment row so they show up on Member Map etc.
+      const enrichIdx = store.personEnrichments.findIndex(
+        e => e.personId === existingPerson.id && e.teamId === team.id,
+      )
+      if (enrichIdx === -1) {
+        store.personEnrichments.push({
+          id: crypto.randomUUID(),
+          personId: existingPerson.id,
+          teamId: team.id,
+          visibleToPlayers: true,
+          contactPreference: 'team_intro',
+          verificationStatus: 'unverified',
+          sourceUrls: [],
+          createdAt: now,
+          updatedAt: now,
+        })
+      }
+      dirty = true
+      continue
+    }
+
+    // Brand-new — create person + membership + enrichment.
     const parts = m.name.trim().split(/\s+/)
     const firstName = parts[0]
     const lastName = parts.length > 1 ? parts.slice(1).join(' ') : undefined
@@ -1563,4 +1617,92 @@ export async function markChatConversationRead(
     dirty = true
   }
   if (dirty) await writeStore(store)
+}
+
+// ── Billing (Stripe) ──────────────────────────────────────────────────────────
+
+export async function setAccountStripeCustomerId(
+  accountId: string,
+  stripeCustomerId: string,
+): Promise<void> {
+  const store = await readStore()
+  const idx = store.accounts.findIndex(a => a.id === accountId)
+  if (idx === -1) return
+  if (store.accounts[idx].stripeCustomerId === stripeCustomerId) return
+  store.accounts[idx] = {
+    ...store.accounts[idx],
+    stripeCustomerId,
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
+}
+
+export async function getAccountByStripeCustomerId(
+  stripeCustomerId: string,
+): Promise<Account | undefined> {
+  const store = await readStore()
+  return store.accounts.find(a => a.stripeCustomerId === stripeCustomerId)
+}
+
+export async function updateAccountSubscription(
+  accountId: string,
+  subscription: NonNullable<Account['subscription']> | null,
+): Promise<void> {
+  const store = await readStore()
+  const idx = store.accounts.findIndex(a => a.id === accountId)
+  if (idx === -1) return
+  store.accounts[idx] = {
+    ...store.accounts[idx],
+    subscription: subscription ?? undefined,
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
+}
+
+export async function recordDonation(
+  input: Omit<Donation, 'id' | 'createdAt'>,
+): Promise<Donation> {
+  const store = await readStore()
+  // Idempotent on stripeCheckoutSessionId so retried webhooks don't double-count.
+  const existing = store.donations.find(
+    d => d.stripeCheckoutSessionId === input.stripeCheckoutSessionId,
+  )
+  if (existing) return existing
+  const donation: Donation = {
+    id: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+    ...input,
+  }
+  store.donations.push(donation)
+  await writeStore(store)
+  return donation
+}
+
+export async function listRecentDonations(
+  teamId: string,
+  limit = 20,
+): Promise<Donation[]> {
+  const store = await readStore()
+  return store.donations
+    .filter(d => d.teamId === teamId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, limit)
+}
+
+export async function getDonationTotalForTeam(teamId: string): Promise<{
+  count: number
+  totalCents: number
+  recurringCount: number
+}> {
+  const store = await readStore()
+  const donations = store.donations.filter(d => d.teamId === teamId)
+  const totalCents = donations.reduce((s, d) => s + d.amountCents, 0)
+  const recurringCount = store.accounts.filter(
+    a => a.teamId === teamId && a.subscription?.status === 'active',
+  ).length
+  return {
+    count: donations.length,
+    totalCents,
+    recurringCount,
+  }
 }
