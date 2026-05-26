@@ -1,17 +1,29 @@
 import Link from 'next/link'
-import type { PersonEnrichment, ReviewItem, TeamMembership } from '@/lib/store/types'
+import { redirect } from 'next/navigation'
+import { auth } from '@/auth'
+import { isCaptain } from '@/lib/captains'
+import type { TeamMembership } from '@/lib/store/types'
+import { memberBookEntries } from '@/lib/member-book/data'
+import {
+  isPublicMember,
+  isActiveMember,
+  getMemberStartYear,
+  getMemberEndYear,
+} from '@/lib/member-book/helpers'
 
-interface RowData {
-  personId: string
+const TEAM_SLUG = 'penn-mens-golf'
+
+interface Row {
+  key: string
+  source: 'store' | 'book'
   name: string
-  role: TeamMembership['memberRole']
+  role: TeamMembership['memberRole'] | 'book'
   years: string
   classLabel: string
   hometown: string
   published: boolean
   visible: boolean
   hasEnrichment: boolean
-  reviewCount: number
   profileHref: string | null
 }
 
@@ -27,83 +39,116 @@ function StatBox({ label, value }: { label: string; value: number }) {
   )
 }
 
+function normalize(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, '')
+}
+
 export default async function MasterListPage() {
-  const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
-  const store = await readStore()
-  const team = await getTeamBySlug('penn-mens-golf')
-  if (!team) return <div className="p-8 text-sm text-red-600">Team not found</div>
-
-  const memberships = store.teamMemberships.filter(m => m.teamId === team.id)
-  const people = store.people
-  const enrichments: PersonEnrichment[] = store.personEnrichments.filter(
-    e => e.teamId === team.id,
-  )
-  const reviewItems: ReviewItem[] = store.reviewItems.filter(
-    r => r.teamId === team.id && r.status === 'open',
-  )
-
-  const enrichMap = new Map(enrichments.map(e => [e.personId, e]))
-  const pidToName = new Map(people.map(p => [p.id, p.canonicalName]))
-
-  // Review item counts per person
-  const reviewCountMap = new Map<string, number>()
-  for (const item of reviewItems) {
-    if (item.relatedPersonId) {
-      reviewCountMap.set(item.relatedPersonId, (reviewCountMap.get(item.relatedPersonId) ?? 0) + 1)
-    }
+  const session = await auth()
+  if (!session?.user?.email) redirect('/login?next=/internal/master-list')
+  if (!isCaptain(session.user.email, TEAM_SLUG)) {
+    return (
+      <div className="min-h-[calc(100dvh-60px)] bg-[#f8f5f0] flex items-center justify-center px-6">
+        <div className="max-w-md text-center bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-10">
+          <h1
+            className="text-[#0a1628] text-2xl font-medium mb-2"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            Captains only.
+          </h1>
+        </div>
+      </div>
+    )
   }
 
-  const currentPlayers = memberships.filter(m => m.memberRole === 'current_player')
-  const alumni = memberships.filter(m => m.memberRole === 'alumni')
-  const publishedAlumni = alumni.filter(m => m.publishedToNetwork)
-  const hiddenAlumni = alumni.filter(m => !m.publishedToNetwork)
-  const noEnrichment = alumni.filter(m => !enrichMap.has(m.personId))
-  const visibleFalseCount = alumni.filter(
-    m => enrichMap.get(m.personId)?.visibleToPlayers === false,
-  ).length
-  const verifiedCareer = enrichments.filter(
-    e =>
-      e.verificationStatus === 'source_backed' || e.verificationStatus === 'manually_verified',
-  )
+  const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
+  const store = await readStore()
+  const team = await getTeamBySlug(TEAM_SLUG)
+  if (!team) return <div className="p-8 text-sm text-red-600">Team not found</div>
 
-  // Build sorted rows: current_player first, then alumni, both alphabetically
-  const rows: RowData[] = memberships
-    .slice()
-    .sort((a, b) => {
-      if (a.memberRole === 'current_player' && b.memberRole !== 'current_player') return -1
-      if (a.memberRole !== 'current_player' && b.memberRole === 'current_player') return 1
-      const nameA = pidToName.get(a.personId) ?? ''
-      const nameB = pidToName.get(b.personId) ?? ''
-      return nameA.localeCompare(nameB)
-    })
-    .map(m => {
-      const enrichment = enrichMap.get(m.personId)
-      const name = pidToName.get(m.personId) ?? m.personId
-      const years =
-        m.rosterStartYear && m.rosterEndYear
-          ? `${m.rosterStartYear}–${String(m.rosterEndYear).slice(-2)}`
-          : m.rosterStartYear
-            ? `${m.rosterStartYear}`
-            : '—'
+  // ── Team-store members (anyone added via the roster / add-member flow) ──
+  const memberships = store.teamMemberships.filter(m => m.teamId === team.id)
+  const enrichments = store.personEnrichments.filter(e => e.teamId === team.id)
+  const enrichMap = new Map(enrichments.map(e => [e.personId, e]))
+  const pidToName = new Map(store.people.map(p => [p.id, p.canonicalName]))
 
-      return {
-        personId: m.personId,
-        name,
-        role: m.memberRole,
-        years,
-        classLabel: m.classLabel ?? '—',
-        hometown: m.hometown ?? '—',
-        published: m.publishedToNetwork ?? false,
-        visible: enrichment?.visibleToPlayers !== false,
-        hasEnrichment: !!enrichment,
-        reviewCount: reviewCountMap.get(m.personId) ?? 0,
-        profileHref: m.publishedToNetwork ? `/player/alumni/${m.personId}` : null,
-      }
+  const seenNames = new Set<string>()
+
+  const storeRows: Row[] = memberships.map(m => {
+    const name = pidToName.get(m.personId) ?? m.personId
+    seenNames.add(normalize(name))
+    const enrichment = enrichMap.get(m.personId)
+    const years =
+      m.rosterStartYear && m.rosterEndYear
+        ? `${m.rosterStartYear}–${String(m.rosterEndYear).slice(-2)}`
+        : m.rosterStartYear
+          ? `${m.rosterStartYear}`
+          : '—'
+    return {
+      key: `store:${m.personId}`,
+      source: 'store',
+      name,
+      role: m.memberRole,
+      years,
+      classLabel: m.classLabel ?? '—',
+      hometown: m.hometown ?? '—',
+      published: m.publishedToNetwork ?? false,
+      visible: enrichment?.visibleToPlayers !== false,
+      hasEnrichment: !!enrichment,
+      profileHref: m.publishedToNetwork ? `/player/alumni/${m.personId}` : null,
+    }
+  })
+
+  // ── Member Book entries (historical roster from the JSON) ──
+  // Include every entry not already on the team store, so the master
+  // list truly reflects every Penn Golf member we know about.
+  const bookRows: Row[] = []
+  for (const entry of memberBookEntries) {
+    const norm = normalize(entry.displayName)
+    if (seenNames.has(norm)) continue
+    seenNames.add(norm)
+    const start = getMemberStartYear(entry)
+    const end = getMemberEndYear(entry)
+    const years =
+      start && end
+        ? `${start}–${String(end).slice(-2)}`
+        : start
+          ? `${start}`
+          : '—'
+    bookRows.push({
+      key: `book:${entry.id}`,
+      source: 'book',
+      name: entry.displayName,
+      role: isActiveMember(entry) ? 'current_player' : 'book',
+      years,
+      classLabel: entry.profile.classYearEstimate ?? '—',
+      hometown: entry.profile.hometown ?? '—',
+      published: isPublicMember(entry),
+      visible: isPublicMember(entry),
+      hasEnrichment: false,
+      profileHref: isPublicMember(entry) ? `/member-book/${encodeURIComponent(entry.id)}` : null,
     })
+  }
+
+  // Sort: current players first, alumni next, member-book historicals last; alpha within each.
+  const rolePriority: Record<string, number> = { current_player: 0, alumni: 1, book: 2 }
+  const rows = [...storeRows, ...bookRows].sort((a, b) => {
+    const pa = rolePriority[a.role ?? 'book'] ?? 3
+    const pb = rolePriority[b.role ?? 'book'] ?? 3
+    if (pa !== pb) return pa - pb
+    return a.name.localeCompare(b.name)
+  })
+
+  // ── Stats ──
+  const currentPlayerCount = rows.filter(r => r.role === 'current_player').length
+  const storeAlumniCount = rows.filter(r => r.role === 'alumni').length
+  const bookCount = rows.filter(r => r.source === 'book').length
+  const publishedCount = rows.filter(r => r.published).length
+  const hiddenCount = rows.filter(r => !r.published).length
+  const enrichedCount = rows.filter(r => r.hasEnrichment).length
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-[#0a1628] px-8 pt-10 pb-12">
         <div className="max-w-[1320px] mx-auto">
           <div className="flex items-center gap-2 mb-4 text-xs">
@@ -112,30 +157,28 @@ export default async function MasterListPage() {
             </Link>
           </div>
           <h1 className="text-white text-2xl font-semibold tracking-tight">Master Member Manager</h1>
-          <p className="text-gray-400 text-sm mt-2">Penn Men&apos;s Golf — full member overview</p>
+          <p className="text-gray-400 text-sm mt-2">
+            Every Penn Men&apos;s Golf member — team store + historical Member Book, unified.
+          </p>
         </div>
       </div>
 
       <div className="max-w-[1320px] mx-auto px-8 pb-16">
         <div className="-mt-5 relative z-10 space-y-6">
-
           {/* Stats row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            <StatBox label="Total Members" value={memberships.length} />
-            <StatBox label="Current Players" value={currentPlayers.length} />
-            <StatBox label="Alumni" value={alumni.length} />
-            <StatBox label="Published" value={publishedAlumni.length} />
-            <StatBox label="Hidden" value={hiddenAlumni.length} />
-            <StatBox label="Needs Review" value={reviewItems.length} />
-            <StatBox label="No Enrichment" value={noEnrichment.length} />
-            <StatBox label="Verified Career" value={verifiedCareer.length} />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <StatBox label="Total Members" value={rows.length} />
+            <StatBox label="Current Players" value={currentPlayerCount} />
+            <StatBox label="Active Alumni" value={storeAlumniCount} />
+            <StatBox label="Member Book" value={bookCount} />
+            <StatBox label="Published" value={publishedCount} />
+            <StatBox label="Enriched" value={enrichedCount} />
           </div>
 
-          {/* Summary line */}
-          <div className="text-xs text-[#8a7f70] flex gap-4 flex-wrap">
-            <span>Hidden from players (visibleToPlayers=false): <strong className="text-[#0a1628]">{visibleFalseCount}</strong></span>
-            <span>Open review items: <strong className="text-[#0a1628]">{reviewItems.length}</strong></span>
-          </div>
+          <p className="text-xs text-[#8a7f70]">
+            {hiddenCount} hidden from the public network.
+            {' '}<Link href="/internal/add-member" className="text-[#990000] hover:underline font-semibold">+ Add a member</Link>
+          </p>
 
           {/* Member table */}
           <div
@@ -144,10 +187,10 @@ export default async function MasterListPage() {
           >
             <div className="px-6 py-4 border-b border-[rgba(180,168,150,0.25)]">
               <h2 className="text-sm font-semibold text-[#0a1628]">
-                All Members ({memberships.length})
+                All Members ({rows.length})
               </h2>
               <p className="text-xs text-[#8a7f70] mt-0.5">
-                Current players first, then alumni — both sorted alphabetically. Filters coming soon.
+                Current players first, then alumni in the team store, then the historical Member Book.
               </p>
             </div>
             <div className="overflow-x-auto">
@@ -162,12 +205,12 @@ export default async function MasterListPage() {
                     <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Published</th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Visible</th>
                     <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Enrichment</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Review</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Source</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[rgba(180,168,150,0.15)]">
                   {rows.map(row => (
-                    <tr key={row.personId} className="hover:bg-[#faf8f5] transition-colors">
+                    <tr key={row.key} className="hover:bg-[#faf8f5] transition-colors">
                       <td className="px-4 py-3 font-medium text-[#0a1628] whitespace-nowrap">
                         {row.profileHref ? (
                           <Link
@@ -185,9 +228,13 @@ export default async function MasterListPage() {
                           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                             Current player
                           </span>
-                        ) : (
-                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                        ) : row.role === 'alumni' ? (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
                             Alumni
+                          </span>
+                        ) : (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                            Historical
                           </span>
                         )}
                       </td>
@@ -210,13 +257,9 @@ export default async function MasterListPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        {row.reviewCount > 0 ? (
-                          <span className="text-xs font-semibold text-[#990000]">
-                            {row.reviewCount} open
-                          </span>
-                        ) : (
-                          <span className="text-xs text-[#8a7f70]">—</span>
-                        )}
+                        <span className="text-[10px] uppercase tracking-wider text-[#8a7f70]">
+                          {row.source === 'store' ? 'Team store' : 'Member book'}
+                        </span>
                       </td>
                     </tr>
                   ))}
@@ -224,70 +267,6 @@ export default async function MasterListPage() {
               </table>
             </div>
           </div>
-
-          {/* Needs Review section */}
-          {reviewItems.length > 0 && (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-            >
-              <div className="px-6 py-4 border-b border-[rgba(180,168,150,0.25)]">
-                <h2 className="text-sm font-semibold text-[#0a1628]">
-                  Needs Review ({reviewItems.length})
-                </h2>
-                <p className="text-xs text-[#8a7f70] mt-0.5">Open review items across the team</p>
-              </div>
-              <div className="divide-y divide-[rgba(180,168,150,0.15)]">
-                {reviewItems.map((item: ReviewItem) => {
-                  const personName = item.relatedPersonId
-                    ? pidToName.get(item.relatedPersonId)
-                    : null
-                  const priorityColor =
-                    item.priority === 'high'
-                      ? 'text-[#990000]'
-                      : item.priority === 'normal'
-                        ? 'text-amber-700'
-                        : 'text-[#8a7f70]'
-
-                  return (
-                    <div key={item.id} className="px-6 py-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="text-sm font-medium text-[#0a1628]">{item.title}</p>
-                          {personName && (
-                            <p className="text-xs text-[#8a7f70] mt-0.5">Person: {personName}</p>
-                          )}
-                          {item.description && (
-                            <p className="text-xs text-[#4a5568] mt-1 leading-relaxed">
-                              {item.description}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                          <span className={`text-xs font-semibold uppercase tracking-wide ${priorityColor}`}>
-                            {item.priority}
-                          </span>
-                          <span className="text-xs text-[#8a7f70] bg-[#f5f2ee] px-2 py-0.5 rounded-full border border-[rgba(180,168,150,0.4)]">
-                            {item.type.replace(/_/g, ' ')}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {reviewItems.length === 0 && (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-center"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-            >
-              <p className="text-sm font-medium text-[#0a1628]">No open review items.</p>
-              <p className="text-xs text-[#8a7f70] mt-1">All items are resolved or cleared.</p>
-            </div>
-          )}
         </div>
       </div>
     </div>

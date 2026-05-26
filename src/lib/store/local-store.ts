@@ -184,12 +184,105 @@ export async function readStore(): Promise<Store> {
       parsed = await readSeed()
       await redis.set(REDIS_KEY, parsed)
     }
-    return normalizeStore(parsed)
+    const normalized = normalizeStore(parsed)
+    if (await ensureBootstrapMembers(normalized)) {
+      await redis.set(REDIS_KEY, normalized)
+    }
+    return normalized
   }
   // File-backed fallback
   await ensureStore()
   const raw = await fs.readFile(STORE_PATH, 'utf-8')
-  return normalizeStore(JSON.parse(raw) as Store)
+  const normalized = normalizeStore(JSON.parse(raw) as Store)
+  if (await ensureBootstrapMembers(normalized)) {
+    await fs.writeFile(STORE_PATH, JSON.stringify(normalized, null, 2))
+  }
+  return normalized
+}
+
+// ── Bootstrap members ────────────────────────────────────────────────────────
+// Specific members the captain has asked to land in the store without
+// going through the /internal/add-member UI. Idempotent: only adds when
+// not already present.
+const BOOTSTRAP_MEMBERS: Array<{
+  teamSlug: string
+  name: string
+  memberRole: 'alumni' | 'current_player'
+  classLabel?: string
+  rosterStartYear?: number
+  rosterEndYear?: number
+}> = [
+  {
+    teamSlug: 'penn-mens-golf',
+    name: 'Owen Hayes',
+    memberRole: 'alumni',
+    classLabel: "C'26",
+    rosterStartYear: 2022,
+    rosterEndYear: 2026,
+  },
+]
+
+async function ensureBootstrapMembers(store: Store): Promise<boolean> {
+  let dirty = false
+  const now = new Date().toISOString()
+  for (const m of BOOTSTRAP_MEMBERS) {
+    const team = store.teams.find(t => t.slug === m.teamSlug)
+    if (!team) continue
+    const norm = normalizeName(m.name)
+    const alreadyOnTeam = store.people.some(
+      p =>
+        p.normalizedName === norm &&
+        store.teamMemberships.some(
+          tm => tm.personId === p.id && tm.teamId === team.id,
+        ),
+    )
+    if (alreadyOnTeam) continue
+
+    const parts = m.name.trim().split(/\s+/)
+    const firstName = parts[0]
+    const lastName = parts.length > 1 ? parts.slice(1).join(' ') : undefined
+
+    const personId = crypto.randomUUID()
+    store.people.push({
+      id: personId,
+      canonicalName: m.name,
+      normalizedName: norm,
+      firstName,
+      lastName,
+      createdAt: now,
+    })
+    store.teamMemberships.push({
+      id: crypto.randomUUID(),
+      personId,
+      teamId: team.id,
+      memberRole: m.memberRole,
+      memberStatus: 'verified',
+      classLabel: m.classLabel,
+      rosterStartYear: m.rosterStartYear,
+      rosterEndYear: m.rosterEndYear,
+      bioUrls: [],
+      sourceUrls: [],
+      confidence: 1,
+      publishedToNetwork: true,
+      publishedAt: now,
+      publishedByRole: 'captain',
+      createdAt: now,
+      updatedAt: now,
+    })
+    store.personEnrichments.push({
+      id: crypto.randomUUID(),
+      personId,
+      teamId: team.id,
+      visibleToPlayers: true,
+      contactPreference: 'team_intro',
+      verificationStatus: 'unverified',
+      sourceUrls: [],
+      createdAt: now,
+      updatedAt: now,
+    })
+    dirty = true
+  }
+  return dirty
 }
 
 export async function writeStore(store: Store): Promise<void> {
