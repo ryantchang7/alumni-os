@@ -126,16 +126,17 @@ export default function LandingPage() {
         </motion.div>
 
         <motion.div
-          className="mt-6"
+          className="mt-8 sm:mt-9"
           initial={{ opacity: 0 }}
           animate={ready ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: 1.8, duration: 0.7, ease }}
         >
           <Link
             href="/parent-signup"
-            className="text-[12px] text-white/65 hover:text-white/95 transition-colors underline underline-offset-4 decoration-white/30 hover:decoration-white/70"
+            className="inline-flex items-center gap-2 text-[14px] sm:text-[15px] font-medium text-white hover:text-[#c8a84b] transition-colors border border-white/40 hover:border-[#c8a84b]/70 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12]"
+            style={{ textShadow: '0 1px 8px rgba(10,22,40,0.45)' }}
           >
-            Family or affiliate? Join here.
+            Family or affiliate? Join here &rarr;
           </Link>
         </motion.div>
       </div>

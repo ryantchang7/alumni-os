@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, X } from 'lucide-react'
+import { Search, X, Crown, Star } from 'lucide-react'
 import { memberBookEntries } from '@/lib/member-book/data'
 import MemberBadges from '@/components/MemberBadges'
 import type { BadgeId } from '@/lib/badges'
@@ -175,12 +175,20 @@ interface ParentEntry {
   badges?: BadgeId[]
 }
 
+interface FounderEntry {
+  name: string
+  classLabel?: string
+  isProgramFounder: boolean
+  bookId: string | null
+}
+
 export default function MemberBookPage() {
   const [filters, setFilters] = useState<PublicMemberFilters>(
     DEFAULT_PUBLIC_FILTERS,
   )
   const [badgesByBookId, setBadgesByBookId] = useState<Record<string, BadgeId[]>>({})
   const [parents, setParents] = useState<ParentEntry[]>([])
+  const [founders, setFounders] = useState<FounderEntry[]>([])
 
   useEffect(() => {
     fetch('/api/player/profiles?teamSlug=penn-mens-golf')
@@ -211,6 +219,13 @@ export default function MemberBookPage() {
         }
         setBadgesByBookId(next)
         setParents(nextParents)
+      })
+      .catch(() => {})
+
+    fetch('/api/founders')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (d?.founders) setFounders(d.founders as FounderEntry[])
       })
       .catch(() => {})
   }, [])
@@ -332,6 +347,73 @@ export default function MemberBookPage() {
               </div>
             </div>
           </div>
+
+          {/* Founders Wall — Founding Members + the program Founder */}
+          {founders.length > 0 && (
+            <div
+              className="mb-7 bg-gradient-to-br from-[#0a1628] to-[#1a2d4a] text-white rounded-2xl px-7 py-7 sm:px-9 sm:py-8 border border-[#c8a84b]/30"
+              style={{
+                boxShadow: '0 4px 14px rgba(10,22,40,0.18), 0 18px 40px rgba(10,22,40,0.10)',
+              }}
+            >
+              <div className="flex items-baseline justify-between gap-3 mb-3 flex-wrap">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]">
+                    The Founders Wall
+                  </p>
+                  <p
+                    className="text-white text-xl sm:text-2xl font-medium leading-tight mt-1"
+                    style={{ fontFamily: 'var(--font-playfair)' }}
+                  >
+                    Backers of the Clubhouse.
+                  </p>
+                </div>
+                <Link
+                  href="/support"
+                  className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8a84b] hover:text-white transition-colors whitespace-nowrap"
+                >
+                  Become a Founding Member &rarr;
+                </Link>
+              </div>
+              <p className="text-[13px] text-white/65 leading-relaxed mb-5 max-w-md">
+                Members who stood up early to support Penn Men&rsquo;s Golf and the
+                Clubhouse. Founding Members and the program Founder.
+              </p>
+              <ul className="space-y-2.5">
+                {founders.map(f => (
+                  <li
+                    key={f.name}
+                    className="flex items-center gap-3 text-[14.5px]"
+                    style={{ fontFamily: 'var(--font-playfair)' }}
+                  >
+                    {f.isProgramFounder ? (
+                      <Crown className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
+                    ) : (
+                      <Star className="w-3.5 h-3.5 text-[#c8a84b] flex-shrink-0" />
+                    )}
+                    {f.bookId ? (
+                      <Link
+                        href={`/member-book/${encodeURIComponent(f.bookId)}`}
+                        className="text-white hover:text-[#c8a84b] transition-colors"
+                      >
+                        {f.name}
+                      </Link>
+                    ) : (
+                      <span className="text-white">{f.name}</span>
+                    )}
+                    {f.classLabel && (
+                      <span className="text-[12px] text-white/45">{f.classLabel}</span>
+                    )}
+                    {f.isProgramFounder && (
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#c8a84b] ml-1">
+                        · Founder
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Parents & Affiliates — small banner with self-serve CTA */}
           <div className="mb-7">

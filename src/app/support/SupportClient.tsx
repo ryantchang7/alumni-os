@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Check, Heart, ShieldCheck, Star, Crown } from 'lucide-react'
+import { Check, Heart, ShieldCheck, Crown } from 'lucide-react'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 
 interface Props {
@@ -448,60 +448,19 @@ export default function SupportClient({ status }: Props) {
           </button>
         </div>
 
-        {/* Founders Wall */}
+        {/* Founders Wall lives on /member-book now — link to it from here. */}
         {founders.length > 0 && (
-          <div
-            className="bg-gradient-to-br from-[#0a1628] to-[#1a2d4a] text-white rounded-2xl px-7 py-9 sm:px-10 sm:py-10 border border-[#c8a84b]/30"
-            style={{
-              boxShadow: '0 4px 14px rgba(10,22,40,0.18), 0 18px 40px rgba(10,22,40,0.10)',
-            }}
-          >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-3">
-              The Founders Wall
-            </p>
-            <h2
-              className="text-white text-2xl sm:text-3xl font-medium leading-tight mb-2"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              Backers of the Clubhouse.
-            </h2>
-            <p className="text-[13.5px] text-white/65 leading-relaxed mb-6 max-w-md">
-              The members who stood up early to support Penn Men&rsquo;s Golf and
-              the Clubhouse. Founding Members and the program Founder.
-            </p>
-            <ul className="space-y-2.5">
-              {founders.map(f => (
-                <li
-                  key={f.name}
-                  className="flex items-center gap-3 text-[14.5px]"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
-                >
-                  {f.isProgramFounder ? (
-                    <Crown className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
-                  ) : (
-                    <Star className="w-3.5 h-3.5 text-[#c8a84b] flex-shrink-0" />
-                  )}
-                  {f.bookId ? (
-                    <Link
-                      href={`/member-book/${encodeURIComponent(f.bookId)}`}
-                      className="text-white hover:text-[#c8a84b] transition-colors"
-                    >
-                      {f.name}
-                    </Link>
-                  ) : (
-                    <span className="text-white">{f.name}</span>
-                  )}
-                  {f.classLabel && (
-                    <span className="text-[12px] text-white/45">{f.classLabel}</span>
-                  )}
-                  {f.isProgramFounder && (
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#c8a84b] ml-1">
-                      · Founder
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
+          <div className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-5 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-[13.5px] text-[#3d4a5c]">
+              <Crown className="w-4 h-4 text-[#c8a84b]" />
+              <span>
+                Founding Members are listed on the{' '}
+                <Link href="/member-book" className="text-[#0a1628] hover:underline font-semibold">
+                  Founders Wall
+                </Link>{' '}
+                in the Member Book.
+              </span>
+            </div>
           </div>
         )}
 
