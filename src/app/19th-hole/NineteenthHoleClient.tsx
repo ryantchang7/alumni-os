@@ -141,8 +141,9 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
             No alumni have marked themselves open to coffee yet.
           </div>
         ) : (
+          <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {openToCoffee.map(entry => (
+            {openToCoffee.slice(0, 20).map(entry => (
               <Link
                 key={entry.personId}
                 href={`/player/alumni/${entry.personId}?teamSlug=penn-mens-golf`}
@@ -163,6 +164,17 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
               </Link>
             ))}
           </div>
+          {openToCoffee.length > 20 && (
+            <div className="mt-5 flex justify-center">
+              <Link
+                href="/member-book"
+                className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-5 py-2.5 rounded-lg transition-colors"
+              >
+                See all {openToCoffee.length} members &rarr;
+              </Link>
+            </div>
+          )}
+          </>
         )}
       </section>
 

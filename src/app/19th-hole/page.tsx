@@ -47,7 +47,7 @@ export default async function NineteenthHolePage() {
       store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
     )
 
-    const visible: AlumniEntry[] = memberships
+    const visible: Array<AlumniEntry & { updatedAt?: string }> = memberships
       .map(m => {
         const person = store.people.find(p => p.id === m.personId)
         const enrichment = enrichMap.get(m.personId)
@@ -61,11 +61,16 @@ export default async function NineteenthHolePage() {
           currentRole: enrichment?.currentRole,
           currentCompany: enrichment?.currentCompany,
           openToCoffee: enrichment?.openToCoffee,
+          updatedAt: enrichment?.updatedAt,
         }
       })
-      .filter((x): x is AlumniEntry => x !== null)
+      .filter((x): x is AlumniEntry & { updatedAt?: string } => x !== null)
 
-    openToCoffee = visible.filter(a => a.openToCoffee)
+    // Sort by enrichment.updatedAt desc — surfaces recently-active members
+    // first as the list grows.
+    openToCoffee = visible
+      .filter(a => a.openToCoffee)
+      .sort((a, b) => (b.updatedAt ?? '').localeCompare(a.updatedAt ?? ''))
 
     const cityMap = new Map<string, { count: number; coffeeCount: number }>()
     for (const entry of visible) {

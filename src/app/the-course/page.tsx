@@ -125,7 +125,11 @@ export default async function TheCoursePage() {
       })
       .filter((x): x is AlumniEntry => x !== null)
 
-    openToRounds = visible.filter((a) => a.enrichment.openToGolfRounds)
+    // Sort by enrichment.updatedAt desc so the most recently active
+    // members surface first as the list grows.
+    openToRounds = visible
+      .filter((a) => a.enrichment.openToGolfRounds)
+      .sort((a, b) => (b.enrichment.updatedAt ?? '').localeCompare(a.enrichment.updatedAt ?? ''))
 
     // Aggregate notable courses from alumni's home-course + favorite-course
     // entries. Each member counts at most once per course; home course gets
@@ -319,11 +323,23 @@ export default async function TheCoursePage() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {openToRounds.map((entry) => (
-                <AlumniRoundCard key={entry.person.id} entry={entry} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {openToRounds.slice(0, 20).map((entry) => (
+                  <AlumniRoundCard key={entry.person.id} entry={entry} />
+                ))}
+              </div>
+              {openToRounds.length > 20 && (
+                <div className="mt-5 flex justify-center">
+                  <Link
+                    href="/member-book"
+                    className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-5 py-2.5 rounded-lg transition-colors"
+                  >
+                    See all {openToRounds.length} members &rarr;
+                  </Link>
+                </div>
+              )}
+            </>
           )}
           </CourseHoleSection>
         </div>
