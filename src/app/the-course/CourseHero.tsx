@@ -29,7 +29,7 @@ export default function CourseHero({ rounds }: Props) {
   const visibleRounds = rounds.slice(0, 4)
 
   return (
-    <section className="relative bg-[#f4ecdb] border-b border-[#d9c8a8]/40 overflow-hidden">
+    <section className="relative bg-[#0a1628] border-b border-white/[0.08] overflow-hidden">
       <div
         aria-hidden
         className="absolute pointer-events-none"
@@ -39,7 +39,7 @@ export default function CourseHero({ rounds }: Props) {
           width: '55%',
           height: '160%',
           background:
-            'radial-gradient(ellipse at center, rgba(45,106,79,0.10) 0%, rgba(45,106,79,0.03) 45%, transparent 75%)',
+            'radial-gradient(ellipse at center, rgba(45,106,79,0.22) 0%, rgba(45,106,79,0.06) 45%, transparent 75%)',
         }}
       />
 
@@ -47,11 +47,11 @@ export default function CourseHero({ rounds }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-x-12 gap-y-8 items-center">
           {/* LEFT — title + stage-dependent CTA */}
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#2d6a4f] mb-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#4a9d72] mb-4">
               Penn Men&rsquo;s Golf · The Tee Sheet
             </p>
             <h1
-              className="text-[#0a1628] font-medium leading-[0.95] tracking-tight"
+              className="text-white font-medium leading-[0.95] tracking-tight"
               style={{
                 fontFamily: 'var(--font-playfair)',
                 fontSize: 'clamp(56px, 8.5vw, 104px)',
@@ -59,7 +59,7 @@ export default function CourseHero({ rounds }: Props) {
             >
               The Course
             </h1>
-            <span className="block w-12 h-[2px] bg-[#2d6a4f] mt-7 mb-6" />
+            <span className="block w-12 h-[2px] bg-[#4a9d72] mt-7 mb-6" />
 
             <AnimatePresence mode="wait">
               {stage === 'marker' && (
@@ -70,7 +70,7 @@ export default function CourseHero({ rounds }: Props) {
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.28 }}
                 >
-                  <p className="text-[#3d4a5c] text-[15px] leading-[1.65] max-w-[460px]">
+                  <p className="text-white/75 text-[15px] leading-[1.65] max-w-[460px]">
                     Tee times, foursomes, and home courses across the Penn
                     Golf network. Every round here is hosted by a member.
                   </p>
@@ -78,13 +78,13 @@ export default function CourseHero({ rounds }: Props) {
                     <button
                       type="button"
                       onClick={() => setStage('sheet')}
-                      className="bg-[#2d6a4f] hover:bg-[#225239] text-white text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
+                      className="bg-[#2d6a4f] hover:bg-[#3a8060] text-white text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
                     >
                       Find a Round
                     </button>
                     <a
                       href="/the-course/host"
-                      className="bg-transparent border border-[#0a1628]/15 hover:border-[#0a1628]/45 text-[#0a1628] text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
+                      className="bg-transparent border border-white/30 hover:border-white/60 hover:bg-white/[0.08] text-white text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
                     >
                       Host a Round
                     </a>
@@ -100,7 +100,7 @@ export default function CourseHero({ rounds }: Props) {
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.28 }}
                 >
-                  <p className="text-[#3d4a5c] text-[15px] leading-[1.6] max-w-[460px]">
+                  <p className="text-white/75 text-[15px] leading-[1.6] max-w-[460px]">
                     {visibleRounds.length > 0 ? (
                       <>
                         Pick a round on the sheet. We&rsquo;ll let the host
@@ -109,7 +109,7 @@ export default function CourseHero({ rounds }: Props) {
                     ) : (
                       <>
                         The sheet is open — no rounds posted yet.{' '}
-                        <a href="/the-course/host" className="text-[#2d6a4f] underline">
+                        <a href="/the-course/host" className="text-[#4a9d72] underline">
                           Be the first to open one.
                         </a>
                       </>
@@ -119,7 +119,7 @@ export default function CourseHero({ rounds }: Props) {
                     <button
                       type="button"
                       onClick={() => setStage('marker')}
-                      className="bg-transparent border border-[#0a1628]/15 hover:border-[#0a1628]/45 text-[#0a1628] text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
+                      className="bg-transparent border border-white/30 hover:border-white/60 hover:bg-white/[0.08] text-white text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
                     >
                       ← Back to the Tee
                     </button>
@@ -135,10 +135,10 @@ export default function CourseHero({ rounds }: Props) {
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.28 }}
                 >
-                  <p className="text-[#3d4a5c] text-[15px] leading-[1.6] max-w-[460px]">
+                  <p className="text-white/75 text-[15px] leading-[1.6] max-w-[460px]">
                     You&rsquo;re on the sheet for{' '}
                     <span
-                      className="text-[#0a1628]"
+                      className="text-white"
                       style={{ fontFamily: 'var(--font-playfair)' }}
                     >
                       {pickedRound.title}
@@ -152,13 +152,13 @@ export default function CourseHero({ rounds }: Props) {
                         setPickedRound(null)
                         setStage('marker')
                       }}
-                      className="bg-[#2d6a4f] hover:bg-[#225239] text-white text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
+                      className="bg-[#2d6a4f] hover:bg-[#3a8060] text-white text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
                     >
                       Done
                     </button>
                     <a
                       href="#rounds-section"
-                      className="bg-transparent border border-[#0a1628]/15 hover:border-[#0a1628]/45 text-[#0a1628] text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
+                      className="bg-transparent border border-white/30 hover:border-white/60 hover:bg-white/[0.08] text-white text-[12px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-md transition-colors"
                     >
                       See the full sheet
                     </a>
@@ -174,15 +174,15 @@ export default function CourseHero({ rounds }: Props) {
                   key={s}
                   className={`block h-[3px] rounded-full transition-all duration-300 ${
                     stage === s
-                      ? 'w-9 bg-[#2d6a4f]'
+                      ? 'w-9 bg-[#4a9d72]'
                       : (i === 0 && stage !== 'marker') ||
                           (i === 1 && stage === 'confirmed')
-                        ? 'w-3 bg-[#2d6a4f]/45'
-                        : 'w-3 bg-[#0a1628]/15'
+                        ? 'w-3 bg-[#4a9d72]/50'
+                        : 'w-3 bg-white/15'
                   }`}
                 />
               ))}
-              <span className="text-[10px] uppercase tracking-[0.18em] text-[#8a7f70] ml-2">
+              <span className="text-[10px] uppercase tracking-[0.18em] text-white/45 ml-2">
                 {stage === 'marker'
                   ? '1 · Tee'
                   : stage === 'sheet'
@@ -216,9 +216,8 @@ export default function CourseHero({ rounds }: Props) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Stage 1: Penn Golf tee marker. Wooden plaque with engraved title.
-// Composed entirely from layered divs (gradients + shadows) so it reads
-// as a physical object — no SVG illustration.
+// Stage 1: Penn Golf tee marker, restyled as a navy + gold plaque mounted
+// on the Clubhouse wall (matches the badge aesthetic on /player).
 function TeeMarker() {
   return (
     <motion.div
@@ -228,56 +227,40 @@ function TeeMarker() {
       transition={{ duration: 0.42, ease: [0.16, 0.84, 0.44, 1] }}
       className="relative"
     >
-      {/* Stake (the post that holds the plaque) */}
-      <div
-        aria-hidden
-        className="absolute left-1/2 -translate-x-1/2 top-full"
-        style={{
-          width: '14px',
-          height: '90px',
-          marginTop: '-2px',
-          background:
-            'linear-gradient(180deg, #3a2516 0%, #1f1409 100%)',
-          boxShadow:
-            'inset 1px 0 0 rgba(255,255,255,0.08), 0 6px 14px rgba(20,8,2,0.25)',
-          borderRadius: '2px',
-        }}
-      />
-
-      {/* The plaque itself — wooden, beveled, with PENN GOLF set in serif */}
+      {/* The plaque — navy with gold inner ring + cream + gold serif type */}
       <div
         className="relative"
         style={{
           width: '300px',
           padding: '36px 30px 30px',
           background:
-            'linear-gradient(160deg, #4a2c1a 0%, #6b3d24 30%, #5a3220 70%, #3a2010 100%)',
+            'linear-gradient(160deg, #0a1628 0%, #15294a 35%, #0e1d36 70%, #0a1628 100%)',
           borderRadius: '10px',
           boxShadow:
-            '0 18px 40px rgba(20,8,2,0.35), 0 4px 8px rgba(20,8,2,0.2), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -2px 0 rgba(0,0,0,0.3)',
+            '0 18px 40px rgba(0,0,0,0.45), 0 4px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -2px 0 rgba(0,0,0,0.45), 0 0 0 1px rgba(200,168,75,0.45)',
         }}
       >
-        {/* Top inner bevel */}
+        {/* Top inner bevel (subtle highlight) */}
         <span
           aria-hidden
           className="absolute inset-x-3 top-3 h-px"
-          style={{ background: 'rgba(255,255,255,0.18)' }}
+          style={{ background: 'rgba(200,168,75,0.30)' }}
         />
-        {/* Bottom inner bevel */}
+        {/* Bottom inner bevel (subtle shadow) */}
         <span
           aria-hidden
           className="absolute inset-x-3 bottom-3 h-px"
-          style={{ background: 'rgba(0,0,0,0.35)' }}
+          style={{ background: 'rgba(0,0,0,0.45)' }}
         />
 
-        <p className="text-center text-[9.5px] font-semibold uppercase tracking-[0.32em] text-[#d9b97a] mb-3">
+        <p className="text-center text-[9.5px] font-semibold uppercase tracking-[0.32em] text-[#c8a84b] mb-3">
           Hole No. 1
         </p>
 
         <div className="flex items-center justify-center mb-2">
           <span
             className="inline-block w-2 h-2 rounded-full mr-2"
-            style={{ background: '#c19a55' }}
+            style={{ background: '#c8a84b' }}
           />
           <p
             className="text-center text-[#f4e3b8] text-[26px] leading-none"
@@ -291,12 +274,12 @@ function TeeMarker() {
           </p>
           <span
             className="inline-block w-2 h-2 rounded-full ml-2"
-            style={{ background: '#c19a55' }}
+            style={{ background: '#c8a84b' }}
           />
         </div>
 
         <p
-          className="text-center text-[10px] italic text-[#d9b97a]/85 mb-3"
+          className="text-center text-[10px] italic text-[#c8a84b]/85 mb-3"
           style={{ fontFamily: 'var(--font-playfair)' }}
         >
           Founded 1894
@@ -308,11 +291,11 @@ function TeeMarker() {
             width: '60px',
             height: '1px',
             background:
-              'linear-gradient(90deg, transparent, rgba(217,185,122,0.5) 50%, transparent)',
+              'linear-gradient(90deg, transparent, rgba(200,168,75,0.6) 50%, transparent)',
           }}
         />
 
-        <p className="text-center text-[9.5px] font-semibold uppercase tracking-[0.22em] text-[#d9b97a]/80 mt-3">
+        <p className="text-center text-[9.5px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/80 mt-3">
           Par 4 · 415 Yards
         </p>
       </div>
