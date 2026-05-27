@@ -113,7 +113,7 @@ export async function GET(req: NextRequest) {
   }))
 
   const clubhouseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alumni-os.vercel.app'
+    process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
   const { subject, html } = renderWeeklyDigest({
     teamName: team.name,
     weekOf: formatWeekOf(now),

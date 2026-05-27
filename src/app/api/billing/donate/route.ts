@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   if (!team) return NextResponse.json({ error: 'Team not found' }, { status: 404 })
 
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alumni-os.vercel.app'
+    process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
 
   const checkout = await stripe.checkout.sessions.create({
     mode: 'payment',

@@ -22,7 +22,7 @@ export async function POST() {
     return NextResponse.json({ error: 'No active subscription found.' }, { status: 404 })
   }
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alumni-os.vercel.app'
+    process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
   const portal = await stripe.billingPortal.sessions.create({
     customer: account.stripeCustomerId,
     return_url: `${baseUrl}/support`,
