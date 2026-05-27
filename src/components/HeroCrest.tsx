@@ -36,8 +36,8 @@ export default function HeroCrest({ src, alt = 'Crest', delay = 0.15 }: Props) {
       <img
         src={src}
         alt={alt}
-        className="h-20 sm:h-28 lg:h-32 w-auto"
-        style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.35))' }}
+        className="h-24 sm:h-32 lg:h-36 w-auto"
+        style={{ filter: 'drop-shadow(0 3px 12px rgba(0,0,0,0.22))' }}
       />
     </motion.div>
   )

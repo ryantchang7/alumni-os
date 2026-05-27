@@ -48,14 +48,14 @@ const SORT_OPTIONS: { value: SortMode; label: string }[] = [
 
 function HeroPlaque({ value, label }: { value: number | string; label: string }) {
   return (
-    <div className="flex items-baseline gap-5">
+    <div className="flex items-baseline gap-4">
       <p
-        className="text-6xl sm:text-7xl font-light text-white leading-none"
+        className="text-5xl sm:text-6xl font-light text-white leading-none"
         style={{ fontFamily: 'var(--font-playfair)' }}
       >
         {value}
       </p>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">
+      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/50">
         {label}
       </p>
     </div>
@@ -188,12 +188,12 @@ function BookHeader({
           </p>
 
           <div
-            className="mt-8 border-t border-white/10 pt-6"
+            className="mt-5"
             data-testid="member-book-stats"
           >
             <HeroPlaque value={members} label="Members" />
             {rangeLabel && (
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40 mt-3">
+              <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/40 mt-2">
                 {rangeLabel}
               </p>
             )}
