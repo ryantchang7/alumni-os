@@ -1,4 +1,4 @@
-// Core domain types for Alumni OS
+// Core domain types for the Penn Golf Clubhouse
 
 export type RelationshipMode =
   | 'career_chat'

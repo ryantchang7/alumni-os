@@ -331,7 +331,7 @@ export default async function MemberDetailPage({
               </div>
             ) : (
               <p className="text-[14px] text-[#8a7f70] italic">
-                Profile details coming soon.
+                This member hasn&rsquo;t added details yet.
               </p>
             )}
           </Section>

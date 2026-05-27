@@ -180,7 +180,7 @@ export default function BuilderNewPage() {
           {/* Trust note */}
           <div className="mt-6 pt-5 border-t border-[rgba(180,168,150,0.35)]">
             <p className="text-xs text-gray-400 text-center leading-relaxed">
-              Alumni OS uses public data only — team rosters, public profiles, and permissioned sources.
+              The Clubhouse uses public data only — team rosters, public profiles, and permissioned sources.
               No login-gated scraping. No private data.
             </p>
           </div>

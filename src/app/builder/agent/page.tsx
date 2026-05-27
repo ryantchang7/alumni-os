@@ -286,7 +286,7 @@ function AgentInner() {
             <Link href="/builder" className="text-white/60 hover:text-white text-sm transition-colors inline-block mb-4">
               &larr; Builder
             </Link>
-            <h1 className="text-white text-2xl font-semibold">Alumni OS Agent</h1>
+            <h1 className="text-white text-2xl font-semibold">Roster Agent</h1>
           </div>
         </div>
         <div className="max-w-4xl mx-auto px-6 py-10">

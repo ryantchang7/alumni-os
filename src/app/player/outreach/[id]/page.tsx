@@ -262,7 +262,7 @@ function OutreachPageInner() {
           >
             <p className="text-base font-semibold text-[#0a1628] mb-2">Request sent.</p>
             <p className="text-sm text-[#4a5568] leading-relaxed max-w-sm mx-auto">
-              Your request has been saved. {first} will see it when they check their Clubhouse inbox. Email notifications are coming soon.
+              Your request has been saved. {first} will see it in their Clubhouse inbox. Give it a few days &mdash; Penn Golf members have day jobs.
             </p>
             <Link
               href={`/player/alumni/${profile.personId}`}

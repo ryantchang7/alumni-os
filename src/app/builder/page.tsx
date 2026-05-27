@@ -30,7 +30,7 @@ export default function BuilderPage() {
             Build a verified alumni graph.
           </h1>
           <p className="text-gray-300 text-base mt-2 max-w-2xl leading-relaxed">
-            Give Alumni OS a team roster link. The agent extracts roster data, shows its evidence, and asks before adding anything to the alumni graph.
+            Give the Clubhouse a team roster link. The agent extracts roster data, shows its evidence, and asks before adding anything to the alumni graph.
           </p>
         </div>
       </div>
@@ -43,7 +43,7 @@ export default function BuilderPage() {
         >
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-[#0a1628] mb-1">Alumni OS Agent</p>
+              <p className="font-semibold text-[#0a1628] mb-1">Roster Agent</p>
               <p className="text-sm text-[#8a7f70] max-w-lg">
                 Start with one roster link. The agent extracts rows, asks for approval, and builds a verified alumni graph.
               </p>
