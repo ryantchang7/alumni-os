@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import type { Person, TeamMembership, TeamNewsItem } from '@/lib/store/types'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
+import HeroCrest from '@/components/HeroCrest'
 
 interface PlayerEntry {
   person: Person
@@ -56,6 +56,7 @@ export default async function TeamRoomPage() {
   let recentAlumni: PlayerEntry[] = []
   let newsItems: TeamNewsItem[] = []
   const captainNote = await getSiteContentOrDefault('team-room.captain-note')
+  const crestImage = await getSiteContentOrDefault('team-room.crest-image')
 
   if (team) {
     newsItems = await getRecentTeamNewsItems(team.id, 4)
@@ -87,8 +88,9 @@ export default async function TeamRoomPage() {
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14 overflow-hidden">
-        <div className="max-w-[1320px] mx-auto flex items-end justify-between gap-6">
-          <div>
+        <div className="max-w-[1320px] mx-auto flex items-center gap-5 sm:gap-7">
+          <HeroCrest src={crestImage} alt="Team Room crest" />
+          <div className="min-w-0 flex-1">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
               Penn Men&rsquo;s Golf
             </p>
@@ -102,17 +104,6 @@ export default async function TeamRoomPage() {
             <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
               Current roster, program tradition, and the alumni who carry Penn Golf forward.
             </p>
-          </div>
-          {/* Mascot — Penn spirit accent, right side of hero */}
-          <div className="hidden sm:flex flex-shrink-0 items-end self-end pb-0">
-            <Image
-              src="/quaker-golfer.png"
-              alt="Penn Quaker golfer"
-              width={130}
-              height={170}
-              className="object-contain drop-shadow-lg"
-              data-testid="team-room-mascot"
-            />
           </div>
         </div>
       </div>

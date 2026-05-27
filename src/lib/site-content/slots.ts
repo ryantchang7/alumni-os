@@ -90,6 +90,27 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     default: '',
   },
   {
+    id: 'career-room.crest-image',
+    label: 'Career Room crest / badge image',
+    hint: 'Badge shown next to the Career Room heading. Same size as the Clubhouse crest.',
+    kind: 'image',
+    default: '',
+  },
+  {
+    id: 'moments.crest-image',
+    label: 'Moments crest / badge image',
+    hint: 'Badge shown next to the Moments heading. Same size as the Clubhouse crest.',
+    kind: 'image',
+    default: '',
+  },
+  {
+    id: 'team-room.crest-image',
+    label: 'Team Room crest / badge image',
+    hint: 'Badge shown next to the Team Room heading. Defaults to the Quaker mascot; upload a Team Room badge to replace it.',
+    kind: 'image',
+    default: '/quaker-golfer.png',
+  },
+  {
     id: 'player.tradition-blurb',
     label: 'Penn Golf Tradition subtitle',
     hint: 'Small caption under the Penn Golf Tradition heading on /player.',

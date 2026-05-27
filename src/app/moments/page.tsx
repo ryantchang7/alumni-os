@@ -11,6 +11,8 @@ import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import { Camera } from 'lucide-react'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
+import HeroCrest from '@/components/HeroCrest'
+import { getSiteContentOrDefault } from '@/lib/site-content/read'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -30,23 +32,27 @@ export default async function MomentsPage() {
   const team = await getTeamBySlug(TEAM_SLUG)
   const moments = team ? await getMomentsForTeam(team.id) : []
   const store = team ? await readStore() : null
+  const crestImage = await getSiteContentOrDefault('moments.crest-image')
 
   if (!approval.approved) {
     const uniquePosters = new Set(moments.map((m) => m.postedByAccountId)).size
     return (
       <div className="min-h-screen bg-[#f8f5f0]">
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
-          <div className="max-w-[820px] mx-auto">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
-              Penn Men&rsquo;s Golf · The Wall
-            </p>
-            <h1
-              className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              Moments
-            </h1>
-            <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5" />
+          <div className="max-w-[820px] mx-auto flex items-center gap-5 sm:gap-7">
+            <HeroCrest src={crestImage} alt="Moments crest" />
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
+                Penn Men&rsquo;s Golf · The Wall
+              </p>
+              <h1
+                className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                Moments
+              </h1>
+              <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5" />
+            </div>
           </div>
         </div>
         <GatedPreview
@@ -87,29 +93,32 @@ export default async function MomentsPage() {
               'radial-gradient(ellipse at center, rgba(200,168,75,0.14) 0%, rgba(200,168,75,0.04) 40%, transparent 70%)',
           }}
         />
-        <div className="max-w-[820px] mx-auto relative">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
-            Penn Men&rsquo;s Golf · The Wall
-          </p>
-          <h1
-            className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            Moments
-          </h1>
-          <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5 mb-5" />
-          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
-            Rounds, dinners, championship cuttings, first-tee jitters &mdash;
-            moments shared by Penn Golf members across generations.
-          </p>
-          <div className="mt-7">
-            <Link
-              href="/moments/new"
-              className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+        <div className="max-w-[820px] mx-auto relative flex items-center gap-5 sm:gap-7">
+          <HeroCrest src={crestImage} alt="Moments crest" />
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
+              Penn Men&rsquo;s Golf · The Wall
+            </p>
+            <h1
+              className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
+              style={{ fontFamily: 'var(--font-playfair)' }}
             >
-              <Camera className="w-4 h-4" />
-              Post a moment
-            </Link>
+              Moments
+            </h1>
+            <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5 mb-5" />
+            <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
+              Rounds, dinners, championship cuttings, first-tee jitters &mdash;
+              moments shared by Penn Golf members across generations.
+            </p>
+            <div className="mt-7">
+              <Link
+                href="/moments/new"
+                className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+              >
+                <Camera className="w-4 h-4" />
+                Post a moment
+              </Link>
+            </div>
           </div>
         </div>
       </div>
