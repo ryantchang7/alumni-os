@@ -9,13 +9,13 @@
     "coverageNote": "All parsed all-time letter-winner entries are included. Some historical roster seasons are inferred from letter-winning years and flagged in review.needsRosterCheck."
   },
   "counts": {
-    "membersTotal": 343,
+    "membersTotal": 345,
     "allTimeLetterWinnerEntriesIncluded": 330,
-    "playersIncluded": 337,
+    "playersIncluded": 339,
     "managersIncluded": 6,
-    "verifiedRosterArchiveRecords": 79,
+    "verifiedRosterArchiveRecords": 81,
     "letterWinnerPdfOnlyRosterUnverified": 258,
-    "rosterOnlyNoLetterInPdf": 13,
+    "rosterOnlyNoLetterInPdf": 15,
     "letterYearRows": 631
   },
   "importRulesForClaudeCode": [
@@ -24903,6 +24903,128 @@
         "tags": [
           "letter_winners_pdf",
           "letter_winners_pdf_all_time",
+          "roster_archive"
+        ]
+      }
+    },
+    {
+      "id": "sean-curran",
+      "displayName": "Sean Curran",
+      "sortName": "Curran, Sean",
+      "role": "player",
+      "isManager": false,
+      "includeInMemberBook": true,
+      "membershipStatus": "active_2025_26",
+      "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+      "career": {
+        "startSeason": "2026-27",
+        "endSeason": "2026-27",
+        "startYear": 2026,
+        "finishYear": 2030,
+        "yearSource": "verified_roster_archive",
+        "verifiedRosterSeasons": [
+          "2026-27"
+        ],
+        "verifiedRosterSeasonCount": 1,
+        "inferredLetterSeasons": [],
+        "displaySeasons": [
+          "2026-27"
+        ]
+      },
+      "letterWinner": {
+        "isLetterWinner": false,
+        "years": [],
+        "seasons": [],
+        "firstYear": null,
+        "lastYear": null,
+        "count": 0,
+        "rawPdfName": null
+      },
+      "profile": {
+        "classYearEstimate": "2030",
+        "latestRosterClass": "Fr.",
+        "hometown": "Newtown Square, Pa.",
+        "highSchool": null,
+        "currentRole": null,
+        "currentCompany": null,
+        "city": null,
+        "helpTopics": null,
+        "contactPreference": null
+      },
+      "review": {
+        "needsRosterCheck": false,
+        "hasVerifiedRosterArchiveRecord": true,
+        "hasAllTimeLetterWinnerRecord": false,
+        "oldCaptainReviewStatus": "Not reviewed",
+        "legacySourceStatus": "source_backed",
+        "nameMatchMethod": "not_in_letter_winners_pdf",
+        "notes": "Incoming freshman, class of 2030."
+      },
+      "sources": {
+        "primary": "Incoming roster 2026-27",
+        "sourceUrls": [],
+        "tags": [
+          "roster_archive"
+        ]
+      }
+    },
+    {
+      "id": "oliver-uribe",
+      "displayName": "Oliver Uribe",
+      "sortName": "Uribe, Oliver",
+      "role": "player",
+      "isManager": false,
+      "includeInMemberBook": true,
+      "membershipStatus": "active_2025_26",
+      "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+      "career": {
+        "startSeason": "2026-27",
+        "endSeason": "2026-27",
+        "startYear": 2026,
+        "finishYear": 2030,
+        "yearSource": "verified_roster_archive",
+        "verifiedRosterSeasons": [
+          "2026-27"
+        ],
+        "verifiedRosterSeasonCount": 1,
+        "inferredLetterSeasons": [],
+        "displaySeasons": [
+          "2026-27"
+        ]
+      },
+      "letterWinner": {
+        "isLetterWinner": false,
+        "years": [],
+        "seasons": [],
+        "firstYear": null,
+        "lastYear": null,
+        "count": 0,
+        "rawPdfName": null
+      },
+      "profile": {
+        "classYearEstimate": "2030",
+        "latestRosterClass": "Fr.",
+        "hometown": "Scottsdale, Ariz.",
+        "highSchool": null,
+        "currentRole": null,
+        "currentCompany": null,
+        "city": null,
+        "helpTopics": null,
+        "contactPreference": null
+      },
+      "review": {
+        "needsRosterCheck": false,
+        "hasVerifiedRosterArchiveRecord": true,
+        "hasAllTimeLetterWinnerRecord": false,
+        "oldCaptainReviewStatus": "Not reviewed",
+        "legacySourceStatus": "source_backed",
+        "nameMatchMethod": "not_in_letter_winners_pdf",
+        "notes": "Incoming freshman, class of 2030."
+      },
+      "sources": {
+        "primary": "Incoming roster 2026-27",
+        "sourceUrls": [],
+        "tags": [
           "roster_archive"
         ]
       }

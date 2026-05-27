@@ -225,6 +225,22 @@ const BOOTSTRAP_MEMBERS: Array<{
     rosterStartYear: 2022,
     rosterEndYear: 2026,
   },
+  {
+    teamSlug: 'penn-mens-golf',
+    name: 'Sean Curran',
+    memberRole: 'current_player',
+    classLabel: 'Fr.',
+    rosterStartYear: 2026,
+    rosterEndYear: 2030,
+  },
+  {
+    teamSlug: 'penn-mens-golf',
+    name: 'Oliver Uribe',
+    memberRole: 'current_player',
+    classLabel: 'Fr.',
+    rosterStartYear: 2026,
+    rosterEndYear: 2030,
+  },
 ]
 
 async function ensureBootstrapMembers(store: Store): Promise<boolean> {
