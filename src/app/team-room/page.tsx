@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Person, TeamMembership, TeamNewsItem } from '@/lib/store/types'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
+import { getSiteContentOrDefault } from '@/lib/site-content/read'
 
 interface PlayerEntry {
   person: Person
@@ -54,6 +55,7 @@ export default async function TeamRoomPage() {
   let currentPlayers: PlayerEntry[] = []
   let recentAlumni: PlayerEntry[] = []
   let newsItems: TeamNewsItem[] = []
+  const captainNote = await getSiteContentOrDefault('team-room.captain-note')
 
   if (team) {
     newsItems = await getRecentTeamNewsItems(team.id, 4)
@@ -166,9 +168,15 @@ export default async function TeamRoomPage() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <p className="text-sm text-[#8a7f70] leading-relaxed">
-              A note from this year&apos;s captain will appear here each season.
-            </p>
+            {captainNote ? (
+              <p className="text-sm text-[#3d4a5c] leading-relaxed whitespace-pre-wrap">
+                {captainNote}
+              </p>
+            ) : (
+              <p className="text-sm text-[#8a7f70] leading-relaxed italic">
+                A note from this year&apos;s captain will appear here each season.
+              </p>
+            )}
           </div>
         </section>
 

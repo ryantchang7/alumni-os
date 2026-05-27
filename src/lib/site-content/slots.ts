@@ -69,6 +69,15 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     default: '',
   },
 
+  // ── Team Room (`/team-room`) ─────────────────────────────────────────────
+  {
+    id: 'team-room.captain-note',
+    label: "Captain's Note (Team Room)",
+    hint: 'Note from the current captain that appears in the Team Room. Leave blank to show the default placeholder.',
+    kind: 'longtext',
+    default: '',
+  },
+
   // ── Support / membership (`/support`) ────────────────────────────────────
   {
     id: 'support.hero-blurb',

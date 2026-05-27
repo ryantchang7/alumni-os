@@ -103,8 +103,13 @@ export default async function TheCoursePage() {
   const homeCourseSet = new Set<string>()
 
   if (team) {
+    // Both alumni AND current players can open their tee box and host
+    // rounds — the only thing that's gated is publishedToNetwork.
     const memberships = store.teamMemberships.filter(
-      (m) => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true,
+      (m) =>
+        m.teamId === team.id &&
+        (m.memberRole === 'alumni' || m.memberRole === 'current_player') &&
+        m.publishedToNetwork === true,
     )
     const enrichMap = new Map(
       store.personEnrichments.filter((e) => e.teamId === team.id).map((e) => [e.personId, e]),
@@ -288,7 +293,7 @@ export default async function TheCoursePage() {
             hole={rounds.length > 0 ? 2 : 1}
             title="Open to a Round"
             rightLabel={openToRounds.length > 0 ? `${openToRounds.length} available` : undefined}
-            subtitle="Alumni who've marked themselves open to hosting or joining a round."
+            subtitle="Penn Golf members open to hosting or joining a round."
           >
           {openToRounds.length === 0 ? (
             <div
