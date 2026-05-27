@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { GatheringData } from '@/components/gatherings/GatheringCard'
+import { useSiteContent } from '@/lib/site-content/use-site-content'
 
 type Stage = 'marker' | 'sheet' | 'confirmed'
 
@@ -25,6 +26,7 @@ interface Props {
 export default function CourseHero({ rounds }: Props) {
   const [stage, setStage] = useState<Stage>('marker')
   const [pickedRound, setPickedRound] = useState<GatheringData | null>(null)
+  const crestImage = useSiteContent('the-course.crest-image', '')
 
   const visibleRounds = rounds.slice(0, 4)
 
@@ -47,19 +49,34 @@ export default function CourseHero({ rounds }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-x-12 gap-y-8 items-center">
           {/* LEFT — title + stage-dependent CTA */}
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#4a9d72] mb-4">
-              Penn Men&rsquo;s Golf · The Tee Sheet
-            </p>
-            <h1
-              className="text-white font-medium leading-[0.95] tracking-tight"
-              style={{
-                fontFamily: 'var(--font-playfair)',
-                fontSize: 'clamp(56px, 8.5vw, 104px)',
-              }}
-            >
-              The Course
-            </h1>
-            <span className="block w-12 h-[2px] bg-[#4a9d72] mt-7 mb-6" />
+            <div className="flex items-center gap-5 sm:gap-6 mb-6">
+              {crestImage && (
+                <div className="flex-shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={crestImage}
+                    alt="The Course crest"
+                    className="h-32 sm:h-44 lg:h-48 w-auto"
+                    style={{ filter: 'drop-shadow(0 5px 20px rgba(0,0,0,0.4))' }}
+                  />
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#4a9d72] mb-4">
+                  Penn Men&rsquo;s Golf · The Tee Sheet
+                </p>
+                <h1
+                  className="text-white font-medium leading-[0.95] tracking-tight"
+                  style={{
+                    fontFamily: 'var(--font-playfair)',
+                    fontSize: 'clamp(48px, 7vw, 88px)',
+                  }}
+                >
+                  The Course
+                </h1>
+                <span className="block w-12 h-[2px] bg-[#4a9d72] mt-6" />
+              </div>
+            </div>
 
             <AnimatePresence mode="wait">
               {stage === 'marker' && (

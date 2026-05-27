@@ -12,6 +12,7 @@ import {
   getMemberStartYear,
   getMemberEndYear,
 } from '@/lib/member-book/helpers'
+import { getSiteContentOrDefault } from '@/lib/site-content/read'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -59,6 +60,7 @@ export default async function MemberMapPage() {
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug(TEAM_SLUG)
+  const crestImage = await getSiteContentOrDefault('member-map.crest-image')
 
   // Two parallel datasets — one keyed by hometown, one keyed by current city/state.
   const hometownByState = new Map<string, MapState>()
@@ -197,19 +199,32 @@ export default async function MemberMapPage() {
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
-        <div className="max-w-[1280px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
-            Penn Men&rsquo;s Golf
-          </p>
-          <h1
-            className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            The Member Map
-          </h1>
-          <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl">
-            Where Penn Golf players and alumni come from, and where they are now.
-          </p>
+        <div className="max-w-[1280px] mx-auto flex items-center gap-5 sm:gap-7">
+          {crestImage && (
+            <div className="flex-shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={crestImage}
+                alt="Member Map crest"
+                className="h-32 sm:h-44 lg:h-48 w-auto"
+                style={{ filter: 'drop-shadow(0 5px 20px rgba(0,0,0,0.4))' }}
+              />
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+              Penn Men&rsquo;s Golf
+            </p>
+            <h1
+              className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              The Member Map
+            </h1>
+            <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl">
+              Where Penn Golf players and alumni come from, and where they are now.
+            </p>
+          </div>
         </div>
       </div>
 
