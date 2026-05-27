@@ -85,7 +85,7 @@ export const BADGE_META: Record<BadgeId, BadgeMeta> = {
 
 const PRIORITY: BadgeId[] = ['founder', 'captain', 'founding-member', 'member', 'parent']
 
-const FOUNDER_EMAILS = new Set<string>([
+export const FOUNDER_EMAILS = new Set<string>([
   'rtchang@sas.upenn.edu',
   'ryan.taylor.chang@gmail.com',
 ])
