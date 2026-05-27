@@ -32,11 +32,16 @@ export default function HeroCrest({ src, alt = 'Crest', delay = 0.15 }: Props) {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay, duration: 0.55 }}
     >
+      {/* Fixed bounding box + object-contain so badges with different
+          native aspect ratios all occupy the same visual footprint.
+          A specific badge with lots of internal padding may look small
+          INSIDE the box — fix that by cropping the source PNG tighter
+          and re-uploading. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
         alt={alt}
-        className="h-24 sm:h-32 lg:h-36 w-auto"
+        className="w-32 h-32 sm:w-40 sm:h-40 lg:w-44 lg:h-44 object-contain"
         style={{ filter: 'drop-shadow(0 3px 12px rgba(0,0,0,0.22))' }}
       />
     </motion.div>

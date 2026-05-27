@@ -81,18 +81,6 @@ export default async function MomentsPage() {
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14 relative overflow-hidden">
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: '50%',
-            right: '12%',
-            width: '600px',
-            height: '420px',
-            transform: 'translate(50%, -50%)',
-            background:
-              'radial-gradient(ellipse at center, rgba(200,168,75,0.14) 0%, rgba(200,168,75,0.04) 40%, transparent 70%)',
-          }}
-        />
         <div className="max-w-[820px] mx-auto relative flex items-center gap-5 sm:gap-7">
           <HeroCrest src={crestImage} alt="Moments crest" />
           <div className="min-w-0 flex-1">

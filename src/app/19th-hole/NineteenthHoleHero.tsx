@@ -12,20 +12,6 @@ export default function NineteenthHoleHero() {
 
   return (
     <div className="relative overflow-hidden bg-[#0a1628]">
-      {/* Warm lamp glow over the bar */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          top: '50%',
-          right: '15%',
-          width: '900px',
-          height: '600px',
-          transform: 'translate(50%, -50%)',
-          background:
-            'radial-gradient(ellipse at center, rgba(212,155,82,0.18) 0%, rgba(212,155,82,0.06) 40%, transparent 70%)',
-        }}
-      />
-
       <div className="relative max-w-[1320px] mx-auto px-6 sm:px-8 pt-14 pb-16">
         <div className="flex items-center gap-5 sm:gap-7">
           <HeroCrest src={crestImage} alt="19th Hole crest" />
