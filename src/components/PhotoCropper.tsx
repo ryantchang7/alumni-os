@@ -8,7 +8,8 @@ interface Props {
   file: File
   /** 'square' for profile photos, 'wide' for moments (3:2). */
   shape?: 'square' | 'wide'
-  /** Called when the user confirms the crop. Returns a JPEG Blob. */
+  /** Called when the user confirms the crop. Returns a Blob whose type
+   *  matches the source (PNG stays PNG to preserve transparency). */
   onComplete: (blob: Blob) => void
   /** Called on dismiss. */
   onCancel: () => void
@@ -41,11 +42,15 @@ export default function PhotoCropper({ file, shape = 'square', onComplete, onCan
     setCroppedAreaPx(areaPx)
   }, [])
 
+  // Preserve PNG so transparent badges/logos don't get a black background
+  // baked in when JPEG fills empty pixels.
+  const outputMime = file.type === 'image/png' ? 'image/png' : 'image/jpeg'
+
   async function handleConfirm() {
     if (!src || !croppedAreaPx) return
     setWorking(true)
     try {
-      const blob = await cropToBlob(src, croppedAreaPx, outputW, outputH)
+      const blob = await cropToBlob(src, croppedAreaPx, outputW, outputH, outputMime)
       onComplete(blob)
     } finally {
       setWorking(false)
@@ -129,13 +134,15 @@ export default function PhotoCropper({ file, shape = 'square', onComplete, onCan
 
 /**
  * Reads the source data URL into an Image, draws the cropped region
- * onto a canvas sized for the target shape, and returns a JPEG Blob.
+ * onto a canvas sized for the target shape, and returns a Blob in the
+ * requested format (PNG preserves transparency, JPEG is smaller).
  */
 function cropToBlob(
   src: string,
   area: Area,
   outW: number,
   outH: number,
+  mime: 'image/png' | 'image/jpeg',
 ): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const img = new Image()
@@ -166,8 +173,8 @@ function cropToBlob(
           if (blob) resolve(blob)
           else reject(new Error('Canvas toBlob failed'))
         },
-        'image/jpeg',
-        0.9,
+        mime,
+        mime === 'image/jpeg' ? 0.9 : undefined,
       )
     }
     img.src = src

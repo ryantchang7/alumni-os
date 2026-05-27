@@ -78,9 +78,14 @@ export default function PhotoUpload({
   }
 
   async function onCropComplete(blob: Blob) {
-    const filename = `crop-${Date.now()}.jpg`
+    // Honor the cropper's chosen MIME so transparent PNGs (badges, logos)
+    // stay PNG instead of getting flattened to JPEG with a black bg.
+    const isPng = blob.type === 'image/png'
+    const ext = isPng ? 'png' : 'jpg'
+    const mime = isPng ? 'image/png' : 'image/jpeg'
+    const filename = `crop-${Date.now()}.${ext}`
     setPickedFile(null)
-    const file = new File([blob], filename, { type: 'image/jpeg' })
+    const file = new File([blob], filename, { type: mime })
     await uploadFile(file)
     if (fileRef.current) fileRef.current.value = ''
     onMediaTypeChange?.('image')
