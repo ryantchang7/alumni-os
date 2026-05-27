@@ -207,7 +207,7 @@ export default async function MemberMapPage() {
               Penn Men&rsquo;s Golf
             </p>
             <h1
-              className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight"
+              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium leading-tight tracking-tight"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               The Member Map

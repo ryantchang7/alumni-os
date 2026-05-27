@@ -391,7 +391,7 @@ function ClubhouseInner() {
               Penn Golf · Clubhouse
             </motion.p>
             <motion.h1
-              className="text-white text-2xl sm:text-3xl font-semibold tracking-tight"
+              className="text-white text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-tight"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, ...spring }}

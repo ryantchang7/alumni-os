@@ -46,7 +46,7 @@ export default async function MomentsPage() {
                 Penn Men&rsquo;s Golf · The Wall
               </p>
               <h1
-                className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
+                className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
                 Moments
@@ -88,7 +88,7 @@ export default async function MomentsPage() {
               Penn Men&rsquo;s Golf · The Wall
             </p>
             <h1
-              className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
+              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               Moments

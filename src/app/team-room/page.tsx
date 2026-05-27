@@ -95,7 +95,7 @@ export default async function TeamRoomPage() {
               Penn Men&rsquo;s Golf
             </p>
             <h1
-              className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
+              className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               Team Room

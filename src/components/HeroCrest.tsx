@@ -16,7 +16,7 @@ interface Props {
  * hero heading across the site. Same size, same animation, same drop
  * shadow everywhere — change here, it propagates.
  *
- * Sizing notes: height-only constraint `h-40 sm:h-52 lg:h-56` with
+ * Sizing notes: height-only constraint `h-32 sm:h-44 lg:h-48` with
  * `w-auto`. Width auto-derives from the source aspect ratio. The Penn
  * Golf badge family is all vertical ovals at ~2:3 native aspect, so
  * every badge ends up the same width at the same height — no
@@ -40,7 +40,7 @@ export default function HeroCrest({ src, alt = 'Crest', delay = 0.15 }: Props) {
       <img
         src={src}
         alt={alt}
-        className="h-40 sm:h-52 lg:h-56 w-auto"
+        className="h-32 sm:h-44 lg:h-48 w-auto"
         style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.28))' }}
       />
     </motion.div>
