@@ -178,6 +178,7 @@ export default function StudioClient() {
                       onChange={url => setDraft(slot.id, url)}
                       label=""
                       shape="wide"
+                      skipCropper
                     />
                   ) : slot.kind === 'longtext' ? (
                     <textarea

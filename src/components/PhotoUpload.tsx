@@ -17,6 +17,10 @@ interface Props {
   allowVideo?: boolean
   /** Notified when the picker resolves a media type ('image' | 'video'). */
   onMediaTypeChange?: (mediaType: 'image' | 'video') => void
+  /** If true, skip the cropper entirely and upload the raw image. Useful for
+   * pre-designed artwork (badges, logos) where the cropper's fixed aspect
+   * ratio would distort the source. */
+  skipCropper?: boolean
 }
 
 const VIDEO_EXT_RE = /\.(mp4|mov|m4v|webm)(\?|$)/i
@@ -36,6 +40,7 @@ export default function PhotoUpload({
   shape = 'square',
   allowVideo = false,
   onMediaTypeChange,
+  skipCropper = false,
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
   const [pickedFile, setPickedFile] = useState<File | null>(null)
@@ -68,10 +73,12 @@ export default function PhotoUpload({
 
   function onFilePicked(file: File) {
     setError(null)
-    if (file.type.startsWith('video/')) {
-      // Skip the cropper for videos — upload raw.
+    if (file.type.startsWith('video/') || skipCropper) {
+      // Skip the cropper — upload raw. Used for videos always, and for
+      // pre-designed artwork (badges/logos) when skipCropper is set.
       void uploadFile(file)
       if (fileRef.current) fileRef.current.value = ''
+      onMediaTypeChange?.(file.type.startsWith('video/') ? 'video' : 'image')
       return
     }
     setPickedFile(file)
