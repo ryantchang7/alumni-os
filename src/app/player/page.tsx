@@ -352,7 +352,7 @@ function ClubhouseInner() {
       })
       .catch(() => setLoading(false))
 
-    fetch(`/api/team/news?teamSlug=${teamSlug}&limit=4`)
+    fetch(`/api/team/news?teamSlug=${teamSlug}&limit=2`)
       .then(r => (r.ok ? r.json() : { items: [] }))
       .then(data => setNewsItems(data.items ?? []))
       .catch(() => {})

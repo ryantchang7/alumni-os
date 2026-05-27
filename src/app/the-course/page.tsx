@@ -236,6 +236,36 @@ export default async function TheCoursePage() {
       <CourseHero rounds={rounds} />
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-12 space-y-14">
+        {/* Host a Round — prominent CTA, always visible */}
+        <section>
+          <div
+            className="bg-gradient-to-r from-[#0a1628] to-[#112240] text-white rounded-2xl px-6 py-7 sm:px-8 sm:py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 border border-[#c8a84b]/25"
+            style={{ boxShadow: '0 4px 14px rgba(10,22,40,0.18), 0 18px 40px rgba(10,22,40,0.10)' }}
+          >
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-2">
+                Open your tee box
+              </p>
+              <p
+                className="text-white text-xl sm:text-2xl font-medium leading-snug"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                Host a round. Penn Golf will find you there.
+              </p>
+              <p className="text-[13px] text-white/70 mt-1.5">
+                Pick a date, pick a course — alumni and current players in your city will see it and ask in.
+              </p>
+            </div>
+            <Link
+              href="/the-course/host"
+              data-testid="host-a-round"
+              className="bg-[#c8a84b] hover:bg-[#d4b75a] text-[#0a1628] text-[13px] font-semibold uppercase tracking-[0.14em] px-7 py-3.5 rounded-lg transition-colors whitespace-nowrap"
+            >
+              Host a Round &rarr;
+            </Link>
+          </div>
+        </section>
+
         {/* Scorecard-style action row */}
         <section>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
