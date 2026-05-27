@@ -52,6 +52,10 @@ interface SelfProfile {
   phone?: string
   linkedinUrl?: string
   photoUrl?: string
+  openToGolfRounds?: boolean
+  openToCoffee?: boolean
+  openToMentorship?: boolean
+  openToWarmIntroductions?: boolean
 }
 
 const HELP_TOPIC_OPTIONS = [
@@ -132,6 +136,10 @@ function AlumniProfileInner() {
   const [phone, setPhone] = useState('')
   const [linkedinUrl, setLinkedinUrl] = useState('')
   const [photoUrl, setPhotoUrl] = useState('')
+  const [openToGolfRounds, setOpenToGolfRounds] = useState(false)
+  const [openToCoffee, setOpenToCoffee] = useState(false)
+  const [openToMentorship, setOpenToMentorship] = useState(false)
+  const [openToWarmIntroductions, setOpenToWarmIntroductions] = useState(false)
 
   const justClaimed = searchParams.get('claimed') === '1'
 
@@ -167,6 +175,10 @@ function AlumniProfileInner() {
         setPhone(data.phone ?? '')
         setLinkedinUrl(data.linkedinUrl ?? '')
         setPhotoUrl(data.photoUrl ?? '')
+        setOpenToGolfRounds(!!data.openToGolfRounds)
+        setOpenToCoffee(!!data.openToCoffee)
+        setOpenToMentorship(!!data.openToMentorship)
+        setOpenToWarmIntroductions(!!data.openToWarmIntroductions)
         setLoading(false)
       })
       .catch(err => {
@@ -243,6 +255,10 @@ function AlumniProfileInner() {
           phone,
           linkedinUrl,
           photoUrl,
+          openToGolfRounds,
+          openToCoffee,
+          openToMentorship,
+          openToWarmIntroductions,
         }),
       })
       if (!res.ok) throw new Error('Save failed')
@@ -741,6 +757,38 @@ function AlumniProfileInner() {
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* What I'm open to — visible to every approved member. Drives the
+              "Open to a Round" / "Open to Coffee" lists across the site. */}
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+              What I&rsquo;m open to
+            </p>
+            <p className="text-xs text-[#8a7f70] mb-4">
+              These ticks decide whether you show up on The Course (hosting / joining a round), in 19th Hole &ldquo;Open to Coffee,&rdquo; and on mentorship + intro lists.
+            </p>
+            <div className="space-y-2.5">
+              {[
+                { label: 'Open to hosting or joining a round', value: openToGolfRounds, set: setOpenToGolfRounds },
+                { label: 'Open to coffee', value: openToCoffee, set: setOpenToCoffee },
+                { label: 'Open to mentorship', value: openToMentorship, set: setOpenToMentorship },
+                { label: 'Open to warm introductions', value: openToWarmIntroductions, set: setOpenToWarmIntroductions },
+              ].map(({ label, value, set }) => (
+                <label key={label} className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={value}
+                    onChange={e => set(e.target.checked)}
+                    className="mt-0.5 accent-[#0a1628]"
+                  />
+                  <span className="text-sm text-[#0a1628]">{label}</span>
+                </label>
+              ))}
             </div>
           </div>
 

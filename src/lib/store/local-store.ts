@@ -883,7 +883,8 @@ export type AlumniSafeFields = Pick<
   'additionalLocations' | 'inTown' |
   'alumniBio' | 'helpTopics' | 'contactPreference' | 'visibleToPlayers' |
   'homeCourse' | 'favoriteCourses' | 'favoritePennGolfMemory' | 'interests' |
-  'email' | 'phone' | 'linkedinUrl' | 'photoUrl'
+  'email' | 'phone' | 'linkedinUrl' | 'photoUrl' |
+  'openToGolfRounds' | 'openToCoffee' | 'openToMentorship' | 'openToWarmIntroductions'
 >
 
 export async function updatePersonEnrichmentSafeFields(
@@ -919,6 +920,10 @@ export async function updatePersonEnrichmentSafeFields(
       ...(fields.phone !== undefined ? { phone: fields.phone } : {}),
       ...(fields.linkedinUrl !== undefined ? { linkedinUrl: fields.linkedinUrl } : {}),
       ...(fields.photoUrl !== undefined ? { photoUrl: fields.photoUrl } : {}),
+      ...(fields.openToGolfRounds !== undefined ? { openToGolfRounds: fields.openToGolfRounds } : {}),
+      ...(fields.openToCoffee !== undefined ? { openToCoffee: fields.openToCoffee } : {}),
+      ...(fields.openToMentorship !== undefined ? { openToMentorship: fields.openToMentorship } : {}),
+      ...(fields.openToWarmIntroductions !== undefined ? { openToWarmIntroductions: fields.openToWarmIntroductions } : {}),
       updatedAt: now,
     }
     await writeStore(store)
@@ -949,6 +954,10 @@ export async function updatePersonEnrichmentSafeFields(
     phone: fields.phone,
     linkedinUrl: fields.linkedinUrl,
     photoUrl: fields.photoUrl,
+    openToGolfRounds: fields.openToGolfRounds,
+    openToCoffee: fields.openToCoffee,
+    openToMentorship: fields.openToMentorship,
+    openToWarmIntroductions: fields.openToWarmIntroductions,
     verificationStatus: 'unverified',
     sourceUrls: [],
     createdAt: now,

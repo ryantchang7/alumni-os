@@ -84,6 +84,10 @@ export async function GET(request: Request) {
     linkedinUrl: enrichment?.linkedinUrl,
     photoUrl: enrichment?.photoUrl,
     optedOutAt: enrichment?.optedOutAt,
+    openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+    openToCoffee: enrichment?.openToCoffee ?? false,
+    openToMentorship: enrichment?.openToMentorship ?? false,
+    openToWarmIntroductions: enrichment?.openToWarmIntroductions ?? false,
   })
 }
 
@@ -210,6 +214,10 @@ export async function POST(request: Request) {
   if (typeof body.visibleToPlayers === 'boolean') {
     safeUpdate.visibleToPlayers = body.visibleToPlayers
   }
+  if (typeof body.openToGolfRounds === 'boolean') safeUpdate.openToGolfRounds = body.openToGolfRounds
+  if (typeof body.openToCoffee === 'boolean') safeUpdate.openToCoffee = body.openToCoffee
+  if (typeof body.openToMentorship === 'boolean') safeUpdate.openToMentorship = body.openToMentorship
+  if (typeof body.openToWarmIntroductions === 'boolean') safeUpdate.openToWarmIntroductions = body.openToWarmIntroductions
 
   const updated = await updatePersonEnrichmentSafeFields(personId, team.id, safeUpdate)
   if (!updated) {
