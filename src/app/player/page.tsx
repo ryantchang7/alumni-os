@@ -500,14 +500,15 @@ function ClubhouseInner() {
           </div>
         </div>
 
+        {/* This Week in the Clubhouse — moved up so what's HAPPENING this
+            week sits near the top of the page, not at the bottom. */}
+        <ThisWeekPanel teamSlug={teamSlug} approved={!!onboarding?.linked} />
+
         {/* On the Loop — Penn Golf passing through. Tease for non-members. */}
         <OnTheLoopStrip approved={!!onboarding?.linked} />
 
         {/* Clubhouse Activity Feed. Tease for non-members. */}
         <ClubhouseActivityFeed approved={!!onboarding?.linked} />
-
-        {/* Penn Golf Tradition */}
-        <TraditionSection />
 
         {/* Member Book preview panel */}
         {!loading && profiles.length > 0 && (() => {
@@ -585,8 +586,9 @@ function ClubhouseInner() {
           )
         })()}
 
-        {/* This Week in the Clubhouse. Tease for non-members. */}
-        <ThisWeekPanel teamSlug={teamSlug} approved={!!onboarding?.linked} />
+        {/* Penn Golf Tradition — moved to bottom; it's "always there"
+            content (history), not timely. */}
+        <TraditionSection />
 
         {/* Your Requests */}
         <div className="pb-8">
