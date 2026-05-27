@@ -14,6 +14,7 @@ import ClubhouseChecklist from '@/components/ClubhouseChecklist'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import MemberOnlyTease from '@/components/MemberOnlyTease'
 import MemberBadges from '@/components/MemberBadges'
+import HeroCrest from '@/components/HeroCrest'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import type { TeamNewsItem } from '@/lib/store/types'
 
@@ -379,22 +380,7 @@ function ClubhouseInner() {
       {/* Header */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
         <div className="max-w-[1320px] mx-auto flex items-center gap-5 sm:gap-7">
-          {crestImage && (
-            <motion.div
-              className="flex-shrink-0"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.15, duration: 0.55 }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={crestImage}
-                alt="Penn Golf crest"
-                className="h-20 sm:h-28 lg:h-32 w-auto"
-                style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.35))' }}
-              />
-            </motion.div>
-          )}
+          <HeroCrest src={crestImage} alt="Penn Golf crest" />
           <div className="min-w-0 flex-1">
             <motion.p
               className="text-xs text-gray-500 uppercase tracking-widest mb-3"

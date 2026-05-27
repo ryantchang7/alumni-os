@@ -13,6 +13,7 @@ import {
   getMemberEndYear,
 } from '@/lib/member-book/helpers'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
+import HeroCrest from '@/components/HeroCrest'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -200,17 +201,7 @@ export default async function MemberMapPage() {
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1280px] mx-auto flex items-center gap-5 sm:gap-7">
-          {crestImage && (
-            <div className="flex-shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={crestImage}
-                alt="Member Map crest"
-                className="h-32 sm:h-44 lg:h-48 w-auto"
-                style={{ filter: 'drop-shadow(0 5px 20px rgba(0,0,0,0.4))' }}
-              />
-            </div>
-          )}
+          <HeroCrest src={crestImage} alt="Member Map crest" />
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
               Penn Men&rsquo;s Golf

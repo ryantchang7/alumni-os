@@ -1,7 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
+import HeroCrest from '@/components/HeroCrest'
 
 /**
  * Hero for /19th-hole — clubhouse-bar atmosphere. Badge on the left,
@@ -28,22 +28,7 @@ export default function NineteenthHoleHero() {
 
       <div className="relative max-w-[1320px] mx-auto px-6 sm:px-8 pt-14 pb-16">
         <div className="flex items-center gap-5 sm:gap-7">
-          {crestImage && (
-            <motion.div
-              className="flex-shrink-0"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.15, duration: 0.55 }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={crestImage}
-                alt="19th Hole crest"
-                className="h-32 sm:h-44 lg:h-48 w-auto"
-                style={{ filter: 'drop-shadow(0 5px 20px rgba(0,0,0,0.4))' }}
-              />
-            </motion.div>
-          )}
+          <HeroCrest src={crestImage} alt="19th Hole crest" />
           {/* Title block */}
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#d49b52]/80 mb-3">

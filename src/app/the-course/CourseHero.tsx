@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { GatheringData } from '@/components/gatherings/GatheringCard'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
+import HeroCrest from '@/components/HeroCrest'
 
 type Stage = 'marker' | 'sheet' | 'confirmed'
 
@@ -49,18 +50,8 @@ export default function CourseHero({ rounds }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-x-12 gap-y-8 items-center">
           {/* LEFT — title + stage-dependent CTA */}
           <div>
-            <div className="flex items-center gap-5 sm:gap-6 mb-6">
-              {crestImage && (
-                <div className="flex-shrink-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={crestImage}
-                    alt="The Course crest"
-                    className="h-32 sm:h-44 lg:h-48 w-auto"
-                    style={{ filter: 'drop-shadow(0 5px 20px rgba(0,0,0,0.4))' }}
-                  />
-                </div>
-              )}
+            <div className="flex items-center gap-5 sm:gap-7 mb-6">
+              <HeroCrest src={crestImage} alt="The Course crest" />
               <div className="min-w-0">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#4a9d72] mb-4">
                   Penn Men&rsquo;s Golf · The Tee Sheet
@@ -69,7 +60,7 @@ export default function CourseHero({ rounds }: Props) {
                   className="text-white font-medium leading-[0.95] tracking-tight"
                   style={{
                     fontFamily: 'var(--font-playfair)',
-                    fontSize: 'clamp(48px, 7vw, 88px)',
+                    fontSize: 'clamp(56px, 8.5vw, 104px)',
                   }}
                 >
                   The Course

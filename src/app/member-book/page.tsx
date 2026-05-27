@@ -8,6 +8,7 @@ import { memberBookEntries } from '@/lib/member-book/data'
 import MemberBadges from '@/components/MemberBadges'
 import type { BadgeId } from '@/lib/badges'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
+import HeroCrest from '@/components/HeroCrest'
 import {
   filterPublicMembers,
   DEFAULT_PUBLIC_FILTERS,
@@ -170,17 +171,7 @@ function BookHeader({
   return (
     <div className="bg-[#0a1628] px-5 sm:px-8 pt-12 pb-16">
       <div className="max-w-[1280px] mx-auto flex items-center gap-5 sm:gap-7">
-        {crestImage && (
-          <div className="flex-shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={crestImage}
-              alt="Member Book crest"
-              className="h-32 sm:h-44 lg:h-48 w-auto"
-              style={{ filter: 'drop-shadow(0 5px 20px rgba(0,0,0,0.4))' }}
-            />
-          </div>
-        )}
+        <HeroCrest src={crestImage} alt="Member Book crest" />
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
             Penn Men&rsquo;s Golf
