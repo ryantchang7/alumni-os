@@ -129,7 +129,11 @@ export default function SupportClient({ status }: Props) {
 
   async function subscribe(tier: Tier) {
     if (!signedIn) {
-      window.location.href = '/login?next=/support'
+      // Family & Affiliate has its own self-serve signup path — anyone
+      // can land there and start without going through the alumni-claim
+      // flow first. Member + Founding Member go through the normal sign-in.
+      window.location.href =
+        tier === 'parent' ? '/parent-signup' : '/login?next=/support'
       return
     }
     setBusyTier(tier)
