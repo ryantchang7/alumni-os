@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Check, Heart, ShieldCheck, Crown } from 'lucide-react'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
+import MemberBadges from '@/components/MemberBadges'
+import type { BadgeId } from '@/lib/badges'
 
 interface Props {
   status?: string
@@ -25,6 +27,12 @@ interface TierConfig {
   accent: boolean
 }
 
+const TIER_BADGE: Record<Tier, BadgeId> = {
+  member: 'member',
+  founding: 'founding-member',
+  parent: 'parent',
+}
+
 const TIERS: TierConfig[] = [
   {
     id: 'member',
@@ -36,7 +44,6 @@ const TIERS: TierConfig[] = [
       'Direct support for the program',
       'Member status on your profile',
       'Full access to all Clubhouse features',
-      'No ads, ever',
     ],
     cta: 'Become a member',
     ctaActive: 'Member',
@@ -328,9 +335,15 @@ export default function SupportClient({ status }: Props) {
                     </p>
                     <p className="text-[#8a7f70] text-base">/ month</p>
                   </div>
-                  <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-6">
+                  <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-5">
                     {tier.tagline}
                   </p>
+                  <div className="mb-5 pb-5 border-b border-[rgba(180,168,150,0.4)]">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                      You&rsquo;ll get this badge
+                    </p>
+                    <MemberBadges badges={[TIER_BADGE[tier.id]]} size="md" />
+                  </div>
                   <ul className="space-y-2 mb-7 flex-1">
                     {tier.features.map(item => (
                       <li
