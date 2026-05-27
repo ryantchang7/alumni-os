@@ -14,6 +14,7 @@ import { readStore, getTeamBySlug } from '@/lib/store/local-store'
 import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
 import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
+import MessageMemberButton from '@/components/MessageMemberButton'
 
 // Detail pages render on demand so we don't ship 337 prebuilt HTML payloads
 // in the deploy artifact (caused vercel CLI Upload aborted at ~29 MB).
@@ -26,6 +27,7 @@ interface StoreMatch {
   membership: TeamMembership | undefined
   enrichment: PersonEnrichment | undefined
   accountImage: string | undefined
+  accountId: string | undefined
   badges: BadgeId[]
 }
 
@@ -53,6 +55,7 @@ async function lookupStoreMatch(displayName: string): Promise<StoreMatch | null>
     membership,
     enrichment,
     accountImage: account?.image,
+    accountId: account?.id,
     badges: getBadgesForAccount(account),
   }
 }
@@ -225,6 +228,14 @@ export default async function MemberDetailPage({
                   <span className="inline-block mt-5 text-[10px] font-medium px-2.5 py-1 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 uppercase tracking-[0.14em]">
                     Current Player
                   </span>
+                )}
+                {storeMatch?.accountId && !isOwner && (
+                  <div className="mt-6">
+                    <MessageMemberButton
+                      targetAccountId={storeMatch.accountId}
+                      targetFirstName={member.displayName.split(/\s+/)[0]}
+                    />
+                  </div>
                 )}
               </div>
             </div>

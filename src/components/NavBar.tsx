@@ -8,9 +8,10 @@ import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signIn, signOut } from 'next-auth/react'
 
-// Hall of Fame is intentionally not a top-level tab — it lives under the
-// Clubhouse landing (/player has a "Visit the Hall of Fame" CTA) so the
-// nav stays tight.
+// Hall of Fame is intentionally not a top-level tab — lives under Clubhouse.
+// Chat is intentionally not a top-level tab — you start a chat from a
+// member's profile in the Member Book ("Message" button). The /chat list
+// and /chat/[id] thread pages still work for ongoing conversations.
 const navLinks = [
   { label: 'Clubhouse', href: '/player' },
   { label: 'Member Book', href: '/member-book' },
@@ -20,7 +21,6 @@ const navLinks = [
   { label: 'Moments', href: '/moments' },
   { label: 'Career Room', href: '/career-room' },
   { label: 'Team Room', href: '/team-room' },
-  { label: 'Chat', href: '/chat' },
   { label: 'Support', href: '/support' },
 ]
 
@@ -75,6 +75,12 @@ function AccountAffordance() {
             className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
           >
             Your Profile
+          </Link>
+          <Link
+            href="/chat"
+            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+          >
+            Messages
           </Link>
           <Link
             href="/member-book"
