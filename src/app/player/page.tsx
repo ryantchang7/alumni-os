@@ -416,8 +416,8 @@ function ClubhouseInner() {
               <img
                 src={crestImage}
                 alt="Penn Golf crest"
-                className="h-28 sm:h-36 w-auto"
-                style={{ filter: 'drop-shadow(0 4px 18px rgba(0,0,0,0.35))' }}
+                className="h-40 sm:h-52 lg:h-60 w-auto"
+                style={{ filter: 'drop-shadow(0 6px 22px rgba(0,0,0,0.4))' }}
               />
             </motion.div>
           )}
