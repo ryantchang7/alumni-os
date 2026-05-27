@@ -55,6 +55,13 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     default: 'Member Book, career connections, and the Penn Golf community in one place.',
   },
   {
+    id: 'player.crest-image',
+    label: 'Clubhouse crest / badge image',
+    hint: 'Optional badge or crest shown to the right of the Clubhouse heading on /player. Upload your Penn Golf badge here.',
+    kind: 'image',
+    default: '',
+  },
+  {
     id: 'player.tradition-blurb',
     label: 'Penn Golf Tradition subtitle',
     hint: 'Small caption under the Penn Golf Tradition heading on /player.',

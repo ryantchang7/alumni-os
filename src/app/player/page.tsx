@@ -330,6 +330,7 @@ function ClubhouseInner() {
     'player.welcome-line',
     'Member Book, career connections, and the Penn Golf community in one place.',
   )
+  const crestImage = useSiteContent('player.crest-image', '')
 
   const [profiles, setProfiles] = useState<PlayerProfile[]>([])
   const [loading, setLoading] = useState(true)
@@ -377,31 +378,49 @@ function ClubhouseInner() {
     <div className="min-h-screen bg-[#f8f5f0]">
       {/* Header */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
-        <div className="max-w-[1320px] mx-auto">
-          <motion.p
-            className="text-xs text-gray-500 uppercase tracking-widest mb-3"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-          >
-            Penn Golf · Clubhouse
-          </motion.p>
-          <motion.h1
-            className="text-white text-2xl sm:text-3xl font-semibold tracking-tight"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, ...spring }}
-          >
-            Welcome to the Penn Golf Clubhouse.
-          </motion.h1>
-          <motion.p
-            className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.35 }}
-          >
-            {welcomeLine}
-          </motion.p>
+        <div className="max-w-[1320px] mx-auto flex items-start justify-between gap-6 sm:gap-10">
+          <div className="min-w-0 flex-1">
+            <motion.p
+              className="text-xs text-gray-500 uppercase tracking-widest mb-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1 }}
+            >
+              Penn Golf · Clubhouse
+            </motion.p>
+            <motion.h1
+              className="text-white text-2xl sm:text-3xl font-semibold tracking-tight"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, ...spring }}
+            >
+              Welcome to the Penn Golf Clubhouse.
+            </motion.h1>
+            <motion.p
+              className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.35 }}
+            >
+              {welcomeLine}
+            </motion.p>
+          </div>
+          {crestImage && (
+            <motion.div
+              className="hidden sm:block flex-shrink-0"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={crestImage}
+                alt="Penn Golf crest"
+                className="h-28 sm:h-36 w-auto"
+                style={{ filter: 'drop-shadow(0 4px 18px rgba(0,0,0,0.35))' }}
+              />
+            </motion.div>
+          )}
         </div>
       </div>
 
