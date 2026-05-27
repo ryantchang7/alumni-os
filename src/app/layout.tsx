@@ -23,8 +23,19 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: "Alumni OS — Penn Men's Golf",
-  description: "Private alumni relationship graph for Penn Men's Golf",
+  title: {
+    // Used when a child page sets its own title via `template`.
+    default: 'Penn Golf Clubhouse',
+    template: '%s · Penn Golf Clubhouse',
+  },
+  description:
+    "The private alumni network for Penn Men's Golf.",
+  // Favicon — the Penn Golf shield in /public. Overrides the default
+  // Next.js triangle in browser tabs and bookmarks.
+  icons: {
+    icon: '/penn-golf-shield.png',
+    apple: '/penn-golf-shield.png',
+  },
 }
 
 export default function RootLayout({
