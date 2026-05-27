@@ -16,9 +16,10 @@ interface Props {
  * hero heading across the site. Same size, same animation, same drop
  * shadow everywhere — change here, it propagates.
  *
- * Sizing notes: `h-20 sm:h-28 lg:h-32 w-auto` (80 / 112 / 128px tall).
- * This is the user-approved size from the /player iteration. The badge
- * scales by height; aspect ratio is honored by `w-auto`.
+ * Sizing notes: vertical-oval bounding box `w-28 h-40 sm:w-36 sm:h-52
+ * lg:w-40 lg:h-56` with `object-contain`. Box aspect ~1:1.4 to match the
+ * Penn Golf badge family (oval crests). All badges share this footprint
+ * regardless of native aspect ratio.
  *
  * If a specific badge looks "off" after a future upload, crop the
  * source PNG tighter to the artwork rather than reaching for CSS.
@@ -41,8 +42,8 @@ export default function HeroCrest({ src, alt = 'Crest', delay = 0.15 }: Props) {
       <img
         src={src}
         alt={alt}
-        className="w-32 h-36 sm:w-40 sm:h-44 lg:w-44 lg:h-48 object-contain"
-        style={{ filter: 'drop-shadow(0 3px 12px rgba(0,0,0,0.22))' }}
+        className="w-28 h-40 sm:w-36 sm:h-52 lg:w-40 lg:h-56 object-contain"
+        style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.28))' }}
       />
     </motion.div>
   )
