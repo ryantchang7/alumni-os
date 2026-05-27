@@ -35,8 +35,13 @@ export default async function NineteenthHolePage() {
       )
     }
 
+    // Both alumni AND current players can be "open to coffee" / show on
+    // the 19th Hole lists. Same gating as /the-course.
     const memberships = store.teamMemberships.filter(
-      m => m.teamId === team.id && m.memberRole === 'alumni' && m.publishedToNetwork === true,
+      m =>
+        m.teamId === team.id &&
+        (m.memberRole === 'alumni' || m.memberRole === 'current_player') &&
+        m.publishedToNetwork === true,
     )
     const enrichMap = new Map(
       store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
