@@ -18,26 +18,11 @@ import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
 import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
-import HeroCrest from '@/components/HeroCrest'
 import GatedPreview from '@/components/GatedPreview'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
+import LockerRoomHero from './LockerRoomHero'
 
 const TEAM_SLUG = 'penn-mens-golf'
-
-// Inline radial-gold glow behind the hero icon. Kept as a constant so the
-// gradient is shared between the gated and full views (so the hero feels
-// the same in both states).
-const HERO_GLOW: React.CSSProperties = {
-  background:
-    'radial-gradient(ellipse at 18% 35%, rgba(200,168,75,0.18), transparent 55%)',
-}
-
-// Faint Tudor-stripe pattern — gives the navy header a leather-bound,
-// locker-feeling texture without an image asset.
-const HERO_PATTERN: React.CSSProperties = {
-  backgroundImage:
-    'linear-gradient(135deg, rgba(200,168,75,0.04) 0%, transparent 40%), repeating-linear-gradient(45deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 9px)',
-}
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - Date.parse(iso)
@@ -48,51 +33,6 @@ function timeAgo(iso: string): string {
   if (days < 30) return `${Math.floor(days / 7)}w ago`
   if (days < 365) return `${Math.floor(days / 30)}mo ago`
   return `${Math.floor(days / 365)}y ago`
-}
-
-function HeroHeader({ crestImage }: { crestImage: string }) {
-  return (
-    <div className="relative bg-[#0a1628] overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" style={HERO_GLOW} />
-      <div className="absolute inset-0 pointer-events-none" style={HERO_PATTERN} />
-      <div className="relative max-w-[1100px] mx-auto px-6 sm:px-8 pt-14 pb-16 flex items-center gap-6 sm:gap-10">
-        {crestImage ? (
-          <HeroCrest src={crestImage} alt="Locker Room crest" />
-        ) : null}
-        {/* Vertical brand stripe — keeps everything left-aligned with a Penn
-            gold accent rail. */}
-        <div className="border-l-2 border-[#c8a84b]/55 pl-5 sm:pl-6 flex-1 min-w-0">
-          <div className="inline-flex items-center gap-2 mb-5 px-2.5 py-1 rounded-full bg-[#c8a84b]/12 border border-[#c8a84b]/40">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#c8a84b]" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]">
-              Players &amp; Alumni · Locker Room
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            {!crestImage ? (
-              <span
-                className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#0a1628] border border-[#c8a84b]/55"
-                style={{ boxShadow: '0 0 0 6px rgba(200,168,75,0.08), 0 0 26px rgba(200,168,75,0.15)' }}
-              >
-                <Lock className="w-5 h-5 text-[#c8a84b]" />
-              </span>
-            ) : null}
-            <h1
-              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight leading-none"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              Locker Room
-            </h1>
-          </div>
-          <span className="block w-14 h-[2px] bg-[#c8a84b] mt-6 mb-5" />
-          <p className="text-white/60 text-[15px] sm:text-base max-w-xl leading-relaxed">
-            Players and alumni only. Coaches and family don&rsquo;t see what
-            goes up here.
-          </p>
-        </div>
-      </div>
-    </div>
-  )
 }
 
 export default async function LockerRoomPage() {
@@ -113,7 +53,7 @@ export default async function LockerRoomPage() {
   if (!signedIn || !canSee) {
     return (
       <div className="min-h-screen bg-[#f8f5f0]">
-        <HeroHeader crestImage={crestImage} />
+        <LockerRoomHero crestImage={crestImage} />
         <GatedPreview
           signedIn={signedIn}
           eyebrow="Players &amp; alumni only · Locker Room"
@@ -144,7 +84,7 @@ export default async function LockerRoomPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <HeroHeader crestImage={crestImage} />
+      <LockerRoomHero crestImage={crestImage} />
 
       {/* Reassurance rail — a single gold-on-navy strip running across the
           page, anchoring the "stays here" promise visually. */}
@@ -174,7 +114,6 @@ export default async function LockerRoomPage() {
                 '0 1px 3px rgba(10,22,40,0.08), 0 16px 40px rgba(10,22,40,0.18)',
             }}
           >
-            <div className="absolute inset-0 pointer-events-none" style={HERO_GLOW} />
             <div className="relative">
               <span
                 className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#0a1628] border border-[#c8a84b]/60 mb-5"
@@ -275,11 +214,6 @@ export default async function LockerRoomPage() {
             })}
           </div>
         )}
-
-        {/* Footer reassurance — quiet but final. */}
-        <p className="mt-10 text-center text-[11px] uppercase tracking-[0.18em] text-[#b0a898]">
-          Players + alumni only. No coaches, no family, no screenshots.
-        </p>
       </div>
     </div>
   )
