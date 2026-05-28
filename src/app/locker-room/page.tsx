@@ -53,7 +53,7 @@ export default async function LockerRoomPage() {
   if (!signedIn || !canSee) {
     return (
       <div className="min-h-screen bg-[#f8f5f0]">
-        <LockerRoomHero crestImage={crestImage} />
+        <LockerRoomHero crestImage={crestImage} showPostCta={false} />
         <GatedPreview
           signedIn={signedIn}
           eyebrow="Players &amp; alumni only · Locker Room"
@@ -84,24 +84,7 @@ export default async function LockerRoomPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <LockerRoomHero crestImage={crestImage} />
-
-      {/* Reassurance rail — a single gold-on-navy strip running across the
-          page, anchoring the "stays here" promise visually. */}
-      <div className="bg-[#0a1628] border-t border-b border-[#c8a84b]/25">
-        <div className="max-w-[820px] mx-auto px-6 sm:px-8 py-3 flex items-center justify-between gap-4 flex-wrap">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#c8a84b]/90">
-            What goes up here, stays here.
-          </p>
-          <Link
-            href="/moments/new"
-            className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628] text-[11.5px] font-semibold uppercase tracking-[0.16em] px-4 py-2 rounded-md transition-all hover:shadow-[0_0_18px_rgba(200,168,75,0.35)]"
-          >
-            <Lock className="w-3.5 h-3.5" />
-            Post
-          </Link>
-        </div>
-      </div>
+      <LockerRoomHero crestImage={crestImage} showPostCta />
 
       <div className="max-w-[820px] mx-auto px-5 sm:px-8 py-10 sm:py-14">
         {moments.length === 0 ? (
