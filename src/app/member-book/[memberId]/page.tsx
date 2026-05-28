@@ -431,25 +431,36 @@ export default async function MemberDetailPage({
               </Link>
             </div>
           ) : storeMatch && session ? (
-            <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <p
-                  className="text-[#0a1628] text-base font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
-                >
-                  Reach out to {member.displayName.split(' ')[0]}
-                </p>
-                <p className="text-[12.5px] text-[#8a7f70] mt-1 max-w-md">
-                  Send a note — for career advice, a coffee chat, or an introduction.
-                </p>
-              </div>
-              <Link
-                href={`/ask?personId=${storeMatch.personId}`}
-                data-testid="member-detail-reach-out-cta"
-                className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
+            <div className="px-7 sm:px-10 py-8 bg-gradient-to-br from-[#0a1628] to-[#112240] border-t border-[#c8a84b]/25 text-white">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-2">
+                Ask for help
+              </p>
+              <p
+                className="text-white text-xl sm:text-2xl font-medium leading-snug mb-2"
+                style={{ fontFamily: 'var(--font-playfair)' }}
               >
-                Reach out &rarr;
-              </Link>
+                Send {member.displayName.split(' ')[0]} a request.
+              </p>
+              <p className="text-[13.5px] text-white/70 mb-5 max-w-lg leading-relaxed">
+                Career advice, a warm intro, a coffee chat, a round — a structured
+                4-step request that lands in {member.displayName.split(' ')[0]}&rsquo;s
+                Clubhouse inbox.
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  href={`/ask?personId=${storeMatch.personId}`}
+                  data-testid="member-detail-reach-out-cta"
+                  className="bg-[#c8a84b] hover:bg-[#d4b75a] text-[#0a1628] text-[13px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-colors whitespace-nowrap"
+                >
+                  Send a request &rarr;
+                </Link>
+                <Link
+                  href="/player/requests"
+                  className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-white/55 hover:text-white transition-colors"
+                >
+                  Track your requests &rarr;
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

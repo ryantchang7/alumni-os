@@ -83,6 +83,12 @@ function AccountAffordance() {
             Messages
           </Link>
           <Link
+            href="/player/requests"
+            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+          >
+            Your Requests
+          </Link>
+          <Link
             href="/member-book"
             className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
           >
