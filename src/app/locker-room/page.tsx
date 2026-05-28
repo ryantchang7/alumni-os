@@ -88,13 +88,23 @@ export default async function LockerRoomPage() {
                 '0 1px 3px rgba(10,22,40,0.08), 0 16px 40px rgba(10,22,40,0.18)',
             }}
           >
-            <div className="relative">
-              <span
-                className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#0a1628] border border-[#c8a84b]/60 mb-5"
-                style={{ boxShadow: '0 0 0 8px rgba(200,168,75,0.08), 0 0 28px rgba(200,168,75,0.20)' }}
-              >
-                <Lock className="w-6 h-6 text-[#c8a84b]" />
-              </span>
+            <div className="relative flex flex-col items-center">
+              {crestImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={crestImage}
+                  alt="Locker Room crest"
+                  className="h-28 sm:h-32 w-auto mb-6"
+                  style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.4))' }}
+                />
+              ) : (
+                <span
+                  className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#0a1628] border border-[#c8a84b]/60 mb-5"
+                  style={{ boxShadow: '0 0 0 8px rgba(200,168,75,0.08), 0 0 28px rgba(200,168,75,0.20)' }}
+                >
+                  <Lock className="w-6 h-6 text-[#c8a84b]" />
+                </span>
+              )}
               <p
                 className="text-[#c8a84b] text-2xl font-medium mb-3"
                 style={{ fontFamily: 'var(--font-playfair)' }}

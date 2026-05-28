@@ -38,6 +38,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
   const allMoments = team ? await getMomentsForTeam(team.id) : []
   const store = team ? await readStore() : null
   const crestImage = await getSiteContentOrDefault('moments.crest-image')
+  const lockerCrest = await getSiteContentOrDefault('locker-room.crest-image')
 
   const session = await auth()
   let canSeeLockerRoom = false
@@ -153,34 +154,46 @@ export default async function MomentsPage({ searchParams }: PageProps) {
         </div>
       </div>
 
-      {/* Subtab pill bar — only renders the Locker Room pill for eligible
-          viewers (players + alumni). Coaches and family see a single
-          "Moments" pill (effectively no tab) — we just hide the row. */}
+      {/* Subtab segmented control. Sits on a navy strip so the bar reads
+          as a continuation of the hero. The active pill is a solid block,
+          the inactive pill is a quiet outline — clearly two different
+          places, not two style variants of the same feed. Only eligible
+          viewers (players + alumni) see the Locker Room pill at all. */}
       {canSeeLockerRoom && (
-        <div className="bg-[#0a1628] border-t border-[rgba(255,255,255,0.06)]">
-          <div className="max-w-[820px] mx-auto px-6 sm:px-8 py-3 flex items-center gap-2">
+        <div className="bg-[#0a1628] border-t border-[rgba(255,255,255,0.06)] border-b border-[rgba(255,255,255,0.06)]">
+          <div className="max-w-[820px] mx-auto px-6 sm:px-8 py-4 flex items-center gap-3">
             <Link
               href="/moments"
-              className={`text-[12px] font-semibold uppercase tracking-[0.14em] px-3 py-1.5 rounded-full transition-colors ${
+              className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.18em] px-5 py-2.5 rounded-lg transition-all ${
                 isLockerView
-                  ? 'text-white/60 hover:text-white'
-                  : 'bg-[#c8a84b] text-[#0a1628]'
+                  ? 'text-white/55 hover:text-white border border-transparent'
+                  : 'bg-white text-[#0a1628] shadow-[0_2px_10px_rgba(0,0,0,0.25)]'
               }`}
+              aria-pressed={!isLockerView}
             >
               All Moments
             </Link>
             <Link
               href="/moments?view=locker-room"
-              className={`inline-flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] px-3 py-1.5 rounded-full transition-colors ${
+              className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.18em] px-5 py-2.5 rounded-lg transition-all ${
                 isLockerView
-                  ? 'bg-[#c8a84b] text-[#0a1628]'
-                  : 'text-[#c8a84b]/85 hover:text-[#c8a84b] border border-[#c8a84b]/35'
+                  ? 'bg-[#c8a84b] text-[#0a1628] shadow-[0_2px_18px_rgba(200,168,75,0.45)]'
+                  : 'text-[#c8a84b] border border-[#c8a84b]/45 hover:border-[#c8a84b] hover:bg-[#c8a84b]/10'
               }`}
+              aria-pressed={isLockerView}
             >
-              <Lock className="w-3 h-3" />
+              <Lock className="w-3.5 h-3.5" />
               Locker Room
               {lockerCount > 0 && (
-                <span className="text-[10.5px] opacity-70">· {lockerCount}</span>
+                <span
+                  className={`text-[10.5px] tabular-nums px-1.5 py-0.5 rounded-full ${
+                    isLockerView
+                      ? 'bg-[#0a1628]/15 text-[#0a1628]'
+                      : 'bg-[#c8a84b]/15 text-[#c8a84b]'
+                  }`}
+                >
+                  {lockerCount}
+                </span>
               )}
             </Link>
           </div>
@@ -189,33 +202,72 @@ export default async function MomentsPage({ searchParams }: PageProps) {
 
       <div className="max-w-[820px] mx-auto px-5 sm:px-8 py-10 sm:py-14">
         {moments.length === 0 ? (
-          <div
-            className="bg-white border border-dashed border-[rgba(180,168,150,0.5)] rounded-xl p-10 text-center"
-            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
-          >
-            {isLockerView ? (
-              <Lock className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
-            ) : (
+          isLockerView ? (
+            // Locker-room empty state — atmospheric navy panel with the
+            // Locker Room crest in place of an icon. Matches /locker-room.
+            <div
+              className="relative overflow-hidden rounded-2xl border border-[#c8a84b]/35 bg-gradient-to-br from-[#0a1628] to-[#15233f] text-white px-8 py-14 text-center"
+              style={{
+                boxShadow:
+                  '0 1px 3px rgba(10,22,40,0.08), 0 16px 40px rgba(10,22,40,0.18)',
+              }}
+            >
+              <div className="relative flex flex-col items-center">
+                {lockerCrest ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={lockerCrest}
+                    alt="Locker Room crest"
+                    className="h-28 sm:h-32 w-auto mb-6"
+                    style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.4))' }}
+                  />
+                ) : (
+                  <Lock className="w-7 h-7 text-[#c8a84b] mb-5" />
+                )}
+                <p
+                  className="text-[#c8a84b] text-2xl font-medium mb-3"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Locker&rsquo;s empty.
+                </p>
+                <p className="text-white/65 text-[13.5px] max-w-md mx-auto mb-7 leading-relaxed">
+                  Drop the first Locker Room post — a road trip dinner, a
+                  pre-round shot, the Penn-Princeton afterparty. Players + alumni
+                  see it. No one else.
+                </p>
+                <Link
+                  href="/moments/new?audience=locker-room"
+                  className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-lg transition-all hover:shadow-[0_0_22px_rgba(200,168,75,0.45)]"
+                >
+                  <Lock className="w-4 h-4" />
+                  Post the first
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="bg-white border border-dashed border-[rgba(180,168,150,0.5)] rounded-xl p-10 text-center"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
+            >
               <Camera className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
-            )}
-            <p
-              className="text-[#0a1628] text-lg font-medium mb-2"
-              style={{ fontFamily: 'var(--font-playfair)' }}
-            >
-              {isLockerView ? 'Locker’s empty.' : 'Bag’s empty.'}
-            </p>
-            <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6">
-              {isLockerView
-                ? 'Drop the first Locker Room post — a road trip dinner, a pre-round shot, the Penn-Princeton afterparty. Players + alumni see it.'
-                : 'Drop the first one. A photo from a round, a tournament, an alumni dinner. The wall grows one moment at a time.'}
-            </p>
-            <Link
-              href={isLockerView ? '/moments/new?audience=locker-room' : '/moments/new'}
-              className="inline-block bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
-            >
-              Post the first
-            </Link>
-          </div>
+              <p
+                className="text-[#0a1628] text-lg font-medium mb-2"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                Bag&rsquo;s empty.
+              </p>
+              <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6">
+                Drop the first one. A photo from a round, a tournament, an alumni
+                dinner. The wall grows one moment at a time.
+              </p>
+              <Link
+                href="/moments/new"
+                className="inline-block bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+              >
+                Post the first
+              </Link>
+            </div>
+          )
         ) : (
           <div className="space-y-8">
             {moments.map((m) => (

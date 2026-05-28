@@ -195,22 +195,10 @@ export default function SupportClient({ status }: Props) {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      {/* Hero */}
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16 relative overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute pointer-events-none"
-          style={{
-            top: '50%',
-            right: '-10%',
-            width: '600px',
-            height: '420px',
-            transform: 'translate(0, -50%)',
-            background:
-              'radial-gradient(ellipse at center, rgba(200,168,75,0.16) 0%, rgba(200,168,75,0.04) 45%, transparent 75%)',
-          }}
-        />
-        <div className="max-w-[920px] mx-auto relative">
+      {/* Hero — clean navy, no radial glow, no gold underline. Matches
+          the Locker Room / Member Book pattern. */}
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16">
+        <div className="max-w-[920px] mx-auto">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-4">
             Membership
           </p>
@@ -220,8 +208,7 @@ export default function SupportClient({ status }: Props) {
           >
             Support Penn Men&rsquo;s Golf.
           </h1>
-          <span className="block w-12 h-[2px] bg-[#c8a84b] mt-6 mb-5" />
-          <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line">
+          <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line mt-6">
             {heroBlurb}
           </p>
         </div>
