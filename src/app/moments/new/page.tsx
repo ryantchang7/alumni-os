@@ -1,13 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { ArrowLeft, Camera, Lock } from 'lucide-react'
 import PhotoUpload from '@/components/PhotoUpload'
 
-export default function NewMomentPage() {
+// Next.js requires any component that reads useSearchParams() to live
+// inside a <Suspense> boundary so the static prerender pass can bail out
+// cleanly. We pull the form into its own component and Suspense-wrap it
+// from the default export below.
+function NewMomentForm() {
   const { data: session, status: sessionStatus } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -256,5 +260,13 @@ export default function NewMomentPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function NewMomentPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0]" />}>
+      <NewMomentForm />
+    </Suspense>
   )
 }
