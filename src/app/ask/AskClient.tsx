@@ -386,48 +386,72 @@ export default function AskClient() {
                   <span className="text-xs font-medium text-[#8a7f70]">· {purposeObj.label}</span>
                 )}
               </div>
-              <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">What&rsquo;s the situation?</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Helps us find the right alum and write a note that actually sounds like you.</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {CONTEXTS.map(c => (
-                  <button
-                    key={c.key}
-                    type="button"
-                    onClick={() => setContextKey(c.key)}
-                    className={`text-left rounded-lg px-4 py-3 border transition-all ${
-                      contextKey === c.key
-                        ? 'border-[#0a1628] bg-[#0a1628]/5'
-                        : 'border-[rgba(180,168,150,0.4)] hover:border-[#0a1628]/40'
-                    }`}
-                  >
-                    <p className="font-medium text-[#0a1628] text-sm">{c.label}</p>
-                  </button>
-                ))}
-              </div>
+              {purpose === 'custom' ? (
+                <>
+                  <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">What do you want to ask?</h2>
+                  <p className="text-xs text-[#8a7f70] mb-4">
+                    Type your idea in your own words. We&rsquo;ll wrap it in a clean Hey / Thanks so it reads as a real note.
+                  </p>
+                  <textarea
+                    data-testid="custom-ask-box"
+                    value={additionalContext}
+                    onChange={e => setAdditionalContext(e.target.value)}
+                    rows={7}
+                    maxLength={1500}
+                    placeholder={'E.g. "Saw you started a podcast on real estate. Would love to know how you got going and whether you\'d be open to me helping out this summer."'}
+                    autoFocus
+                    className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-y focus:outline-none focus:border-[#0a1628] transition-colors leading-relaxed"
+                  />
+                  <p className="text-[11px] text-[#8a7f70] mt-1.5">
+                    You can tweak the whole note in the next step before sending.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">What&rsquo;s the situation?</h2>
+                  <p className="text-xs text-[#8a7f70] mb-5">Helps us find the right alum and write a note that actually sounds like you.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {CONTEXTS.map(c => (
+                      <button
+                        key={c.key}
+                        type="button"
+                        onClick={() => setContextKey(c.key)}
+                        className={`text-left rounded-lg px-4 py-3 border transition-all ${
+                          contextKey === c.key
+                            ? 'border-[#0a1628] bg-[#0a1628]/5'
+                            : 'border-[rgba(180,168,150,0.4)] hover:border-[#0a1628]/40'
+                        }`}
+                      >
+                        <p className="font-medium text-[#0a1628] text-sm">{c.label}</p>
+                      </button>
+                    ))}
+                  </div>
 
-              {/* Additional context */}
-              <div className="mt-5">
-                <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-2">
-                  One more line of context? <span className="font-normal normal-case">(optional)</span>
-                </label>
-                <textarea
-                  data-testid="additional-context-box"
-                  value={additionalContext}
-                  onChange={e => setAdditionalContext(e.target.value)}
-                  rows={3}
-                  maxLength={1000}
-                  placeholder={'"Applying to Goldman summer roles." / "I\'ll be in NYC in July." / "Coach said you\'d be a good person to ask."'}
-                  className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
-                />
-                <p className="text-[11px] text-[#8a7f70] mt-1">
-                  Whatever you put here goes into the note naturally.
-                </p>
-              </div>
+                  {/* Additional context */}
+                  <div className="mt-5">
+                    <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-2">
+                      One more line of context? <span className="font-normal normal-case">(optional)</span>
+                    </label>
+                    <textarea
+                      data-testid="additional-context-box"
+                      value={additionalContext}
+                      onChange={e => setAdditionalContext(e.target.value)}
+                      rows={3}
+                      maxLength={1000}
+                      placeholder={'"Applying to Goldman summer roles." / "I\'ll be in NYC in July." / "Coach said you\'d be a good person to ask."'}
+                      className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
+                    />
+                    <p className="text-[11px] text-[#8a7f70] mt-1">
+                      Whatever you put here goes into the note naturally.
+                    </p>
+                  </div>
+                </>
+              )}
 
               <div className="mt-6 flex justify-end">
                 <button
                   type="button"
-                  disabled={!contextKey}
+                  disabled={purpose === 'custom' ? !additionalContext.trim() : !contextKey}
                   onClick={() => goToStep(3)}
                   className="text-sm font-semibold bg-[#0a1628] text-white px-6 py-2.5 rounded-lg disabled:opacity-40 hover:bg-[#0a1628]/85 transition-colors"
                 >

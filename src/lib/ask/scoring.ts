@@ -268,11 +268,12 @@ export function generateDraft(params: DraftParams): string {
   const first = profile.firstName ?? profile.canonicalName.split(' ')[0]
   const sign = fromName.trim() ? `\n\n${fromName.trim()}` : ''
 
-  // Custom flow: blank template so the sender writes their own body.
+  // Custom flow: the sender's freeform text becomes the body. We still
+  // wrap it in a clean Hey / Thanks so it reads as a real note.
   if (purpose === 'custom') {
     const extra = additionalContext.trim()
-    const middle = extra ? `${extra}\n\n[Write your message here.]` : '[Write your message here.]'
-    return `Hey ${first},\n\n${middle}\n\nThanks,${sign}`
+    const body = extra ? extra : '[Write your message here.]'
+    return `Hey ${first},\n\n${body}\n\nThanks,${sign}`
   }
 
   const { intro, ask } = purposeLines(purpose, profile, senderRole)
