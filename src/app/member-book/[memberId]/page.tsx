@@ -224,11 +224,15 @@ export default async function MemberDetailPage({
                 </div>
               )}
             </dl>
-                {isCurrent && (
+                {member.role === 'coach' ? (
+                  <span className="inline-flex items-center gap-1 mt-5 text-[10px] font-semibold px-2.5 py-1 rounded-full text-[#c8a84b] bg-[#0a1628] border border-[#c8a84b]/55 uppercase tracking-[0.14em]">
+                    Coach
+                  </span>
+                ) : isCurrent ? (
                   <span className="inline-block mt-5 text-[10px] font-medium px-2.5 py-1 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 uppercase tracking-[0.14em]">
                     Current Player
                   </span>
-                )}
+                ) : null}
                 {storeMatch?.accountId && !isOwner && (
                   <div className="mt-6">
                     <MessageMemberButton
@@ -241,35 +245,43 @@ export default async function MemberDetailPage({
             </div>
           </div>
 
-          {/* Penn Golf section */}
-          <Section title="Penn Golf">
-            {years && (
+          {/* Penn Golf section — coaches get a tailored blurb instead of letter/season stats. */}
+          {member.role === 'coach' ? (
+            <Section title="Penn Golf">
               <p className="text-[14px] text-[#3d4a5c] leading-relaxed">
-                {years.replace('Penn Golf ', 'On the team from ')}.
+                Currently leading Penn Men&rsquo;s Golf.
               </p>
-            )}
-            {(totalLetters > 0 || totalSeasons > 0) && (
-              <div className="mt-5 grid grid-cols-2 gap-4 max-w-md">
-                {totalLetters > 0 && (
-                  <Stat
-                    value={totalLetters}
-                    label={totalLetters === 1 ? 'Letter Year' : 'Letter Years'}
-                  />
-                )}
-                {totalSeasons > 0 && (
-                  <Stat
-                    value={totalSeasons}
-                    label={totalSeasons === 1 ? 'Season' : 'Seasons'}
-                  />
-                )}
-              </div>
-            )}
-            {!years && totalLetters === 0 && totalSeasons === 0 && (
-              <p className="text-[14px] text-[#8a7f70] italic">
-                Years and letter history coming as the archive is reconciled.
-              </p>
-            )}
-          </Section>
+            </Section>
+          ) : (
+            <Section title="Penn Golf">
+              {years && (
+                <p className="text-[14px] text-[#3d4a5c] leading-relaxed">
+                  {years.replace('Penn Golf ', 'On the team from ')}.
+                </p>
+              )}
+              {(totalLetters > 0 || totalSeasons > 0) && (
+                <div className="mt-5 grid grid-cols-2 gap-4 max-w-md">
+                  {totalLetters > 0 && (
+                    <Stat
+                      value={totalLetters}
+                      label={totalLetters === 1 ? 'Letter Year' : 'Letter Years'}
+                    />
+                  )}
+                  {totalSeasons > 0 && (
+                    <Stat
+                      value={totalSeasons}
+                      label={totalSeasons === 1 ? 'Season' : 'Seasons'}
+                    />
+                  )}
+                </div>
+              )}
+              {!years && totalLetters === 0 && totalSeasons === 0 && (
+                <p className="text-[14px] text-[#8a7f70] italic">
+                  Years and letter history coming as the archive is reconciled.
+                </p>
+              )}
+            </Section>
+          )}
 
           {/* Clubhouse Profile */}
           <Section title="Clubhouse Profile">

@@ -144,11 +144,15 @@ function RegistryEntry({
               </div>
             </div>
           </div>
-          {isCurrent && (
+          {member.role === 'coach' ? (
+            <span className="inline-flex items-center gap-1 text-[9.5px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full text-[#c8a84b] bg-[#0a1628] border border-[#c8a84b]/55 whitespace-nowrap mt-1">
+              Coach
+            </span>
+          ) : isCurrent ? (
             <span className="text-[9px] font-medium px-2 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap mt-1">
               Current Player
             </span>
-          )}
+          ) : null}
         </div>
         <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
           View Member &rarr;

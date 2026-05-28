@@ -111,6 +111,13 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     default: '/quaker-golfer.png',
   },
   {
+    id: 'locker-room.crest-image',
+    label: 'Locker Room crest / badge image',
+    hint: 'Badge shown next to the Locker Room heading. Same size as the other crests. Players + alumni only see this surface.',
+    kind: 'image',
+    default: '/locker-room-crest.png',
+  },
+  {
     id: 'player.tradition-blurb',
     label: 'Penn Golf Tradition subtitle',
     hint: 'Small caption under the Penn Golf Tradition heading on /player.',

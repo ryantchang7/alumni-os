@@ -213,7 +213,9 @@ export function getMembersForLetterYear(
 // Managers stay in the data, but never surface on public registry/map.
 
 export function isPublicMember(m: MemberBookEntry): boolean {
-  return m.includeInMemberBook && m.role === 'player'
+  // Coaches show in the public registry alongside players. Managers are
+  // intentionally excluded — they live in the data but never surface here.
+  return m.includeInMemberBook && (m.role === 'player' || m.role === 'coach')
 }
 
 export function getPublicMembers(

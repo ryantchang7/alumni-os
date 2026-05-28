@@ -9,10 +9,11 @@
     "coverageNote": "All parsed all-time letter-winner entries are included. Some historical roster seasons are inferred from letter-winning years and flagged in review.needsRosterCheck."
   },
   "counts": {
-    "membersTotal": 345,
+    "membersTotal": 346,
     "allTimeLetterWinnerEntriesIncluded": 330,
     "playersIncluded": 339,
     "managersIncluded": 6,
+    "coachesIncluded": 1,
     "verifiedRosterArchiveRecords": 81,
     "letterWinnerPdfOnlyRosterUnverified": 258,
     "rosterOnlyNoLetterInPdf": 15,
@@ -29,6 +30,64 @@
     "Use id as the stable key. Do not regenerate IDs from names in app code."
   ],
   "members": [
+    {
+      "id": "clay-white",
+      "displayName": "Clay White",
+      "sortName": "White, Clay",
+      "role": "coach",
+      "isManager": false,
+      "includeInMemberBook": true,
+      "membershipStatus": "active_2025_26",
+      "sourceRecordType": "coach_active_roster",
+      "career": {
+        "startSeason": null,
+        "endSeason": null,
+        "startYear": null,
+        "finishYear": null,
+        "yearSource": "unknown",
+        "verifiedRosterSeasons": [],
+        "verifiedRosterSeasonCount": 0,
+        "inferredLetterSeasons": [],
+        "displaySeasons": []
+      },
+      "letterWinner": {
+        "isLetterWinner": false,
+        "years": [],
+        "seasons": [],
+        "firstYear": null,
+        "lastYear": null,
+        "count": 0,
+        "rawPdfName": null
+      },
+      "profile": {
+        "classYearEstimate": null,
+        "latestRosterClass": null,
+        "hometown": null,
+        "highSchool": null,
+        "currentRole": "Head Coach, Penn Men's Golf",
+        "currentCompany": "University of Pennsylvania",
+        "city": "Philadelphia, PA",
+        "helpTopics": null,
+        "contactPreference": null
+      },
+      "review": {
+        "needsRosterCheck": false,
+        "hasVerifiedRosterArchiveRecord": false,
+        "hasAllTimeLetterWinnerRecord": false,
+        "oldCaptainReviewStatus": null,
+        "legacySourceStatus": null,
+        "nameMatchMethod": "manual_admin_entry",
+        "notes": "Current Head Coach of Penn Men's Golf. Added manually."
+      },
+      "sources": {
+        "primary": "manual_admin_entry",
+        "sourceUrls": [],
+        "tags": [
+          "coach",
+          "current_staff"
+        ]
+      }
+    },
     {
       "id": "arthur-byxbee",
       "displayName": "Arthur Byxbee",

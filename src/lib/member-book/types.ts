@@ -3,7 +3,7 @@
 // Domain note: letterWinner.years are ENDING years.
 // Example: a letter year of 2004 means the 2003-04 season.
 
-export type MemberRole = 'player' | 'manager'
+export type MemberRole = 'player' | 'manager' | 'coach'
 
 export type SourceRecordType =
   | 'letter_winner_with_verified_roster'
@@ -82,6 +82,7 @@ export interface MemberBookCounts {
   allTimeLetterWinnerEntriesIncluded: number
   playersIncluded: number
   managersIncluded: number
+  coachesIncluded?: number
   verifiedRosterArchiveRecords: number
   letterWinnerPdfOnlyRosterUnverified: number
   rosterOnlyNoLetterInPdf: number
