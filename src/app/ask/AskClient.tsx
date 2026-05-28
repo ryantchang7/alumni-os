@@ -8,26 +8,26 @@ import { scoreAndSort, generateDraft, type ProfileForScoring, type ScoredProfile
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const PURPOSES = [
-  { key: 'career_advice', label: 'Career advice', desc: 'Get perspective on industries, career paths, or roles.' },
-  { key: 'warm_introduction', label: 'Warm introduction', desc: 'Ask a member to introduce you to someone in their network.' },
-  { key: 'interview_prep', label: 'Interview prep', desc: 'Get advice on consulting, banking, or other recruiting processes.' },
-  { key: 'resume_review', label: 'Resume review', desc: 'Get feedback on your resume before applying.' },
-  { key: 'internship_guidance', label: 'Internship guidance', desc: 'Get advice on finding and landing a strong summer role.' },
-  { key: 'coffee_chat', label: 'Coffee chat', desc: 'A casual conversation to learn more about a member\'s experience.' },
-  { key: 'golf_round', label: 'Golf round', desc: 'Play a round with a member who is open to it.' },
-  { key: 'city_advice', label: 'City advice', desc: 'Ask for recommendations from a member who lives somewhere you\'re headed.' },
-  { key: 'mentorship', label: 'Long-term mentorship', desc: 'Find a member willing to stay in touch as a mentor.' },
+  { key: 'career_advice', label: 'Career advice', desc: 'Pick their brain on the job, the industry, what they wish they knew.' },
+  { key: 'warm_introduction', label: 'Warm intro', desc: 'Get connected to someone in their network.' },
+  { key: 'interview_prep', label: 'Interview prep', desc: 'The real story on recruiting from someone who\'s been through it.' },
+  { key: 'resume_review', label: 'Resume review', desc: 'A quick eye on your resume before you hit send.' },
+  { key: 'internship_guidance', label: 'Internship guidance', desc: 'How to land a strong summer.' },
+  { key: 'coffee_chat', label: 'Coffee chat', desc: 'Just chat — about Penn, the team, where they ended up.' },
+  { key: 'golf_round', label: 'Golf round', desc: 'Get out on the course with an alum.' },
+  { key: 'city_advice', label: 'City advice', desc: 'You\'re heading somewhere they live — get the rundown.' },
+  { key: 'mentorship', label: 'Long-term mentorship', desc: 'Someone in your corner past one conversation.' },
 ]
 
 const CONTEXTS = [
-  { key: 'exploring_field', label: 'I\'m exploring this field' },
-  { key: 'applying_to_role', label: 'I\'m applying to a role' },
-  { key: 'in_their_city', label: 'I\'ll be in their city' },
-  { key: 'learn_their_path', label: 'I\'d like to learn about their path' },
-  { key: 'referred', label: 'I was referred by a teammate or coach' },
-  { key: 'want_to_play', label: 'I want to play a round' },
-  { key: 'summer_advice', label: 'I\'m looking for summer advice' },
-  { key: 'preparing_interviews', label: 'I\'m preparing for interviews' },
+  { key: 'exploring_field', label: 'I\'m still figuring out the field' },
+  { key: 'applying_to_role', label: 'I\'m in the middle of recruiting' },
+  { key: 'in_their_city', label: 'I\'ll be in their city soon' },
+  { key: 'learn_their_path', label: 'I want to hear their story' },
+  { key: 'referred', label: 'A teammate / coach pointed me your way' },
+  { key: 'want_to_play', label: 'I want to play' },
+  { key: 'summer_advice', label: 'I\'m thinking about summer' },
+  { key: 'preparing_interviews', label: 'I\'m prepping for interviews' },
 ]
 
 const PURPOSE_PARAM_MAP: Record<string, string> = {
@@ -304,7 +304,7 @@ export default function AskClient() {
           </Link>
           <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Send a request</h1>
           <p className="text-gray-400 text-sm mt-2">
-            Pick a Penn Golf alum, pick what you need, send a private message. Four quick steps.
+            Find an alum. Ask for what you need. Four quick steps — we&rsquo;ll draft the note for you.
           </p>
         </div>
       </div>
@@ -317,8 +317,8 @@ export default function AskClient() {
           {step === 1 && (
             <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
-              <h2 className="text-base font-semibold text-[#0a1628] mb-1">What are you looking for?</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Pick the closest match.</p>
+              <h2 className="text-base font-semibold text-[#0a1628] mb-1">What do you need?</h2>
+              <p className="text-xs text-[#8a7f70] mb-5">Pick the closest one. We&rsquo;ll line everything up.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {PURPOSES.map(p => (
                   <button
@@ -361,8 +361,8 @@ export default function AskClient() {
                   <span className="text-xs font-medium text-[#8a7f70]">· {purposeObj.label}</span>
                 )}
               </div>
-              <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Why are you reaching out?</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">This helps us suggest the right member and write a better message.</p>
+              <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">What&rsquo;s the situation?</h2>
+              <p className="text-xs text-[#8a7f70] mb-5">Helps us find the right alum and write a note that actually sounds like you.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {CONTEXTS.map(c => (
                   <button
@@ -383,7 +383,7 @@ export default function AskClient() {
               {/* Additional context */}
               <div className="mt-5">
                 <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-2">
-                  Anything else we should know? <span className="font-normal normal-case">(optional)</span>
+                  One more line of context? <span className="font-normal normal-case">(optional)</span>
                 </label>
                 <textarea
                   data-testid="additional-context-box"
@@ -391,11 +391,11 @@ export default function AskClient() {
                   onChange={e => setAdditionalContext(e.target.value)}
                   rows={3}
                   maxLength={1000}
-                  placeholder={'E.g. "I\'m applying to Goldman sophomore summer roles." or "I\'ll be in New York this summer." or "Coach said you might be a good person to ask."'}
+                  placeholder={'"Applying to Goldman summer roles." / "I\'ll be in NYC in July." / "Coach said you\'d be a good person to ask."'}
                   className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
                 />
                 <p className="text-[11px] text-[#8a7f70] mt-1">
-                  This will be woven into your request message naturally.
+                  Whatever you put here goes into the note naturally.
                 </p>
               </div>
 
@@ -427,7 +427,7 @@ export default function AskClient() {
                 )}
               </div>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Pick someone to ask.</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Sorted by fit. Anyone here is happy to be asked.</p>
+              <p className="text-xs text-[#8a7f70] mb-5">Sorted by fit. Everyone here has said they&rsquo;re open to it.</p>
 
               {loadingProfiles ? (
                 <p className="text-sm text-[#8a7f70] py-6 text-center">Loading members…</p>
@@ -473,8 +473,8 @@ export default function AskClient() {
                   </span>
                 )}
               </div>
-              <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Review and send your request</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Edit the message below until it sounds like you.</p>
+              <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Last look. Sound like you?</h2>
+              <p className="text-xs text-[#8a7f70] mb-5">Tweak anything until it reads in your voice. They&rsquo;ll see it as is.</p>
 
               {/* Draft */}
               <div className="mb-4">
@@ -512,7 +512,7 @@ export default function AskClient() {
 
               <div className="flex items-center justify-between gap-4">
                 <p className="text-xs text-[#8a7f70]">
-                  {selectedProfile?.canonicalName} will see this in their Clubhouse inbox.
+                  Lands in {selectedProfile?.canonicalName?.split(' ')[0]}&rsquo;s Clubhouse inbox. Give it a few days &mdash; alumni have day jobs.
                 </p>
                 <button
                   type="button"

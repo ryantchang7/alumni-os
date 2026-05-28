@@ -148,81 +148,81 @@ export interface DraftParams {
 }
 
 const CONTEXT_SENTENCE: Record<string, string> = {
-  exploring_field: "I'm still in the early stages of exploring this field.",
-  applying_to_role: "I'm currently going through the recruiting process.",
-  in_their_city: "I'll be spending time in your city and thought it might be a chance to connect in person.",
-  learn_their_path: "I'd love to hear how your path has unfolded since Penn Golf.",
-  referred: "I was referred by a teammate and thought it was worth reaching out.",
-  want_to_play: "I've been hoping to get a round in with an alum.",
-  summer_advice: "I'm thinking ahead to the summer and trying to make the most of it.",
-  preparing_interviews: "I'm actively preparing for recruiting and any real perspective would be invaluable.",
+  exploring_field: "Still figuring out where I want to land.",
+  applying_to_role: "I'm in the middle of recruiting right now.",
+  in_their_city: "I'll be in your city soon and figured it'd be worth saying hi.",
+  learn_their_path: "I'd love to hear where Penn Golf took you.",
+  referred: "A teammate pointed me your way.",
+  want_to_play: "Been hoping to get a round in with an alum.",
+  summer_advice: "Thinking about the summer and trying to make the most of it.",
+  preparing_interviews: "Heads-down on interview prep — any real perspective goes a long way.",
 }
 
 function purposeLines(purpose: string, profile: ProfileForScoring): { intro: string; ask: string } {
   const careerLine = profile.career?.currentRole && profile.career?.currentCompany
-    ? ` — I came across your background in ${profile.career.currentRole} at ${profile.career.currentCompany}`
+    ? ` — saw you're doing ${profile.career.currentRole} at ${profile.career.currentCompany}`
     : profile.career?.currentRole
-      ? ` — I saw you work in ${profile.career.currentRole}`
+      ? ` — saw you're in ${profile.career.currentRole}`
       : profile.career?.currentCompany
-        ? ` — I saw you work at ${profile.career.currentCompany}`
+        ? ` — saw you're at ${profile.career.currentCompany}`
         : ''
 
   const topicsNote = profile.helpTopics && profile.helpTopics.length > 0
-    ? ` and saw that you're open to helping with ${profile.helpTopics.slice(0, 2).join(' and ')}`
+    ? ` and that you're open to ${profile.helpTopics.slice(0, 2).join(' and ')}`
     : ''
 
   switch (purpose) {
     case 'career_advice':
       return {
-        intro: `I'm a current Penn Golf player exploring careers after Penn${careerLine}${topicsNote}`,
-        ask: `I'd be grateful for 20 minutes to hear about your path and any advice you'd offer someone just getting started.`,
+        intro: `I'm on the Penn Golf team and starting to think about life after Penn${careerLine}${topicsNote}`,
+        ask: `Any chance you'd be up for 20 minutes? Would love to hear about your path and whatever advice you'd give your younger self.`,
       }
     case 'coffee_chat':
       return {
-        intro: `I'm a current Penn Golf player who would love the chance to connect${topicsNote}`,
-        ask: `If you're open to it, I'd love to grab a quick coffee — virtual or in person if we're ever in the same city.`,
+        intro: `I'm on the Penn Golf team and just wanted to say hi${topicsNote}`,
+        ask: `If you're up for a quick coffee — virtual or in person if we end up in the same city — I'd love that.`,
       }
     case 'mentorship':
       return {
-        intro: `I'm a current Penn Golf player looking to find a mentor as I start thinking seriously about my career${careerLine}`,
-        ask: `I'd be honored to connect and hear your perspective as I figure out my path after Penn.`,
+        intro: `I'm on the Penn Golf team and starting to think seriously about what comes next${careerLine}`,
+        ask: `Looking for someone who'd be willing to stay in touch as I figure things out. Would love to hear how you'd approach it from where I'm sitting.`,
       }
     case 'interview_prep':
       return {
-        intro: `I'm a current Penn Golf player preparing for recruiting${careerLine}${topicsNote}`,
-        ask: `I'd be grateful for 20 minutes to hear about your experience and any advice on the interview process.`,
+        intro: `I'm on the Penn Golf team and deep in recruiting${careerLine}${topicsNote}`,
+        ask: `Could I steal 20 minutes? Trying to get the real story on the process from someone who's actually been through it.`,
       }
     case 'resume_review':
       return {
-        intro: `I'm a current Penn Golf player working on my resume for upcoming recruiting${topicsNote}`,
-        ask: `If you're open to it, even a few minutes of your feedback would be incredibly helpful.`,
+        intro: `I'm on the Penn Golf team and tightening up my resume before I start sending it out${topicsNote}`,
+        ask: `If you have a few minutes to give it a quick once-over, I'd really appreciate it.`,
       }
     case 'internship_guidance':
       return {
-        intro: `I'm a current Penn Golf player exploring internship opportunities${careerLine}`,
-        ask: `I'd love 20 minutes to hear about your experience and any advice for landing a strong internship.`,
+        intro: `I'm on the Penn Golf team and starting to line up summer plans${careerLine}`,
+        ask: `Would love 20 minutes if you'd be up for it — figuring out how to land a strong internship and any advice from your route would go a long way.`,
       }
     case 'warm_introduction':
       return {
-        intro: `I'm a current Penn Golf player hoping to build connections in your field${careerLine}`,
-        ask: `If you know anyone who might be worth a conversation, I'd be very grateful for an introduction.`,
+        intro: `I'm on the Penn Golf team and trying to build some real connections in your field${careerLine}`,
+        ask: `If anyone in your network would be worth a quick chat, I'd really appreciate the intro.`,
       }
     case 'golf_round':
       return {
-        intro: `I'm a current Penn Golf player who would love to get on the course with a Penn alum`,
-        ask: `If you're ever open to a round, I'd love to play together.`,
+        intro: `I'm on the Penn Golf team and would love to get out on the course with a Penn alum`,
+        ask: `If you're ever up for a round, I'm in. Happy to drive to wherever you play.`,
       }
     case 'city_advice': {
       const city = profile.career?.city ? ` in ${profile.career.city}` : ''
       return {
-        intro: `I'm a current Penn Golf player who may be spending time${city} and thought you'd be a great person to ask`,
-        ask: `Any advice on the area — neighborhoods, things to know, or people worth meeting — would mean a lot.`,
+        intro: `I'm on the Penn Golf team and might be spending time${city} soon — thought you'd be the right person to ask`,
+        ask: `Any tips on the city — neighborhoods, places to go, people worth meeting — would be huge.`,
       }
     }
     default:
       return {
-        intro: `I'm a current Penn Golf player reaching out`,
-        ask: `I'd love to connect and hear about your experience since Penn Golf.`,
+        intro: `I'm on the Penn Golf team and figured I'd reach out`,
+        ask: `Would love to hear where Penn Golf has taken you since.`,
       }
   }
 }
@@ -247,5 +247,5 @@ export function generateDraft(params: DraftParams): string {
   const body = bodyParts.join(' ')
   const sign = fromName.trim() ? `\n\n${fromName.trim()}` : ''
 
-  return `Hi ${first},\n\n${body}\n\nThank you for your support of Penn Golf.${sign}`
+  return `Hey ${first},\n\n${body}\n\nThanks — appreciate it.${sign}`
 }
