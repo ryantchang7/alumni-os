@@ -39,6 +39,11 @@ export default async function MomentsPage({ searchParams }: PageProps) {
   const store = team ? await readStore() : null
   const crestImage = await getSiteContentOrDefault('moments.crest-image')
   const lockerCrest = await getSiteContentOrDefault('locker-room.crest-image')
+  const subtitle = await getSiteContentOrDefault('moments.subtitle')
+  const emptyHeadline = await getSiteContentOrDefault('moments.empty-headline')
+  const emptyBlurb = await getSiteContentOrDefault('moments.empty-blurb')
+  const lockerEmptyHeadline = await getSiteContentOrDefault('locker-room.empty-headline')
+  const lockerEmptyBlurb = await getSiteContentOrDefault('locker-room.empty-blurb')
 
   const session = await auth()
   let canSeeLockerRoom = false
@@ -76,7 +81,6 @@ export default async function MomentsPage({ searchParams }: PageProps) {
               >
                 Moments
               </h1>
-              <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5" />
             </div>
           </div>
         </div>
@@ -132,10 +136,8 @@ export default async function MomentsPage({ searchParams }: PageProps) {
             >
               Moments
             </h1>
-            <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5 mb-5" />
-            <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
-              Rounds, dinners, championship cuttings, first-tee jitters &mdash;
-              moments shared by Penn Golf members across generations.
+            <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed whitespace-pre-line mt-5">
+              {subtitle}
             </p>
             <div className="mt-7">
               <Link
@@ -228,12 +230,10 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                   className="text-[#c8a84b] text-2xl font-medium mb-3"
                   style={{ fontFamily: 'var(--font-playfair)' }}
                 >
-                  Locker&rsquo;s empty.
+                  {lockerEmptyHeadline}
                 </p>
-                <p className="text-white/65 text-[13.5px] max-w-md mx-auto mb-7 leading-relaxed">
-                  Drop the first Locker Room post — a road trip dinner, a
-                  pre-round shot, the Penn-Princeton afterparty. Players + alumni
-                  see it. No one else.
+                <p className="text-white/65 text-[13.5px] max-w-md mx-auto mb-7 leading-relaxed whitespace-pre-line">
+                  {lockerEmptyBlurb}
                 </p>
                 <Link
                   href="/moments/new?audience=locker-room"
@@ -254,11 +254,10 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                 className="text-[#0a1628] text-lg font-medium mb-2"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
-                Bag&rsquo;s empty.
+                {emptyHeadline}
               </p>
-              <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6">
-                Drop the first one. A photo from a round, a tournament, an alumni
-                dinner. The wall grows one moment at a time.
+              <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6 whitespace-pre-line">
+                {emptyBlurb}
               </p>
               <Link
                 href="/moments/new"

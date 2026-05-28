@@ -28,6 +28,8 @@ export default async function LockerRoomPage() {
   const session = await auth()
   const team = await getTeamBySlug(TEAM_SLUG)
   const crestImage = await getSiteContentOrDefault('locker-room.crest-image')
+  const emptyHeadline = await getSiteContentOrDefault('locker-room.empty-headline')
+  const emptyBlurb = await getSiteContentOrDefault('locker-room.empty-blurb')
 
   const signedIn = !!session?.accountId
   let canSee = false
@@ -109,12 +111,10 @@ export default async function LockerRoomPage() {
                 className="text-[#c8a84b] text-2xl font-medium mb-3"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
-                Locker&rsquo;s empty.
+                {emptyHeadline}
               </p>
-              <p className="text-white/65 text-[13.5px] max-w-md mx-auto mb-7 leading-relaxed">
-                Drop the first Locker Room post — a road trip dinner, a
-                pre-round shot, the Penn-Princeton afterparty. Players + alumni
-                see it. No one else.
+              <p className="text-white/65 text-[13.5px] max-w-md mx-auto mb-7 leading-relaxed whitespace-pre-line">
+                {emptyBlurb}
               </p>
               <Link
                 href="/moments/new?audience=locker-room"

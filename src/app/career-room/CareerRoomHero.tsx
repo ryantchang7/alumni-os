@@ -26,8 +26,7 @@ export default function CareerRoomHero() {
             >
               Career Room
             </h1>
-            <span className="block w-12 h-[2px] bg-[#c8a84b] mt-6 mb-6" />
-            <p className="text-[#f4ecdb]/65 text-[15px] leading-relaxed max-w-md">
+            <p className="text-[#f4ecdb]/65 text-[15px] leading-relaxed max-w-md mt-5">
               Advice, introductions, and career paths from Penn Golf alumni.
               Take the meeting; pay it forward.
             </p>

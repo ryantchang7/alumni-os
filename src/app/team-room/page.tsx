@@ -102,8 +102,7 @@ export default async function TeamRoomPage() {
             >
               Team Room
             </h1>
-            <span className="block w-12 h-[2px] bg-[#990000] mt-5 mb-5" />
-            <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
+            <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
               Current roster, program tradition, and the alumni who carry Penn Golf forward.
             </p>
           </div>

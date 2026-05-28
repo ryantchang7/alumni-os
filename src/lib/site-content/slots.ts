@@ -134,6 +134,107 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     default: '',
   },
 
+  // ── The Course (`/the-course`) — the 3-stage hero flow ──────────────────
+  {
+    id: 'the-course.hero-blurb',
+    label: 'The Course — Tee stage blurb',
+    hint: 'Paragraph that appears on Stage 1 (the resting state). Default mirrors the stage-tee blurb so you can change one or both.',
+    kind: 'longtext',
+    default:
+      'Tee times, foursomes, and home courses across the Penn Golf network. Every round here is hosted by a member.',
+  },
+  {
+    id: 'the-course.stage-tee-blurb',
+    label: 'The Course — Stage 1 (Tee) blurb',
+    hint: 'Overrides hero-blurb when present. Leave blank to fall back to the hero blurb.',
+    kind: 'longtext',
+    default: '',
+  },
+  {
+    id: 'the-course.stage-tee-cta',
+    label: 'The Course — Stage 1 primary CTA',
+    hint: 'Button label that advances to the tee sheet.',
+    kind: 'text',
+    default: 'Find a Round',
+  },
+  {
+    id: 'the-course.stage-tee-secondary',
+    label: 'The Course — Stage 1 secondary CTA',
+    hint: 'Button label that links to /the-course/host.',
+    kind: 'text',
+    default: 'Host a Round',
+  },
+  {
+    id: 'the-course.stage-sheet-blurb',
+    label: 'The Course — Stage 2 (Sheet) blurb',
+    hint: 'Shown on the tee sheet when rounds exist.',
+    kind: 'longtext',
+    default: 'Pick a round on the sheet. We’ll let the host know you’re interested.',
+  },
+  {
+    id: 'the-course.stage-sheet-blurb-empty',
+    label: 'The Course — Stage 2 (Sheet) blurb when empty',
+    hint: 'Shown on the tee sheet when no rounds are posted yet.',
+    kind: 'text',
+    default: 'The sheet is open — no rounds posted yet.',
+  },
+  {
+    id: 'the-course.stage-confirmed-prefix',
+    label: 'The Course — Stage 3 (Confirmed) prefix',
+    hint: "Text before the round title (e.g., 'You're on the sheet for {title}').",
+    kind: 'text',
+    default: 'You’re on the sheet for',
+  },
+  {
+    id: 'the-course.stage-confirmed-suffix',
+    label: 'The Course — Stage 3 (Confirmed) suffix',
+    hint: 'Sentence after the round title.',
+    kind: 'text',
+    default: 'The host will be in touch.',
+  },
+
+  // ── Moments (`/moments`) ─────────────────────────────────────────────────
+  {
+    id: 'moments.subtitle',
+    label: 'Moments hero subtitle',
+    hint: 'Paragraph under the Moments title.',
+    kind: 'longtext',
+    default:
+      'Rounds, dinners, championship cuttings, first-tee jitters — moments shared by Penn Golf members across generations.',
+  },
+  {
+    id: 'moments.empty-headline',
+    label: 'Moments empty-state headline',
+    hint: 'Big text shown when the All Moments feed is empty.',
+    kind: 'text',
+    default: 'Bag’s empty.',
+  },
+  {
+    id: 'moments.empty-blurb',
+    label: 'Moments empty-state blurb',
+    hint: 'Body text shown when the All Moments feed is empty.',
+    kind: 'longtext',
+    default:
+      'Drop the first one. A photo from a round, a tournament, an alumni dinner. The wall grows one moment at a time.',
+  },
+
+  // ── Locker Room (`/locker-room`) ─────────────────────────────────────────
+  {
+    id: 'locker-room.empty-headline',
+    label: 'Locker Room empty-state headline',
+    hint: 'Big text shown when the Locker Room feed is empty.',
+    kind: 'text',
+    default: 'Locker’s empty.',
+  },
+  {
+    id: 'locker-room.empty-blurb',
+    label: 'Locker Room empty-state blurb',
+    hint: 'Body text shown when the Locker Room feed is empty. Players + alumni only see this surface.',
+    kind: 'longtext',
+    default:
+      'Drop the first Locker Room post — a road trip dinner, a pre-round shot, the Penn-Princeton afterparty. Players + alumni see it. No one else.',
+  },
+
   // ── Support / membership (`/support`) ────────────────────────────────────
   {
     id: 'support.hero-blurb',

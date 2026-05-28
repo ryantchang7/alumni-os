@@ -26,8 +26,7 @@ export default function NineteenthHoleHero() {
             >
               The 19th Hole
             </h1>
-            <span className="block w-12 h-[2px] bg-[#d49b52] mt-6 mb-6" />
-            <p className="text-[#f4ecdb]/65 text-[15px] leading-relaxed max-w-md">
+            <p className="text-[#f4ecdb]/65 text-[15px] leading-relaxed max-w-md mt-5">
               Coffee, dinners, and signature Penn Golf gatherings — wherever
               members find each other.
             </p>
