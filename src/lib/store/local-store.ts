@@ -28,6 +28,8 @@ import type {
   ClubhouseProfileClaimRequest,
   Account,
   ClubhouseMoment,
+  MomentComment,
+  MomentReaction,
   CareerPost,
   TeamNewsItem,
   ChatConversation,
@@ -69,6 +71,8 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.profileClaimRequests) parsed.profileClaimRequests = []
   if (!parsed.accounts) parsed.accounts = []
   if (!parsed.moments) parsed.moments = []
+  if (!parsed.momentComments) parsed.momentComments = []
+  if (!parsed.momentReactions) parsed.momentReactions = []
   if (!parsed.careerPosts) parsed.careerPosts = []
   if (!parsed.teamNewsItems) parsed.teamNewsItems = []
   if (!parsed.chatConversations) parsed.chatConversations = []
@@ -107,6 +111,8 @@ const EMPTY_STORE: Store = {
   profileClaimRequests: [],
   accounts: [],
   moments: [],
+  momentComments: [],
+  momentReactions: [],
   careerPosts: [],
   teamNewsItems: [],
   chatConversations: [],
@@ -1425,6 +1431,109 @@ export async function deleteMoment(
   store.moments[idx] = { ...store.moments[idx], status: 'removed' }
   await writeStore(store)
   return true
+}
+
+// ── Moment Comments ─────────────────────────────────────────────────────────
+
+export async function getCommentsForMoment(
+  momentId: string,
+): Promise<MomentComment[]> {
+  const store = await readStore()
+  return store.momentComments
+    .filter(c => c.momentId === momentId && c.status === 'published')
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+}
+
+export async function createMomentComment(input: {
+  momentId: string
+  teamId: string
+  fromAccountId: string
+  fromPersonId?: string
+  fromName: string
+  body: string
+  parentCommentId?: string
+}): Promise<MomentComment> {
+  const store = await readStore()
+  // Flatten: a reply to a reply re-anchors to the original top-level
+  // parent so the tree never gets deeper than one level.
+  let parentId = input.parentCommentId
+  if (parentId) {
+    const parent = store.momentComments.find(c => c.id === parentId)
+    if (parent?.parentCommentId) parentId = parent.parentCommentId
+  }
+  const comment: MomentComment = {
+    id: `mcm_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    momentId: input.momentId,
+    teamId: input.teamId,
+    fromAccountId: input.fromAccountId,
+    fromPersonId: input.fromPersonId,
+    fromName: input.fromName,
+    body: input.body,
+    parentCommentId: parentId,
+    status: 'published',
+    createdAt: new Date().toISOString(),
+  }
+  store.momentComments.push(comment)
+  await writeStore(store)
+  return comment
+}
+
+export async function deleteMomentComment(
+  commentId: string,
+  byAccountId: string,
+): Promise<boolean> {
+  const store = await readStore()
+  const idx = store.momentComments.findIndex(c => c.id === commentId)
+  if (idx === -1) return false
+  if (store.momentComments[idx].fromAccountId !== byAccountId) return false
+  store.momentComments[idx] = { ...store.momentComments[idx], status: 'removed' }
+  await writeStore(store)
+  return true
+}
+
+// ── Moment Reactions ────────────────────────────────────────────────────────
+
+export async function getReactionsForMoment(
+  momentId: string,
+): Promise<MomentReaction[]> {
+  const store = await readStore()
+  return store.momentReactions.filter(r => r.momentId === momentId)
+}
+
+/**
+ * Toggle a reaction: if the (account, moment, emoji) tuple exists, remove
+ * it; otherwise create it. Returns { reaction, removed } so the caller
+ * can update the UI without a second round-trip.
+ */
+export async function toggleMomentReaction(input: {
+  momentId: string
+  teamId: string
+  fromAccountId: string
+  emoji: string
+}): Promise<{ reaction: MomentReaction | null; removed: boolean }> {
+  const store = await readStore()
+  const existingIdx = store.momentReactions.findIndex(
+    r =>
+      r.momentId === input.momentId &&
+      r.fromAccountId === input.fromAccountId &&
+      r.emoji === input.emoji,
+  )
+  if (existingIdx !== -1) {
+    store.momentReactions.splice(existingIdx, 1)
+    await writeStore(store)
+    return { reaction: null, removed: true }
+  }
+  const reaction: MomentReaction = {
+    id: `mrx_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    momentId: input.momentId,
+    teamId: input.teamId,
+    fromAccountId: input.fromAccountId,
+    emoji: input.emoji,
+    createdAt: new Date().toISOString(),
+  }
+  store.momentReactions.push(reaction)
+  await writeStore(store)
+  return { reaction, removed: false }
 }
 
 export async function unlinkAccount(accountId: string): Promise<Account | null> {

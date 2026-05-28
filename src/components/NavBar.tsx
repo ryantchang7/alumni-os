@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -115,29 +115,10 @@ export default function NavBar() {
   const email = (session?.user?.email ?? '').toLowerCase().trim()
   const isFounder = FOUNDER_EMAILS.has(email)
 
-  // Locker Room visibility — players + alumni only. Resolved server-side
-  // via /api/me/access on first render.
-  const [canSeeLockerRoom, setCanSeeLockerRoom] = useState(false)
-  useEffect(() => {
-    if (!session?.user?.email) {
-      setCanSeeLockerRoom(false)
-      return
-    }
-    fetch('/api/me/access')
-      .then(r => (r.ok ? r.json() : null))
-      .then(d => setCanSeeLockerRoom(!!d?.canSeeLockerRoom))
-      .catch(() => setCanSeeLockerRoom(false))
-  }, [session?.user?.email])
-
-  // Build the visible link list. Locker Room is inserted after Moments
-  // for eligible viewers only.
-  const visibleLinks = canSeeLockerRoom
-    ? navLinks.flatMap(l =>
-        l.href === '/moments'
-          ? [l, { label: 'Locker Room', href: '/locker-room' }]
-          : [l],
-      )
-    : navLinks
+  // Locker Room is no longer a top-level nav entry — it lives as a
+  // subtab of /moments now (and /locker-room is still a real page for
+  // direct linking). Keep the top nav lean.
+  const visibleLinks = navLinks
 
   return (
     <header className="bg-[#0a1628] border-b border-white/[0.08] sticky top-0 z-50">

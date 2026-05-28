@@ -382,6 +382,46 @@ export interface ClubhouseMoment {
 }
 
 /**
+ * A comment on a Moment. Supports one level of threading via
+ * `parentCommentId` — top-level comments leave it undefined; replies
+ * point at their parent. Two levels deep is the cap; replies to a reply
+ * still attach to the original parent (Twitter / Slack model).
+ */
+export interface MomentComment {
+  id: string
+  momentId: string
+  teamId: string
+  /** Account of the commenter. */
+  fromAccountId: string
+  /** Linked person id (optional — present for approved members). */
+  fromPersonId?: string
+  /** Snapshot of commenter's name at write time; survives later renames. */
+  fromName: string
+  body: string
+  /** Set when this comment is a reply to another. Undefined for top-level. */
+  parentCommentId?: string
+  status: 'published' | 'removed'
+  createdAt: string
+}
+
+/**
+ * A reaction to a Moment. One row per (account, moment, emoji) — a user
+ * can stack multiple distinct emojis on the same moment but cannot react
+ * twice with the same one. Removal is a hard delete (no soft-delete) since
+ * reactions carry no narrative weight.
+ */
+export interface MomentReaction {
+  id: string
+  momentId: string
+  teamId: string
+  fromAccountId: string
+  /** The emoji character itself (e.g. '🔥', '❤️', '😂'). Stored as the
+   *  user-perceived grapheme — clients sort + dedupe on this. */
+  emoji: string
+  createdAt: string
+}
+
+/**
  * Asks-and-Offers board for the Career Room. An "ask" is something an
  * alumnus is looking for (warm intro, role, advice); an "offer" is
  * something an alumnus is willing to give (intros at their firm, seat
@@ -467,6 +507,8 @@ export interface Store {
   profileClaimRequests: ClubhouseProfileClaimRequest[]
   accounts: Account[]
   moments: ClubhouseMoment[]
+  momentComments: MomentComment[]
+  momentReactions: MomentReaction[]
   careerPosts: CareerPost[]
   teamNewsItems: TeamNewsItem[]
   chatConversations: ChatConversation[]

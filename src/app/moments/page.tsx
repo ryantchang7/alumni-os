@@ -1,5 +1,7 @@
 // /moments — the Penn Golf wall. Reverse-chrono feed of member-posted
-// photos + captions. Public to read; sign-in required to post.
+// photos + captions. Two tabs: "All Moments" (public) and "Locker Room"
+// (players + alumni only). Sign-in + claim required to post / react /
+// comment.
 
 import Link from 'next/link'
 import {
@@ -9,46 +11,52 @@ import {
   readStore,
 } from '@/lib/store/local-store'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
-import { Camera } from 'lucide-react'
+import { Camera, Lock } from 'lucide-react'
 import { auth } from '@/auth'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
 import HeroCrest from '@/components/HeroCrest'
-import MemberBadges from '@/components/MemberBadges'
 import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
+import MomentCard from '@/components/moments/MomentCard'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
-function timeAgo(iso: string): string {
-  const diff = Date.now() - Date.parse(iso)
-  const days = Math.floor(diff / 86_400_000)
-  if (days === 0) return 'today'
-  if (days === 1) return 'yesterday'
-  if (days < 7) return `${days}d ago`
-  if (days < 30) return `${Math.floor(days / 7)}w ago`
-  if (days < 365) return `${Math.floor(days / 30)}mo ago`
-  return `${Math.floor(days / 365)}y ago`
+type View = 'all' | 'locker-room'
+
+interface PageProps {
+  searchParams: Promise<{ view?: string }>
 }
 
-export default async function MomentsPage() {
+export default async function MomentsPage({ searchParams }: PageProps) {
+  const params = await searchParams
+  const requestedView: View = params.view === 'locker-room' ? 'locker-room' : 'all'
+
   const approval = await getApprovalState()
   const team = await getTeamBySlug(TEAM_SLUG)
   const allMoments = team ? await getMomentsForTeam(team.id) : []
   const store = team ? await readStore() : null
   const crestImage = await getSiteContentOrDefault('moments.crest-image')
 
-  // Filter Locker-Room-only Moments out for non-eligible viewers.
   const session = await auth()
   let canSeeLockerRoom = false
   if (session?.accountId && team && store) {
     const account = await getAccountById(session.accountId)
     canSeeLockerRoom = canSeeLockerRoomForAccount(account, store, team.id)
   }
-  const moments = canSeeLockerRoom
-    ? allMoments
-    : allMoments.filter(m => m.audience !== 'locker-room')
+
+  // Fall back to "all" if the viewer asks for locker-room but isn't eligible.
+  const view: View = requestedView === 'locker-room' && canSeeLockerRoom ? 'locker-room' : 'all'
+
+  // The "All Moments" tab is public-only; locker-room posts live in their
+  // own tab so the audience always reads cleanly from where you're standing.
+  const moments =
+    view === 'locker-room'
+      ? allMoments.filter(m => m.audience === 'locker-room')
+      : allMoments.filter(m => m.audience !== 'locker-room')
+
+  const lockerCount = allMoments.filter(m => m.audience === 'locker-room').length
 
   if (!approval.approved) {
     const uniquePosters = new Set(moments.map((m) => m.postedByAccountId)).size
@@ -101,6 +109,13 @@ export default async function MomentsPage() {
     return account ? getBadgesForAccount(account) : []
   }
 
+  const allComments = store?.momentComments.filter(c => c.status === 'published') ?? []
+  const allReactions = store?.momentReactions ?? []
+  const viewerAccountId = session?.accountId ?? null
+  const canPost = !!session?.linkedPersonId
+
+  const isLockerView = view === 'locker-room'
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14 relative overflow-hidden">
@@ -123,16 +138,54 @@ export default async function MomentsPage() {
             </p>
             <div className="mt-7">
               <Link
-                href="/moments/new"
-                className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+                href={isLockerView ? '/moments/new?audience=locker-room' : '/moments/new'}
+                className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors ${
+                  isLockerView
+                    ? 'bg-[#0a1628] hover:bg-[#112240] text-[#c8a84b] border border-[#c8a84b]/55'
+                    : 'bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628]'
+                }`}
               >
-                <Camera className="w-4 h-4" />
-                Post a moment
+                {isLockerView ? <Lock className="w-4 h-4" /> : <Camera className="w-4 h-4" />}
+                {isLockerView ? 'Post to the Locker Room' : 'Post a moment'}
               </Link>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Subtab pill bar — only renders the Locker Room pill for eligible
+          viewers (players + alumni). Coaches and family see a single
+          "Moments" pill (effectively no tab) — we just hide the row. */}
+      {canSeeLockerRoom && (
+        <div className="bg-[#0a1628] border-t border-[rgba(255,255,255,0.06)]">
+          <div className="max-w-[820px] mx-auto px-6 sm:px-8 py-3 flex items-center gap-2">
+            <Link
+              href="/moments"
+              className={`text-[12px] font-semibold uppercase tracking-[0.14em] px-3 py-1.5 rounded-full transition-colors ${
+                isLockerView
+                  ? 'text-white/60 hover:text-white'
+                  : 'bg-[#c8a84b] text-[#0a1628]'
+              }`}
+            >
+              All Moments
+            </Link>
+            <Link
+              href="/moments?view=locker-room"
+              className={`inline-flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] px-3 py-1.5 rounded-full transition-colors ${
+                isLockerView
+                  ? 'bg-[#c8a84b] text-[#0a1628]'
+                  : 'text-[#c8a84b]/85 hover:text-[#c8a84b] border border-[#c8a84b]/35'
+              }`}
+            >
+              <Lock className="w-3 h-3" />
+              Locker Room
+              {lockerCount > 0 && (
+                <span className="text-[10.5px] opacity-70">· {lockerCount}</span>
+              )}
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-[820px] mx-auto px-5 sm:px-8 py-10 sm:py-14">
         {moments.length === 0 ? (
@@ -140,19 +193,24 @@ export default async function MomentsPage() {
             className="bg-white border border-dashed border-[rgba(180,168,150,0.5)] rounded-xl p-10 text-center"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
           >
-            <Camera className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
+            {isLockerView ? (
+              <Lock className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
+            ) : (
+              <Camera className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
+            )}
             <p
               className="text-[#0a1628] text-lg font-medium mb-2"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
-              Bag&rsquo;s empty.
+              {isLockerView ? 'Locker’s empty.' : 'Bag’s empty.'}
             </p>
             <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6">
-              Drop the first one. A photo from a round, a tournament, an alumni
-              dinner. The wall grows one moment at a time.
+              {isLockerView
+                ? 'Drop the first Locker Room post — a road trip dinner, a pre-round shot, the Penn-Princeton afterparty. Players + alumni see it.'
+                : 'Drop the first one. A photo from a round, a tournament, an alumni dinner. The wall grows one moment at a time.'}
             </p>
             <Link
-              href="/moments/new"
+              href={isLockerView ? '/moments/new?audience=locker-room' : '/moments/new'}
               className="inline-block bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
             >
               Post the first
@@ -160,71 +218,21 @@ export default async function MomentsPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {moments.map((m) => {
-              const bookId = bookIdForPerson(m.postedByPersonId)
-              const posterBadges = badgesForPoster(m.postedByAccountId)
-              return (
-                <article
-                  key={m.id}
-                  className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl overflow-hidden"
-                  style={{
-                    boxShadow:
-                      '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)',
-                  }}
-                >
-                  {/* Photo or video */}
-                  <div className="relative bg-[#faf7f2]">
-                    {m.mediaType === 'video' ? (
-                      <video
-                        src={m.photoUrl}
-                        controls
-                        playsInline
-                        preload="metadata"
-                        className="w-full max-h-[640px] object-contain bg-black"
-                      />
-                    ) : (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={m.photoUrl}
-                        alt={m.caption}
-                        className="w-full max-h-[640px] object-cover"
-                      />
-                    )}
-                  </div>
-                  {/* Caption + meta */}
-                  <div className="px-6 sm:px-8 py-5">
-                    <p className="text-[14.5px] text-[#0a1628] leading-relaxed whitespace-pre-wrap">
-                      {m.caption}
-                    </p>
-                    <div className="mt-4 flex items-baseline justify-between gap-3 text-[12px]">
-                      <div className="flex items-baseline gap-2 flex-wrap min-w-0">
-                        <p className="text-[#8a7f70]">
-                          <span className="text-[#8a7f70]">Posted by </span>
-                          {bookId ? (
-                            <Link
-                              href={`/member-book/${encodeURIComponent(bookId)}`}
-                              className="text-[#0a1628] hover:underline font-medium"
-                              style={{ fontFamily: 'var(--font-playfair)' }}
-                            >
-                              {m.postedByName}
-                            </Link>
-                          ) : (
-                            <span
-                              className="text-[#0a1628] font-medium"
-                              style={{ fontFamily: 'var(--font-playfair)' }}
-                            >
-                              {m.postedByName}
-                            </span>
-                          )}
-                        </p>
-                        <MemberBadges badges={posterBadges} size="sm" />
-                      </div>
-                      <span className="text-[#b0a898]">{timeAgo(m.createdAt)}</span>
-                    </div>
-                  </div>
-                </article>
-              )
-            })}
+            {moments.map((m) => (
+              <MomentCard
+                key={m.id}
+                moment={m}
+                bookId={bookIdForPerson(m.postedByPersonId)}
+                posterBadges={badgesForPoster(m.postedByAccountId)}
+                initialReactions={allReactions.filter(r => r.momentId === m.id)}
+                initialComments={allComments
+                  .filter(c => c.momentId === m.id)
+                  .sort((a, b) => a.createdAt.localeCompare(b.createdAt))}
+                viewerAccountId={viewerAccountId}
+                canPost={canPost}
+                showLockerPill={isLockerView}
+              />
+            ))}
           </div>
         )}
       </div>
