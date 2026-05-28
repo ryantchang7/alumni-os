@@ -36,17 +36,17 @@ const TIER_BADGE: Record<Tier, BadgeId> = {
 const TIERS: TierConfig[] = [
   {
     id: 'member',
-    name: 'Member',
+    name: 'Supporting Member',
     price: 10,
     tagline:
       'Membership in the Clubhouse. 70% goes to Penn Men’s Golf, 30% keeps the platform running.',
     features: [
       'Direct support for the program',
-      'Member status on your profile',
+      'Supporting Member status on your profile',
       'Full access to all Clubhouse features',
     ],
-    cta: 'Become a member',
-    ctaActive: 'Member',
+    cta: 'Become a Supporting Member',
+    ctaActive: 'Supporting Member',
     accent: false,
   },
   {
@@ -56,7 +56,7 @@ const TIERS: TierConfig[] = [
     tagline:
       'Recognized as a Founding Member of the Clubhouse. Twice the support for the program.',
     features: [
-      'Everything in Member',
+      'Everything in Supporting Member',
       '2x the contribution to Penn Men’s Golf',
       'Founding Member badge on your profile',
       'Listed on the Clubhouse founders wall',
@@ -274,7 +274,12 @@ export default function SupportClient({ status }: Props) {
                   Active subscription
                 </p>
                 <p className="text-[14.5px] text-[#0a1628] mt-0.5">
-                  {currentTier === 'founding' ? 'Founding Member' : 'Member'} &middot; Thank you for supporting the program.
+                  {currentTier === 'founding'
+                    ? 'Founding Member'
+                    : currentTier === 'parent'
+                      ? 'Family & Affiliate'
+                      : 'Supporting Member'}{' '}
+                  &middot; Thank you for supporting the program.
                 </p>
               </div>
             </div>

@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
+import { isCaptain } from '@/lib/captains'
 import { getTeamBySlug, readStore, writeStore } from '@/lib/store/local-store'
 import type { PersonEnrichment } from '@/lib/store/types'
+
+const TEAM_SLUG = 'penn-mens-golf'
 
 const CLASS_ORDER: Record<string, number> = { 'Sr.': 0, 'Jr.': 1, 'So.': 2, 'Fr.': 3 }
 
@@ -16,6 +20,14 @@ function normName(s: string): string {
 }
 
 export async function GET(request: Request) {
+  // Captain-only — this endpoint exposes the full current-player roster
+  // including hometowns + enrichment fields, and the PATCH below mutates
+  // membership data. Both reads and writes are gated to captains.
+  const session = await auth()
+  if (!isCaptain(session?.user?.email, TEAM_SLUG)) {
+    return NextResponse.json({ error: 'Captains only' }, { status: 403 })
+  }
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
 
@@ -46,6 +58,11 @@ export async function GET(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const session = await auth()
+  if (!isCaptain(session?.user?.email, TEAM_SLUG)) {
+    return NextResponse.json({ error: 'Captains only' }, { status: 403 })
+  }
+
   let body: Record<string, unknown>
   try {
     body = await request.json()

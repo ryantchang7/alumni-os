@@ -130,8 +130,14 @@ export default async function MasterListPage() {
     })
   }
 
-  // Sort: current players first, alumni next, member-book historicals last; alpha within each.
-  const rolePriority: Record<string, number> = { current_player: 0, alumni: 1, book: 2 }
+  // Sort: current players first, coaches, alumni, parents, member-book historicals last; alpha within each.
+  const rolePriority: Record<string, number> = {
+    current_player: 0,
+    coach: 1,
+    alumni: 2,
+    parent: 3,
+    book: 4,
+  }
   const rows = [...storeRows, ...bookRows].sort((a, b) => {
     const pa = rolePriority[a.role ?? 'book'] ?? 3
     const pb = rolePriority[b.role ?? 'book'] ?? 3
@@ -228,9 +234,17 @@ export default async function MasterListPage() {
                           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                             Current player
                           </span>
+                        ) : row.role === 'coach' ? (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#0a1628] text-white">
+                            Coach
+                          </span>
                         ) : row.role === 'alumni' ? (
                           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
                             Alumni
+                          </span>
+                        ) : row.role === 'parent' ? (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#990000]/10 text-[#990000] border border-[#990000]/30">
+                            Family &amp; Affiliate
                           </span>
                         ) : (
                           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">

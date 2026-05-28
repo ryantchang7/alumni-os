@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
-import { isCaptain } from '@/lib/captains'
+import { isCaptainEmailWithOverrides } from '@/lib/captains-runtime'
+import { readStore } from '@/lib/store/local-store'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -36,6 +37,11 @@ const tools = [
     description: 'Edit text and images across the site — headlines, hero images, page copy.',
     href: '/internal/studio',
   },
+  {
+    label: 'Roles',
+    description: 'Founder-only. Designate PGC Captains, Supporting Members, Founding Members, and Family & Affiliate.',
+    href: '/internal/roles',
+  },
 ]
 
 export default async function InternalPage() {
@@ -43,7 +49,8 @@ export default async function InternalPage() {
   if (!session?.user?.email) {
     redirect('/login?next=/internal')
   }
-  if (!isCaptain(session.user.email, TEAM_SLUG)) {
+  const store = await readStore()
+  if (!isCaptainEmailWithOverrides(session.user.email, TEAM_SLUG, store.accounts)) {
     return (
       <div className="min-h-[calc(100dvh-60px)] bg-[#f8f5f0] flex items-center justify-center px-6">
         <div className="max-w-md text-center bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-10">

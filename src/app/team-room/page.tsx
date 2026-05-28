@@ -1,8 +1,11 @@
 import Link from 'next/link'
 import type { Person, TeamMembership, TeamNewsItem } from '@/lib/store/types'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
+import FoundersWall from '@/components/FoundersWall'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import HeroCrest from '@/components/HeroCrest'
+import { computeFoundersForTeam } from '@/lib/founders'
+import type { FounderEntry } from '@/lib/founders'
 
 interface PlayerEntry {
   person: Person
@@ -13,38 +16,26 @@ const CLASS_ORDER: Record<string, number> = { 'Sr.': 0, 'Jr.': 1, 'So.': 2, 'Fr.
 
 const SUPPORT_CARDS = [
   {
-    title: 'Host a Summer Round',
-    description: 'Open your home course to a player during summer. A round and a conversation go a long way.',
-    cta: 'Express Interest',
-    href: '/alumni',
+    title: 'Show up',
+    description:
+      'Rounds, dinners, watch parties — the gatherings where Penn Golf still feels like Penn Golf.',
+    cta: 'Browse the 19th Hole',
+    href: '/19th-hole',
   },
   {
-    title: 'Join a Career Night',
-    description: 'Share your path in a small-group setting with current players preparing for recruiting.',
-    cta: 'Join the List',
-    href: '/alumni',
+    title: 'Help a player',
+    description:
+      'Post an ask or an offer in the Career Room — recruiting advice, warm intros, a seat at dinner.',
+    cta: 'Open the Career Room',
+    href: '/career-room',
   },
   {
-    title: 'Meet Players in Your City',
-    description: 'Connect with current Penn Golf players when they are in your city for tournaments or internships.',
-    cta: 'Let Us Know',
-    href: '/alumni',
+    title: 'Contribute',
+    description:
+      'Become a Supporting Member ($10/mo) or a Founding Member ($20/mo). 70% goes to Penn Men’s Golf.',
+    cta: 'Support the program',
+    href: '/support',
   },
-  {
-    title: 'Share Recruiting Advice',
-    description: 'Pass along what you know about recruiting, interviews, or networking in your industry.',
-    cta: 'Contribute',
-    href: '/alumni',
-  },
-]
-
-const WAYS_TO_GIVE_BACK = [
-  'Attend alumni events',
-  'Share your career path',
-  'Host a round at your club',
-  'Connect players with your network',
-  'Offer recruiting advice',
-  'Join us for alumni weekend',
 ]
 
 export default async function TeamRoomPage() {
@@ -53,12 +44,23 @@ export default async function TeamRoomPage() {
   const team = await getTeamBySlug('penn-mens-golf')
 
   let currentPlayers: PlayerEntry[] = []
+  let coaches: PlayerEntry[] = []
   let recentAlumni: PlayerEntry[] = []
   let newsItems: TeamNewsItem[] = []
+  let founders: FounderEntry[] = []
   const captainNote = await getSiteContentOrDefault('team-room.captain-note')
   const crestImage = await getSiteContentOrDefault('team-room.crest-image')
 
   if (team) {
+    founders = computeFoundersForTeam(store, team.id)
+    coaches = store.teamMemberships
+      .filter(m => m.teamId === team.id && m.memberRole === 'coach' && m.publishedToNetwork === true)
+      .map(m => {
+        const person = store.people.find(p => p.id === m.personId)
+        return person ? { membership: m, person } : null
+      })
+      .filter((x): x is PlayerEntry => x !== null)
+      .sort((a, b) => a.person.canonicalName.localeCompare(b.person.canonicalName))
     newsItems = await getRecentTeamNewsItems(team.id, 4)
     currentPlayers = store.teamMemberships
       .filter(m => m.teamId === team.id && m.memberRole === 'current_player')
@@ -152,6 +154,33 @@ export default async function TeamRoomPage() {
           )}
         </section>
 
+        {/* Coaching Staff */}
+        {coaches.length > 0 && (
+          <section>
+            <h2 className="text-base font-semibold text-[#0a1628] mb-1">Coaching Staff</h2>
+            <p className="text-sm text-[#8a7f70] mb-6">The coaches behind the program.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {coaches.map(({ person, membership }) => (
+                <div
+                  key={person.id}
+                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4"
+                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                    <span className="text-[10px] font-medium text-white bg-[#0a1628] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+                      Coach
+                    </span>
+                  </div>
+                  {membership.hometown && (
+                    <p className="text-xs text-[#8a7f70] mt-1">{membership.hometown}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Captain's Note */}
         <section>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Captain&apos;s Note</h2>
@@ -201,19 +230,21 @@ export default async function TeamRoomPage() {
           </section>
         )}
 
-        {/* Support the Program */}
+        {/* Support the Program — three ways */}
         <section>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Support the Program</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">Ways alumni can make a real difference for current players.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <p className="text-sm text-[#8a7f70] mb-6">
+            Three ways alumni keep Penn Men&rsquo;s Golf moving forward.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {SUPPORT_CARDS.map(card => (
               <div
                 key={card.title}
-                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 flex flex-col"
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
               >
                 <p className="font-semibold text-[#0a1628] text-sm mb-1">{card.title}</p>
-                <p className="text-xs text-[#4a5568] mb-4 leading-relaxed">{card.description}</p>
+                <p className="text-xs text-[#4a5568] mb-4 leading-relaxed flex-1">{card.description}</p>
                 <Link
                   href={card.href}
                   className="text-xs font-semibold text-[#990000] hover:underline"
@@ -225,19 +256,12 @@ export default async function TeamRoomPage() {
           </div>
         </section>
 
-        {/* Ways to Give Back */}
-        <section>
-          <h2 className="text-base font-semibold text-[#0a1628] mb-1">Ways to Give Back</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">Small things that add up over a season.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2">
-            {WAYS_TO_GIVE_BACK.map(item => (
-              <div key={item} className="flex items-center gap-2.5 py-2 border-b border-[rgba(180,168,150,0.2)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2d6a4f] flex-shrink-0" />
-                <p className="text-sm text-[#4a5568]">{item}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Founders Wall preview */}
+        {founders.length > 0 && (
+          <section>
+            <FoundersWall founders={founders} preview limit={6} />
+          </section>
+        )}
 
         {/* Bottom CTA */}
         <div

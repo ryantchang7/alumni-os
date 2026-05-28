@@ -1,23 +1,24 @@
-// /moments — the Penn Golf wall. Reverse-chrono feed of member-posted
-// photos + captions. Public to read; sign-in required to post.
+/**
+ * Locker Room — Moments + content visible only to current players and
+ * alumni. Coach and family are gated out at the page level. Posts here
+ * carry `audience: 'locker-room'`; create them from /moments/new with
+ * the "Locker Room only" toggle on.
+ */
 
 import Link from 'next/link'
+import { Lock } from 'lucide-react'
+import { auth } from '@/auth'
 import {
-  getTeamBySlug,
-  getMomentsForTeam,
   getAccountById,
+  getMomentsForTeam,
+  getTeamBySlug,
   readStore,
 } from '@/lib/store/local-store'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
-import { Camera } from 'lucide-react'
-import { auth } from '@/auth'
-import { getApprovalState } from '@/lib/access/approval'
-import GatedPreview from '@/components/GatedPreview'
-import HeroCrest from '@/components/HeroCrest'
-import MemberBadges from '@/components/MemberBadges'
-import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
-import { getSiteContentOrDefault } from '@/lib/site-content/read'
+import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
+import MemberBadges from '@/components/MemberBadges'
+import GatedPreview from '@/components/GatedPreview'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -32,69 +33,62 @@ function timeAgo(iso: string): string {
   return `${Math.floor(days / 365)}y ago`
 }
 
-export default async function MomentsPage() {
-  const approval = await getApprovalState()
-  const team = await getTeamBySlug(TEAM_SLUG)
-  const allMoments = team ? await getMomentsForTeam(team.id) : []
-  const store = team ? await readStore() : null
-  const crestImage = await getSiteContentOrDefault('moments.crest-image')
-
-  // Filter Locker-Room-only Moments out for non-eligible viewers.
+export default async function LockerRoomPage() {
   const session = await auth()
-  let canSeeLockerRoom = false
-  if (session?.accountId && team && store) {
-    const account = await getAccountById(session.accountId)
-    canSeeLockerRoom = canSeeLockerRoomForAccount(account, store, team.id)
-  }
-  const moments = canSeeLockerRoom
-    ? allMoments
-    : allMoments.filter(m => m.audience !== 'locker-room')
+  const team = await getTeamBySlug(TEAM_SLUG)
 
-  if (!approval.approved) {
-    const uniquePosters = new Set(moments.map((m) => m.postedByAccountId)).size
+  // Gate before doing any work.
+  const signedIn = !!session?.accountId
+  let canSee = false
+  let store: Awaited<ReturnType<typeof readStore>> | null = null
+  if (signedIn && team) {
+    const account = await getAccountById(session!.accountId!)
+    store = await readStore()
+    canSee = canSeeLockerRoomForAccount(account, store, team.id)
+  }
+
+  if (!signedIn || !canSee) {
     return (
       <div className="min-h-screen bg-[#f8f5f0]">
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
-          <div className="max-w-[820px] mx-auto flex items-center gap-5 sm:gap-7">
-            <HeroCrest src={crestImage} alt="Moments crest" />
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
-                Penn Men&rsquo;s Golf · The Wall
-              </p>
+          <div className="max-w-[820px] mx-auto">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
+              Penn Men&rsquo;s Golf · Locker Room
+            </p>
+            <div className="flex items-center gap-3 mb-2">
+              <Lock className="w-7 h-7 text-[#c8a84b]" />
               <h1
-                className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight"
+                className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
-                Moments
+                Locker Room
               </h1>
-              <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5" />
             </div>
+            <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5" />
           </div>
         </div>
         <GatedPreview
-          signedIn={approval.signedIn}
-          eyebrow="Members only · The Wall"
-          headline="Moments stay between members."
-          blurb="The Wall is where Penn Golf alumni share rounds, dinners, championship cuttings — the stuff that makes a brotherhood feel like one. Claim your card to see and post."
-          stats={[
-            { label: 'On the wall', value: moments.length },
-            { label: 'Posters', value: uniquePosters },
-          ]}
+          signedIn={signedIn}
+          eyebrow="Players &amp; alumni only · Locker Room"
+          headline="This one stays between us."
+          blurb="The Locker Room is for current players and alumni — coaches and family are intentionally not in here. Sign in with your Penn email and claim your card to see what&rsquo;s on the wall."
         />
       </div>
     )
   }
 
-  // Resolve poster -> Member Book bookId for linking.
+  // canSee + team + store are all defined here.
+  const allMoments = await getMomentsForTeam(team!.id)
+  const moments = allMoments.filter(m => m.audience === 'locker-room')
+
   function bookIdForPerson(personId: string | undefined): string | null {
     if (!personId || !store) return null
-    const person = store.people.find((p) => p.id === personId)
+    const person = store.people.find(p => p.id === personId)
     if (!person) return null
     const entry = findBookEntryForTeamStorePerson(person.canonicalName)
     return entry?.id ?? null
   }
 
-  // Resolve poster -> tier/captain/founder badges for the inline pin.
   function badgesForPoster(accountId: string): BadgeId[] {
     if (!store) return []
     const account = store.accounts.find(a => a.id === accountId)
@@ -103,33 +97,33 @@ export default async function MomentsPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14 relative overflow-hidden">
-        <div className="max-w-[820px] mx-auto relative flex items-center gap-5 sm:gap-7">
-          <HeroCrest src={crestImage} alt="Moments crest" />
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
-              Penn Men&rsquo;s Golf · The Wall
-            </p>
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
+        <div className="max-w-[820px] mx-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
+            Penn Men&rsquo;s Golf · Locker Room
+          </p>
+          <div className="flex items-center gap-3 mb-2">
+            <Lock className="w-7 h-7 text-[#c8a84b]" />
             <h1
-              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight"
+              className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
-              Moments
+              Locker Room
             </h1>
-            <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5 mb-5" />
-            <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
-              Rounds, dinners, championship cuttings, first-tee jitters &mdash;
-              moments shared by Penn Golf members across generations.
-            </p>
-            <div className="mt-7">
-              <Link
-                href="/moments/new"
-                className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
-              >
-                <Camera className="w-4 h-4" />
-                Post a moment
-              </Link>
-            </div>
+          </div>
+          <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5 mb-5" />
+          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
+            Players and alumni only. Coaches and family don&rsquo;t see what
+            goes up here.
+          </p>
+          <div className="mt-7">
+            <Link
+              href="/moments/new"
+              className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+            >
+              <Lock className="w-4 h-4" />
+              Post to the Locker Room
+            </Link>
           </div>
         </div>
       </div>
@@ -140,16 +134,17 @@ export default async function MomentsPage() {
             className="bg-white border border-dashed border-[rgba(180,168,150,0.5)] rounded-xl p-10 text-center"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
           >
-            <Camera className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
+            <Lock className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
             <p
               className="text-[#0a1628] text-lg font-medium mb-2"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
-              Bag&rsquo;s empty.
+              Empty for now.
             </p>
             <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6">
-              Drop the first one. A photo from a round, a tournament, an alumni
-              dinner. The wall grows one moment at a time.
+              Drop the first Locker Room post — a road trip dinner, a
+              pre-tournament shot, a Penn-Princeton afterparty. Only
+              players + alumni see it.
             </p>
             <Link
               href="/moments/new"
@@ -160,7 +155,7 @@ export default async function MomentsPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {moments.map((m) => {
+            {moments.map(m => {
               const bookId = bookIdForPerson(m.postedByPersonId)
               const posterBadges = badgesForPoster(m.postedByAccountId)
               return (
@@ -172,7 +167,6 @@ export default async function MomentsPage() {
                       '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)',
                   }}
                 >
-                  {/* Photo or video */}
                   <div className="relative bg-[#faf7f2]">
                     {m.mediaType === 'video' ? (
                       <video
@@ -191,7 +185,6 @@ export default async function MomentsPage() {
                       />
                     )}
                   </div>
-                  {/* Caption + meta */}
                   <div className="px-6 sm:px-8 py-5">
                     <p className="text-[14.5px] text-[#0a1628] leading-relaxed whitespace-pre-wrap">
                       {m.caption}

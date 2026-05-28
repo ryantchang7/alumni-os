@@ -103,12 +103,14 @@ export default async function TheCoursePage() {
   const homeCourseSet = new Set<string>()
 
   if (team) {
-    // Both alumni AND current players can open their tee box and host
-    // rounds — the only thing that's gated is publishedToNetwork.
+    // Alumni, current players, and coaches can all open their tee box and
+    // host rounds — the only thing that's gated is publishedToNetwork.
     const memberships = store.teamMemberships.filter(
       (m) =>
         m.teamId === team.id &&
-        (m.memberRole === 'alumni' || m.memberRole === 'current_player') &&
+        (m.memberRole === 'alumni' ||
+          m.memberRole === 'current_player' ||
+          m.memberRole === 'coach') &&
         m.publishedToNetwork === true,
     )
     const enrichMap = new Map(

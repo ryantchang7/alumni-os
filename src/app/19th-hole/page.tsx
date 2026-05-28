@@ -40,15 +40,18 @@ export default async function NineteenthHolePage() {
     const memberships = store.teamMemberships.filter(
       m =>
         m.teamId === team.id &&
-        (m.memberRole === 'alumni' || m.memberRole === 'current_player') &&
+        (m.memberRole === 'alumni' ||
+          m.memberRole === 'current_player' ||
+          m.memberRole === 'coach') &&
         m.publishedToNetwork === true,
     )
     const enrichMap = new Map(
       store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
     )
 
-    const visible: Array<AlumniEntry & { updatedAt?: string }> = memberships
-      .map(m => {
+    type VisibleEntry = AlumniEntry & { updatedAt?: string }
+    const visible: VisibleEntry[] = memberships
+      .map((m): VisibleEntry | null => {
         const person = store.people.find(p => p.id === m.personId)
         const enrichment = enrichMap.get(m.personId)
         if (!person) return null
@@ -64,7 +67,7 @@ export default async function NineteenthHolePage() {
           updatedAt: enrichment?.updatedAt,
         }
       })
-      .filter((x): x is AlumniEntry & { updatedAt?: string } => x !== null)
+      .filter((x): x is VisibleEntry => x !== null)
 
     // Sort by enrichment.updatedAt desc — surfaces recently-active members
     // first as the list grows.

@@ -16,7 +16,12 @@ export function getStripe(): Stripe | null {
     return null
   }
   _client = new Stripe(key, {
-    // Pin a recent API version so behavior is deterministic.
+    // Pin a recent API version so behavior is deterministic. TS warns
+    // because the SDK's types are pinned one release ahead, but the
+    // version we're pointing at is real and we want to keep behavior
+    // stable across SDK bumps. Vercel deploys despite the warning via
+    // `typescript.ignoreBuildErrors` in next.config.
+    // @ts-expect-error: pinning intentionally to a previous Stripe API version
     apiVersion: '2025-08-27.basil',
     typescript: true,
   })

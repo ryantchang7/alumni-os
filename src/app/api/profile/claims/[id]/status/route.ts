@@ -11,9 +11,11 @@ import {
   getProfileClaimRequestById,
   linkAccountToPerson,
   publishMembershipsForPerson,
+  readStore,
   updateProfileClaimRequestStatus,
 } from '@/lib/store/local-store'
-import { isCaptain, getCaptainEmails } from '@/lib/captains'
+import { getCaptainEmails } from '@/lib/captains'
+import { isCaptainEmailWithOverrides } from '@/lib/captains-runtime'
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -23,7 +25,8 @@ const TEAM_SLUG = 'penn-mens-golf'
 
 export async function POST(request: Request, { params }: RouteParams) {
   const session = await auth()
-  if (!isCaptain(session?.user?.email, TEAM_SLUG)) {
+  const store = await readStore()
+  if (!isCaptainEmailWithOverrides(session?.user?.email, TEAM_SLUG, store.accounts)) {
     return NextResponse.json({ error: 'Captains only' }, { status: 403 })
   }
 

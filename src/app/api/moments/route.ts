@@ -1,5 +1,6 @@
 // Clubhouse Moments — alumni-posted photos + captions.
-// GET returns the published feed. POST creates a new moment (auth required).
+// GET returns the published feed (filtered by viewer's Locker Room
+// eligibility). POST creates a new moment (auth required).
 
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
@@ -8,15 +9,33 @@ import {
   getMomentsForTeam,
   createMoment,
   getAccountById,
+  readStore,
 } from '@/lib/store/local-store'
+import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
 export async function GET() {
   const team = await getTeamBySlug(TEAM_SLUG)
   if (!team) return NextResponse.json({ moments: [] })
+
   const moments = await getMomentsForTeam(team.id)
-  return NextResponse.json({ moments })
+
+  // Filter Locker-Room-only Moments out for viewers who aren't in the
+  // Locker Room cohort (coach, family, signed-out, pending users).
+  const session = await auth()
+  let canSeeLockerRoom = false
+  if (session?.accountId) {
+    const account = await getAccountById(session.accountId)
+    const store = await readStore()
+    canSeeLockerRoom = canSeeLockerRoomForAccount(account, store, team.id)
+  }
+
+  const visible = canSeeLockerRoom
+    ? moments
+    : moments.filter(m => m.audience !== 'locker-room')
+
+  return NextResponse.json({ moments: visible })
 }
 
 function isValidMediaUrl(url: string): boolean {
@@ -35,6 +54,14 @@ export async function POST(request: Request) {
   const session = await auth()
   if (!session?.accountId) {
     return NextResponse.json({ error: 'Sign in required' }, { status: 401 })
+  }
+  // Approved-members-only — pending users (signed in but no linkedPersonId
+  // yet) cannot post Moments. Matches the gate on the rest of the actions.
+  if (!session.linkedPersonId) {
+    return NextResponse.json(
+      { error: 'Approved members only — claim your card to post a Moment.' },
+      { status: 403 },
+    )
   }
 
   let body: Record<string, unknown>
@@ -73,6 +100,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Account not found' }, { status: 404 })
   }
 
+  // Audience: 'public' (default) or 'locker-room'. Locker-Room-only posts
+  // require the poster to be in the Locker Room cohort (current player or
+  // alumni). Coach and family cannot post into the Locker Room.
+  let audience: 'public' | 'locker-room' = 'public'
+  if (body.audience === 'locker-room') {
+    const store = await readStore()
+    if (!canSeeLockerRoomForAccount(account, store, team.id)) {
+      return NextResponse.json(
+        { error: 'Locker Room posts are for current players and alumni only.' },
+        { status: 403 },
+      )
+    }
+    audience = 'locker-room'
+  }
+
   const moment = await createMoment({
     teamId: team.id,
     postedByAccountId: account.id,
@@ -81,6 +123,7 @@ export async function POST(request: Request) {
     caption,
     photoUrl,
     mediaType,
+    audience,
     taggedPersonIds: Array.isArray(body.taggedPersonIds)
       ? (body.taggedPersonIds as unknown[]).filter((x): x is string => typeof x === 'string')
       : [],

@@ -131,7 +131,7 @@ export async function GET(request: Request) {
 
   // Published alumni — prefer enrichment state (current location), fall back to hometown.
   // Then also add them to each additional location (e.g. summer home, winter base).
-  for (const m of store.teamMemberships.filter(x => x.teamId === team.id && x.memberRole === 'alumni' && x.publishedToNetwork === true)) {
+  for (const m of store.teamMemberships.filter(x => x.teamId === team.id && (x.memberRole === 'alumni' || x.memberRole === 'coach') && x.publishedToNetwork === true)) {
     const person = store.people.find(p => p.id === m.personId)
     if (!person) continue
     const enrichment = enrichMap.get(m.personId)

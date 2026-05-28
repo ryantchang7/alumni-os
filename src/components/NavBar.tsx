@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signIn, signOut } from 'next-auth/react'
+import { FOUNDER_EMAILS } from '@/lib/badges'
 
 // Hall of Fame is intentionally not a top-level tab — lives under Clubhouse.
 // Chat is intentionally not a top-level tab — you start a chat from a
@@ -110,6 +111,33 @@ function AccountAffordance() {
 export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
+  const { data: session } = useSession()
+  const email = (session?.user?.email ?? '').toLowerCase().trim()
+  const isFounder = FOUNDER_EMAILS.has(email)
+
+  // Locker Room visibility — players + alumni only. Resolved server-side
+  // via /api/me/access on first render.
+  const [canSeeLockerRoom, setCanSeeLockerRoom] = useState(false)
+  useEffect(() => {
+    if (!session?.user?.email) {
+      setCanSeeLockerRoom(false)
+      return
+    }
+    fetch('/api/me/access')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => setCanSeeLockerRoom(!!d?.canSeeLockerRoom))
+      .catch(() => setCanSeeLockerRoom(false))
+  }, [session?.user?.email])
+
+  // Build the visible link list. Locker Room is inserted after Moments
+  // for eligible viewers only.
+  const visibleLinks = canSeeLockerRoom
+    ? navLinks.flatMap(l =>
+        l.href === '/moments'
+          ? [l, { label: 'Locker Room', href: '/locker-room' }]
+          : [l],
+      )
+    : navLinks
 
   return (
     <header className="bg-[#0a1628] border-b border-white/[0.08] sticky top-0 z-50">
@@ -123,7 +151,7 @@ export default function NavBar() {
 
         {/* Center nav (desktop) */}
         <nav className="hidden md:flex items-center gap-1">
-          {navLinks.map(link => {
+          {visibleLinks.map(link => {
             const active = pathname === link.href || pathname.startsWith(link.href + '/')
             return (
               <Link
@@ -144,12 +172,14 @@ export default function NavBar() {
         {/* Right side */}
         <div className="hidden md:flex items-center gap-3">
           <AccountAffordance />
-          <Link
-            href="/internal"
-            className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors px-2 py-1"
-          >
-            Internal
-          </Link>
+          {isFounder && (
+            <Link
+              href="/internal"
+              className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors px-2 py-1"
+            >
+              Internal
+            </Link>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -174,7 +204,7 @@ export default function NavBar() {
             className="md:hidden bg-[#0a1628] border-t border-white/[0.08] px-6 pb-4"
           >
             <div className="flex flex-col gap-1 pt-3">
-              {navLinks.map(link => (
+              {visibleLinks.map(link => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -186,13 +216,15 @@ export default function NavBar() {
               ))}
               <div className="pt-3 flex items-center justify-between">
                 <AccountAffordance />
-                <Link
-                  href="/internal"
-                  className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Internal
-                </Link>
+                {isFounder && (
+                  <Link
+                    href="/internal"
+                    className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Internal
+                  </Link>
+                )}
               </div>
             </div>
           </motion.div>

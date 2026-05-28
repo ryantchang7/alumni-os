@@ -62,11 +62,11 @@ export const BADGE_META: Record<BadgeId, BadgeMeta> = {
       'bg-[#c8a84b]/20 text-[#7a6420] border border-[#c8a84b]/55',
     icon: 'star',
   },
-  // Member — cream/muted, soft brand tone.
+  // Supporting Member — cream/muted, soft brand tone.
   member: {
     id: 'member',
-    label: 'Member',
-    tooltip: 'Supporting Member',
+    label: 'Supporting Member',
+    tooltip: 'Supporting Member of the Clubhouse',
     className:
       'bg-[#faf7f2] text-[#3d4a5c] border border-[rgba(180,168,150,0.55)]',
     icon: 'check',
@@ -108,7 +108,7 @@ export function getBadgesForAccount(account: Account | null | undefined): BadgeI
     // Founding Member badge so it shows even without an active subscription.
     out.push('founding-member')
   }
-  if (isCaptain(email, TEAM_SLUG)) out.push('captain')
+  if (account.manualCaptain === true || isCaptain(email, TEAM_SLUG)) out.push('captain')
 
   const sub = account.subscription
   if (sub && (sub.status === 'active' || sub.status === 'trialing')) {
@@ -118,8 +118,15 @@ export function getBadgesForAccount(account: Account | null | undefined): BadgeI
     } else if (priceId && priceId === process.env.STRIPE_PARENT_PRICE_ID) {
       out.push('parent')
     } else if (priceId) {
-      // Any active sub that isn't Founding or Parent is a base Member.
+      // Any active sub that isn't Founding or Parent is a base Supporting Member.
       out.push('member')
+    }
+  }
+
+  // Manual grants from /internal/roles — founder-set, no Stripe sub required.
+  if (account.manualBadges) {
+    for (const b of account.manualBadges) {
+      if (b === 'founding-member' || b === 'member' || b === 'parent') out.push(b)
     }
   }
 

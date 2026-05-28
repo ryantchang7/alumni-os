@@ -1389,6 +1389,7 @@ export async function createMoment(input: {
   caption: string
   photoUrl: string
   mediaType?: 'image' | 'video'
+  audience?: 'public' | 'locker-room'
   taggedPersonIds?: string[]
 }): Promise<ClubhouseMoment> {
   const store = await readStore()
@@ -1401,6 +1402,7 @@ export async function createMoment(input: {
     caption: input.caption.trim(),
     photoUrl: input.photoUrl.trim(),
     mediaType: input.mediaType ?? 'image',
+    audience: input.audience ?? 'public',
     taggedPersonIds: input.taggedPersonIds ?? [],
     status: 'published',
     createdAt: new Date().toISOString(),
@@ -1557,6 +1559,41 @@ export async function getRecentTeamNewsItems(
 export async function getAllLinkedAccountsForTeam(teamId: string): Promise<Account[]> {
   const store = await readStore()
   return store.accounts.filter(a => a.teamId === teamId && a.linkedPersonId)
+}
+
+/**
+ * Founder-only role override updater. Writes manualCaptain + manualBadges
+ * on the Account row; getBadgesForAccount() picks them up automatically.
+ * Returns the patched account or null if not found.
+ */
+export async function updateAccountRoles(
+  accountId: string,
+  patch: {
+    manualCaptain?: boolean
+    manualBadges?: ('founding-member' | 'member' | 'parent')[]
+  },
+): Promise<Account | null> {
+  const store = await readStore()
+  const idx = store.accounts.findIndex(a => a.id === accountId)
+  if (idx === -1) return null
+  const next: Account = { ...store.accounts[idx] }
+  if (patch.manualCaptain !== undefined) {
+    if (patch.manualCaptain === true) next.manualCaptain = true
+    else delete next.manualCaptain
+  }
+  if (patch.manualBadges !== undefined) {
+    // De-dup and validate ids defensively.
+    const allowed = new Set(['founding-member', 'member', 'parent'])
+    const cleaned = Array.from(
+      new Set(patch.manualBadges.filter(b => allowed.has(b))),
+    ) as ('founding-member' | 'member' | 'parent')[]
+    if (cleaned.length === 0) delete next.manualBadges
+    else next.manualBadges = cleaned
+  }
+  next.updatedAt = new Date().toISOString()
+  store.accounts[idx] = next
+  await writeStore(store)
+  return next
 }
 
 export async function stampDigestSent(accountId: string): Promise<void> {

@@ -6,7 +6,7 @@ import { ArrowLeft, UserPlus } from 'lucide-react'
 
 export default function AddMemberForm() {
   const [name, setName] = useState('')
-  const [memberRole, setMemberRole] = useState<'alumni' | 'current_player'>('alumni')
+  const [memberRole, setMemberRole] = useState<'alumni' | 'current_player' | 'coach'>('alumni')
   const [hometown, setHometown] = useState('')
   const [classLabel, setClassLabel] = useState('')
   const [rosterStartYear, setRosterStartYear] = useState('')
@@ -124,6 +124,7 @@ export default function AddMemberForm() {
                 {[
                   { value: 'alumni', label: 'Alumni' },
                   { value: 'current_player', label: 'Current Player' },
+                  { value: 'coach', label: 'Coach' },
                 ].map((opt) => {
                   const active = memberRole === opt.value
                   return (

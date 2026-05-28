@@ -51,7 +51,12 @@ export async function POST(request: Request) {
   }
 
   const name = typeof body.name === 'string' ? body.name.trim() : ''
-  const memberRole = body.memberRole === 'current_player' ? 'current_player' : 'alumni'
+  const memberRole: 'current_player' | 'alumni' | 'coach' =
+    body.memberRole === 'current_player'
+      ? 'current_player'
+      : body.memberRole === 'coach'
+        ? 'coach'
+        : 'alumni'
   const hometown = typeof body.hometown === 'string' ? body.hometown.trim() : undefined
   const classLabel = typeof body.classLabel === 'string' ? body.classLabel.trim() : undefined
   const rosterStartYear =

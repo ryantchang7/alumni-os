@@ -118,13 +118,14 @@ export default async function MemberMapPage() {
       }
     }
 
-    // Published alumni — go in BOTH lenses; current-location only if they have
-    // an enrichment state explicitly set (i.e., they've told us where they
-    // live now).
+    // Published alumni + coaches — go in BOTH lenses; current-location only if
+    // they have an enrichment state explicitly set (i.e., they've told us
+    // where they live now). Coach is treated as an adult Penn Golf member for
+    // location surfaces.
     for (const m of store.teamMemberships.filter(
       (x) =>
         x.teamId === team.id &&
-        x.memberRole === 'alumni' &&
+        (x.memberRole === 'alumni' || x.memberRole === 'coach') &&
         x.publishedToNetwork === true,
     )) {
       const person = store.people.find((p) => p.id === m.personId)

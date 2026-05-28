@@ -62,7 +62,7 @@ export default async function AccountProfilePage() {
             e.visibleToPlayers !== false &&
             e.city?.trim().toLowerCase() === myCity,
         )
-        .map((e) => {
+        .map((e): NearbyAlum | null => {
           const p = store.people.find((pp) => pp.id === e.personId)
           if (!p) return null
           const b = findBookEntryForTeamStorePerson(p.canonicalName)

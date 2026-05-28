@@ -65,7 +65,7 @@ export interface TeamMembership {
   id: string
   personId: string
   teamId: string
-  memberRole?: 'current_player' | 'alumni' | 'parent'
+  memberRole?: 'current_player' | 'alumni' | 'parent' | 'coach'
   /** Free-text relationship label for parents/affiliates (e.g. "Parent of
    * John Smith C'24", "Affiliate — long-time supporter"). Shown on their
    * Member Book entry; ignored for current_player and alumni. */
@@ -312,6 +312,14 @@ export interface Account {
     currentPeriodEnd?: string
     canceledAt?: string
   }
+  /** Manually-granted badge ids from /internal/roles. Stacks on top of
+   *  the Stripe-derived badges in getBadgesForAccount(). Used to hand
+   *  Family & Affiliate, Founding Member, or Supporting Member status
+   *  to people who aren't paying through Stripe. */
+  manualBadges?: ('founding-member' | 'member' | 'parent')[]
+  /** Founder-granted captain access. Stacks on top of the hardcoded
+   *  CAPTAIN_EMAILS_BY_TEAM list in src/lib/captains.ts. */
+  manualCaptain?: boolean
 }
 
 /**
@@ -364,6 +372,10 @@ export interface ClubhouseMoment {
   /** 'image' (default) or 'video'. Older records without this field are
    *  treated as 'image' by the UI. */
   mediaType?: 'image' | 'video'
+  /** Visibility tier. 'public' (default) is all approved members.
+   *  'locker-room' is current players + alumni only — excludes coach and
+   *  family. Older records without this field default to 'public'. */
+  audience?: 'public' | 'locker-room'
   taggedPersonIds: string[]
   status: 'published' | 'pending' | 'removed'
   createdAt: string
