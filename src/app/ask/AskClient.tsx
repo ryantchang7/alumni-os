@@ -9,14 +9,16 @@ import { scoreAndSort, generateDraft, type ProfileForScoring, type ScoredProfile
 
 const PURPOSES = [
   { key: 'career_advice', label: 'Career advice', desc: 'Pick their brain on the job, the industry, what they wish they knew.' },
-  { key: 'warm_introduction', label: 'Warm intro', desc: 'Get connected to someone in their network.' },
   { key: 'interview_prep', label: 'Interview prep', desc: 'The real story on recruiting from someone who\'s been through it.' },
   { key: 'resume_review', label: 'Resume review', desc: 'A quick eye on your resume before you hit send.' },
   { key: 'internship_guidance', label: 'Internship guidance', desc: 'How to land a strong summer.' },
-  { key: 'coffee_chat', label: 'Coffee chat', desc: 'Just chat — about Penn, the team, where they ended up.' },
-  { key: 'golf_round', label: 'Golf round', desc: 'Get out on the course with an alum.' },
-  { key: 'city_advice', label: 'City advice', desc: 'You\'re heading somewhere they live — get the rundown.' },
+  { key: 'job_referral', label: 'Job referral', desc: 'Get referred into an open role at their company.' },
+  { key: 'warm_introduction', label: 'Warm intro', desc: 'Get connected to someone in their network.' },
+  { key: 'coffee_chat', label: 'Coffee chat', desc: 'Just chat. Penn, the team, where they ended up.' },
+  { key: 'grad_school', label: 'Grad school advice', desc: 'MBA, law, med, or PhD path. Hear how they decided.' },
   { key: 'mentorship', label: 'Long-term mentorship', desc: 'Someone in your corner past one conversation.' },
+  { key: 'city_advice', label: 'City advice', desc: 'You\'re heading somewhere they live. Get the rundown.' },
+  { key: 'golf_round', label: 'Golf round', desc: 'Get out on the course with an alum.' },
 ]
 
 const CONTEXTS = [
@@ -272,7 +274,7 @@ export default function AskClient() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
             <p className="text-base font-semibold text-[#0a1628] mb-2">In their inbox.</p>
             <p className="text-sm text-[#8a7f70] max-w-sm mx-auto mb-6">
-              {first} gets pinged on the Clubhouse. Give it a few days — Penn Golf members have day jobs.
+              {first} gets pinged on the Clubhouse. Give it a few days. Penn Golf members have day jobs.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
               <Link
@@ -304,7 +306,7 @@ export default function AskClient() {
           </Link>
           <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Send a request</h1>
           <p className="text-gray-400 text-sm mt-2">
-            Find an alum. Ask for what you need. Four quick steps — we&rsquo;ll draft the note for you.
+            Find an alum. Ask for what you need. Four quick steps. We&rsquo;ll draft the note for you.
           </p>
         </div>
       </div>
@@ -512,7 +514,7 @@ export default function AskClient() {
 
               <div className="flex items-center justify-between gap-4">
                 <p className="text-xs text-[#8a7f70]">
-                  Lands in {selectedProfile?.canonicalName?.split(' ')[0]}&rsquo;s Clubhouse inbox. Give it a few days &mdash; alumni have day jobs.
+                  Lands in {selectedProfile?.canonicalName?.split(' ')[0]}&rsquo;s Clubhouse inbox. Give it a few days. Alumni have day jobs.
                 </p>
                 <button
                   type="button"

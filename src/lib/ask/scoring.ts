@@ -114,9 +114,9 @@ export function scoreProfile(
   // Build why line
   let whyLine: string
   if (reasons.length >= 2) {
-    whyLine = `Good fit — ${reasons[0]} and ${reasons[1]}.`
+    whyLine = `Good fit. ${reasons[0]} and ${reasons[1]}.`
   } else if (reasons.length === 1) {
-    whyLine = `Good fit — ${reasons[0]}.`
+    whyLine = `Good fit. ${reasons[0]}.`
   } else if (profile.memberRole === 'alumni') {
     whyLine = 'Penn Golf alumnus who may be able to help.'
   } else {
@@ -155,16 +155,16 @@ const CONTEXT_SENTENCE: Record<string, string> = {
   referred: "A teammate pointed me your way.",
   want_to_play: "Been hoping to get a round in with an alum.",
   summer_advice: "Thinking about the summer and trying to make the most of it.",
-  preparing_interviews: "Heads-down on interview prep — any real perspective goes a long way.",
+  preparing_interviews: "Heads-down on interview prep. Any real perspective goes a long way.",
 }
 
 function purposeLines(purpose: string, profile: ProfileForScoring): { intro: string; ask: string } {
   const careerLine = profile.career?.currentRole && profile.career?.currentCompany
-    ? ` — saw you're doing ${profile.career.currentRole} at ${profile.career.currentCompany}`
+    ? `. Saw you're doing ${profile.career.currentRole} at ${profile.career.currentCompany}`
     : profile.career?.currentRole
-      ? ` — saw you're in ${profile.career.currentRole}`
+      ? `. Saw you're in ${profile.career.currentRole}`
       : profile.career?.currentCompany
-        ? ` — saw you're at ${profile.career.currentCompany}`
+        ? `. Saw you're at ${profile.career.currentCompany}`
         : ''
 
   const topicsNote = profile.helpTopics && profile.helpTopics.length > 0
@@ -180,7 +180,7 @@ function purposeLines(purpose: string, profile: ProfileForScoring): { intro: str
     case 'coffee_chat':
       return {
         intro: `I'm on the Penn Golf team and just wanted to say hi${topicsNote}`,
-        ask: `If you're up for a quick coffee — virtual or in person if we end up in the same city — I'd love that.`,
+        ask: `If you're up for a quick coffee, virtual or in person if we end up in the same city, I'd love that.`,
       }
     case 'mentorship':
       return {
@@ -200,12 +200,22 @@ function purposeLines(purpose: string, profile: ProfileForScoring): { intro: str
     case 'internship_guidance':
       return {
         intro: `I'm on the Penn Golf team and starting to line up summer plans${careerLine}`,
-        ask: `Would love 20 minutes if you'd be up for it — figuring out how to land a strong internship and any advice from your route would go a long way.`,
+        ask: `Would love 20 minutes if you'd be up for it. Figuring out how to land a strong internship and any advice from your route would go a long way.`,
+      }
+    case 'job_referral':
+      return {
+        intro: `I'm on the Penn Golf team and seriously interested in ${profile.career?.currentCompany ?? 'where you work'}${careerLine ? '' : ''}`,
+        ask: `If there's an open role I'd be a fit for, I'd be incredibly grateful for a referral. Happy to send over my resume so you can take a look first.`,
       }
     case 'warm_introduction':
       return {
         intro: `I'm on the Penn Golf team and trying to build some real connections in your field${careerLine}`,
         ask: `If anyone in your network would be worth a quick chat, I'd really appreciate the intro.`,
+      }
+    case 'grad_school':
+      return {
+        intro: `I'm on the Penn Golf team and starting to think about grad school${careerLine ? careerLine : ''}`,
+        ask: `Would love 20 minutes to hear how you decided on your path, when you applied, and anything you wish you'd known going in.`,
       }
     case 'golf_round':
       return {
@@ -215,8 +225,8 @@ function purposeLines(purpose: string, profile: ProfileForScoring): { intro: str
     case 'city_advice': {
       const city = profile.career?.city ? ` in ${profile.career.city}` : ''
       return {
-        intro: `I'm on the Penn Golf team and might be spending time${city} soon — thought you'd be the right person to ask`,
-        ask: `Any tips on the city — neighborhoods, places to go, people worth meeting — would be huge.`,
+        intro: `I'm on the Penn Golf team and might be spending time${city} soon. Thought you'd be the right person to ask`,
+        ask: `Any tips on the city, neighborhoods, places to go, people worth meeting, would be huge.`,
       }
     }
     default:
@@ -247,5 +257,5 @@ export function generateDraft(params: DraftParams): string {
   const body = bodyParts.join(' ')
   const sign = fromName.trim() ? `\n\n${fromName.trim()}` : ''
 
-  return `Hey ${first},\n\n${body}\n\nThanks — appreciate it.${sign}`
+  return `Hey ${first},\n\n${body}\n\nThanks, appreciate it.${sign}`
 }
