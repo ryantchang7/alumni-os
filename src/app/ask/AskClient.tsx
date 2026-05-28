@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { scoreAndSort, generateDraft, type ProfileForScoring, type ScoredProfile } from '@/lib/ask/scoring'
 
@@ -19,6 +20,7 @@ const PURPOSES = [
   { key: 'mentorship', label: 'Long-term mentorship', desc: 'Someone in your corner past one conversation.' },
   { key: 'city_advice', label: 'City advice', desc: 'You\'re heading somewhere they live. Get the rundown.' },
   { key: 'golf_round', label: 'Golf round', desc: 'Get out on the course with an alum.' },
+  { key: 'custom', label: 'Something else', desc: 'Just want to reach out. We\'ll start a blank note and you write it.' },
 ]
 
 const CONTEXTS = [
@@ -50,7 +52,7 @@ interface ApiProfile {
   personId: string
   canonicalName: string
   firstName?: string
-  memberRole: 'current_player' | 'alumni'
+  memberRole: 'current_player' | 'alumni' | 'parent'
   classLabel?: string
   rosterStartYear?: number
   rosterEndYear?: number
@@ -176,12 +178,14 @@ export default function AskClient() {
   const paramPurpose = searchParams.get('purpose') ?? ''
   const resolvedPurpose = PURPOSE_PARAM_MAP[paramPurpose] ?? ''
 
+  const { data: session } = useSession()
   const [step, setStep] = useState<1 | 2 | 3 | 4>(resolvedPurpose ? 2 : 1)
   const [purpose, setPurpose] = useState(resolvedPurpose)
   const [contextKey, setContextKey] = useState('')
   const [additionalContext, setAdditionalContext] = useState('')
   const [selectedId, setSelectedId] = useState(paramPersonId)
   const [fromName, setFromName] = useState('')
+  const [senderRole, setSenderRole] = useState<'current_player' | 'alumni' | 'parent'>('current_player')
   const [draft, setDraft] = useState('')
   const [profiles, setProfiles] = useState<ApiProfile[]>([])
   const [loadingProfiles, setLoadingProfiles] = useState(true)
@@ -199,6 +203,24 @@ export default function AskClient() {
       .catch(() => setLoadingProfiles(false))
   }, [])
 
+  // Detect the sender's role on the team so generated drafts open with the
+  // right self-identifying line (alumni reach out differently than players).
+  useEffect(() => {
+    const personId = session?.linkedPersonId
+    if (!personId || profiles.length === 0) return
+    const me = profiles.find(p => p.personId === personId)
+    if (me?.memberRole === 'alumni' || me?.memberRole === 'parent') {
+      setSenderRole(me.memberRole)
+    } else {
+      setSenderRole('current_player')
+    }
+    // Prefill the From name from session if the field is still empty.
+    if (!fromName.trim() && session?.user?.name) {
+      setFromName(session.user.name)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.linkedPersonId, profiles])
+
   const scoredProfiles: ScoredProfile[] = purpose && contextKey
     ? scoreAndSort(profiles as ProfileForScoring[], purpose, contextKey)
     : purpose
@@ -215,8 +237,9 @@ export default function AskClient() {
       additionalContext,
       fromName,
       profile: selectedProfile,
+      senderRole,
     }))
-  }, [selectedProfile, purpose, contextKey, additionalContext, fromName])
+  }, [selectedProfile, purpose, contextKey, additionalContext, fromName, senderRole])
 
   function goToStep(s: 1 | 2 | 3 | 4) {
     if (s === 4) buildDraft()
@@ -319,8 +342,8 @@ export default function AskClient() {
           {step === 1 && (
             <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
-              <h2 className="text-base font-semibold text-[#0a1628] mb-1">What do you need?</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Pick the closest one. We&rsquo;ll line everything up.</p>
+              <h2 className="text-base font-semibold text-[#0a1628] mb-1">Reach out about...</h2>
+              <p className="text-xs text-[#8a7f70] mb-5">Pick the closest one. We&rsquo;ll line everything up. Pick &ldquo;Something else&rdquo; to write your own.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {PURPOSES.map(p => (
                   <button

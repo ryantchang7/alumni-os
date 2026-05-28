@@ -145,6 +145,10 @@ export interface DraftParams {
   additionalContext: string
   fromName: string
   profile: ProfileForScoring
+  /** Sender's role on the team. Drives whether the intro reads as a
+   * current-player-to-alum reach-out or alum-to-anyone reach-out.
+   * Defaults to 'current_player' to preserve historical behavior. */
+  senderRole?: 'current_player' | 'alumni' | 'parent'
 }
 
 const CONTEXT_SENTENCE: Record<string, string> = {
@@ -158,7 +162,20 @@ const CONTEXT_SENTENCE: Record<string, string> = {
   preparing_interviews: "Heads-down on interview prep. Any real perspective goes a long way.",
 }
 
-function purposeLines(purpose: string, profile: ProfileForScoring): { intro: string; ask: string } {
+function purposeLines(
+  purpose: string,
+  profile: ProfileForScoring,
+  senderRole: 'current_player' | 'alumni' | 'parent' = 'current_player',
+): { intro: string; ask: string } {
+  // Self-identifying opener swaps based on who's sending. Default is the
+  // most common case (current player asking an alum).
+  const selfId =
+    senderRole === 'alumni'
+      ? 'a Penn Golf alum'
+      : senderRole === 'parent'
+        ? 'part of the Penn Golf family'
+        : 'on the Penn Golf team'
+
   const careerLine = profile.career?.currentRole && profile.career?.currentCompany
     ? `. Saw you're doing ${profile.career.currentRole} at ${profile.career.currentCompany}`
     : profile.career?.currentRole
@@ -171,76 +188,94 @@ function purposeLines(purpose: string, profile: ProfileForScoring): { intro: str
     ? ` and that you're open to ${profile.helpTopics.slice(0, 2).join(' and ')}`
     : ''
 
+  // Open-ended template used by the "Something else" purpose. Lets the
+  // sender write their own body in step 4.
+  if (purpose === 'custom') {
+    return {
+      intro: `I'm ${selfId} and wanted to reach out`,
+      ask: `[Write what you want to say here.]`,
+    }
+  }
+
   switch (purpose) {
     case 'career_advice':
       return {
-        intro: `I'm on the Penn Golf team and starting to think about life after Penn${careerLine}${topicsNote}`,
+        intro: `I'm ${selfId} and starting to think about life after Penn${careerLine}${topicsNote}`,
         ask: `Any chance you'd be up for 20 minutes? Would love to hear about your path and whatever advice you'd give your younger self.`,
       }
     case 'coffee_chat':
       return {
-        intro: `I'm on the Penn Golf team and just wanted to say hi${topicsNote}`,
+        intro: `I'm ${selfId} and just wanted to say hi${topicsNote}`,
         ask: `If you're up for a quick coffee, virtual or in person if we end up in the same city, I'd love that.`,
       }
     case 'mentorship':
       return {
-        intro: `I'm on the Penn Golf team and starting to think seriously about what comes next${careerLine}`,
+        intro: `I'm ${selfId} and starting to think seriously about what comes next${careerLine}`,
         ask: `Looking for someone who'd be willing to stay in touch as I figure things out. Would love to hear how you'd approach it from where I'm sitting.`,
       }
     case 'interview_prep':
       return {
-        intro: `I'm on the Penn Golf team and deep in recruiting${careerLine}${topicsNote}`,
+        intro: `I'm ${selfId} and deep in recruiting${careerLine}${topicsNote}`,
         ask: `Could I steal 20 minutes? Trying to get the real story on the process from someone who's actually been through it.`,
       }
     case 'resume_review':
       return {
-        intro: `I'm on the Penn Golf team and tightening up my resume before I start sending it out${topicsNote}`,
+        intro: `I'm ${selfId} and tightening up my resume before I start sending it out${topicsNote}`,
         ask: `If you have a few minutes to give it a quick once-over, I'd really appreciate it.`,
       }
     case 'internship_guidance':
       return {
-        intro: `I'm on the Penn Golf team and starting to line up summer plans${careerLine}`,
+        intro: `I'm ${selfId} and starting to line up summer plans${careerLine}`,
         ask: `Would love 20 minutes if you'd be up for it. Figuring out how to land a strong internship and any advice from your route would go a long way.`,
       }
     case 'job_referral':
       return {
-        intro: `I'm on the Penn Golf team and seriously interested in ${profile.career?.currentCompany ?? 'where you work'}${careerLine ? '' : ''}`,
+        intro: `I'm ${selfId} and seriously interested in ${profile.career?.currentCompany ?? 'where you work'}${careerLine ? '' : ''}`,
         ask: `If there's an open role I'd be a fit for, I'd be incredibly grateful for a referral. Happy to send over my resume so you can take a look first.`,
       }
     case 'warm_introduction':
       return {
-        intro: `I'm on the Penn Golf team and trying to build some real connections in your field${careerLine}`,
+        intro: `I'm ${selfId} and trying to build some real connections in your field${careerLine}`,
         ask: `If anyone in your network would be worth a quick chat, I'd really appreciate the intro.`,
       }
     case 'grad_school':
       return {
-        intro: `I'm on the Penn Golf team and starting to think about grad school${careerLine ? careerLine : ''}`,
+        intro: `I'm ${selfId} and starting to think about grad school${careerLine ? careerLine : ''}`,
         ask: `Would love 20 minutes to hear how you decided on your path, when you applied, and anything you wish you'd known going in.`,
       }
     case 'golf_round':
       return {
-        intro: `I'm on the Penn Golf team and would love to get out on the course with a Penn alum`,
+        intro: `I'm ${selfId} and would love to get out on the course with a Penn alum`,
         ask: `If you're ever up for a round, I'm in. Happy to drive to wherever you play.`,
       }
     case 'city_advice': {
       const city = profile.career?.city ? ` in ${profile.career.city}` : ''
       return {
-        intro: `I'm on the Penn Golf team and might be spending time${city} soon. Thought you'd be the right person to ask`,
+        intro: `I'm ${selfId} and might be spending time${city} soon. Thought you'd be the right person to ask`,
         ask: `Any tips on the city, neighborhoods, places to go, people worth meeting, would be huge.`,
       }
     }
     default:
       return {
-        intro: `I'm on the Penn Golf team and figured I'd reach out`,
+        intro: `I'm ${selfId} and figured I'd reach out`,
         ask: `Would love to hear where Penn Golf has taken you since.`,
       }
   }
 }
 
 export function generateDraft(params: DraftParams): string {
-  const { purpose, contextKey, additionalContext, fromName, profile } = params
+  const { purpose, contextKey, additionalContext, fromName, profile, senderRole } = params
   const first = profile.firstName ?? profile.canonicalName.split(' ')[0]
-  const { intro, ask } = purposeLines(purpose, profile)
+  const sign = fromName.trim() ? `\n\n${fromName.trim()}` : ''
+
+  // Custom flow: blank template so the sender writes their own body.
+  if (purpose === 'custom') {
+    const extra = additionalContext.trim()
+    const middle = extra ? `${extra}\n\n[Write your message here.]` : '[Write your message here.]'
+    return `Hey ${first},\n\n${middle}\n\nThanks,${sign}`
+  }
+
+  const { intro, ask } = purposeLines(purpose, profile, senderRole)
   const contextSentence = CONTEXT_SENTENCE[contextKey] ?? ''
   const extra = additionalContext.trim()
 
@@ -255,7 +290,6 @@ export function generateDraft(params: DraftParams): string {
   bodyParts.push(ask)
 
   const body = bodyParts.join(' ')
-  const sign = fromName.trim() ? `\n\n${fromName.trim()}` : ''
 
   return `Hey ${first},\n\n${body}\n\nThanks, appreciate it.${sign}`
 }
