@@ -29,6 +29,7 @@ function blankState(code: string): MapState {
     totalCount: 0,
     currentPlayerCount: 0,
     alumniCount: 0,
+    parentCount: 0,
     openToCoffeeCount: 0,
     openToGolfCount: 0,
     members: [],
@@ -48,6 +49,7 @@ function placeMember(
   s.members.push(member)
   s.totalCount++
   if (member.memberRole === 'current_player') s.currentPlayerCount++
+  else if (member.memberRole === 'parent') s.parentCount++
   else s.alumniCount++
   if (member.openToCoffee) s.openToCoffeeCount++
   if (member.openToGolfRounds) s.openToGolfCount++
@@ -154,6 +156,45 @@ export default async function MemberMapPage() {
 
       // Current-location lens: primary + each additional location. A member
       // who lives in NY + winters in FL appears in both states.
+      const placedCurrentCodes = new Set<string>()
+      const placeCurrent = (rawState: string | undefined, locLabel?: string) => {
+        const code = enrichmentStateToCode(rawState)
+        if (!code || placedCurrentCodes.has(code)) return
+        placedCurrentCodes.add(code)
+        placeMember(currentByState, code, { ...base, locationLabel: locLabel })
+      }
+      placeCurrent(enrichment?.state)
+      for (const loc of enrichment?.additionalLocations ?? []) {
+        placeCurrent(loc.state, loc.label)
+      }
+    }
+
+    // Published parents/affiliates — current-location lens only.
+    // Parents have no "hometown" that maps to a Penn Golf place; we just
+    // drop them where they live now (and any additional locations).
+    for (const m of store.teamMemberships.filter(
+      (x) =>
+        x.teamId === team.id &&
+        x.memberRole === 'parent' &&
+        x.publishedToNetwork === true,
+    )) {
+      const person = store.people.find((p) => p.id === m.personId)
+      if (!person) continue
+      const enrichment = enrichMap.get(m.personId)
+      if (enrichment?.visibleToPlayers === false) continue
+      seenTeamStoreNames.add(normalize(person.canonicalName))
+
+      const base: MapMember = {
+        personId: person.id,
+        canonicalName: person.canonicalName,
+        memberRole: 'parent',
+        city: enrichment?.city,
+        state: enrichment?.state,
+        openToCoffee: enrichment?.openToCoffee ?? false,
+        openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+        parentRelationship: m.parentRelationship,
+      }
+
       const placedCurrentCodes = new Set<string>()
       const placeCurrent = (rawState: string | undefined, locLabel?: string) => {
         const code = enrichmentStateToCode(rawState)

@@ -109,6 +109,9 @@ const ERA_LABELS: Record<EraFilter, string> = {
 function matchesCombined(m: MapMember, role: RoleFilter, era: EraFilter): boolean {
   if (role === 'current_player' && m.memberRole !== 'current_player') return false
   if (role === 'alumni' && m.memberRole !== 'alumni') return false
+  // Parents have no roster era — they show up regardless of the era
+  // filter so the family/affiliate group always lands in the panel.
+  if (m.memberRole === 'parent') return true
   if (era === 'all') return true
   if (m.memberRole === 'current_player') return era === '2020s'
   const ey = m.rosterEndYear
@@ -128,6 +131,7 @@ function memberHref(m: MapMember): string {
 
 function ContextualRow({ member }: { member: MapMember }) {
   const isCP = member.memberRole === 'current_player'
+  const isParent = member.memberRole === 'parent'
   const years =
     member.rosterStartYear && member.rosterEndYear
       ? `Penn Golf ${member.rosterStartYear}–${String(member.rosterEndYear).slice(-2)}`
@@ -148,7 +152,15 @@ function ContextualRow({ member }: { member: MapMember }) {
           >
             {member.canonicalName}
           </p>
-          {years && <p className="text-[12px] text-[#8a7f70] mt-0.5">{years}</p>}
+          {/* For players/alumni: roster years. For parents: the relationship line. */}
+          {!isParent && years && (
+            <p className="text-[12px] text-[#8a7f70] mt-0.5">{years}</p>
+          )}
+          {isParent && member.parentRelationship && (
+            <p className="text-[12px] text-[#3d4a5c] mt-0.5">
+              {member.parentRelationship}
+            </p>
+          )}
           {member.locationLabel && (
             <p className="text-[10px] italic text-[#990000] mt-0.5">
               {member.locationLabel}
@@ -158,6 +170,11 @@ function ContextualRow({ member }: { member: MapMember }) {
         {isCP && (
           <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap mt-0.5">
             Current
+          </span>
+        )}
+        {isParent && (
+          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full text-[#990000] bg-[#990000]/8 border border-[#990000]/30 whitespace-nowrap mt-0.5">
+            Family
           </span>
         )}
       </div>
@@ -524,21 +541,43 @@ export default function MemberMapClient({
                     No members match this filter. Try another era.
                   </p>
                 ) : (
-                  <>
-                    {filteredMembers.slice(0, 12).map((m) => (
-                      <ContextualRow key={m.personId} member={m} />
-                    ))}
-                    {filteredMembers.length > 12 && (
-                      <div className="px-4 py-3 border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2]">
-                        <Link
-                          href="/member-book"
-                          className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
-                        >
-                          Browse all in the Member Book &rarr;
-                        </Link>
-                      </div>
-                    )}
-                  </>
+                  (() => {
+                    // Split parents off so they get their own subhead
+                    // group at the bottom of the panel — same pattern as
+                    // the Member Book Family & Affiliate section.
+                    const players = filteredMembers.filter(m => m.memberRole !== 'parent')
+                    const parents = filteredMembers.filter(m => m.memberRole === 'parent')
+                    const playerSlice = players.slice(0, 12)
+                    return (
+                      <>
+                        {playerSlice.map((m) => (
+                          <ContextualRow key={m.personId} member={m} />
+                        ))}
+                        {players.length > 12 && (
+                          <div className="px-4 py-3 border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2]">
+                            <Link
+                              href="/member-book"
+                              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
+                            >
+                              Browse all in the Member Book &rarr;
+                            </Link>
+                          </div>
+                        )}
+                        {parents.length > 0 && (
+                          <>
+                            <div className="px-4 py-2 border-t border-[rgba(180,168,150,0.35)] bg-[#990000]/5">
+                              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000]">
+                                Family &amp; Affiliate
+                              </p>
+                            </div>
+                            {parents.slice(0, 8).map((m) => (
+                              <ContextualRow key={m.personId} member={m} />
+                            ))}
+                          </>
+                        )}
+                      </>
+                    )
+                  })()
                 )}
               </div>
             </>

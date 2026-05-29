@@ -162,6 +162,76 @@ function RegistryEntry({
   )
 }
 
+function FamilyRegistryEntry({
+  entry,
+  index,
+}: {
+  entry: ParentEntry
+  index: number
+}) {
+  const initials = entry.canonicalName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(p => p[0]?.toUpperCase() ?? '')
+    .join('')
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.22, delay: Math.min(index * 0.01, 0.18) }}
+      data-testid="family-entry"
+    >
+      <div
+        className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-5"
+        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04), 0 2px 8px rgba(10,22,40,0.03)' }}
+      >
+        <div className="flex items-start gap-3 min-w-0">
+          {entry.photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={entry.photoUrl}
+              alt={entry.canonicalName}
+              className="w-12 h-12 rounded-full object-cover border border-[rgba(180,168,150,0.5)] flex-shrink-0"
+            />
+          ) : (
+            <div
+              className="w-12 h-12 rounded-full bg-[#990000] text-white flex items-center justify-center flex-shrink-0 border border-[rgba(180,168,150,0.5)]"
+              aria-hidden
+            >
+              <span
+                className="text-[14px] font-medium"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                {initials}
+              </span>
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <p
+              className="text-[#0a1628] text-[17px] font-medium leading-snug"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              {entry.canonicalName}
+            </p>
+            {entry.badges && entry.badges.length > 0 && (
+              <div className="mt-1.5">
+                <MemberBadges badges={entry.badges} size="sm" />
+              </div>
+            )}
+            {entry.parentRelationship && (
+              <p className="text-[13px] text-[#3d4a5c] mt-1.5 leading-snug">
+                {entry.parentRelationship}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 function BookHeader({
   members,
   earliestYear,
@@ -214,13 +284,17 @@ interface ParentEntry {
   personId: string
   canonicalName: string
   parentRelationship?: string
+  photoUrl?: string
   badges?: BadgeId[]
 }
+
+type RegistryView = 'all' | 'family'
 
 export default function MemberBookPage() {
   const [filters, setFilters] = useState<PublicMemberFilters>(
     DEFAULT_PUBLIC_FILTERS,
   )
+  const [view, setView] = useState<RegistryView>('all')
   const [badgesByBookId, setBadgesByBookId] = useState<Record<string, BadgeId[]>>({})
   const [photosByBookId, setPhotosByBookId] = useState<Record<string, string>>({})
   const [parents, setParents] = useState<ParentEntry[]>([])
@@ -254,6 +328,7 @@ export default function MemberBookPage() {
               personId: p.personId,
               canonicalName: p.canonicalName,
               parentRelationship: p.parentRelationship,
+              photoUrl: p.photoUrl ?? undefined,
               badges: p.badges,
             })
           }
@@ -280,6 +355,19 @@ export default function MemberBookPage() {
     [publicMembers, filters],
   )
 
+  // Parents filter by the search term only — they have no era / class
+  // year metadata to filter on. Case-insensitive name + relationship.
+  const filteredParents = useMemo(() => {
+    const q = filters.search.trim().toLowerCase()
+    if (!q) return parents
+    return parents.filter(p =>
+      [p.canonicalName, p.parentRelationship ?? '']
+        .join(' ')
+        .toLowerCase()
+        .includes(q),
+    )
+  }, [parents, filters.search])
+
   const update = <K extends keyof PublicMemberFilters>(
     key: K,
     value: PublicMemberFilters[K],
@@ -292,10 +380,61 @@ export default function MemberBookPage() {
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <BookHeader
-        members={stats.members}
+        members={stats.members + parents.length}
         earliestYear={stats.earliestYear}
         latestYear={stats.latestYear}
       />
+
+      {/* Subtab pill bar — sits on a navy strip immediately under the
+          hero, matching the /moments All-vs-Locker treatment. The Family
+          pill uses Penn red since that's the tier's accent everywhere
+          else in the app. */}
+      <div className="bg-[#0a1628] border-t border-[rgba(255,255,255,0.06)] border-b border-[rgba(255,255,255,0.06)]">
+        <div className="max-w-[1280px] mx-auto px-5 sm:px-8 py-4 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setView('all')}
+            aria-pressed={view === 'all'}
+            className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.18em] px-5 py-2.5 rounded-lg transition-all ${
+              view === 'all'
+                ? 'bg-white text-[#0a1628] shadow-[0_2px_10px_rgba(0,0,0,0.25)]'
+                : 'text-white/55 hover:text-white border border-transparent'
+            }`}
+          >
+            All Members
+            <span
+              className={`text-[10.5px] tabular-nums px-1.5 py-0.5 rounded-full ${
+                view === 'all'
+                  ? 'bg-[#0a1628]/10 text-[#0a1628]'
+                  : 'bg-white/10 text-white/65'
+              }`}
+            >
+              {stats.members + parents.length}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setView('family')}
+            aria-pressed={view === 'family'}
+            className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.18em] px-5 py-2.5 rounded-lg transition-all ${
+              view === 'family'
+                ? 'bg-[#990000] text-white shadow-[0_2px_18px_rgba(153,0,0,0.45)]'
+                : 'text-[#f4ecdb]/75 hover:text-white border border-[#990000]/45 hover:bg-[#990000]/15'
+            }`}
+          >
+            Family &amp; Affiliate
+            <span
+              className={`text-[10.5px] tabular-nums px-1.5 py-0.5 rounded-full ${
+                view === 'family'
+                  ? 'bg-white/15 text-white'
+                  : 'bg-[#990000]/15 text-[#f4ecdb]/85'
+              }`}
+            >
+              {parents.length}
+            </span>
+          </button>
+        </div>
+      </div>
 
       <div className="max-w-[1280px] mx-auto px-5 sm:px-8">
         <div className="-mt-6 relative z-10 pb-20">
@@ -334,174 +473,180 @@ export default function MemberBookPage() {
                   className="font-semibold text-[#0a1628]"
                   data-testid="member-results-count"
                 >
-                  {filtered.length}
+                  {view === 'family' ? filteredParents.length : filtered.length}
                 </span>{' '}
-                {filtered.length === 1 ? 'member' : 'members'}
+                {(view === 'family' ? filteredParents.length : filtered.length) === 1
+                  ? 'member'
+                  : 'members'}
               </span>
             </div>
 
-            {/* Era chips + sort */}
-            <div className="px-5 py-3.5 flex items-center gap-2 flex-wrap">
-              <div className="flex flex-wrap gap-1.5" data-testid="era-filter">
-                {ERA_OPTIONS.map((o) => {
-                  const active = o.value === filters.era
-                  return (
-                    <button
-                      key={o.value}
-                      type="button"
-                      onClick={() => update('era', o.value)}
-                      aria-pressed={active}
-                      className={`px-3 py-1 text-[11px] font-medium rounded-full border transition-colors ${
-                        active
-                          ? 'bg-[#0a1628] text-white border-[#0a1628]'
-                          : 'bg-[#faf7f2] text-[#3d4a5c] border-[rgba(180,168,150,0.45)] hover:border-[#0a1628]/40'
-                      }`}
-                    >
-                      {o.label}
-                    </button>
-                  )
-                })}
-              </div>
-              <div className="ml-auto flex items-center gap-3">
-                <label className="flex items-center gap-2 text-[11px] text-[#8a7f70]">
-                  <span className="font-semibold uppercase tracking-wider">Sort</span>
-                  <select
-                    value={filters.sort}
-                    onChange={(e) => update('sort', e.target.value as SortMode)}
-                    aria-label="Sort the Member Book"
-                    className="bg-[#faf7f2] border border-[rgba(180,168,150,0.45)] rounded-md px-2 py-1 text-[11px] text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]/20 transition-colors"
-                  >
-                    {SORT_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
+            {/* Era chips + sort — players-only metadata, so hide on
+                the Family & Affiliate tab. */}
+            {view === 'all' && (
+              <div className="px-5 py-3.5 flex items-center gap-2 flex-wrap">
+                <div className="flex flex-wrap gap-1.5" data-testid="era-filter">
+                  {ERA_OPTIONS.map((o) => {
+                    const active = o.value === filters.era
+                    return (
+                      <button
+                        key={o.value}
+                        type="button"
+                        onClick={() => update('era', o.value)}
+                        aria-pressed={active}
+                        className={`px-3 py-1 text-[11px] font-medium rounded-full border transition-colors ${
+                          active
+                            ? 'bg-[#0a1628] text-white border-[#0a1628]'
+                            : 'bg-[#faf7f2] text-[#3d4a5c] border-[rgba(180,168,150,0.45)] hover:border-[#0a1628]/40'
+                        }`}
+                      >
                         {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {hasActiveFilters && (
-                  <button
-                    onClick={clearAll}
-                    className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
-                  >
-                    Clear
-                  </button>
-                )}
+                      </button>
+                    )
+                  })}
+                </div>
+                <div className="ml-auto flex items-center gap-3">
+                  <label className="flex items-center gap-2 text-[11px] text-[#8a7f70]">
+                    <span className="font-semibold uppercase tracking-wider">Sort</span>
+                    <select
+                      value={filters.sort}
+                      onChange={(e) => update('sort', e.target.value as SortMode)}
+                      aria-label="Sort the Member Book"
+                      className="bg-[#faf7f2] border border-[rgba(180,168,150,0.45)] rounded-md px-2 py-1 text-[11px] text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]/20 transition-colors"
+                    >
+                      {SORT_OPTIONS.map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {hasActiveFilters && (
+                    <button
+                      onClick={clearAll}
+                      className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Founders Wall — Founding Members + the program Founder */}
-          {founders.length > 0 && (
+          {/* Founders Wall — only on the All Members view. */}
+          {view === 'all' && founders.length > 0 && (
             <div className="mb-7">
               <FoundersWall founders={founders} />
             </div>
           )}
 
-          {/* Parents & Affiliates — small banner with self-serve CTA */}
-          <div className="mb-7">
-            {parents.length > 0 ? (
-              <div
-                className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-6 py-5"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 4px 12px rgba(10,22,40,0.04)' }}
-              >
-                <div className="flex items-baseline justify-between mb-3">
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000]">
-                      Family &amp; Affiliates
-                    </p>
-                    <p className="text-[12px] text-[#8a7f70] mt-0.5">
-                      Family and longtime supporters of Penn Men&rsquo;s Golf.
-                    </p>
+          {view === 'all' ? (
+            <>
+              {/* Player + coach grid */}
+              {filtered.length === 0 ? (
+                <div className="text-center py-20">
+                  <p
+                    className="text-lg text-[#0a1628] mb-2"
+                    style={{ fontFamily: 'var(--font-playfair)' }}
+                  >
+                    No members found.
+                  </p>
+                  <p className="text-sm text-[#8a7f70] mb-5">
+                    Try a different name, year, or era.
+                  </p>
+                  <button
+                    onClick={clearAll}
+                    className="text-xs font-semibold uppercase tracking-wider text-[#990000] hover:underline"
+                  >
+                    Clear filters
+                  </button>
+                </div>
+              ) : (
+                <AnimatePresence mode="popLayout">
+                  <div
+                    data-testid="member-book-grid"
+                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+                  >
+                    {filtered.map((m, i) => (
+                      <RegistryEntry
+                        key={m.id}
+                        member={m}
+                        index={i}
+                        badges={badgesByBookId[m.id]}
+                        photoUrl={photosByBookId[m.id]}
+                      />
+                    ))}
                   </div>
+                </AnimatePresence>
+              )}
+
+              {/* Family & Affiliate group — appended below the main
+                  registry on the All Members tab. Subhead doubles as a
+                  recruiting CTA when zero or more parents exist. */}
+              {filteredParents.length > 0 && (
+                <div className="mt-10 pt-8 border-t border-[rgba(180,168,150,0.4)]">
+                  <div className="flex items-baseline justify-between gap-4 mb-5 flex-wrap">
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-1">
+                        Family &amp; Affiliate
+                      </p>
+                      <p
+                        className="text-[#0a1628] text-2xl"
+                        style={{ fontFamily: 'var(--font-playfair)' }}
+                      >
+                        Family and longtime supporters of Penn Men&rsquo;s Golf.
+                      </p>
+                    </div>
+                    <Link
+                      href="/parent-signup"
+                      className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline whitespace-nowrap"
+                    >
+                      Join as family &rarr;
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {filteredParents.map((p, i) => (
+                      <FamilyRegistryEntry key={p.personId} entry={p} index={i} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            /* Family & Affiliate dedicated view */
+            <>
+              {filteredParents.length === 0 ? (
+                <div
+                  className="bg-white border border-dashed border-[rgba(180,168,150,0.5)] rounded-xl p-10 text-center"
+                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
+                >
+                  <p
+                    className="text-[#0a1628] text-lg font-medium mb-2"
+                    style={{ fontFamily: 'var(--font-playfair)' }}
+                  >
+                    {parents.length === 0 ? 'No family members yet.' : 'No matches.'}
+                  </p>
+                  <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6">
+                    {parents.length === 0
+                      ? 'Parents, family, and longtime supporters of Penn Men’s Golf can join the Clubhouse too.'
+                      : 'Try a different name.'}
+                  </p>
                   <Link
                     href="/parent-signup"
-                    className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline whitespace-nowrap"
+                    className="inline-block bg-[#990000] hover:bg-[#7a0000] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
                   >
-                    Join as family &rarr;
+                    Join as family
                   </Link>
                 </div>
-                <ul className="space-y-2">
-                  {parents.map(p => (
-                    <li key={p.personId} className="flex items-baseline justify-between gap-3 flex-wrap">
-                      <div className="flex items-baseline gap-2 flex-wrap">
-                        <span
-                          className="text-[14px] text-[#0a1628]"
-                          style={{ fontFamily: 'var(--font-playfair)' }}
-                        >
-                          {p.canonicalName}
-                        </span>
-                        {p.badges && p.badges.length > 0 && (
-                          <MemberBadges badges={p.badges} size="sm" />
-                        )}
-                      </div>
-                      {p.parentRelationship && (
-                        <span className="text-[12px] text-[#8a7f70]">
-                          {p.parentRelationship}
-                        </span>
-                      )}
-                    </li>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {filteredParents.map((p, i) => (
+                    <FamilyRegistryEntry key={p.personId} entry={p} index={i} />
                   ))}
-                </ul>
-              </div>
-            ) : (
-              <div
-                className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-6 py-4 flex items-center justify-between gap-3 flex-wrap"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 4px 12px rgba(10,22,40,0.04)' }}
-              >
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000]">
-                    Family &amp; Affiliates
-                  </p>
-                  <p className="text-[12.5px] text-[#3d4a5c] mt-0.5">
-                    Family, parents, and longtime supporters can join the Clubhouse too.
-                  </p>
                 </div>
-                <Link
-                  href="/parent-signup"
-                  className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
-                >
-                  Join as family &rarr;
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Results */}
-          {filtered.length === 0 ? (
-            <div className="text-center py-20">
-              <p
-                className="text-lg text-[#0a1628] mb-2"
-                style={{ fontFamily: 'var(--font-playfair)' }}
-              >
-                No members found.
-              </p>
-              <p className="text-sm text-[#8a7f70] mb-5">
-                Try a different name, year, or era.
-              </p>
-              <button
-                onClick={clearAll}
-                className="text-xs font-semibold uppercase tracking-wider text-[#990000] hover:underline"
-              >
-                Clear filters
-              </button>
-            </div>
-          ) : (
-            <AnimatePresence mode="popLayout">
-              <div
-                data-testid="member-book-grid"
-                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
-              >
-                {filtered.map((m, i) => (
-                  <RegistryEntry
-                    key={m.id}
-                    member={m}
-                    index={i}
-                    badges={badgesByBookId[m.id]}
-                    photoUrl={photosByBookId[m.id]}
-                  />
-                ))}
-              </div>
-            </AnimatePresence>
+              )}
+            </>
           )}
         </div>
       </div>

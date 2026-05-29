@@ -62,6 +62,9 @@ export async function GET(request: Request) {
     rosterEndYear: membership.rosterEndYear,
     hometown: membership.hometown,
     highSchool: membership.highSchool,
+    // Only meaningful for parents/affiliates — surfaces the
+    // "Parent of John Smith C'24" line in the profile editor.
+    parentRelationship: membership.parentRelationship,
     // Editable fields
     currentRole: enrichment?.currentRole,
     currentCompany: enrichment?.currentCompany,

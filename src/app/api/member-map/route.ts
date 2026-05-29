@@ -5,7 +5,7 @@ import { hometownToStateCode, enrichmentStateToCode, CODE_TO_NAME } from '@/lib/
 export interface MapMember {
   personId: string
   canonicalName: string
-  memberRole: 'current_player' | 'alumni'
+  memberRole: 'current_player' | 'alumni' | 'coach' | 'parent'
   classLabel?: string
   classYearEstimate?: string
   rosterStartYear?: number
@@ -19,6 +19,9 @@ export interface MapMember {
   // When the member appears on the "where they are now" lens because of
   // an additional location (e.g. "winters" in FL), this is the user's label.
   locationLabel?: string
+  // Only present for parents/affiliates — surfaces "Parent of X" in the
+  // per-state member list.
+  parentRelationship?: string
 }
 
 export interface MapState {
@@ -27,6 +30,9 @@ export interface MapState {
   totalCount: number
   currentPlayerCount: number
   alumniCount: number
+  /** Parents + affiliates in this state. Surfaced separately so the
+   *  per-state list can show them under their own subhead. */
+  parentCount: number
   openToCoffeeCount: number
   openToGolfCount: number
   members: MapMember[]
@@ -55,6 +61,7 @@ export async function GET(request: Request) {
         totalCount: 0,
         currentPlayerCount: 0,
         alumniCount: 0,
+        parentCount: 0,
         openToCoffeeCount: 0,
         openToGolfCount: 0,
         members: [],
@@ -69,6 +76,7 @@ export async function GET(request: Request) {
     s.members.push(member)
     s.totalCount++
     if (member.memberRole === 'current_player') s.currentPlayerCount++
+    else if (member.memberRole === 'parent') s.parentCount++
     else s.alumniCount++
     if (member.openToCoffee) s.openToCoffeeCount++
     if (member.openToGolfRounds) s.openToGolfCount++
@@ -180,6 +188,53 @@ export async function GET(request: Request) {
           state: loc.state,
           openToCoffee: enrichment?.openToCoffee ?? false,
           openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+          locationLabel: loc.label,
+        })
+      }
+    }
+  }
+
+  // Published parents/affiliates — drive purely by enrichment city/state
+  // (parents have no hometown that means anything golf-wise). Skip if no
+  // state on enrichment + no additional locations.
+  for (const m of store.teamMemberships.filter(
+    x => x.teamId === team.id && x.memberRole === 'parent' && x.publishedToNetwork === true,
+  )) {
+    const person = store.people.find(p => p.id === m.personId)
+    if (!person) continue
+    const enrichment = enrichMap.get(m.personId)
+    if (enrichment?.visibleToPlayers === false) continue
+
+    const seenStates = new Set<string>()
+    const primaryCode = enrichmentStateToCode(enrichment?.state)
+    if (primaryCode) {
+      addMember(primaryCode, {
+        personId: person.id,
+        canonicalName: person.canonicalName,
+        memberRole: 'parent',
+        city: enrichment?.city,
+        state: enrichment?.state,
+        openToCoffee: enrichment?.openToCoffee ?? false,
+        openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+        parentRelationship: m.parentRelationship,
+      })
+      seenStates.add(primaryCode)
+    }
+
+    if (Array.isArray(enrichment?.additionalLocations)) {
+      for (const loc of enrichment.additionalLocations) {
+        const code = enrichmentStateToCode(loc.state)
+        if (!code || seenStates.has(code)) continue
+        seenStates.add(code)
+        addMember(code, {
+          personId: person.id,
+          canonicalName: person.canonicalName,
+          memberRole: 'parent',
+          city: loc.city,
+          state: loc.state,
+          openToCoffee: enrichment?.openToCoffee ?? false,
+          openToGolfRounds: enrichment?.openToGolfRounds ?? false,
+          parentRelationship: m.parentRelationship,
           locationLabel: loc.label,
         })
       }
