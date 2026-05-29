@@ -5,10 +5,14 @@
  * captain flags on the Account row.
  */
 
+// Captain notification recipients. Add a new captain here to grant
+// internal access AND start sending them claim/digest emails. Ryan
+// prefers Penn email for captain mail — the Gmail address stays in
+// FOUNDER_EMAILS (src/lib/badges/index.ts) so it still gets Founder
+// badge + Founding Member recognition if it ever signs in.
 const CAPTAIN_EMAILS_BY_TEAM: Record<string, string[]> = {
   'penn-mens-golf': [
     'rtchang@sas.upenn.edu',
-    'ryan.taylor.chang@gmail.com',
   ],
 }
 
