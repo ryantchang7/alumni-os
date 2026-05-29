@@ -80,10 +80,12 @@ export default function CourseHero({ rounds }: Props) {
           </div>
         </div>
 
-        {/* Two-column flow zone — narrative on the left, visual on the right. */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-x-12 gap-y-10 items-center">
+        {/* Two-column flow zone — narrative on the left, visual on the
+            right. Both columns top-aligned so the visual feels anchored
+            to the same baseline as the headline copy. */}
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-x-12 gap-y-10 items-start">
           {/* LEFT — copy + CTAs change per stage */}
-          <div className="min-h-[200px]">
+          <div className="min-h-[280px]">
             <AnimatePresence mode="wait">
               {stage === 'plaque' && (
                 <motion.div
@@ -218,7 +220,7 @@ export default function CourseHero({ rounds }: Props) {
           </div>
 
           {/* RIGHT — the visual swaps per stage. */}
-          <div className="relative min-h-[320px] flex items-center justify-center">
+          <div className="relative min-h-[380px] flex items-start justify-center">
             <AnimatePresence mode="wait">
               {stage === 'plaque' && <HolePlaque key="vis-plaque" />}
               {stage === 'sheet' && (
@@ -252,20 +254,20 @@ function HolePlaque() {
       transition={{ duration: 0.48, ease: [0.22, 0.61, 0.36, 1] }}
       className="relative"
       style={{
-        width: '280px',
-        padding: '32px 28px',
+        width: '360px',
+        padding: '44px 38px',
         background: '#0a1628',
-        borderRadius: '8px',
+        borderRadius: '10px',
         boxShadow:
-          '0 1px 0 rgba(255,255,255,0.06) inset, 0 24px 50px rgba(0,0,0,0.45), 0 0 0 1px rgba(200,168,75,0.4)',
+          '0 1px 0 rgba(255,255,255,0.06) inset, 0 28px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(200,168,75,0.4)',
       }}
     >
-      <p className="text-center text-[9.5px] font-semibold uppercase tracking-[0.32em] text-[#c8a84b] mb-5">
+      <p className="text-center text-[11px] font-semibold uppercase tracking-[0.32em] text-[#c8a84b] mb-6">
         Hole&nbsp;I
       </p>
 
       <p
-        className="text-center text-[#f4e3b8] text-[22px] leading-none"
+        className="text-center text-[#f4e3b8] text-[28px] leading-none"
         style={{
           fontFamily: 'var(--font-playfair)',
           letterSpacing: '0.08em',
@@ -275,23 +277,23 @@ function HolePlaque() {
       </p>
 
       <p
-        className="text-center text-[10.5px] italic text-[#c8a84b]/80 mt-2"
+        className="text-center text-[12px] italic text-[#c8a84b]/80 mt-3"
         style={{ fontFamily: 'var(--font-playfair)' }}
       >
         Founded 1894
       </p>
 
       <div
-        className="mx-auto mt-5"
+        className="mx-auto mt-6"
         style={{
-          width: '48px',
+          width: '60px',
           height: '1px',
           background:
             'linear-gradient(90deg, transparent, rgba(200,168,75,0.7) 50%, transparent)',
         }}
       />
 
-      <p className="text-center text-[9.5px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/75 mt-4">
+      <p className="text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/75 mt-5">
         Par 4 · 415 Yards
       </p>
     </motion.div>
@@ -317,32 +319,32 @@ function TeeSheet({
       transition={{ duration: 0.48, ease: [0.22, 0.61, 0.36, 1] }}
       className="relative"
       style={{
-        width: '380px',
+        width: '460px',
         background: '#faf6ec',
         borderRadius: '4px',
         boxShadow:
-          '0 24px 48px rgba(20,30,50,0.22), 0 4px 10px rgba(20,30,50,0.08), inset 0 0 0 1px rgba(180,160,120,0.4)',
+          '0 28px 60px rgba(20,30,50,0.24), 0 6px 12px rgba(20,30,50,0.10), inset 0 0 0 1px rgba(180,160,120,0.4)',
       }}
     >
       <div
-        className="flex items-center justify-between px-5 py-3"
+        className="flex items-center justify-between px-6 py-4"
         style={{ background: '#0a1628', color: '#f4e3b8' }}
       >
         <p
-          className="text-[13px] tracking-[0.18em]"
+          className="text-[15px] tracking-[0.18em]"
           style={{ fontFamily: 'var(--font-playfair)' }}
         >
           THE TEE SHEET
         </p>
-        <p className="text-[9px] uppercase tracking-[0.22em] opacity-70">
+        <p className="text-[10px] uppercase tracking-[0.22em] opacity-70">
           Open Times
         </p>
       </div>
 
       <ul className="divide-y divide-[rgba(120,100,70,0.18)]">
         {rounds.length === 0 ? (
-          <li className="px-5 py-6 text-center">
-            <p className="text-[12.5px] text-[#5a4732] italic">
+          <li className="px-6 py-8 text-center">
+            <p className="text-[13.5px] text-[#5a4732] italic">
               No rounds posted yet.
             </p>
           </li>
@@ -360,29 +362,29 @@ function TeeSheet({
                 <button
                   type="button"
                   onClick={() => onPick(g)}
-                  className="w-full text-left px-5 py-3 hover:bg-[#f0e8d4] transition-colors group"
+                  className="w-full text-left px-6 py-4 hover:bg-[#f0e8d4] transition-colors group"
                 >
                   <div className="flex items-baseline gap-3">
                     <span
-                      className="text-[10px] font-semibold text-[#0a1628] w-5"
+                      className="text-[11px] font-semibold text-[#0a1628] w-5"
                       style={{ fontFamily: 'var(--font-playfair)' }}
                     >
                       {i + 1}.
                     </span>
                     <div className="min-w-0 flex-1">
                       <p
-                        className="text-[14.5px] text-[#2c1f0e] leading-snug truncate"
+                        className="text-[16px] text-[#2c1f0e] leading-snug truncate"
                         style={{ fontFamily: 'var(--font-playfair)' }}
                       >
                         {g.title}
                       </p>
                       {meta && (
-                        <p className="text-[11.5px] text-[#5a4732] mt-0.5 truncate">
+                        <p className="text-[12.5px] text-[#5a4732] mt-0.5 truncate">
                           {meta}
                         </p>
                       )}
                     </div>
-                    <span className="text-[10px] uppercase tracking-[0.16em] text-[#0a1628] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <span className="text-[10.5px] uppercase tracking-[0.16em] text-[#0a1628] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                       Pick →
                     </span>
                   </div>
@@ -393,7 +395,7 @@ function TeeSheet({
         )}
       </ul>
 
-      <div className="px-5 py-2.5 text-[9.5px] italic text-[#7a6448] text-center border-t border-[rgba(120,100,70,0.2)]">
+      <div className="px-6 py-3 text-[10.5px] italic text-[#7a6448] text-center border-t border-[rgba(120,100,70,0.2)]">
         Signed at the first tee, Penn Men&rsquo;s Golf
       </div>
     </motion.div>
@@ -413,7 +415,7 @@ function FlagstickGreen() {
       transition={{ duration: 0.55, ease: [0.22, 0.61, 0.36, 1] }}
       className="relative"
     >
-      <svg viewBox="0 0 360 300" className="w-[320px] h-auto" aria-hidden>
+      <svg viewBox="0 0 360 300" className="w-[400px] h-auto" aria-hidden>
         <defs>
           <radialGradient id="greenGrad-v2" cx="55%" cy="45%" r="60%">
             <stop offset="0%" stopColor="#5a8a55" />
@@ -474,9 +476,9 @@ function FlagstickGreen() {
 
       {/* Refined confirmation label — no tilted ink stamp, just a clean
           navy + gold tag below the SVG. */}
-      <div className="flex items-center justify-center mt-2 gap-2">
+      <div className="flex items-center justify-center mt-3 gap-2.5">
         <span className="w-1.5 h-1.5 rounded-full bg-[#c8a84b]" />
-        <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]">
+        <p className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]">
           On the sheet
         </p>
         <span className="w-1.5 h-1.5 rounded-full bg-[#c8a84b]" />
