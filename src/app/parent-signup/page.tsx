@@ -1,10 +1,54 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession, signIn } from 'next-auth/react'
 import { ArrowLeft, Heart } from 'lucide-react'
+
+// Stash the form across the Google OAuth round-trip so the user doesn't
+// have to retype after sign-in. sessionStorage clears on tab close, which
+// is the right scope — we don't want a stale draft to ambush a returning
+// visitor next week.
+const DRAFT_KEY = 'parent-signup-draft-v1'
+
+interface Draft {
+  name: string
+  relationship: string
+}
+
+function readDraft(): Draft | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = window.sessionStorage.getItem(DRAFT_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as Partial<Draft>
+    if (typeof parsed.name !== 'string' || typeof parsed.relationship !== 'string') {
+      return null
+    }
+    return { name: parsed.name, relationship: parsed.relationship }
+  } catch {
+    return null
+  }
+}
+
+function writeDraft(d: Draft): void {
+  if (typeof window === 'undefined') return
+  try {
+    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify(d))
+  } catch {
+    // sessionStorage can throw in private browsing — best-effort only.
+  }
+}
+
+function clearDraft(): void {
+  if (typeof window === 'undefined') return
+  try {
+    window.sessionStorage.removeItem(DRAFT_KEY)
+  } catch {
+    // ignore
+  }
+}
 
 export default function ParentSignupPage() {
   const { data: session, status: sessionStatus } = useSession()
@@ -14,36 +58,71 @@ export default function ParentSignupPage() {
   const [relationship, setRelationship] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Guard so we only run the post-OAuth auto-restore + auto-submit once.
+  const autoRanRef = useRef(false)
 
   const signedIn = sessionStatus === 'authenticated'
+
+  const submitToApi = useCallback(
+    async (payload: Draft) => {
+      setSubmitting(true)
+      setError(null)
+      try {
+        const res = await fetch('/api/account/parent-signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: payload.name.trim(),
+            relationship: payload.relationship.trim(),
+          }),
+        })
+        const j = await res.json().catch(() => ({}))
+        if (!res.ok) {
+          if (res.status === 409 && j.claimId) {
+            clearDraft()
+            router.push(`/account/pending?claimId=${j.claimId}`)
+            return
+          }
+          throw new Error(j.error ?? `Submit failed (${res.status})`)
+        }
+        clearDraft()
+        router.push(`/account/pending?claimId=${j.claimId}`)
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Something went wrong')
+        setSubmitting(false)
+      }
+    },
+    [router],
+  )
+
+  // Post-OAuth resume: if we land back here signed-in with a stored
+  // draft, repopulate the fields and auto-submit so the user doesn't
+  // have to retype + click submit again.
+  useEffect(() => {
+    if (autoRanRef.current) return
+    if (sessionStatus === 'loading') return
+    const draft = readDraft()
+    if (!draft) return
+    // Repopulate visible fields either way so the user sees what's about
+    // to be submitted (and can correct if anything looks off).
+    setName(prev => prev || draft.name)
+    setRelationship(prev => prev || draft.relationship)
+    if (signedIn && draft.name.trim() && draft.relationship.trim()) {
+      autoRanRef.current = true
+      void submitToApi(draft)
+    }
+  }, [signedIn, sessionStatus, submitToApi])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!signedIn) {
+      // Stash the draft, then send the user through Google — we'll
+      // restore + auto-submit when they return.
+      writeDraft({ name: name.trim(), relationship: relationship.trim() })
       void signIn('google', { callbackUrl: '/parent-signup' })
       return
     }
-    setSubmitting(true)
-    setError(null)
-    try {
-      const res = await fetch('/api/account/parent-signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), relationship: relationship.trim() }),
-      })
-      const j = await res.json().catch(() => ({}))
-      if (!res.ok) {
-        if (res.status === 409 && j.claimId) {
-          router.push(`/account/pending?claimId=${j.claimId}`)
-          return
-        }
-        throw new Error(j.error ?? `Submit failed (${res.status})`)
-      }
-      router.push(`/account/pending?claimId=${j.claimId}`)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Something went wrong')
-      setSubmitting(false)
-    }
+    void submitToApi({ name, relationship })
   }
 
   return (
