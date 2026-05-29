@@ -42,6 +42,11 @@ const tools = [
     description: 'Founder-only. Designate PGC Captains, Supporting Members, Founding Members, and Family & Affiliate.',
     href: '/internal/roles',
   },
+  {
+    label: 'Required Fields by Role',
+    description: 'What every signup type fills out, and where each field surfaces. Reference doc — pulled from src/lib/role-requirements.ts.',
+    href: '/internal/requirements',
+  },
 ]
 
 export default async function InternalPage() {

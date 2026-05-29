@@ -429,6 +429,38 @@ export interface MomentReaction {
 }
 
 /**
+ * Open Requests — member-posted "I'm in town and want to do X" notes.
+ * Different from a captain-hosted Gathering (which has venue + time)
+ * and different from inTown on the Loop (which is passive). An Open
+ * Request says actively "I'm in NYC Aug 5–10, looking for a round;
+ * will cover guest fees." Renders as a strip on /the-course
+ * (intent=round) and /19th-hole (intent in drinks/coffee/dinner).
+ */
+export type OpenRequestIntent = 'round' | 'drinks' | 'coffee' | 'dinner'
+
+export interface OpenRequest {
+  id: string
+  teamId: string
+  fromAccountId: string
+  fromPersonId?: string
+  fromName: string
+  intent: OpenRequestIntent
+  city?: string
+  state?: string
+  /** ISO date (yyyy-mm-dd). Optional date window. */
+  startDate?: string
+  endDate?: string
+  /** Free-form body, capped at 400 chars by the API. */
+  note: string
+  /** When intent === 'round', "I'll cover guest fees" — surfaces as a
+   *  small pill on the card so visiting alumni see who's offering. */
+  guestFeesOffered: boolean
+  status: 'open' | 'closed'
+  createdAt: string
+  updatedAt: string
+}
+
+/**
  * Asks-and-Offers board for the Career Room. An "ask" is something an
  * alumnus is looking for (warm intro, role, advice); an "offer" is
  * something an alumnus is willing to give (intros at their firm, seat
@@ -516,6 +548,7 @@ export interface Store {
   moments: ClubhouseMoment[]
   momentComments: MomentComment[]
   momentReactions: MomentReaction[]
+  openRequests: OpenRequest[]
   careerPosts: CareerPost[]
   teamNewsItems: TeamNewsItem[]
   chatConversations: ChatConversation[]

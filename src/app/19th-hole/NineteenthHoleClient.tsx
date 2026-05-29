@@ -3,16 +3,20 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
+import OpenRequestStrip from '@/components/OpenRequestStrip'
+import type { OpenRequest } from '@/lib/store/types'
 
 interface AlumniEntry {
   personId: string
   canonicalName: string
   memberRole?: 'current_player' | 'alumni' | 'coach' | 'parent'
   city?: string
+  state?: string
   classLabel?: string
   currentRole?: string
   currentCompany?: string
   parentRelationship?: string
+  handicap?: string
   openToCoffee?: boolean
   openToMentorship?: boolean
 }
@@ -33,11 +37,24 @@ function MemberCard({ entry }: { entry: AlumniEntry }) {
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
       <p className="font-semibold text-[#0a1628] text-sm">{entry.canonicalName}</p>
-      {entry.city && <p className="text-xs text-[#8a7f70] mt-0.5">{entry.city}</p>}
+      {(entry.city || entry.state) && (
+        <p className="text-xs text-[#8a7f70] mt-0.5">
+          {[entry.city, entry.state].filter(Boolean).join(', ')}
+        </p>
+      )}
       {entry.memberRole === 'parent' && entry.parentRelationship ? (
         <p className="text-xs text-[#990000] mt-0.5">{entry.parentRelationship}</p>
       ) : (
-        entry.classLabel && <p className="text-xs text-[#8a7f70]">{entry.classLabel}</p>
+        <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+          {entry.classLabel && (
+            <p className="text-xs text-[#8a7f70]">{entry.classLabel}</p>
+          )}
+          {entry.handicap && (
+            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+              HCP {entry.handicap}
+            </span>
+          )}
+        </div>
       )}
       {(entry.currentRole || entry.currentCompany) && (
         <p className="text-xs text-[#4a5568] mt-1">
@@ -62,6 +79,8 @@ interface Props {
   viewerOptedToCoffee?: boolean
   /** Linked personId of the viewer; powers the "Edit" link target. */
   viewerPersonId?: string
+  /** Open Requests with social intents (drinks/coffee/dinner). */
+  openRequests?: OpenRequest[]
 }
 
 type TypeFilter = 'all' | 'coffee' | 'drinks' | 'dinner' | 'event'
@@ -81,6 +100,7 @@ export default function NineteenthHoleClient({
   interestedCounts,
   viewerOptedToCoffee,
   viewerPersonId,
+  openRequests = [],
 }: Props) {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
 
@@ -170,6 +190,20 @@ export default function NineteenthHoleClient({
           )}
         </section>
       )}
+
+      {/* Open Requests — visiting members looking for drinks / coffee /
+          dinner. Empty-state strip still renders to advertise the
+          "Post a request" CTA. */}
+      <section>
+        <OpenRequestStrip
+          requests={openRequests}
+          eyebrow="Open Requests"
+          title="In town and want company."
+          subtitle="Penn Golf members visiting somewhere — drop a note if you can host them."
+          accent="#b8860b"
+          limit={6}
+        />
+      </section>
 
       {/* Open to Coffee — grouped by role so every list of "who's
           open" reads cleanly: Current Players, then Alumni, then Coach,

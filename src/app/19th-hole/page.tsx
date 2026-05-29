@@ -3,8 +3,10 @@ import NineteenthHoleHero from './NineteenthHoleHero'
 import type { GatheringData } from '@/components/gatherings/GatheringCard'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
+import OpenRequestStrip from '@/components/OpenRequestStrip'
 import { auth } from '@/auth'
 import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
+import type { OpenRequest } from '@/lib/store/types'
 
 export default async function NineteenthHolePage() {
   const approval = await getApprovalState()
@@ -17,10 +19,12 @@ export default async function NineteenthHolePage() {
     canonicalName: string
     memberRole: 'current_player' | 'alumni' | 'coach' | 'parent'
     city?: string
+    state?: string
     classLabel?: string
     currentRole?: string
     currentCompany?: string
     parentRelationship?: string
+    handicap?: string
     openToCoffee?: boolean
   }
 
@@ -33,6 +37,9 @@ export default async function NineteenthHolePage() {
   // into Open to Coffee themselves.
   let viewerOptedToCoffee = false
   let viewerPersonId: string | undefined
+  // Open Requests with social intents (drinks/coffee/dinner) — filtered
+  // to exclude the viewer's own posts.
+  let openSocialRequests: OpenRequest[] = []
 
   if (team) {
     for (const r of store.clubhouseGatheringRequests) {
@@ -72,10 +79,12 @@ export default async function NineteenthHolePage() {
           canonicalName: person.canonicalName,
           memberRole: m.memberRole as 'current_player' | 'alumni' | 'coach' | 'parent',
           city: enrichment?.city,
+          state: enrichment?.state,
           classLabel: m.classLabel,
           currentRole: enrichment?.currentRole,
           currentCompany: enrichment?.currentCompany,
           parentRelationship: m.parentRelationship,
+          handicap: enrichment?.handicap,
           openToCoffee: enrichment?.openToCoffee,
           updatedAt: enrichment?.updatedAt,
         }
@@ -127,6 +136,18 @@ export default async function NineteenthHolePage() {
           !isHiddenGathering(g.id),
       )
       .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) })) as GatheringData[]
+
+    // Open Requests with social intents — visiting members looking for
+    // drinks / coffee / dinner.
+    const { getOpenRequestsForTeam } = await import('@/lib/store/local-store')
+    const allSocialRequests = await getOpenRequestsForTeam(team.id, [
+      'drinks',
+      'coffee',
+      'dinner',
+    ])
+    openSocialRequests = viewerPersonId
+      ? allSocialRequests.filter(r => r.fromPersonId !== viewerPersonId)
+      : allSocialRequests
   }
 
   if (!approval.approved) {
@@ -159,6 +180,7 @@ export default async function NineteenthHolePage() {
         interestedCounts={Object.fromEntries(interestedByGathering)}
         viewerOptedToCoffee={viewerOptedToCoffee}
         viewerPersonId={viewerPersonId}
+        openRequests={openSocialRequests}
       />
     </div>
   )

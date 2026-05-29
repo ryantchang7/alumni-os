@@ -7,8 +7,10 @@ import GatedPreview from '@/components/GatedPreview'
 import CourseHero from './CourseHero'
 import CourseHoleSection, { CartPathDivider } from './CourseHoleSection'
 import CourseRoll, { type CourseRollEntry as CourseRollEntryData } from './CourseRoll'
+import OpenRequestStrip from '@/components/OpenRequestStrip'
 import { auth } from '@/auth'
 import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
+import { bucketHandicap, BUCKET_LABELS, BUCKET_SHORT, type HandicapBucket } from '@/lib/handicap'
 
 interface AlumniEntry {
   person: Person
@@ -18,8 +20,13 @@ interface AlumniEntry {
 
 function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
   const { person, membership, enrichment } = entry
+  // City + state when both are set, otherwise whichever exists, then
+  // hometown as a last-resort fallback. Matches the Career Room card
+  // treatment so "Brookline" reads as "Brookline, MA".
   const location =
-    enrichment.city ?? membership.hometown ?? null
+    [enrichment.city, enrichment.state].filter(Boolean).join(', ') ||
+    membership.hometown ||
+    null
   return (
     <Link
       href={`/player/alumni/${person.id}?teamSlug=penn-mens-golf`}
@@ -28,16 +35,23 @@ function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
     >
       <div className="border-l-4 border-[#2d6a4f] px-5 py-4">
         <div className="flex items-start justify-between gap-3 mb-2">
-          <div>
+          <div className="min-w-0">
             <p
               className="text-[#0a1628] text-base font-medium leading-snug"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               {person.canonicalName}
             </p>
-            {membership.classLabel && (
-              <p className="text-[11.5px] text-[#8a7f70] mt-0.5">{membership.classLabel}</p>
-            )}
+            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+              {membership.classLabel && (
+                <p className="text-[11.5px] text-[#8a7f70]">{membership.classLabel}</p>
+              )}
+              {enrichment.handicap && (
+                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                  HCP {enrichment.handicap}
+                </span>
+              )}
+            </div>
           </div>
           <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-2 py-1 rounded-full whitespace-nowrap">
             Open
@@ -72,6 +86,13 @@ export default async function TheCoursePage() {
   let rounds: GatheringData[] = []
   let viewerOptedToRounds = false
   let viewerPersonId: string | undefined
+  let viewerHandicap: string | undefined
+  let similarPlayers: AlumniEntry[] = []
+  let viewerBucket: HandicapBucket | null = null
+  // Open Requests (intent='round') visible on this surface. Filtered to
+  // exclude the viewer's own requests.
+  type RoundOpenRequest = import('@/lib/store/types').OpenRequest
+  let openRoundRequests: RoundOpenRequest[] = []
   // Bunched course roll: each course name → the members who claim it as
   // home or favorite. Fed into the searchable CourseRoll client. Home
   // member float to the top of each course's expanded list.
@@ -134,6 +155,25 @@ export default async function TheCoursePage() {
     if (viewer.personId) {
       const myEnrichment = enrichMap.get(viewer.personId)
       viewerOptedToRounds = myEnrichment?.openToGolfRounds === true
+      viewerHandicap = myEnrichment?.handicap
+    }
+
+    // Players around your level — same handicap bucket, opted into
+    // rounds, viewer-prioritized.
+    viewerBucket = bucketHandicap(viewerHandicap)
+    if (viewerBucket && viewer.personId) {
+      const sameBucket = visible
+        .filter(a => a.person.id !== viewer.personId)
+        .filter(a => a.enrichment.openToGolfRounds)
+        .filter(a => bucketHandicap(a.enrichment.handicap) === viewerBucket)
+        .map(entry => ({
+          personId: entry.person.id,
+          city: entry.enrichment.city,
+          state: entry.enrichment.state,
+          updatedAt: entry.enrichment.updatedAt,
+          entry,
+        }))
+      similarPlayers = prioritizeForViewer(sameBucket, viewer).map(d => d.entry)
     }
 
     // Aggregate notable courses from alumni's home-course + favorite-course
@@ -188,6 +228,15 @@ export default async function TheCoursePage() {
         (interestedByGathering.get(r.gatheringId) ?? 0) + 1,
       )
     }
+
+    // Open Requests with intent='round' — visiting members looking for
+    // a tee time. Hide the viewer's own requests so they don't see
+    // themselves in the strip.
+    const { getOpenRequestsForTeam } = await import('@/lib/store/local-store')
+    const allRoundRequests = await getOpenRequestsForTeam(team.id, ['round'])
+    openRoundRequests = viewerPersonId
+      ? allRoundRequests.filter(r => r.fromPersonId !== viewerPersonId)
+      : allRoundRequests
   }
 
   const sortedCourses = Array.from(courseRoll.entries())
@@ -358,6 +407,20 @@ export default async function TheCoursePage() {
           </div>
         )}
 
+        {/* Open Requests — members in town looking for a tee time. */}
+        {openRoundRequests.length > 0 && (
+          <div className="-mt-4 mb-2">
+            <OpenRequestStrip
+              requests={openRoundRequests}
+              eyebrow="Open Requests"
+              title="In town, looking for a round."
+              subtitle="Penn Golf members visiting somewhere — ping them if you can play host."
+              accent="#2d6a4f"
+              limit={6}
+            />
+          </div>
+        )}
+
         {/* Open to a Round — Hole 2 */}
         <div id="open-to-rounds">
           <CourseHoleSection
@@ -454,6 +517,43 @@ export default async function TheCoursePage() {
           )}
           </CourseHoleSection>
         </div>
+
+        {/* Players around your level — same handicap bucket as the
+            viewer, opted into rounds. Hidden when the viewer hasn't
+            saved a handicap. */}
+        {viewerBucket && similarPlayers.length > 0 && (
+          <div>
+            <div className="flex items-baseline gap-2 mb-1 mt-2">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#2d6a4f]">
+                Around your level
+              </p>
+              <span className="text-[10.5px] tabular-nums text-[#8a7f70]">
+                · {similarPlayers.length}
+              </span>
+            </div>
+            <h2 className="text-base font-semibold text-[#0a1628] mb-1">
+              {BUCKET_SHORT[viewerBucket]}
+            </h2>
+            <p className="text-sm text-[#8a7f70] mb-5">
+              Penn Golf members in your bucket — {BUCKET_LABELS[viewerBucket].toLowerCase()}.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {similarPlayers.slice(0, 12).map(entry => (
+                <AlumniRoundCard key={entry.person.id} entry={entry} />
+              ))}
+            </div>
+            {similarPlayers.length > 12 && (
+              <div className="mt-3">
+                <Link
+                  href="/member-book"
+                  className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] hover:underline"
+                >
+                  See all {similarPlayers.length} in the Member Book &rarr;
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Notable Courses — Hole 3 */}
         {sortedCourses.length > 0 && (

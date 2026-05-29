@@ -30,6 +30,8 @@ import type {
   ClubhouseMoment,
   MomentComment,
   MomentReaction,
+  OpenRequest,
+  OpenRequestIntent,
   CareerPost,
   TeamNewsItem,
   ChatConversation,
@@ -73,6 +75,7 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.moments) parsed.moments = []
   if (!parsed.momentComments) parsed.momentComments = []
   if (!parsed.momentReactions) parsed.momentReactions = []
+  if (!parsed.openRequests) parsed.openRequests = []
   if (!parsed.careerPosts) parsed.careerPosts = []
   if (!parsed.teamNewsItems) parsed.teamNewsItems = []
   if (!parsed.chatConversations) parsed.chatConversations = []
@@ -113,6 +116,7 @@ const EMPTY_STORE: Store = {
   moments: [],
   momentComments: [],
   momentReactions: [],
+  openRequests: [],
   careerPosts: [],
   teamNewsItems: [],
   chatConversations: [],
@@ -1554,6 +1558,97 @@ export async function unlinkAccount(accountId: string): Promise<Account | null> 
   }
   await writeStore(store)
   return store.accounts[idx]
+}
+
+// ── Open Requests ─────────────────────────────────────────────────────────────
+//
+// Member-posted "I'm in town and want to play / grab coffee" notes.
+// Auto-closing happens implicitly via tripIsActive — we hide rows whose
+// endDate is in the past from the read paths. Rows persist so the member
+// can see them in "Your Requests" and reopen by clearing endDate.
+
+function openRequestIsLive(req: Pick<OpenRequest, 'status' | 'endDate'>): boolean {
+  if (req.status !== 'open') return false
+  if (req.endDate) {
+    const today = new Date().toISOString().slice(0, 10)
+    if (req.endDate < today) return false
+  }
+  return true
+}
+
+export async function getOpenRequestsForTeam(
+  teamId: string,
+  intents?: OpenRequestIntent[],
+): Promise<OpenRequest[]> {
+  const store = await readStore()
+  const intentSet = intents ? new Set(intents) : null
+  return store.openRequests
+    .filter(r => r.teamId === teamId && openRequestIsLive(r))
+    .filter(r => (intentSet ? intentSet.has(r.intent) : true))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+}
+
+export async function getOpenRequestsForAccount(
+  accountId: string,
+): Promise<OpenRequest[]> {
+  const store = await readStore()
+  return store.openRequests
+    .filter(r => r.fromAccountId === accountId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+}
+
+export async function createOpenRequest(input: {
+  teamId: string
+  fromAccountId: string
+  fromPersonId?: string
+  fromName: string
+  intent: OpenRequestIntent
+  city?: string
+  state?: string
+  startDate?: string
+  endDate?: string
+  note: string
+  guestFeesOffered?: boolean
+}): Promise<OpenRequest> {
+  const store = await readStore()
+  const now = new Date().toISOString()
+  const req: OpenRequest = {
+    id: `orq_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    teamId: input.teamId,
+    fromAccountId: input.fromAccountId,
+    fromPersonId: input.fromPersonId,
+    fromName: input.fromName,
+    intent: input.intent,
+    city: input.city,
+    state: input.state,
+    startDate: input.startDate,
+    endDate: input.endDate,
+    note: input.note,
+    guestFeesOffered: input.guestFeesOffered === true,
+    status: 'open',
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.openRequests.unshift(req)
+  await writeStore(store)
+  return req
+}
+
+export async function closeOpenRequest(
+  id: string,
+  byAccountId: string,
+): Promise<boolean> {
+  const store = await readStore()
+  const idx = store.openRequests.findIndex(r => r.id === id)
+  if (idx === -1) return false
+  if (store.openRequests[idx].fromAccountId !== byAccountId) return false
+  store.openRequests[idx] = {
+    ...store.openRequests[idx],
+    status: 'closed',
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
+  return true
 }
 
 // ── Career Posts (Asks & Offers) ──────────────────────────────────────────────
