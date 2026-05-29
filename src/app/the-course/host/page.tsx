@@ -78,6 +78,20 @@ export default function HostRoundPage() {
   }
 
   if (submittedId) {
+    // Local reset so the "Host another" button clears the form +
+    // returns to the editor without a full page reload.
+    function resetForm() {
+      setCourse('')
+      setCity('')
+      setState('')
+      setDateText('')
+      setTimeText('')
+      setCapacity('3')
+      setDescription('')
+      setAudience('both')
+      setVibe('casual')
+      setSubmittedId(null)
+    }
     return (
       <div className="min-h-[calc(100dvh-60px)] bg-[#f4ecdb] px-6 py-20 flex items-center justify-center">
         <div
@@ -91,16 +105,31 @@ export default function HostRoundPage() {
           >
             Tee box opened.
           </h1>
-          <p className="text-[13px] text-[#3d4a5c] mb-8">
+          <p className="text-[13px] text-[#3d4a5c] mb-7">
             Your round at <span className="text-[#0a1628]">{course || 'your home course'}</span>{' '}
             is on the Tee Sheet. Members can express interest from The Course page.
           </p>
-          <Link
-            href="/the-course"
-            className="inline-block bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold px-5 py-2.5 rounded-lg transition-colors"
-          >
-            Back to the Course
-          </Link>
+          <div className="flex flex-col gap-2.5">
+            <Link
+              href="/the-course#rounds-section"
+              className="bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+            >
+              See your round on the Tee Sheet
+            </Link>
+            <button
+              type="button"
+              onClick={resetForm}
+              className="bg-white border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+            >
+              Host another
+            </button>
+            <Link
+              href="/player"
+              className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#3d4a5c] hover:text-[#0a1628] mt-1"
+            >
+              Back to the Clubhouse
+            </Link>
+          </div>
         </div>
       </div>
     )

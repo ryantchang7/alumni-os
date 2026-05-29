@@ -9,7 +9,7 @@ import { slugToIndustry, memberHasIndustry } from '@/lib/industries'
 import { memberBookEntries } from '@/lib/member-book/data'
 import MemberBadges from '@/components/MemberBadges'
 import FoundersWall from '@/components/FoundersWall'
-import type { FounderEntry } from '@/lib/founders'
+import type { FounderEntry, FamilySupporterEntry } from '@/lib/founders'
 import type { BadgeId } from '@/lib/badges'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import HeroCrest from '@/components/HeroCrest'
@@ -314,6 +314,7 @@ function MemberBookPageInner() {
   const [bookIdToPersonId, setBookIdToPersonId] = useState<Record<string, string>>({})
   const [parents, setParents] = useState<ParentEntry[]>([])
   const [founders, setFounders] = useState<FounderEntry[]>([])
+  const [familySupporters, setFamilySupporters] = useState<FamilySupporterEntry[]>([])
 
   useEffect(() => {
     fetch('/api/player/profiles?teamSlug=penn-mens-golf')
@@ -369,6 +370,8 @@ function MemberBookPageInner() {
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (d?.founders) setFounders(d.founders as FounderEntry[])
+        if (d?.familySupporters)
+          setFamilySupporters(d.familySupporters as FamilySupporterEntry[])
       })
       .catch(() => {})
   }, [])
@@ -607,7 +610,7 @@ function MemberBookPageInner() {
           {/* Founders Wall — only on the All Members view. */}
           {view === 'all' && founders.length > 0 && (
             <div className="mb-7">
-              <FoundersWall founders={founders} />
+              <FoundersWall founders={founders} familySupporters={familySupporters} />
             </div>
           )}
 

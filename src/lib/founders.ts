@@ -25,9 +25,11 @@ export function computeFoundersForTeam(
   store: Pick<Store, 'accounts' | 'people' | 'teamMemberships'>,
   teamId: string,
 ): FounderEntry[] {
-  // Dedupe by linkedPersonId when set, otherwise by lowercased name.
-  // Ryan has two accounts (Penn email + Gmail) that resolve to the same
-  // human; without this dedupe he was rendering twice on the wall.
+  // Dedupe purely by lowercased canonical name. The Founders Wall only
+  // shows names, so two accounts that resolve to the same human (Ryan
+  // signed in with both Penn + Gmail) must collapse to one row. The
+  // prior version keyed on linkedPersonId-or-name, which would render
+  // Ryan twice when only one of the two accounts had a linkedPersonId.
   const byKey = new Map<string, FounderEntry>()
 
   for (const account of store.accounts) {
@@ -44,7 +46,7 @@ export function computeFoundersForTeam(
     const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
     const name = person?.canonicalName ?? account.name ?? 'Penn Golf Member'
 
-    const key = account.linkedPersonId ?? `name:${name.toLowerCase().trim()}`
+    const key = name.toLowerCase().trim()
     const existing = byKey.get(key)
     const entry: FounderEntry = {
       name,
@@ -63,4 +65,56 @@ export function computeFoundersForTeam(
   })
 
   return founders
+}
+
+/**
+ * Same shape as Founders, for Family & Affiliate tier subscribers (the
+ * $15/mo "parent" tier on /support). Surfaced on the Founders Wall in a
+ * sister tab so the recognition extends to the people supporting through
+ * that path too.
+ */
+export interface FamilySupporterEntry {
+  name: string
+  /** "Parent of John Smith C'24" / "Affiliate since 2010" — what they
+   *  entered on /parent-signup. */
+  parentRelationship?: string
+  bookId: string | null
+}
+
+export function computeFamilySupportersForTeam(
+  store: Pick<Store, 'accounts' | 'people' | 'teamMemberships'>,
+  teamId: string,
+): FamilySupporterEntry[] {
+  const byKey = new Map<string, FamilySupporterEntry>()
+
+  for (const account of store.accounts) {
+    if (account.teamId !== teamId) continue
+    const badges = getBadgesForAccount(account)
+    // Only "parent" tier subscribers — the visual recognition for the
+    // Family & Affiliate plan. (Plain unsubscribed family/affiliate
+    // signups don't earn this badge.)
+    if (!badges.includes('parent')) continue
+
+    const person = account.linkedPersonId
+      ? store.people.find(p => p.id === account.linkedPersonId)
+      : null
+    const membership = person
+      ? store.teamMemberships.find(m => m.personId === person.id && m.teamId === teamId)
+      : null
+    const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
+    const name = person?.canonicalName ?? account.name ?? 'Penn Golf Family'
+
+    const key = name.toLowerCase().trim()
+    const existing = byKey.get(key)
+    byKey.set(key, {
+      name,
+      parentRelationship:
+        membership?.parentRelationship ?? existing?.parentRelationship,
+      bookId: bookEntry?.id ?? existing?.bookId ?? null,
+    })
+  }
+
+  return Array.from(byKey.values()).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  )
 }

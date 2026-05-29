@@ -9,14 +9,18 @@
 
 import { NextResponse } from 'next/server'
 import { getTeamBySlug, readStore } from '@/lib/store/local-store'
-import { computeFoundersForTeam } from '@/lib/founders'
+import {
+  computeFoundersForTeam,
+  computeFamilySupportersForTeam,
+} from '@/lib/founders'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
 export async function GET() {
   const team = await getTeamBySlug(TEAM_SLUG)
-  if (!team) return NextResponse.json({ founders: [] })
+  if (!team) return NextResponse.json({ founders: [], familySupporters: [] })
   const store = await readStore()
   const founders = computeFoundersForTeam(store, team.id)
-  return NextResponse.json({ founders })
+  const familySupporters = computeFamilySupportersForTeam(store, team.id)
+  return NextResponse.json({ founders, familySupporters })
 }

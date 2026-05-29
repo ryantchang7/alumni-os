@@ -4,8 +4,11 @@ import TeamNewsStrip from '@/components/TeamNewsStrip'
 import FoundersWall from '@/components/FoundersWall'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import HeroCrest from '@/components/HeroCrest'
-import { computeFoundersForTeam } from '@/lib/founders'
-import type { FounderEntry } from '@/lib/founders'
+import {
+  computeFoundersForTeam,
+  computeFamilySupportersForTeam,
+} from '@/lib/founders'
+import type { FounderEntry, FamilySupporterEntry } from '@/lib/founders'
 
 interface PlayerEntry {
   person: Person
@@ -48,11 +51,13 @@ export default async function TeamRoomPage() {
   let recentAlumni: PlayerEntry[] = []
   let newsItems: TeamNewsItem[] = []
   let founders: FounderEntry[] = []
+  let familySupporters: FamilySupporterEntry[] = []
   const captainNote = await getSiteContentOrDefault('team-room.captain-note')
   const crestImage = await getSiteContentOrDefault('team-room.crest-image')
 
   if (team) {
     founders = computeFoundersForTeam(store, team.id)
+    familySupporters = computeFamilySupportersForTeam(store, team.id)
     coaches = store.teamMemberships
       .filter(m => m.teamId === team.id && m.memberRole === 'coach' && m.publishedToNetwork === true)
       .map(m => {
@@ -258,7 +263,12 @@ export default async function TeamRoomPage() {
         {/* Founders Wall preview */}
         {founders.length > 0 && (
           <section>
-            <FoundersWall founders={founders} preview limit={6} />
+            <FoundersWall
+              founders={founders}
+              familySupporters={familySupporters}
+              preview
+              limit={6}
+            />
           </section>
         )}
 

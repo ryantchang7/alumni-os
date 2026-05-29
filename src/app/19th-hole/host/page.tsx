@@ -86,6 +86,17 @@ export default function HostNineteenthHolePage() {
   }
 
   if (submittedVenue) {
+    function resetForm() {
+      setType('drinks')
+      setVenue('')
+      setCity('')
+      setState('')
+      setDateText('')
+      setTimeText('')
+      setAudience('both')
+      setDescription('')
+      setSubmittedVenue(null)
+    }
     return (
       <div className="min-h-[calc(100dvh-60px)] bg-[#0a1628] px-6 py-20 flex items-center justify-center">
         <div
@@ -99,17 +110,32 @@ export default function HostNineteenthHolePage() {
           >
             Round&rsquo;s on you.
           </h1>
-          <p className="text-[13px] text-[#3d4a5c] mb-8">
+          <p className="text-[13px] text-[#3d4a5c] mb-7">
             Your {currentType.label.toLowerCase()} at{' '}
             <span className="text-[#0a1628]">{submittedVenue}</span> is up on the
             wall. Members can express interest from the 19th Hole.
           </p>
-          <Link
-            href="/19th-hole"
-            className="inline-block bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold px-5 py-2.5 rounded-lg transition-colors"
-          >
-            Back to the 19th
-          </Link>
+          <div className="flex flex-col gap-2.5">
+            <Link
+              href="/19th-hole"
+              className="bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+            >
+              See it on the 19th Hole
+            </Link>
+            <button
+              type="button"
+              onClick={resetForm}
+              className="bg-white border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+            >
+              Host another
+            </button>
+            <Link
+              href="/player"
+              className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#3d4a5c] hover:text-[#0a1628] mt-1"
+            >
+              Back to the Clubhouse
+            </Link>
+          </div>
         </div>
       </div>
     )

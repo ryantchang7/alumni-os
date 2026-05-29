@@ -121,8 +121,10 @@ function AlumniCard({ entry }: { entry: AlumniEntry }) {
             : enrichment.currentRole ?? enrichment.currentCompany}
         </p>
       )}
-      {enrichment.city && (
-        <p className="text-xs text-[#8a7f70] mt-0.5">{enrichment.city}</p>
+      {(enrichment.city || enrichment.state) && (
+        <p className="text-xs text-[#8a7f70] mt-0.5">
+          {[enrichment.city, enrichment.state].filter(Boolean).join(', ')}
+        </p>
       )}
       {membership.classLabel && (
         <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>
@@ -131,6 +133,21 @@ function AlumniCard({ entry }: { entry: AlumniEntry }) {
         View profile &rarr;
       </span>
     </Link>
+  )
+}
+
+function ViewerListedChip({ personId }: { personId: string }) {
+  return (
+    <div className="mb-5 inline-flex items-center gap-2 bg-white border border-[#990000]/25 rounded-full px-3.5 py-1.5 text-[11.5px] text-[#3d4a5c]">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]" />
+      You&rsquo;re on this list too.
+      <Link
+        href={`/alumni/profile/${encodeURIComponent(personId)}?teamSlug=penn-mens-golf`}
+        className="font-semibold text-[#990000] hover:underline"
+      >
+        Edit
+      </Link>
+    </div>
   )
 }
 
@@ -180,6 +197,19 @@ export default async function CareerRoomPage() {
   const viewer = team
     ? resolveViewerLocation(session, store, team.id)
     : {}
+
+  // Viewer's own opt-ins — used to render the subtle "you're on this
+  // list too — Edit" chip above each list section.
+  const viewerPersonId = viewer.personId
+  const viewerEnrichment =
+    team && viewerPersonId
+      ? store.personEnrichments.find(
+          e => e.teamId === team.id && e.personId === viewerPersonId,
+        )
+      : null
+  const viewerOptedToMentor = viewerEnrichment?.openToMentorship === true
+  const viewerOptedToIntros = viewerEnrichment?.openToWarmIntroductions === true
+  const viewerOptedToCoffee = viewerEnrichment?.openToCoffee === true
 
   function prioritizeAlumni(rows: AlumniEntry[]): AlumniEntry[] {
     const decorated = rows.map(entry => ({
@@ -350,9 +380,12 @@ export default async function CareerRoomPage() {
               </span>
             )}
           </div>
-          <p className="text-sm text-[#8a7f70] mb-6">
+          <p className="text-sm text-[#8a7f70] mb-3">
             Alumni who have offered to mentor current players.
           </p>
+          {viewerOptedToMentor && viewerPersonId && (
+            <ViewerListedChip personId={viewerPersonId} />
+          )}
           {openToMentorship.length === 0 ? (
             <EmptyState label="This list grows as alumni open up their network." />
           ) : (
@@ -386,9 +419,12 @@ export default async function CareerRoomPage() {
               </span>
             )}
           </div>
-          <p className="text-sm text-[#8a7f70] mb-6">
+          <p className="text-sm text-[#8a7f70] mb-3">
             Alumni who can connect you with someone in their network.
           </p>
+          {viewerOptedToIntros && viewerPersonId && (
+            <ViewerListedChip personId={viewerPersonId} />
+          )}
           {openToIntros.length === 0 ? (
             <EmptyState label="This list grows as alumni open up their network." />
           ) : (
@@ -422,9 +458,12 @@ export default async function CareerRoomPage() {
               </span>
             )}
           </div>
-          <p className="text-sm text-[#8a7f70] mb-6">
+          <p className="text-sm text-[#8a7f70] mb-3">
             Alumni open to an informal chat over coffee.
           </p>
+          {viewerOptedToCoffee && viewerPersonId && (
+            <ViewerListedChip personId={viewerPersonId} />
+          )}
           {openToCoffee.length === 0 ? (
             <EmptyState label="This list grows as alumni open up their network." />
           ) : (

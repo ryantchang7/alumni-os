@@ -92,6 +92,13 @@ export default function PostCareerEntryPage() {
   }
 
   if (submitted) {
+    function resetForm() {
+      setKind('ask')
+      setSector('finance')
+      setHeadline('')
+      setBody('')
+      setSubmitted(false)
+    }
     return (
       <div className="min-h-[calc(100dvh-60px)] bg-[#f8f5f0] px-6 py-20 flex items-center justify-center">
         <div
@@ -105,15 +112,30 @@ export default function PostCareerEntryPage() {
           >
             On the floor.
           </h1>
-          <p className="text-[13px] text-[#3d4a5c] mb-8">
+          <p className="text-[13px] text-[#3d4a5c] mb-7">
             Your {currentKind.label.toLowerCase()} is up. Replies go straight to your inbox.
           </p>
-          <Link
-            href="/career-room"
-            className="inline-block bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold px-5 py-2.5 rounded-lg transition-colors"
-          >
-            Back to the Career Room
-          </Link>
+          <div className="flex flex-col gap-2.5">
+            <Link
+              href="/career-room"
+              className="bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+            >
+              See your post in the Career Room
+            </Link>
+            <button
+              type="button"
+              onClick={resetForm}
+              className="bg-white border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
+            >
+              Post another
+            </button>
+            <Link
+              href="/player"
+              className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#3d4a5c] hover:text-[#0a1628] mt-1"
+            >
+              Back to the Clubhouse
+            </Link>
+          </div>
         </div>
       </div>
     )

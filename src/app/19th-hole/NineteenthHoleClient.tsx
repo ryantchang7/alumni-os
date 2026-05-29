@@ -56,6 +56,12 @@ interface Props {
   openToCoffee: AlumniEntry[]
   cityGroups: { city: string; count: number; coffeeCount: number }[]
   interestedCounts?: Record<string, number>
+  /** True when the signed-in viewer has opted into "Open to Coffee" —
+   *  used to render a subtle "you're on this list too" chip so they
+   *  know they're visible without showing themselves in the grid. */
+  viewerOptedToCoffee?: boolean
+  /** Linked personId of the viewer; powers the "Edit" link target. */
+  viewerPersonId?: string
 }
 
 type TypeFilter = 'all' | 'coffee' | 'drinks' | 'dinner' | 'event'
@@ -68,7 +74,14 @@ const TYPE_LABELS: Record<TypeFilter, string> = {
   event: 'Events',
 }
 
-export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGroups, interestedCounts }: Props) {
+export default function NineteenthHoleClient({
+  gatherings,
+  openToCoffee,
+  cityGroups,
+  interestedCounts,
+  viewerOptedToCoffee,
+  viewerPersonId,
+}: Props) {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
 
   const filteredGatherings = typeFilter === 'all'
@@ -170,9 +183,21 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
             </span>
           )}
         </div>
-        <p className="text-sm text-[#8a7f70] mb-6">
+        <p className="text-sm text-[#8a7f70] mb-3">
           Penn Golf members open to an informal catch-up.
         </p>
+        {viewerOptedToCoffee && viewerPersonId && (
+          <div className="mb-6 inline-flex items-center gap-2 bg-[#0a1628]/5 border border-[#0a1628]/15 rounded-full px-3.5 py-1.5 text-[11.5px] text-[#3d4a5c]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]" />
+            You&rsquo;re on this list too.
+            <Link
+              href={`/alumni/profile/${encodeURIComponent(viewerPersonId)}?teamSlug=penn-mens-golf`}
+              className="font-semibold text-[#990000] hover:underline"
+            >
+              Edit
+            </Link>
+          </div>
+        )}
         {openToCoffee.length === 0 ? (
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"

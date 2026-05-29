@@ -6,6 +6,7 @@ import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
 import CourseHero from './CourseHero'
 import CourseHoleSection, { CartPathDivider } from './CourseHoleSection'
+import CourseRoll, { type CourseRollEntry as CourseRollEntryData } from './CourseRoll'
 import { auth } from '@/auth'
 import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 
@@ -61,37 +62,6 @@ function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
   )
 }
 
-function CourseRollEntry({
-  course,
-  count,
-  isHome,
-}: {
-  course: string
-  count: number
-  isHome: boolean
-}) {
-  return (
-    <li className="flex items-center justify-between gap-3 py-2.5 border-b border-[rgba(180,168,150,0.22)] last:border-b-0">
-      <span className="flex items-center gap-2 min-w-0">
-        <span
-          className="text-[14px] text-[#0a1628] leading-snug truncate"
-          style={{ fontFamily: 'var(--font-playfair)' }}
-        >
-          {course}
-        </span>
-        {isHome && (
-          <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
-            Home course
-          </span>
-        )}
-      </span>
-      <span className="text-[11px] font-medium text-[#8a7f70] whitespace-nowrap">
-        {count} {count === 1 ? 'member' : 'members'}
-      </span>
-    </li>
-  )
-}
-
 export default async function TheCoursePage() {
   const approval = await getApprovalState()
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
@@ -100,6 +70,17 @@ export default async function TheCoursePage() {
 
   let openToRounds: AlumniEntry[] = []
   let rounds: GatheringData[] = []
+  let viewerOptedToRounds = false
+  let viewerPersonId: string | undefined
+  // Bunched course roll: each course name → the members who claim it as
+  // home or favorite. Fed into the searchable CourseRoll client. Home
+  // member float to the top of each course's expanded list.
+  interface CourseRollMember {
+    personId: string
+    name: string
+    isHome: boolean
+  }
+  const courseMembers = new Map<string, CourseRollMember[]>()
   const interestedByGathering = new Map<string, number>()
   const courseRoll = new Map<string, number>()
   const homeCourseSet = new Set<string>()
@@ -146,6 +127,15 @@ export default async function TheCoursePage() {
       }))
     openToRounds = prioritizeForViewer(decorated, viewer).map((d) => d.entry)
 
+    // Viewer's own "Open to a Round" opt-in — surfaces the small
+    // "You're on this list too — Edit" chip above the list so they
+    // know they're visible without seeing their own card mixed in.
+    viewerPersonId = viewer.personId
+    if (viewer.personId) {
+      const myEnrichment = enrichMap.get(viewer.personId)
+      viewerOptedToRounds = myEnrichment?.openToGolfRounds === true
+    }
+
     // Aggregate notable courses from alumni's home-course + favorite-course
     // entries. Each member counts at most once per course; home course gets
     // ranked first when equal counts.
@@ -167,7 +157,15 @@ export default async function TheCoursePage() {
         if (!key || seenForMember.has(key)) continue
         seenForMember.add(key)
         courseRoll.set(key, (courseRoll.get(key) ?? 0) + 1)
-        if (v.enrichment.homeCourse === key) homeCourseSet.add(key)
+        const isHome = v.enrichment.homeCourse === key
+        if (isHome) homeCourseSet.add(key)
+        const list = courseMembers.get(key) ?? []
+        list.push({
+          personId: v.person.id,
+          name: v.person.canonicalName,
+          isHome,
+        })
+        courseMembers.set(key, list)
       }
     }
 
@@ -200,7 +198,31 @@ export default async function TheCoursePage() {
       const bHome = homeCourseSet.has(b[0]) ? 1 : 0
       return bHome - aHome
     })
-    .slice(0, 12)
+    .slice(0, 50)
+
+  // Bunched + ordered course roll for the CourseRoll client (search +
+  // expandable per-course member list). Same sort as sortedCourses
+  // (count desc, home-courses break ties), but carrying the per-course
+  // member list along for the ride.
+  const courseRollEntries: CourseRollEntryData[] = sortedCourses.map(
+    ([course, count]) => {
+      void count
+      const members = courseMembers.get(course) ?? []
+      // Dedupe in case a member listed the same course as both home +
+      // favorite — the earlier loop already does, but defensive.
+      const seen = new Set<string>()
+      const deduped = members.filter(m => {
+        if (seen.has(m.personId)) return false
+        seen.add(m.personId)
+        return true
+      })
+      return {
+        course,
+        members: deduped,
+        isHomeForAnyone: homeCourseSet.has(course),
+      }
+    },
+  )
 
   const actionCards = [
     {
@@ -344,6 +366,18 @@ export default async function TheCoursePage() {
             rightLabel={openToRounds.length > 0 ? `${openToRounds.length} available` : undefined}
             subtitle="Penn Golf members open to hosting or joining a round."
           >
+          {viewerOptedToRounds && viewerPersonId && (
+            <div className="mb-5 inline-flex items-center gap-2 bg-white border border-[#2d6a4f]/30 rounded-full px-3.5 py-1.5 text-[11.5px] text-[#3d4a5c]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]" />
+              You&rsquo;re on this list too.
+              <Link
+                href={`/alumni/profile/${encodeURIComponent(viewerPersonId)}?teamSlug=penn-mens-golf`}
+                className="font-semibold text-[#990000] hover:underline"
+              >
+                Edit
+              </Link>
+            </div>
+          )}
           {openToRounds.length === 0 ? (
             <div
               className="bg-white border border-dashed border-[rgba(180,168,150,0.5)] rounded-xl p-8 text-center"
@@ -431,21 +465,7 @@ export default async function TheCoursePage() {
               rightLabel="The course roll"
               subtitle="Home courses across the alumni network — access often runs through these."
             >
-              <div
-                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-4"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-              >
-                <ul>
-                  {sortedCourses.map(([course, count]) => (
-                    <CourseRollEntry
-                      key={course}
-                      course={course}
-                      count={count}
-                      isHome={homeCourseSet.has(course)}
-                    />
-                  ))}
-                </ul>
-              </div>
+              <CourseRoll entries={courseRollEntries} />
             </CourseHoleSection>
           </div>
         )}

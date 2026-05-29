@@ -28,6 +28,11 @@ export default async function NineteenthHolePage() {
   let cityGroups: { city: string; count: number; coffeeCount: number }[] = []
   let socialGatherings: GatheringData[] = []
   const interestedByGathering = new Map<string, number>()
+  // Surfaced to the client so it can show a subtle "You're listed here
+  // too — edit your profile to change" chip when the viewer has opted
+  // into Open to Coffee themselves.
+  let viewerOptedToCoffee = false
+  let viewerPersonId: string | undefined
 
   if (team) {
     for (const r of store.clubhouseGatheringRequests) {
@@ -88,6 +93,16 @@ export default async function NineteenthHolePage() {
       viewer,
     )
 
+    // Did the viewer themselves opt into "Open to Coffee"? Used to render
+    // the small reassurance chip on top of the list.
+    viewerPersonId = viewer.personId
+    if (viewer.personId) {
+      const myEnrichment = store.personEnrichments.find(
+        e => e.teamId === team.id && e.personId === viewer.personId,
+      )
+      viewerOptedToCoffee = myEnrichment?.openToCoffee === true
+    }
+
     const cityMap = new Map<string, { count: number; coffeeCount: number }>()
     for (const entry of visible) {
       const city = entry.city?.trim()
@@ -142,6 +157,8 @@ export default async function NineteenthHolePage() {
         openToCoffee={openToCoffee}
         cityGroups={cityGroups}
         interestedCounts={Object.fromEntries(interestedByGathering)}
+        viewerOptedToCoffee={viewerOptedToCoffee}
+        viewerPersonId={viewerPersonId}
       />
     </div>
   )

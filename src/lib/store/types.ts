@@ -180,6 +180,10 @@ export interface PersonEnrichment {
   /** Member opted out of providing a home course — they're not a member
    *  at a club. Suppresses the required-field check on save. */
   noHomeCourse?: boolean
+  /** USGA handicap index as a free-form string. Stored as the user
+   *  enters it so we can hold both numeric indexes ("12.4") and the
+   *  preset categories "Scratch" and "Beginner / Learning". */
+  handicap?: string
   interests?: string
   memberSince?: string
   visibleToPlayers?: boolean

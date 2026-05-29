@@ -50,6 +50,7 @@ interface SelfProfile {
   visibleToPlayers?: boolean
   homeCourse?: string
   noHomeCourse?: boolean
+  handicap?: string
   favoriteCourses?: string
   favoritePennGolfMemory?: string
   interests?: string
@@ -117,6 +118,7 @@ function AlumniProfileInner() {
   const [contactPref, setContactPref] = useState('team_intro')
   const [visibleToPlayers, setVisibleToPlayers] = useState(true)
   const [homeCourse, setHomeCourse] = useState('')
+  const [handicap, setHandicap] = useState('')
   const [favoriteCourses, setFavoriteCourses] = useState('')
   const [favoritePennGolfMemory, setFavoritePennGolfMemory] = useState('')
   /** "I'm not a member at a course" — opt-out for players and parents who
@@ -160,6 +162,7 @@ function AlumniProfileInner() {
         setContactPref(data.contactPreference ?? 'team_intro')
         setVisibleToPlayers(data.visibleToPlayers ?? true)
         setHomeCourse(data.homeCourse ?? '')
+        setHandicap(data.handicap ?? '')
         setFavoriteCourses(data.favoriteCourses ?? '')
         setFavoritePennGolfMemory(data.favoritePennGolfMemory ?? '')
         setNoHomeCourse(data.noHomeCourse === true)
@@ -200,6 +203,9 @@ function AlumniProfileInner() {
     if (!currentCompany.trim()) missing.push('Company')
     if (!industry.trim()) missing.push('Industries')
     if (!isParent && !noHomeCourse && !homeCourse.trim()) missing.push('Home course')
+    // Handicap is required for players + alumni + coach. Skip for
+    // parents/affiliates — they may not golf.
+    if (!isParent && !handicap.trim()) missing.push('Handicap')
     // At least one contact method so other members can reach you.
     if (!email.trim() && !phone.trim() && !linkedinUrl.trim()) {
       missing.push('A contact method (email, phone, or LinkedIn)')
@@ -245,6 +251,7 @@ function AlumniProfileInner() {
           visibleToPlayers,
           homeCourse,
           noHomeCourse,
+          handicap,
           favoriteCourses,
           favoritePennGolfMemory,
           interests,
@@ -683,6 +690,43 @@ function AlumniProfileInner() {
                   </span>
                 </label>
               </div>
+              {/* Handicap — required for non-parents. Chip presets for
+                  "Scratch" and "Beginner / Learning", plus a free-form
+                  input for an actual index ("12.4"). The presets just
+                  set the input value; nothing fancy needed. */}
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Handicap
+                  {!isParent && <span className="text-[#990000]"> *</span>}
+                </label>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {(['Scratch', 'Beginner / Learning'] as const).map(preset => {
+                    const active = handicap.trim() === preset
+                    return (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => setHandicap(preset)}
+                        className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                          active
+                            ? 'bg-[#0a1628] text-white border-[#0a1628]'
+                            : 'bg-white text-[#0a1628] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]'
+                        }`}
+                      >
+                        {preset}
+                      </button>
+                    )
+                  })}
+                </div>
+                <input
+                  type="text"
+                  value={handicap}
+                  onChange={e => setHandicap(e.target.value.slice(0, 32))}
+                  placeholder="Enter your index (e.g. 12.4) or pick above"
+                  required={!isParent}
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+              </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
                   Favorite courses (comma-separated)
@@ -915,7 +959,11 @@ function AlumniProfileInner() {
             </label>
           </div>
 
-          {/* Save button */}
+          {/* Save row + next-step affordances. After a successful save
+              we surface a small bar of follow-up actions so the member
+              has somewhere obvious to go ("see what I just saved" /
+              "browse the Member Book" / "back to the Clubhouse") rather
+              than staring at the editor wondering what's next. */}
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <button
               type="button"
@@ -926,21 +974,45 @@ function AlumniProfileInner() {
             >
               {saving ? 'Saving...' : 'Save changes'}
             </button>
-            {saved && (
-              <span className="text-sm text-emerald-700 font-medium">Changes saved.</span>
-            )}
-            {saved && profile.bookId && (
-              <Link
-                href={`/member-book/${encodeURIComponent(profile.bookId)}`}
-                className="text-xs font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
-              >
-                View your Member Book card &rarr;
-              </Link>
-            )}
             {error && !saving && (
               <span className="text-sm text-[#990000]">{error}</span>
             )}
           </div>
+
+          {saved && (
+            <div
+              className="mt-5 bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 rounded-xl px-5 py-4"
+              role="status"
+            >
+              <p className="text-[13px] font-semibold text-[#2d6a4f] mb-3">
+                Changes saved.
+              </p>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <Link
+                  href={
+                    profile.bookId
+                      ? `/member-book/${encodeURIComponent(profile.bookId)}`
+                      : `/player/alumni/${encodeURIComponent(profile.personId)}`
+                  }
+                  className="inline-flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] bg-[#0a1628] hover:bg-[#112240] text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  View your card &rarr;
+                </Link>
+                <Link
+                  href="/member-book"
+                  className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Member Book
+                </Link>
+                <Link
+                  href="/player"
+                  className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#3d4a5c] hover:text-[#0a1628]"
+                >
+                  Back to the Clubhouse
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
