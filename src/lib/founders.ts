@@ -25,7 +25,10 @@ export function computeFoundersForTeam(
   store: Pick<Store, 'accounts' | 'people' | 'teamMemberships'>,
   teamId: string,
 ): FounderEntry[] {
-  const founders: FounderEntry[] = []
+  // Dedupe by linkedPersonId when set, otherwise by lowercased name.
+  // Ryan has two accounts (Penn email + Gmail) that resolve to the same
+  // human; without this dedupe he was rendering twice on the wall.
+  const byKey = new Map<string, FounderEntry>()
 
   for (const account of store.accounts) {
     if (account.teamId !== teamId) continue
@@ -41,14 +44,19 @@ export function computeFoundersForTeam(
     const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
     const name = person?.canonicalName ?? account.name ?? 'Penn Golf Member'
 
-    founders.push({
+    const key = account.linkedPersonId ?? `name:${name.toLowerCase().trim()}`
+    const existing = byKey.get(key)
+    const entry: FounderEntry = {
       name,
-      classLabel: membership?.classLabel,
-      isProgramFounder: badges.includes('founder'),
-      bookId: bookEntry?.id ?? null,
-    })
+      classLabel: membership?.classLabel ?? existing?.classLabel,
+      isProgramFounder:
+        badges.includes('founder') || existing?.isProgramFounder === true,
+      bookId: bookEntry?.id ?? existing?.bookId ?? null,
+    }
+    byKey.set(key, entry)
   }
 
+  const founders = Array.from(byKey.values())
   founders.sort((a, b) => {
     if (a.isProgramFounder !== b.isProgramFounder) return a.isProgramFounder ? -1 : 1
     return a.name.localeCompare(b.name)

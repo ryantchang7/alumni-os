@@ -177,6 +177,9 @@ export interface PersonEnrichment {
   favoritePennGolfMemory?: string
   favoriteCourses?: string
   homeCourse?: string
+  /** Member opted out of providing a home course — they're not a member
+   *  at a club. Suppresses the required-field check on save. */
+  noHomeCourse?: boolean
   interests?: string
   memberSince?: string
   visibleToPlayers?: boolean

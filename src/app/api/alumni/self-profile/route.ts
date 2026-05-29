@@ -79,6 +79,7 @@ export async function GET(request: Request) {
     contactPreference: enrichment?.contactPreference ?? 'team_intro',
     visibleToPlayers: enrichment?.visibleToPlayers ?? true,
     homeCourse: enrichment?.homeCourse,
+    noHomeCourse: enrichment?.noHomeCourse === true,
     favoriteCourses: enrichment?.favoriteCourses,
     favoritePennGolfMemory: enrichment?.favoritePennGolfMemory,
     interests: enrichment?.interests,
@@ -198,6 +199,7 @@ export async function POST(request: Request) {
   }
   if (typeof body.alumniBio === 'string') safeUpdate.alumniBio = body.alumniBio.trim()
   if (typeof body.homeCourse === 'string') safeUpdate.homeCourse = body.homeCourse.trim()
+  if (typeof body.noHomeCourse === 'boolean') safeUpdate.noHomeCourse = body.noHomeCourse
   if (typeof body.favoriteCourses === 'string') safeUpdate.favoriteCourses = body.favoriteCourses.trim()
   if (typeof body.favoritePennGolfMemory === 'string') safeUpdate.favoritePennGolfMemory = body.favoritePennGolfMemory.trim()
   if (typeof body.interests === 'string') safeUpdate.interests = body.interests.trim()

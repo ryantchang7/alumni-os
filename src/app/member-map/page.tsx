@@ -65,9 +65,15 @@ export default async function MemberMapPage() {
   const team = await getTeamBySlug(TEAM_SLUG)
   const crestImage = await getSiteContentOrDefault('member-map.crest-image')
 
-  // Two parallel datasets — one keyed by hometown, one keyed by current city/state.
+  // Three parallel datasets:
+  //   hometownByState — players + alumni + coach keyed by hometown
+  //   currentByState  — same population keyed by current city/state
+  //   familyByState   — parents/affiliates only, current-location only
+  // Family lives in its own aggregate so the /member-map Family subtab
+  // can show a dedicated map without mixing into the main one.
   const hometownByState = new Map<string, MapState>()
   const currentByState = new Map<string, MapState>()
+  const familyByState = new Map<string, MapState>()
   const seenTeamStoreNames = new Set<string>()
 
   if (team) {
@@ -200,7 +206,10 @@ export default async function MemberMapPage() {
         const code = enrichmentStateToCode(rawState)
         if (!code || placedCurrentCodes.has(code)) return
         placedCurrentCodes.add(code)
-        placeMember(currentByState, code, { ...base, locationLabel: locLabel })
+        // Parents live in the dedicated family aggregate so the
+        // /member-map "Family & Affiliate" subtab can render a
+        // separate map without mixing with the alumni one.
+        placeMember(familyByState, code, { ...base, locationLabel: locLabel })
       }
       placeCurrent(enrichment?.state)
       for (const loc of enrichment?.additionalLocations ?? []) {
@@ -238,6 +247,9 @@ export default async function MemberMapPage() {
   const currentStates = Array.from(currentByState.values()).sort(
     (a, b) => b.totalCount - a.totalCount,
   )
+  const familyStates = Array.from(familyByState.values()).sort(
+    (a, b) => b.totalCount - a.totalCount,
+  )
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -265,6 +277,7 @@ export default async function MemberMapPage() {
         <MemberMapClient
           hometownStates={hometownStates}
           currentStates={currentStates}
+          familyStates={familyStates}
         />
       </div>
     </div>

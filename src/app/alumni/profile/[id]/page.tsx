@@ -48,6 +48,7 @@ interface SelfProfile {
   contactPreference?: string
   visibleToPlayers?: boolean
   homeCourse?: string
+  noHomeCourse?: boolean
   favoriteCourses?: string
   favoritePennGolfMemory?: string
   interests?: string
@@ -134,6 +135,10 @@ function AlumniProfileInner() {
   const [homeCourse, setHomeCourse] = useState('')
   const [favoriteCourses, setFavoriteCourses] = useState('')
   const [favoritePennGolfMemory, setFavoritePennGolfMemory] = useState('')
+  /** "I'm not a member at a course" — opt-out for players and parents who
+   *  don't have a club affiliation. When true, the home course required
+   *  check is suppressed and the field is cleared/disabled. */
+  const [noHomeCourse, setNoHomeCourse] = useState(false)
   const [interests, setInterests] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -173,6 +178,7 @@ function AlumniProfileInner() {
         setHomeCourse(data.homeCourse ?? '')
         setFavoriteCourses(data.favoriteCourses ?? '')
         setFavoritePennGolfMemory(data.favoritePennGolfMemory ?? '')
+        setNoHomeCourse(data.noHomeCourse === true)
         setInterests(data.interests ?? '')
         setEmail(data.email ?? '')
         setPhone(data.phone ?? '')
@@ -209,7 +215,7 @@ function AlumniProfileInner() {
     if (!currentRole.trim()) missing.push('Current role')
     if (!currentCompany.trim()) missing.push('Company')
     if (!industry.trim()) missing.push('Industries')
-    if (!isParent && !homeCourse.trim()) missing.push('Home course')
+    if (!isParent && !noHomeCourse && !homeCourse.trim()) missing.push('Home course')
     // At least one contact method so other members can reach you.
     if (!email.trim() && !phone.trim() && !linkedinUrl.trim()) {
       missing.push('A contact method (email, phone, or LinkedIn)')
@@ -254,6 +260,7 @@ function AlumniProfileInner() {
           contactPreference: contactPref,
           visibleToPlayers,
           homeCourse,
+          noHomeCourse,
           favoriteCourses,
           favoritePennGolfMemory,
           interests,
@@ -561,7 +568,9 @@ function AlumniProfileInner() {
                 </p>
               </div>
 
-              {/* On the Loop — current trip / passing through */}
+              {/* On the Loop — current trip / passing through. Open to
+                  everyone (players, alumni, coach, family) — the surface
+                  only renders when you actually fill in a trip window. */}
               <div className="border-t border-[rgba(180,168,150,0.35)] pt-5 mt-1">
                 <div className="flex items-baseline justify-between mb-1">
                   <label className="block text-xs font-medium text-[#4a5568]">
@@ -644,51 +653,73 @@ function AlumniProfileInner() {
             </div>
           </div>
 
-          {/* Golf — players + alumni + coach only. Parents/affiliates
-              don't have a Penn Golf playing history to fill in. */}
-          {!isParent && (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-            >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
-                Golf
-              </p>
-              <p className="text-xs text-[#8a7f70] mb-4">
-                Used on The Course and to surface you to alumni wanting to play near you.
-              </p>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                    Home course <span className="text-[#990000]">*</span>
-                  </label>
-                  <CourseAutocomplete
-                    value={homeCourse}
-                    onChange={setHomeCourse}
-                    placeholder="e.g. Winged Foot Golf Club"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                    Favorite courses (comma-separated)
-                  </label>
+          {/* Golf — open to everyone. Parents/affiliates may not have a
+              Penn Golf playing history, but they're welcome to add a
+              home course and favorites. The "Favorite Penn Golf memory"
+              field is the only player-specific bit — hide it for them. */}
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+          >
+            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+              Golf
+            </p>
+            <p className="text-xs text-[#8a7f70] mb-4">
+              {isParent
+                ? 'Optional — share a home course or favorites if you have them.'
+                : 'Used on The Course and to surface you to alumni wanting to play near you.'}
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Home course
+                  {!isParent && !noHomeCourse && (
+                    <span className="text-[#990000]"> *</span>
+                  )}
+                </label>
+                <CourseAutocomplete
+                  value={homeCourse}
+                  onChange={setHomeCourse}
+                  placeholder="e.g. Winged Foot Golf Club"
+                  disabled={noHomeCourse}
+                  required={!isParent && !noHomeCourse}
+                />
+                <label className="flex items-center gap-2 mt-2 cursor-pointer">
                   <input
-                    type="text"
-                    value={favoriteCourses}
-                    onChange={e => setFavoriteCourses(e.target.value)}
-                    placeholder="Type to autocomplete; comma to add another"
-                    list="penn-golf-courses-datalist"
-                    className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                    type="checkbox"
+                    checked={noHomeCourse}
+                    onChange={e => {
+                      setNoHomeCourse(e.target.checked)
+                      if (e.target.checked) setHomeCourse('')
+                    }}
+                    className="w-3.5 h-3.5 accent-[#0a1628] cursor-pointer"
                   />
-                  <datalist id="penn-golf-courses-datalist">
-                    {US_GOLF_COURSES.slice(0, 60).map((c) => (
-                      <option key={`${c.name}-${c.state}`} value={c.name}>
-                        {c.state}
-                      </option>
-                    ))}
-                  </datalist>
-                </div>
+                  <span className="text-[11.5px] text-[#3d4a5c]">
+                    I&rsquo;m not a member at a course
+                  </span>
+                </label>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  Favorite courses (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  value={favoriteCourses}
+                  onChange={e => setFavoriteCourses(e.target.value)}
+                  placeholder="Type to autocomplete; comma to add another"
+                  list="penn-golf-courses-datalist"
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+                <datalist id="penn-golf-courses-datalist">
+                  {US_GOLF_COURSES.slice(0, 60).map((c) => (
+                    <option key={`${c.name}-${c.state}`} value={c.name}>
+                      {c.state}
+                    </option>
+                  ))}
+                </datalist>
+              </div>
+              {!isParent && (
                 <div>
                   <label className="block text-xs font-medium text-[#4a5568] mb-1">
                     Favorite Penn Golf memory (optional)
@@ -701,9 +732,9 @@ function AlumniProfileInner() {
                     className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 resize-none"
                   />
                 </div>
-              </div>
+              )}
             </div>
-          )}
+          </div>
 
           {/* Photo */}
           <div

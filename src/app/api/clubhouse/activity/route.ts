@@ -124,7 +124,9 @@ export async function GET() {
       }
     })
 
-  // On the Loop — alumni with an active trip
+  // On the Loop — anyone (alumni, players, coaches, family) with an
+  // active `inTown` trip. The data field is what gates it — if you
+  // haven't told us you're passing through somewhere, you don't appear.
   const onTheLoop: OnTheLoopMember[] = []
   for (const e of store.personEnrichments) {
     if (e.teamId !== team.id) continue

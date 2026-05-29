@@ -192,13 +192,18 @@ const LENS_LABELS: Record<Lens, string> = {
   current: 'Where They Are Now',
 }
 
+type MapView = 'all' | 'family'
+
 export default function MemberMapClient({
   hometownStates,
   currentStates,
+  familyStates,
 }: {
   hometownStates: MapState[]
   currentStates: MapState[]
+  familyStates: MapState[]
 }) {
+  const [view, setView] = useState<MapView>('all')
   const [lens, setLens] = useState<Lens>('hometown')
   const [geos, setGeos] = useState<StateGeo[]>([])
   const [geoError, setGeoError] = useState(false)
@@ -207,7 +212,17 @@ export default function MemberMapClient({
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('all')
   const [eraFilter, setEraFilter] = useState<EraFilter>('all')
 
-  const stateData = lens === 'hometown' ? hometownStates : currentStates
+  // On the Family & Affiliate view, the lens/role/era filters are
+  // irrelevant — parents only have current location and they're all
+  // the same role. We collapse to a single dataset.
+  const stateData =
+    view === 'family'
+      ? familyStates
+      : lens === 'hometown'
+        ? hometownStates
+        : currentStates
+
+  const familyTotal = familyStates.reduce((s, st) => s + st.totalCount, 0)
   const hasData = stateData.length > 0
   const stateByCode = useMemo(
     () => new Map(stateData.map((s) => [s.stateCode, s])),
@@ -219,6 +234,14 @@ export default function MemberMapClient({
     setLens(next)
     setSelected(null)
     setRoleFilter('all')
+  }
+
+  function handleViewChange(next: MapView) {
+    if (next === view) return
+    setView(next)
+    setSelected(null)
+    setRoleFilter('all')
+    setEraFilter('all')
   }
 
   useEffect(() => {
@@ -278,89 +301,148 @@ export default function MemberMapClient({
 
   return (
     <div className="space-y-6">
-      {/* Lens toggle */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3" data-testid="lens-toggle">
-        <div
-          role="tablist"
-          aria-label="Map view"
-          className="inline-flex bg-white border border-[rgba(180,168,150,0.4)] rounded-full p-1"
-          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+      {/* Top-level subtab — All Members vs Family & Affiliate. Family
+          gets its own separate map (current location only); no lens or
+          role/era filter on that view. */}
+      <div
+        role="tablist"
+        aria-label="Map subtab"
+        className="inline-flex items-center gap-2 flex-wrap"
+      >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === 'all'}
+          onClick={() => handleViewChange('all')}
+          className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.18em] px-5 py-2.5 rounded-lg transition-all ${
+            view === 'all'
+              ? 'bg-[#0a1628] text-white shadow-[0_2px_10px_rgba(10,22,40,0.18)]'
+              : 'bg-white border border-[rgba(180,168,150,0.45)] text-[#3d4a5c] hover:border-[#0a1628]/40'
+          }`}
         >
-          {(Object.keys(LENS_LABELS) as Lens[]).map((l) => {
-            const active = l === lens
-            return (
-              <button
-                key={l}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                onClick={() => handleLensChange(l)}
-                className={`px-4 sm:px-5 py-1.5 text-[12.5px] font-medium rounded-full transition-colors ${
-                  active
-                    ? 'bg-[#0a1628] text-white'
-                    : 'text-[#3d4a5c] hover:text-[#0a1628]'
-                }`}
-              >
-                {LENS_LABELS[l]}
-              </button>
-            )
-          })}
-        </div>
-        <p className="text-[12px] text-[#8a7f70] sm:text-right max-w-md">
-          {lens === 'hometown'
-            ? 'Where Penn Golf members grew up, drawn from the Member Book.'
-            : 'Where alumni live now — only members who have updated their location appear.'}
-        </p>
+          All Members
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === 'family'}
+          onClick={() => handleViewChange('family')}
+          className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.18em] px-5 py-2.5 rounded-lg transition-all ${
+            view === 'family'
+              ? 'bg-[#990000] text-white shadow-[0_2px_18px_rgba(153,0,0,0.45)]'
+              : 'bg-white border border-[#990000]/35 text-[#990000] hover:bg-[#990000]/8'
+          }`}
+        >
+          Family &amp; Affiliate
+          {familyTotal > 0 && (
+            <span
+              className={`text-[10.5px] tabular-nums px-1.5 py-0.5 rounded-full ${
+                view === 'family'
+                  ? 'bg-white/15 text-white'
+                  : 'bg-[#990000]/10 text-[#990000]'
+              }`}
+            >
+              {familyTotal}
+            </span>
+          )}
+        </button>
       </div>
+
+      {/* Lens toggle — All Members view only. Family has just one lens
+          (current location), so the toggle would be a dead control. */}
+      {view === 'all' && (
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3" data-testid="lens-toggle">
+          <div
+            role="tablist"
+            aria-label="Map view"
+            className="inline-flex bg-white border border-[rgba(180,168,150,0.4)] rounded-full p-1"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+          >
+            {(Object.keys(LENS_LABELS) as Lens[]).map((l) => {
+              const active = l === lens
+              return (
+                <button
+                  key={l}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => handleLensChange(l)}
+                  className={`px-4 sm:px-5 py-1.5 text-[12.5px] font-medium rounded-full transition-colors ${
+                    active
+                      ? 'bg-[#0a1628] text-white'
+                      : 'text-[#3d4a5c] hover:text-[#0a1628]'
+                  }`}
+                >
+                  {LENS_LABELS[l]}
+                </button>
+              )
+            })}
+          </div>
+          <p className="text-[12px] text-[#8a7f70] sm:text-right max-w-md">
+            {lens === 'hometown'
+              ? 'Where Penn Golf members grew up, drawn from the Member Book.'
+              : 'Where alumni live now — only members who have updated their location appear.'}
+          </p>
+        </div>
+      )}
+      {view === 'family' && (
+        <p className="text-[12px] text-[#8a7f70] max-w-md">
+          Parents, family, and longtime supporters, by where they live now.
+        </p>
+      )}
 
       {/* Filter panel */}
       <div
         className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4 space-y-3.5"
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
       >
-        <div data-testid="role-filter">
-          <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
-            Who
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {(Object.keys(ROLE_LABELS) as RoleFilter[]).map((f) => (
-              <button
-                key={f}
-                type="button"
-                onClick={() => handleRoleChange(f)}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
-                  roleFilter === f
-                    ? 'bg-[#0a1628] text-white border-[#0a1628]'
-                    : 'bg-[#faf7f2] text-[#3d4a5c] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
-                }`}
-              >
-                {ROLE_LABELS[f]}
-              </button>
-            ))}
-          </div>
-        </div>
+        {view === 'all' && (
+          <>
+            <div data-testid="role-filter">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                Who
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {(Object.keys(ROLE_LABELS) as RoleFilter[]).map((f) => (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => handleRoleChange(f)}
+                    className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                      roleFilter === f
+                        ? 'bg-[#0a1628] text-white border-[#0a1628]'
+                        : 'bg-[#faf7f2] text-[#3d4a5c] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
+                    }`}
+                  >
+                    {ROLE_LABELS[f]}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        <div data-testid="era-filter">
-          <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
-            Era
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {(Object.keys(ERA_LABELS) as EraFilter[]).map((e) => (
-              <button
-                key={e}
-                type="button"
-                onClick={() => handleEraChange(e)}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
-                  eraFilter === e
-                    ? 'bg-[#0a1628] text-white border-[#0a1628]'
-                    : 'bg-[#faf7f2] text-[#3d4a5c] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
-                }`}
-              >
-                {ERA_LABELS[e]}
-              </button>
-            ))}
-          </div>
-        </div>
+            <div data-testid="era-filter">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                Era
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {(Object.keys(ERA_LABELS) as EraFilter[]).map((e) => (
+                  <button
+                    key={e}
+                    type="button"
+                    onClick={() => handleEraChange(e)}
+                    className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                      eraFilter === e
+                        ? 'bg-[#0a1628] text-white border-[#0a1628]'
+                        : 'bg-[#faf7f2] text-[#3d4a5c] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
+                    }`}
+                  >
+                    {ERA_LABELS[e]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="flex items-end gap-4 flex-wrap pt-1">
           <div>
@@ -541,43 +623,21 @@ export default function MemberMapClient({
                     No members match this filter. Try another era.
                   </p>
                 ) : (
-                  (() => {
-                    // Split parents off so they get their own subhead
-                    // group at the bottom of the panel — same pattern as
-                    // the Member Book Family & Affiliate section.
-                    const players = filteredMembers.filter(m => m.memberRole !== 'parent')
-                    const parents = filteredMembers.filter(m => m.memberRole === 'parent')
-                    const playerSlice = players.slice(0, 12)
-                    return (
-                      <>
-                        {playerSlice.map((m) => (
-                          <ContextualRow key={m.personId} member={m} />
-                        ))}
-                        {players.length > 12 && (
-                          <div className="px-4 py-3 border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2]">
-                            <Link
-                              href="/member-book"
-                              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
-                            >
-                              Browse all in the Member Book &rarr;
-                            </Link>
-                          </div>
-                        )}
-                        {parents.length > 0 && (
-                          <>
-                            <div className="px-4 py-2 border-t border-[rgba(180,168,150,0.35)] bg-[#990000]/5">
-                              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000]">
-                                Family &amp; Affiliate
-                              </p>
-                            </div>
-                            {parents.slice(0, 8).map((m) => (
-                              <ContextualRow key={m.personId} member={m} />
-                            ))}
-                          </>
-                        )}
-                      </>
-                    )
-                  })()
+                  <>
+                    {filteredMembers.slice(0, 12).map((m) => (
+                      <ContextualRow key={m.personId} member={m} />
+                    ))}
+                    {filteredMembers.length > 12 && (
+                      <div className="px-4 py-3 border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2]">
+                        <Link
+                          href="/member-book"
+                          className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
+                        >
+                          Browse all in the Member Book &rarr;
+                        </Link>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </>

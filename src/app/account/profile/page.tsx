@@ -91,13 +91,20 @@ export default async function AccountProfilePage() {
         : null
 
   // Profile completeness: quick wins to nudge them toward filling in.
+  // Parents/affiliates get a slimmer list — no hometown, no home
+  // course (we don't ask them on the editor either).
+  const isParent = membership?.memberRole === 'parent'
   const completeness = [
-    { label: 'Hometown', done: !!(membership?.hometown && membership.hometown.trim()) },
+    ...(isParent
+      ? []
+      : [{ label: 'Hometown', done: !!(membership?.hometown && membership.hometown.trim()) }]),
     { label: 'Where you live now', done: !!(enrichment?.city && enrichment.city.trim()) },
     { label: 'Current role', done: !!(enrichment?.currentRole && enrichment.currentRole.trim()) },
     { label: 'Company', done: !!(enrichment?.currentCompany && enrichment.currentCompany.trim()) },
     { label: 'Industry', done: !!(enrichment?.industry && enrichment.industry.trim()) },
-    { label: 'Home course', done: !!(enrichment?.homeCourse && enrichment.homeCourse.trim()) },
+    ...(isParent
+      ? []
+      : [{ label: 'Home course', done: !!(enrichment?.homeCourse && enrichment.homeCourse.trim()) }]),
     { label: 'How you can help', done: !!(enrichment?.helpTopics && enrichment.helpTopics.length > 0) },
   ]
   const doneCount = completeness.filter((c) => c.done).length
@@ -141,8 +148,13 @@ export default async function AccountProfilePage() {
             {yearsLabel && (
               <p className="text-[15px] text-[#3d4a5c] mt-3">{yearsLabel}</p>
             )}
-            {membership?.hometown && (
+            {!isParent && membership?.hometown && (
               <p className="text-[13.5px] text-[#8a7f70] mt-1">{membership.hometown}</p>
+            )}
+            {isParent && membership?.parentRelationship && (
+              <p className="text-[13.5px] text-[#990000] mt-1">
+                {membership.parentRelationship}
+              </p>
             )}
           </div>
 
@@ -192,7 +204,9 @@ export default async function AccountProfilePage() {
                 Update your details
               </p>
               <p className="text-[12.5px] text-[#8a7f70] mt-1">
-                Hometown, where you live now, role, company, and how you can help.
+                {isParent
+                  ? 'Where you live now, role, company, and how to reach you.'
+                  : 'Hometown, where you live now, role, company, and how you can help.'}
               </p>
             </div>
             <Link

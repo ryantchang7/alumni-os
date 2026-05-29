@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -28,6 +27,10 @@ const navLinks = [
 function AccountAffordance() {
   const { data: session, status } = useSession()
   const [open, setOpen] = useState(false)
+  // Track whether the avatar URL loaded — Google Identity sometimes 403s
+  // its profile image (anti-hotlinking), so we fall back to initials on
+  // error rather than leaving a broken icon in the nav.
+  const [imgFailed, setImgFailed] = useState(false)
 
   if (status === 'loading') return null
   if (status !== 'authenticated' || !session) {
@@ -43,6 +46,7 @@ function AccountAffordance() {
   }
   const name = session.user?.name ?? session.user?.email ?? 'Profile'
   const initial = (name?.[0] ?? '?').toUpperCase()
+  const showImage = !!session.user?.image && !imgFailed
   return (
     <div className="relative">
       <button
@@ -51,13 +55,19 @@ function AccountAffordance() {
         onBlur={() => setTimeout(() => setOpen(false), 120)}
         className="flex items-center gap-2 text-[13px] text-gray-200 hover:text-white px-2 py-1 rounded"
       >
-        {session.user?.image ? (
-          <Image
-            src={session.user.image}
+        {showImage ? (
+          // Plain <img> + referrerPolicy="no-referrer" — avoids both
+          // Next/Image remotePatterns config AND Google's hotlinking
+          // throttle that returns 403 to Vercel-origin requests.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={session.user!.image!}
             alt=""
             width={24}
             height={24}
-            className="rounded-full"
+            referrerPolicy="no-referrer"
+            onError={() => setImgFailed(true)}
+            className="w-6 h-6 rounded-full object-cover"
           />
         ) : (
           <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/15 text-[11px] font-semibold">

@@ -183,8 +183,9 @@ function FamilyRegistryEntry({
       transition={{ duration: 0.22, delay: Math.min(index * 0.01, 0.18) }}
       data-testid="family-entry"
     >
-      <div
-        className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-5"
+      <Link
+        href={`/player/alumni/${encodeURIComponent(entry.personId)}`}
+        className="group block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-5 transition-all hover:border-[#990000]/35 hover:-translate-y-0.5"
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04), 0 2px 8px rgba(10,22,40,0.03)' }}
       >
         <div className="flex items-start gap-3 min-w-0">
@@ -227,7 +228,10 @@ function FamilyRegistryEntry({
             )}
           </div>
         </div>
-      </div>
+        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          View profile &rarr;
+        </p>
+      </Link>
     </motion.div>
   )
 }
