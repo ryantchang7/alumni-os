@@ -35,9 +35,20 @@ export async function GET() {
   const account = await getAccountById(session.accountId)
   const store = await readStore()
   const canSeeLockerRoom = canSeeLockerRoomForAccount(account, store, team.id)
+
+  // Prefer the photo the user uploaded in the profile editor over the
+  // Google avatar — NavBar uses this for the small avatar chip.
+  const enrichment = account?.linkedPersonId
+    ? store.personEnrichments.find(
+        e => e.teamId === team.id && e.personId === account.linkedPersonId,
+      )
+    : null
+  const photoUrl = enrichment?.photoUrl ?? null
+
   return NextResponse.json({
     signedIn: true,
     approved: !!account?.linkedPersonId,
     canSeeLockerRoom,
+    photoUrl,
   })
 }

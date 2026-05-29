@@ -103,14 +103,16 @@ export default async function TheCoursePage() {
   const homeCourseSet = new Set<string>()
 
   if (team) {
-    // Alumni, current players, and coaches can all open their tee box and
-    // host rounds — the only thing that's gated is publishedToNetwork.
+    // Any role can opt into "Open to a Round" — players, alumni, coach,
+    // and family/affiliates. The page groups them by role with subheads
+    // so the list reads cleanly regardless of who's opted in.
     const memberships = store.teamMemberships.filter(
       (m) =>
         m.teamId === team.id &&
         (m.memberRole === 'alumni' ||
           m.memberRole === 'current_player' ||
-          m.memberRole === 'coach') &&
+          m.memberRole === 'coach' ||
+          m.memberRole === 'parent') &&
         m.publishedToNetwork === true,
     )
     const enrichMap = new Map(
@@ -355,23 +357,55 @@ export default async function TheCoursePage() {
               </Link>
             </div>
           ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {openToRounds.slice(0, 20).map((entry) => (
-                  <AlumniRoundCard key={entry.person.id} entry={entry} />
-                ))}
-              </div>
-              {openToRounds.length > 20 && (
-                <div className="mt-5 flex justify-center">
-                  <Link
-                    href="/member-book"
-                    className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-5 py-2.5 rounded-lg transition-colors"
-                  >
-                    See all {openToRounds.length} members &rarr;
-                  </Link>
+            (() => {
+              // Group "Open to a Round" by role so the page reads cleanly:
+              // Current Players, then Alumni, then Coach. Skip empty
+              // groups. (Parents/affiliates can opt in too if they ever
+              // do, though the role typically belongs to alumni + players.)
+              const ROLE_GROUPS = [
+                { key: 'current_player', label: 'Current Players' },
+                { key: 'alumni', label: 'Alumni' },
+                { key: 'coach', label: 'Coach' },
+                { key: 'parent', label: 'Family & Affiliate' },
+              ] as const
+              return (
+                <div className="space-y-8">
+                  {ROLE_GROUPS.map((g) => {
+                    const rows = openToRounds.filter(
+                      (e) => e.membership.memberRole === g.key,
+                    )
+                    if (rows.length === 0) return null
+                    return (
+                      <div key={g.key}>
+                        <div className="flex items-baseline gap-2 mb-3">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#2d6a4f]">
+                            {g.label}
+                          </p>
+                          <span className="text-[10.5px] tabular-nums text-[#8a7f70]">
+                            · {rows.length}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {rows.slice(0, 20).map((entry) => (
+                            <AlumniRoundCard key={entry.person.id} entry={entry} />
+                          ))}
+                        </div>
+                        {rows.length > 20 && (
+                          <div className="mt-3">
+                            <Link
+                              href="/member-book"
+                              className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] hover:underline"
+                            >
+                              See all {rows.length} in the Member Book &rarr;
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
-              )}
-            </>
+              )
+            })()
           )}
           </CourseHoleSection>
         </div>

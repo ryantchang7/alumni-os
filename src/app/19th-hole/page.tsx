@@ -13,10 +13,12 @@ export default async function NineteenthHolePage() {
   type AlumniEntry = {
     personId: string
     canonicalName: string
+    memberRole: 'current_player' | 'alumni' | 'coach' | 'parent'
     city?: string
     classLabel?: string
     currentRole?: string
     currentCompany?: string
+    parentRelationship?: string
     openToCoffee?: boolean
   }
 
@@ -35,14 +37,16 @@ export default async function NineteenthHolePage() {
       )
     }
 
-    // Both alumni AND current players can be "open to coffee" / show on
-    // the 19th Hole lists. Same gating as /the-course.
+    // Any role can opt into "Open to Coffee" — players, alumni, coach,
+    // and family/affiliates. The client groups them by role with
+    // separate subheads so the list reads cleanly.
     const memberships = store.teamMemberships.filter(
       m =>
         m.teamId === team.id &&
         (m.memberRole === 'alumni' ||
           m.memberRole === 'current_player' ||
-          m.memberRole === 'coach') &&
+          m.memberRole === 'coach' ||
+          m.memberRole === 'parent') &&
         m.publishedToNetwork === true,
     )
     const enrichMap = new Map(
@@ -59,10 +63,12 @@ export default async function NineteenthHolePage() {
         return {
           personId: person.id,
           canonicalName: person.canonicalName,
+          memberRole: m.memberRole as 'current_player' | 'alumni' | 'coach' | 'parent',
           city: enrichment?.city,
           classLabel: m.classLabel,
           currentRole: enrichment?.currentRole,
           currentCompany: enrichment?.currentCompany,
+          parentRelationship: m.parentRelationship,
           openToCoffee: enrichment?.openToCoffee,
           updatedAt: enrichment?.updatedAt,
         }

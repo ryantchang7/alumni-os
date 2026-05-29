@@ -10,6 +10,7 @@ import type {
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
 import CareerRoomHero from './CareerRoomHero'
+import { INDUSTRY_OPTIONS, industryToSlug } from '@/lib/industries'
 
 const SECTOR_LABEL: Record<CareerPostSector, string> = {
   finance: 'Finance',
@@ -93,18 +94,14 @@ interface AlumniEntry {
   enrichment: PersonEnrichment
 }
 
-const INDUSTRIES = [
-  { label: 'Finance & Investing', slug: 'finance', initial: 'F' },
-  { label: 'Consulting', slug: 'consulting', initial: 'C' },
-  { label: 'Real Estate', slug: 'real-estate', initial: 'R' },
-  { label: 'Law', slug: 'law', initial: 'L' },
-  { label: 'Technology', slug: 'technology', initial: 'T' },
-  { label: 'Startups & Founders', slug: 'startups', initial: 'S' },
-  { label: 'Sports / Golf Industry', slug: 'sports', initial: 'G' },
-  { label: 'Medicine', slug: 'medicine', initial: 'M' },
-  { label: 'Media & Entertainment', slug: 'media', initial: 'E' },
-  { label: 'Public Service', slug: 'public-service', initial: 'P' },
-]
+// Pulled from @/lib/industries so the tiles, the editor chips, and
+// /member-book's ?industry= filter all stay in sync. Initial is the
+// first letter of the label for the small navy badge in each tile.
+const INDUSTRIES = INDUSTRY_OPTIONS.map(label => ({
+  label,
+  slug: industryToSlug(label),
+  initial: label[0]?.toUpperCase() ?? '?',
+}))
 
 function AlumniCard({ entry }: { entry: AlumniEntry }) {
   const { person, membership, enrichment } = entry

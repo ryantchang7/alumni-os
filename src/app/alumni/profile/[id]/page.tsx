@@ -10,6 +10,7 @@ import HometownInput from '@/components/HometownInput'
 import PhotoUpload from '@/components/PhotoUpload'
 import CourseAutocomplete from '@/components/CourseAutocomplete'
 import { US_GOLF_COURSES } from '@/lib/courses/us-golf-courses'
+import { INDUSTRY_OPTIONS } from '@/lib/industries'
 
 interface LocationRow {
   city?: string
@@ -73,25 +74,8 @@ const HELP_TOPIC_OPTIONS = [
   'General networking',
 ]
 
-// Differentiated, single-line categories. Multi-select.
-const INDUSTRY_OPTIONS = [
-  'Finance',
-  'Tech',
-  'Real Estate',
-  'Law',
-  'Consulting',
-  'Healthcare / Biotech',
-  'Energy',
-  'Consumer / Retail',
-  'Media / Entertainment',
-  'Sports',
-  'Government / Policy',
-  'Education / Academia',
-  'Nonprofit',
-  'Entrepreneurship',
-  'Student',
-  'Other',
-]
+// INDUSTRY_OPTIONS lives in @/lib/industries — shared with the Career
+// Room tiles and the Member Book ?industry= filter.
 
 const CONTACT_PREF_LABELS: Record<string, string> = {
   team_intro: 'Have the captain make an introduction',

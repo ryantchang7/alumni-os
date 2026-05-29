@@ -1,9 +1,11 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, X } from 'lucide-react'
+import { slugToIndustry, memberHasIndustry } from '@/lib/industries'
 import { memberBookEntries } from '@/lib/member-book/data'
 import MemberBadges from '@/components/MemberBadges'
 import FoundersWall from '@/components/FoundersWall'
@@ -294,13 +296,22 @@ interface ParentEntry {
 
 type RegistryView = 'all' | 'family'
 
-export default function MemberBookPage() {
+function MemberBookPageInner() {
+  const searchParams = useSearchParams()
+  // ?industry=finance → "Finance" (canonical label). Null when no
+  // filter is active; an empty string when the slug doesn't resolve to
+  // a known industry.
+  const industrySlug = searchParams.get('industry')
+  const activeIndustry = industrySlug ? slugToIndustry(industrySlug) : null
+
   const [filters, setFilters] = useState<PublicMemberFilters>(
     DEFAULT_PUBLIC_FILTERS,
   )
   const [view, setView] = useState<RegistryView>('all')
   const [badgesByBookId, setBadgesByBookId] = useState<Record<string, BadgeId[]>>({})
   const [photosByBookId, setPhotosByBookId] = useState<Record<string, string>>({})
+  const [industryByPersonId, setIndustryByPersonId] = useState<Record<string, string>>({})
+  const [bookIdToPersonId, setBookIdToPersonId] = useState<Record<string, string>>({})
   const [parents, setParents] = useState<ParentEntry[]>([])
   const [founders, setFounders] = useState<FounderEntry[]>([])
 
@@ -311,6 +322,8 @@ export default function MemberBookPage() {
         if (!d?.profiles) return
         const nextBadges: Record<string, BadgeId[]> = {}
         const nextPhotos: Record<string, string> = {}
+        const nextIndustry: Record<string, string> = {}
+        const nextBookIdToPerson: Record<string, string> = {}
         const nextParents: ParentEntry[] = []
         for (const p of d.profiles as Array<{
           personId: string
@@ -319,6 +332,7 @@ export default function MemberBookPage() {
           parentRelationship?: string
           bookId?: string | null
           photoUrl?: string | null
+          industry?: string | null
           badges?: BadgeId[]
         }>) {
           if (p.bookId && p.badges && p.badges.length > 0) {
@@ -326,6 +340,12 @@ export default function MemberBookPage() {
           }
           if (p.bookId && p.photoUrl) {
             nextPhotos[p.bookId] = p.photoUrl
+          }
+          if (p.bookId) {
+            nextBookIdToPerson[p.bookId] = p.personId
+          }
+          if (p.industry) {
+            nextIndustry[p.personId] = p.industry
           }
           if (p.memberRole === 'parent') {
             nextParents.push({
@@ -339,6 +359,8 @@ export default function MemberBookPage() {
         }
         setBadgesByBookId(nextBadges)
         setPhotosByBookId(nextPhotos)
+        setIndustryByPersonId(nextIndustry)
+        setBookIdToPersonId(nextBookIdToPerson)
         setParents(nextParents)
       })
       .catch(() => {})
@@ -354,23 +376,40 @@ export default function MemberBookPage() {
   const publicMembers = useMemo(() => getPublicMembers(memberBookEntries), [])
   const stats = useMemo(() => getPublicMemberStats(publicMembers), [publicMembers])
 
-  const filtered = useMemo(
-    () => filterPublicMembers(publicMembers, filters),
-    [publicMembers, filters],
-  )
+  const filtered = useMemo(() => {
+    let rows = filterPublicMembers(publicMembers, filters)
+    // Industry filter (?industry=finance) — keep only members whose
+    // stored industry tags include the active label. Member Book rows
+    // are matched via bookId → personId → industry.
+    if (activeIndustry) {
+      rows = rows.filter(m => {
+        const pid = bookIdToPersonId[m.id]
+        if (!pid) return false
+        return memberHasIndustry(industryByPersonId[pid], activeIndustry)
+      })
+    }
+    return rows
+  }, [publicMembers, filters, activeIndustry, bookIdToPersonId, industryByPersonId])
 
-  // Parents filter by the search term only — they have no era / class
-  // year metadata to filter on. Case-insensitive name + relationship.
+  // Parents filter by the search term and (when active) the industry tag.
   const filteredParents = useMemo(() => {
+    let rows = parents
     const q = filters.search.trim().toLowerCase()
-    if (!q) return parents
-    return parents.filter(p =>
-      [p.canonicalName, p.parentRelationship ?? '']
-        .join(' ')
-        .toLowerCase()
-        .includes(q),
-    )
-  }, [parents, filters.search])
+    if (q) {
+      rows = rows.filter(p =>
+        [p.canonicalName, p.parentRelationship ?? '']
+          .join(' ')
+          .toLowerCase()
+          .includes(q),
+      )
+    }
+    if (activeIndustry) {
+      rows = rows.filter(p =>
+        memberHasIndustry(industryByPersonId[p.personId], activeIndustry),
+      )
+    }
+    return rows
+  }, [parents, filters.search, activeIndustry, industryByPersonId])
 
   const update = <K extends keyof PublicMemberFilters>(
     key: K,
@@ -388,6 +427,33 @@ export default function MemberBookPage() {
         earliestYear={stats.earliestYear}
         latestYear={stats.latestYear}
       />
+
+      {/* Active industry filter banner — appears when navigated to
+          /member-book?industry=<slug>. Click X to clear and see all. */}
+      {activeIndustry && (
+        <div className="bg-[#990000] text-white">
+          <div className="max-w-[1280px] mx-auto px-5 sm:px-8 py-3 flex items-center justify-between gap-4 flex-wrap">
+            <p className="text-[12.5px] sm:text-[13px]">
+              <span className="opacity-70 uppercase tracking-[0.16em] text-[10.5px] mr-2">
+                Filtering by Industry
+              </span>
+              <span
+                className="font-medium"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                {activeIndustry}
+              </span>
+            </p>
+            <Link
+              href="/member-book"
+              className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-[0.14em] hover:underline"
+            >
+              <X className="w-3.5 h-3.5" />
+              Clear
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Subtab pill bar — sits on a navy strip immediately under the
           hero, matching the /moments All-vs-Locker treatment. The Family
@@ -655,5 +721,15 @@ export default function MemberBookPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Suspense wrapper — useSearchParams() requires the component that reads
+// it to live inside a <Suspense> boundary in Next 16.
+export default function MemberBookPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0]" />}>
+      <MemberBookPageInner />
+    </Suspense>
   )
 }

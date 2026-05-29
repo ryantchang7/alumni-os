@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
@@ -31,6 +31,20 @@ function AccountAffordance() {
   // its profile image (anti-hotlinking), so we fall back to initials on
   // error rather than leaving a broken icon in the nav.
   const [imgFailed, setImgFailed] = useState(false)
+  // Member-uploaded profile photo — preferred over the Google avatar.
+  // Pulled from /api/me/access (which already reads the enrichment).
+  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (status !== 'authenticated') {
+      setUploadedPhoto(null)
+      return
+    }
+    fetch('/api/me/access')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => setUploadedPhoto(d?.photoUrl ?? null))
+      .catch(() => setUploadedPhoto(null))
+  }, [status])
 
   if (status === 'loading') return null
   if (status !== 'authenticated' || !session) {
@@ -46,7 +60,10 @@ function AccountAffordance() {
   }
   const name = session.user?.name ?? session.user?.email ?? 'Profile'
   const initial = (name?.[0] ?? '?').toUpperCase()
-  const showImage = !!session.user?.image && !imgFailed
+  // Prefer the photo the member uploaded themselves over the Google
+  // avatar — uploaded photo is what they put on their card.
+  const avatarSrc = uploadedPhoto ?? session.user?.image ?? null
+  const showImage = !!avatarSrc && !imgFailed
   return (
     <div className="relative">
       <button
@@ -61,7 +78,7 @@ function AccountAffordance() {
           // throttle that returns 403 to Vercel-origin requests.
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={session.user!.image!}
+            src={avatarSrc!}
             alt=""
             width={24}
             height={24}

@@ -929,7 +929,10 @@ export async function updatePersonEnrichmentSafeFields(
       ...(fields.state !== undefined ? { state: fields.state } : {}),
       ...(fields.country !== undefined ? { country: fields.country } : {}),
       ...(fields.additionalLocations !== undefined ? { additionalLocations: fields.additionalLocations } : {}),
-      ...(fields.inTown !== undefined ? { inTown: fields.inTown } : {}),
+      // 'in' check (not !== undefined) so a deliberate clear — the caller
+      // sets fields.inTown = undefined when the user empties the form —
+      // actually wipes the stored trip instead of being silently dropped.
+      ...('inTown' in fields ? { inTown: fields.inTown } : {}),
       ...(fields.alumniBio !== undefined ? { alumniBio: fields.alumniBio } : {}),
       ...(fields.helpTopics !== undefined ? { helpTopics: fields.helpTopics } : {}),
       ...(fields.contactPreference !== undefined ? { contactPreference: fields.contactPreference } : {}),

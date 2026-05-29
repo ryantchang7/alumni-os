@@ -7,12 +7,48 @@ import GatheringCard, { type GatheringData } from '@/components/gatherings/Gathe
 interface AlumniEntry {
   personId: string
   canonicalName: string
+  memberRole?: 'current_player' | 'alumni' | 'coach' | 'parent'
   city?: string
   classLabel?: string
   currentRole?: string
   currentCompany?: string
+  parentRelationship?: string
   openToCoffee?: boolean
   openToMentorship?: boolean
+}
+
+// Order matters — this is the rendered top-to-bottom group order.
+const ROLE_GROUPS = [
+  { key: 'current_player', label: 'Current Players' },
+  { key: 'alumni', label: 'Alumni' },
+  { key: 'coach', label: 'Coach' },
+  { key: 'parent', label: 'Family & Affiliate' },
+] as const
+
+function MemberCard({ entry }: { entry: AlumniEntry }) {
+  return (
+    <Link
+      href={`/player/alumni/${entry.personId}?teamSlug=penn-mens-golf`}
+      className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:shadow-md transition-shadow group"
+      style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+    >
+      <p className="font-semibold text-[#0a1628] text-sm">{entry.canonicalName}</p>
+      {entry.city && <p className="text-xs text-[#8a7f70] mt-0.5">{entry.city}</p>}
+      {entry.memberRole === 'parent' && entry.parentRelationship ? (
+        <p className="text-xs text-[#990000] mt-0.5">{entry.parentRelationship}</p>
+      ) : (
+        entry.classLabel && <p className="text-xs text-[#8a7f70]">{entry.classLabel}</p>
+      )}
+      {(entry.currentRole || entry.currentCompany) && (
+        <p className="text-xs text-[#4a5568] mt-1">
+          {[entry.currentRole, entry.currentCompany].filter(Boolean).join(' · ')}
+        </p>
+      )}
+      <span className="text-xs font-medium text-[#990000] group-hover:underline mt-3 block">
+        View profile &rarr;
+      </span>
+    </Link>
+  )
 }
 
 interface Props {
@@ -122,7 +158,9 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
         </section>
       )}
 
-      {/* Open to Coffee */}
+      {/* Open to Coffee — grouped by role so every list of "who's
+          open" reads cleanly: Current Players, then Alumni, then Coach,
+          then Family & Affiliate. Groups with zero members are hidden. */}
       <section>
         <div className="flex items-baseline gap-3 mb-1">
           <h2 className="text-base font-semibold text-[#0a1628]">Open to Coffee</h2>
@@ -132,49 +170,52 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
             </span>
           )}
         </div>
-        <p className="text-sm text-[#8a7f70] mb-6">Alumni open to an informal catch-up.</p>
+        <p className="text-sm text-[#8a7f70] mb-6">
+          Penn Golf members open to an informal catch-up.
+        </p>
         {openToCoffee.length === 0 ? (
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
           >
-            No alumni have marked themselves open to coffee yet.
+            No one has marked themselves open to coffee yet.
           </div>
         ) : (
-          <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {openToCoffee.slice(0, 20).map(entry => (
-              <Link
-                key={entry.personId}
-                href={`/player/alumni/${entry.personId}?teamSlug=penn-mens-golf`}
-                className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:shadow-md transition-shadow group"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-              >
-                <p className="font-semibold text-[#0a1628] text-sm">{entry.canonicalName}</p>
-                {entry.city && <p className="text-xs text-[#8a7f70] mt-0.5">{entry.city}</p>}
-                {entry.classLabel && <p className="text-xs text-[#8a7f70]">{entry.classLabel}</p>}
-                {(entry.currentRole || entry.currentCompany) && (
-                  <p className="text-xs text-[#4a5568] mt-1">
-                    {[entry.currentRole, entry.currentCompany].filter(Boolean).join(' · ')}
-                  </p>
-                )}
-                <span className="text-xs font-medium text-[#990000] group-hover:underline mt-3 block">
-                  View profile &rarr;
-                </span>
-              </Link>
-            ))}
+          <div className="space-y-8">
+            {ROLE_GROUPS.map(group => {
+              const rows = openToCoffee.filter(
+                e => (e.memberRole ?? 'alumni') === group.key,
+              )
+              if (rows.length === 0) return null
+              return (
+                <div key={group.key}>
+                  <div className="flex items-baseline gap-2 mb-3">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70]">
+                      {group.label}
+                    </p>
+                    <span className="text-[10.5px] tabular-nums text-[#8a7f70]">
+                      · {rows.length}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {rows.slice(0, 20).map(entry => (
+                      <MemberCard key={entry.personId} entry={entry} />
+                    ))}
+                  </div>
+                  {rows.length > 20 && (
+                    <div className="mt-3">
+                      <Link
+                        href="/member-book"
+                        className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
+                      >
+                        See all {rows.length} in the Member Book &rarr;
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
-          {openToCoffee.length > 20 && (
-            <div className="mt-5 flex justify-center">
-              <Link
-                href="/member-book"
-                className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0a1628] border border-[#0a1628]/25 hover:bg-[#0a1628] hover:text-white px-5 py-2.5 rounded-lg transition-colors"
-              >
-                See all {openToCoffee.length} members &rarr;
-              </Link>
-            </div>
-          )}
-          </>
         )}
       </section>
 

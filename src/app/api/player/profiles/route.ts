@@ -65,6 +65,10 @@ export async function GET(request: Request) {
         hometown: membership.hometown,
         highSchool: membership.highSchool,
         publishedAt: membership.publishedAt,
+        // Industry surfaced at the top level so /member-book's
+        // ?industry= filter can match without parsing the nested career
+        // object. Comma-separated string ("Finance, Tech, Real Estate").
+        industry: enrichment?.industry,
         career: hasCareer
           ? {
               currentRole: enrichment?.currentRole,
