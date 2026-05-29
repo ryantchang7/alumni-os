@@ -104,7 +104,7 @@ export default function ClubhouseChecklist({
         className="text-[#0a1628] text-lg sm:text-xl font-medium mb-5"
         style={{ fontFamily: 'var(--font-playfair)' }}
       >
-        Three quick things and the brotherhood can find you.
+        Three quick things and the Penn Golf family can find you.
       </p>
       <ul className="space-y-3">
         {steps.map((step, i) => (

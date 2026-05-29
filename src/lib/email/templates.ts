@@ -58,7 +58,7 @@ export function renderWelcomeEmail(input: {
     </h1>
     <p style="margin:0 0 14px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">
       Your locker is yours. The Clubhouse is where the Penn Men&rsquo;s Golf
-      brotherhood keeps track of who&rsquo;s where, who&rsquo;s open to a round,
+      family keeps track of who&rsquo;s where, who&rsquo;s open to a round,
       and who can throw a warm intro your way.
     </p>
     <p style="margin:0 0 24px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">

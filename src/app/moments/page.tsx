@@ -88,7 +88,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
           signedIn={approval.signedIn}
           eyebrow="Members only · The Wall"
           headline="Moments stay between members."
-          blurb="The Wall is where Penn Golf alumni share rounds, dinners, championship cuttings — the stuff that makes a brotherhood feel like one. Claim your card to see and post."
+          blurb="The Wall is where Penn Golf alumni share rounds, dinners, championship cuttings — the stuff the Penn Golf family is built on. Claim your card to see and post."
           stats={[
             { label: 'On the wall', value: moments.length },
             { label: 'Posters', value: uniquePosters },

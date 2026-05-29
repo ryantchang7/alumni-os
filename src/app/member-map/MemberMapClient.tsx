@@ -198,10 +198,14 @@ export default function MemberMapClient({
   hometownStates,
   currentStates,
   familyStates,
+  viewerPersonId,
 }: {
   hometownStates: MapState[]
   currentStates: MapState[]
   familyStates: MapState[]
+  /** linkedPersonId of the signed-in viewer. Used to hide them from
+   *  their own state's member list. Undefined for non-approved viewers. */
+  viewerPersonId?: string
 }) {
   const [view, setView] = useState<MapView>('all')
   const [lens, setLens] = useState<Lens>('hometown')
@@ -260,6 +264,9 @@ export default function MemberMapClient({
   const filteredMembers =
     selectedState?.members
       .filter((m) => matchesCombined(m, roleFilter, eraFilter))
+      // Hide the viewer from their own state's list — they don't need
+      // to see themselves when looking at "who's near me."
+      .filter((m) => !viewerPersonId || m.personId !== viewerPersonId)
       .sort((a, b) => {
         if (a.memberRole !== b.memberRole) return a.memberRole === 'current_player' ? -1 : 1
         return (b.rosterEndYear ?? 9999) - (a.rosterEndYear ?? 9999)

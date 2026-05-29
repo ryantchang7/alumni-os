@@ -11,6 +11,8 @@ import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
 import CareerRoomHero from './CareerRoomHero'
 import { INDUSTRY_OPTIONS, industryToSlug } from '@/lib/industries'
+import { auth } from '@/auth'
+import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 
 const SECTOR_LABEL: Record<CareerPostSector, string> = {
   finance: 'Finance',
@@ -170,9 +172,35 @@ export default async function CareerRoomPage() {
     careerPosts = await getCareerPostsForTeam(team.id)
   }
 
-  const openToMentorship = alumni.filter(a => a.enrichment.openToMentorship)
-  const openToIntros = alumni.filter(a => a.enrichment.openToWarmIntroductions)
-  const openToCoffee = alumni.filter(a => a.enrichment.openToCoffee)
+  // Prioritize each "open to X" list for the viewer: same city first,
+  // then same state, then most recently active. Filter the viewer out
+  // of their own lists so the page doesn't read "you, plus other
+  // people."
+  const session = await auth()
+  const viewer = team
+    ? resolveViewerLocation(session, store, team.id)
+    : {}
+
+  function prioritizeAlumni(rows: AlumniEntry[]): AlumniEntry[] {
+    const decorated = rows.map(entry => ({
+      personId: entry.person.id,
+      city: entry.enrichment.city,
+      state: entry.enrichment.state,
+      updatedAt: entry.enrichment.updatedAt,
+      entry,
+    }))
+    return prioritizeForViewer(decorated, viewer).map(d => d.entry)
+  }
+
+  const openToMentorship = prioritizeAlumni(
+    alumni.filter(a => a.enrichment.openToMentorship),
+  )
+  const openToIntros = prioritizeAlumni(
+    alumni.filter(a => a.enrichment.openToWarmIntroductions),
+  )
+  const openToCoffee = prioritizeAlumni(
+    alumni.filter(a => a.enrichment.openToCoffee),
+  )
   const asks = careerPosts.filter(p => p.kind === 'ask')
   const offers = careerPosts.filter(p => p.kind === 'offer')
 
@@ -328,11 +356,23 @@ export default async function CareerRoomPage() {
           {openToMentorship.length === 0 ? (
             <EmptyState label="This list grows as alumni open up their network." />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {openToMentorship.map(entry => (
-                <AlumniCard key={entry.person.id} entry={entry} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {openToMentorship.slice(0, 12).map(entry => (
+                  <AlumniCard key={entry.person.id} entry={entry} />
+                ))}
+              </div>
+              {openToMentorship.length > 12 && (
+                <div className="mt-4">
+                  <Link
+                    href="/member-book"
+                    className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
+                  >
+                    See all {openToMentorship.length} in the Member Book &rarr;
+                  </Link>
+                </div>
+              )}
+            </>
           )}
         </section>
 
@@ -352,11 +392,23 @@ export default async function CareerRoomPage() {
           {openToIntros.length === 0 ? (
             <EmptyState label="This list grows as alumni open up their network." />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {openToIntros.map(entry => (
-                <AlumniCard key={entry.person.id} entry={entry} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {openToIntros.slice(0, 12).map(entry => (
+                  <AlumniCard key={entry.person.id} entry={entry} />
+                ))}
+              </div>
+              {openToIntros.length > 12 && (
+                <div className="mt-4">
+                  <Link
+                    href="/member-book"
+                    className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
+                  >
+                    See all {openToIntros.length} in the Member Book &rarr;
+                  </Link>
+                </div>
+              )}
+            </>
           )}
         </section>
 
@@ -376,11 +428,23 @@ export default async function CareerRoomPage() {
           {openToCoffee.length === 0 ? (
             <EmptyState label="This list grows as alumni open up their network." />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {openToCoffee.map(entry => (
-                <AlumniCard key={entry.person.id} entry={entry} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {openToCoffee.slice(0, 12).map(entry => (
+                  <AlumniCard key={entry.person.id} entry={entry} />
+                ))}
+              </div>
+              {openToCoffee.length > 12 && (
+                <div className="mt-4">
+                  <Link
+                    href="/member-book"
+                    className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
+                  >
+                    See all {openToCoffee.length} in the Member Book &rarr;
+                  </Link>
+                </div>
+              )}
+            </>
           )}
         </section>
 

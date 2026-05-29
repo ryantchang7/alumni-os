@@ -20,7 +20,7 @@ export default function ClaimPendingPage() {
         </h1>
         <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-2">
           Your claim is in the captain&rsquo;s queue. We confirm everyone by
-          hand so the brotherhood stays the brotherhood.
+          hand so the Penn Golf family stays close.
         </p>
         <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-8">
           You&rsquo;ll get an email at the address you signed in with as soon as

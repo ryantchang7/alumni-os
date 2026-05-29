@@ -6,6 +6,8 @@ import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
 import CourseHero from './CourseHero'
 import CourseHoleSection, { CartPathDivider } from './CourseHoleSection'
+import { auth } from '@/auth'
+import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 
 interface AlumniEntry {
   person: Person
@@ -129,11 +131,20 @@ export default async function TheCoursePage() {
       })
       .filter((x): x is AlumniEntry => x !== null)
 
-    // Sort by enrichment.updatedAt desc so the most recently active
-    // members surface first as the list grows.
-    openToRounds = visible
+    // Prioritize for the viewer: same-city first, then same-state,
+    // then recently active. Filter the viewer out of their own list.
+    const session = await auth()
+    const viewer = resolveViewerLocation(session, store, team.id)
+    const decorated = visible
       .filter((a) => a.enrichment.openToGolfRounds)
-      .sort((a, b) => (b.enrichment.updatedAt ?? '').localeCompare(a.enrichment.updatedAt ?? ''))
+      .map((entry) => ({
+        personId: entry.person.id,
+        city: entry.enrichment.city,
+        state: entry.enrichment.state,
+        updatedAt: entry.enrichment.updatedAt,
+        entry,
+      }))
+    openToRounds = prioritizeForViewer(decorated, viewer).map((d) => d.entry)
 
     // Aggregate notable courses from alumni's home-course + favorite-course
     // entries. Each member counts at most once per course; home course gets
@@ -222,7 +233,7 @@ export default async function TheCoursePage() {
         <GatedPreview
           signedIn={approval.signedIn}
           eyebrow="Members only · The Course"
-          headline="Tee times open up to the brotherhood."
+          headline="Tee times open up to the Penn Golf family."
           blurb="The Course is where Penn Golf alumni post home-course rounds and find players nearby. Claim your card to see open tee times and add your own."
           stats={[
             { label: 'Open rounds', value: rounds.length },
@@ -386,11 +397,11 @@ export default async function TheCoursePage() {
                           </span>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {rows.slice(0, 20).map((entry) => (
+                          {rows.slice(0, 12).map((entry) => (
                             <AlumniRoundCard key={entry.person.id} entry={entry} />
                           ))}
                         </div>
-                        {rows.length > 20 && (
+                        {rows.length > 12 && (
                           <div className="mt-3">
                             <Link
                               href="/member-book"

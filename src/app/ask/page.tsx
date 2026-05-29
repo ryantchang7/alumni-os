@@ -10,7 +10,7 @@ export default async function AskPage() {
       <div className="min-h-screen bg-[#f8f5f0]">
         <GatedPreview
           signedIn={approval.signedIn}
-          eyebrow="Members only · Ask the Brotherhood"
+          eyebrow="Members only · Ask the Penn Golf Family"
           headline="Asking lives inside the room."
           blurb="Requesting an intro or advice from a Penn Golf alumnus is a members-only move. Claim your card so the captain can approve you, and you'll be able to send a private ask in one click."
         />

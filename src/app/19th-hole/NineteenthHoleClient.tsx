@@ -198,11 +198,11 @@ export default function NineteenthHoleClient({ gatherings, openToCoffee, cityGro
                     </span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {rows.slice(0, 20).map(entry => (
+                    {rows.slice(0, 12).map(entry => (
                       <MemberCard key={entry.personId} entry={entry} />
                     ))}
                   </div>
-                  {rows.length > 20 && (
+                  {rows.length > 12 && (
                     <div className="mt-3">
                       <Link
                         href="/member-book"

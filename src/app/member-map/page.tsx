@@ -14,6 +14,8 @@ import {
 } from '@/lib/member-book/helpers'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import HeroCrest from '@/components/HeroCrest'
+import { auth } from '@/auth'
+import { resolveViewerLocation } from '@/lib/prioritize'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -251,6 +253,12 @@ export default async function MemberMapPage() {
     (a, b) => b.totalCount - a.totalCount,
   )
 
+  // Filter the viewer out of their own state's member list — they don't
+  // need to see themselves there.
+  const session = await auth()
+  const viewer = team ? resolveViewerLocation(session, store, team.id) : {}
+  const viewerPersonId = viewer.personId
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
@@ -278,6 +286,7 @@ export default async function MemberMapPage() {
           hometownStates={hometownStates}
           currentStates={currentStates}
           familyStates={familyStates}
+          viewerPersonId={viewerPersonId}
         />
       </div>
     </div>

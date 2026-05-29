@@ -3,6 +3,8 @@ import NineteenthHoleHero from './NineteenthHoleHero'
 import type { GatheringData } from '@/components/gatherings/GatheringCard'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
+import { auth } from '@/auth'
+import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 
 export default async function NineteenthHolePage() {
   const approval = await getApprovalState()
@@ -75,11 +77,16 @@ export default async function NineteenthHolePage() {
       })
       .filter((x): x is VisibleEntry => x !== null)
 
-    // Sort by enrichment.updatedAt desc — surfaces recently-active members
-    // first as the list grows.
-    openToCoffee = visible
-      .filter(a => a.openToCoffee)
-      .sort((a, b) => (b.updatedAt ?? '').localeCompare(a.updatedAt ?? ''))
+    // Prioritize the list for the viewer: same-city first, then
+    // same-state, then recently active. Also hides the viewer from
+    // their own "Open to Coffee" group (they don't need to see
+    // themselves in there).
+    const session = await auth()
+    const viewer = resolveViewerLocation(session, store, team.id)
+    openToCoffee = prioritizeForViewer(
+      visible.filter(a => a.openToCoffee),
+      viewer,
+    )
 
     const cityMap = new Map<string, { count: number; coffeeCount: number }>()
     for (const entry of visible) {
@@ -114,7 +121,7 @@ export default async function NineteenthHolePage() {
         <GatedPreview
           signedIn={approval.signedIn}
           eyebrow="Members only · 19th Hole"
-          headline="The wall opens to the brotherhood."
+          headline="The wall opens to the Penn Golf family."
           blurb="The 19th Hole is where Penn Golf alumni drop drinks, dinners, and watch-party invites. Claim your card to see what's on the wall and add your own."
           stats={[
             { label: 'On the wall', value: socialGatherings.length },
