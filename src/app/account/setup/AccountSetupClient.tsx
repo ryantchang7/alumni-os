@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Search, X } from 'lucide-react'
+import { useSiteContent } from '@/lib/site-content/use-site-content'
 
 interface MinimalMember {
   bookId: string
@@ -28,6 +29,10 @@ export default function AccountSetupClient({
 }) {
   const firstName = signedInName?.split(' ')[0] ?? null
   const router = useRouter()
+  const womensNote = useSiteContent(
+    'account-setup.scope-note-womens',
+    "If you played Penn Women's Golf, we're not live with that data yet — we'll add it as we bring women's golf in. Email rtchang@upenn.edu if that's you and we'll get you sorted.",
+  )
   const [query, setQuery] = useState(signedInName ?? '')
   const [claiming, setClaiming] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -165,9 +170,14 @@ export default function AccountSetupClient({
             <p className="text-[#0a1628] text-base" style={{ fontFamily: 'var(--font-playfair)' }}>
               No match found.
             </p>
-            <p className="text-sm text-[#8a7f70] mt-2 mb-6">
+            <p className="text-sm text-[#8a7f70] mt-2 mb-3">
               Try just a first or last name. The Member Book holds every Penn Men&rsquo;s Golf player from 1948 onward.
             </p>
+            {womensNote && (
+              <p className="text-[12.5px] text-[#8a7f70] italic mb-6 leading-relaxed max-w-sm mx-auto">
+                {womensNote}
+              </p>
+            )}
             <div
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 text-left"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 6px 16px rgba(10,22,40,0.04)' }}

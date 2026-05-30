@@ -248,6 +248,10 @@ function BookHeader({
   latestYear: number | null
 }) {
   const crestImage = useSiteContent('member-book.crest-image', '')
+  const scopeNote = useSiteContent(
+    'member-book.scope-note',
+    "Penn Women's Golf coming as we bring the data in.",
+  )
   const rangeLabel =
     earliestYear && latestYear ? `${earliestYear} — ${latestYear}` : null
   return (
@@ -268,6 +272,11 @@ function BookHeader({
           <p className="text-white/55 text-sm sm:text-base max-w-xl mt-3">
             A registry of Penn Men&rsquo;s Golf members, across generations.
           </p>
+          {scopeNote && (
+            <p className="text-white/40 text-[12.5px] sm:text-[13px] max-w-xl mt-2 italic">
+              {scopeNote}
+            </p>
+          )}
 
           <div
             className="mt-5"

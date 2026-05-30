@@ -13,6 +13,10 @@ export default function LandingPage() {
   const coverImage = useSiteContent('landing.cover-image', '/clubhouse-cover.jpg')
   const headline = useSiteContent('landing.headline', 'Penn Golf Clubhouse')
   const subtitle = useSiteContent('landing.subtitle', '')
+  const scopeNote = useSiteContent(
+    'landing.scope-note',
+    "Penn Men's Golf today. Penn Women's Golf coming as we bring the data in.",
+  )
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 120)
@@ -125,11 +129,23 @@ export default function LandingPage() {
           </Link>
         </motion.div>
 
+        {scopeNote && (
+          <motion.p
+            className="mt-6 sm:mt-7 text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.28em] text-white/65 max-w-md"
+            style={{ textShadow: '0 1px 8px rgba(10,22,40,0.45)' }}
+            initial={{ opacity: 0 }}
+            animate={ready ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ delay: 1.7, duration: 0.7, ease }}
+          >
+            {scopeNote}
+          </motion.p>
+        )}
+
         <motion.div
           className="mt-8 sm:mt-9"
           initial={{ opacity: 0 }}
           animate={ready ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ delay: 1.8, duration: 0.7, ease }}
+          transition={{ delay: 1.95, duration: 0.7, ease }}
         >
           <Link
             href="/parent-signup"
