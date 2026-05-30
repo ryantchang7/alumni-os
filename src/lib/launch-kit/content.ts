@@ -1,0 +1,545 @@
+/**
+ * Launch Kit content — every piece of copy the launch needs lives
+ * here so the public /launch page, the captain /internal/launch-kit,
+ * and the teleprompter all read from one source. Edit in one place,
+ * everywhere catches up.
+ *
+ * Tone rules:
+ *   - Warm, humble, confident. Ryan's voice, not investor-pitch voice.
+ *   - "Penn Golf family", "members", "Ask. Meet. Play. Gather."
+ *   - No "users", "CRM", "leads", "pipeline", "automation",
+ *     "engagement", "funnel". The PROHIBITED_WORDS array below is
+ *     a self-check.
+ *   - Light on em dashes.
+ */
+
+export const TAGLINE = 'Ask. Meet. Play. Gather.'
+
+export const HERO_TITLE = 'Penn Golf Clubhouse'
+export const HERO_SUBTITLE = 'For everyone who carried the Penn Golf bag.'
+export const HERO_BODY =
+  'A private clubhouse for Penn Golf players, alumni, family, and friends to ask for advice, meet, play rounds, gather, and stay connected to the program.'
+
+export const ACCESS_LINE =
+  'Joining is approval-based, not paywalled. Optional membership tiers are there if you want to back the Clubhouse and the program, but connection is the point.'
+
+export const CLOSING_LINE = 'Come into the Clubhouse.'
+
+/* ── Founder note (used on /launch) ──────────────────────────────── */
+
+export const FOUNDER_NOTE = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
+
+This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many other Penn Golf guys were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family. Generations standing on the same range, pulling for the same program.
+
+That's the feeling I wanted to bottle.
+
+Golf has given me so much: opportunities, friendships, mentors, doors that opened because someone from this program took a phone call. A lot of that traces back to the people who came before us. But Penn Golf has had different coaches, classes, and generations, and the connection across all of that hasn't always been easy.
+
+So I built Penn Golf Clubhouse.
+
+I compiled our Member Book through online research and Penn historical data — every player and manager I could find from 1948 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
+
+For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
+
+— Ryan Chang, Penn Men's Golf '27, Brookline, MA`
+
+/* ── The four-room model ─────────────────────────────────────────── */
+
+export interface RoomCard {
+  title: 'Ask' | 'Meet' | 'Play' | 'Gather'
+  blurb: string
+  examples: string[]
+  surfaces: string[]
+}
+
+export const ROOM_CARDS: RoomCard[] = [
+  {
+    title: 'Ask',
+    blurb: 'Career advice, mentorship, and warm introductions without the awkward DM.',
+    examples: ['"How did you break into private credit after Penn?"', '"Who do you know at Wachtell?"', '"Coffee in NYC if you have 20 min?"'],
+    surfaces: ['Guided Ask', 'Career Room'],
+  },
+  {
+    title: 'Meet',
+    blurb: 'Coffee, drinks, dinners, and city gatherings with the Penn Golf family.',
+    examples: ['Coffee in Boston', 'Penn Golf dinner during the US Open', 'Drinks before the Yale alumni weekend'],
+    surfaces: ['19th Hole', 'Open Requests'],
+  },
+  {
+    title: 'Play',
+    blurb: 'Host a round at your home course, or find a tee time wherever you are.',
+    examples: ['Host at Winged Foot', 'Visiting Charlotte and looking for a round', 'Foursome at Pine Valley next month'],
+    surfaces: ['The Course', 'Open Requests'],
+  },
+  {
+    title: 'Gather',
+    blurb: 'Events, alumni weekends, team updates, and the next generation of Penn Golf.',
+    examples: ['Alumni weekend at the Highlands', 'Team Room news + scores', 'Founders Wall + the current roster'],
+    surfaces: ['Team Room', 'Moments', 'Hall of Fame'],
+  },
+]
+
+/* ── Feature walkthrough (for the public /launch page) ───────────── */
+
+export interface FeatureRow {
+  label: string
+  href: string
+  blurb: string
+}
+
+export const FEATURE_WALKTHROUGH: FeatureRow[] = [
+  { label: 'Member Book', href: '/member-book', blurb: 'Every Penn Men\'s Golf player from 1948 onward, by name, year, and hometown.' },
+  { label: 'Member Map', href: '/member-map', blurb: 'See where the Penn Golf family lives, travels, and gathers.' },
+  { label: 'Guided Ask', href: '/ask', blurb: 'A respectful framework for career advice, intros, and coffee chats.' },
+  { label: 'The Course', href: '/the-course', blurb: 'Host or join a round at your home course. Open round requests for visiting members.' },
+  { label: '19th Hole', href: '/19th-hole', blurb: 'Coffee, drinks, dinner, and signature gatherings in every city.' },
+  { label: 'Team Room', href: '/team-room', blurb: 'Stay close to the current team. Schedules, results, news.' },
+  { label: 'Moments', href: '/moments', blurb: 'Photos and notes from the Penn Golf road.' },
+  { label: 'Support', href: '/support', blurb: 'Optional membership tiers. 70% to the program, 30% to keep the Clubhouse running.' },
+]
+
+/* ── Access model copy ───────────────────────────────────────────── */
+
+export interface AccessStep {
+  step: string
+  label: string
+  body: string
+}
+
+export const ACCESS_STEPS: AccessStep[] = [
+  {
+    step: '1',
+    label: 'Claim your card',
+    body: 'Find your name in the Member Book and send a quick claim. Takes 30 seconds.',
+  },
+  {
+    step: '2',
+    label: 'Captain approval',
+    body: 'A Penn Golf captain checks the claim. Usually same-day.',
+  },
+  {
+    step: '3',
+    label: 'You\'re in',
+    body: 'Full access to every room. Post, ask, host, meet.',
+  },
+  {
+    step: '4',
+    label: 'Optional support',
+    body: 'If you want to back the Clubhouse and the program, the support tiers are right there. Never required.',
+  },
+]
+
+/* ── Launch video scripts (3 lengths) ────────────────────────────── */
+
+export type ScriptLength = '60' | '90' | '120'
+
+export interface ScriptVersion {
+  id: ScriptLength
+  label: string
+  targetSeconds: number
+  wordCount: number
+  text: string
+}
+
+const SCRIPT_60 = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior from Brookline, Massachusetts.
+
+This spring at Ivy Champs at Baltusrol, hosted by Patrick Cooper, I saw Derek Rodgers, Carter Thompson, KJ, and so many of you out there. And it hit me. Penn Golf is a real family.
+
+So I built Penn Golf Clubhouse. A private space for everyone who's carried the Penn Golf bag.
+
+Inside: our full Member Book, a map of where we all are, a way to ask for advice without the awkwardness, set up coffee, host or join a round, and stay close to the team.
+
+Ask. Meet. Play. Gather.
+
+Approval-based, not paywalled. Optional support tiers if you want to back the program too.
+
+Come claim your member card at penngolfclubhouse.com.`
+
+const SCRIPT_90 = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
+
+This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many other guys were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family.
+
+Golf has given me so much, and a lot of that traces back to the people who came before us. But Penn Golf has had different coaches, classes, and generations, and our family hasn't always been as connected as it could be.
+
+So I built Penn Golf Clubhouse.
+
+I compiled our Member Book through online research and Penn historical data, then built a private space for everyone who's carried the Penn Golf bag.
+
+Inside, you can find members across generations, see where everyone is on the map, ask for career advice without the awkwardness, set up coffee or drinks, host or join a round, follow the current team, post moments, and support the program.
+
+The idea is simple. Ask. Meet. Play. Gather.
+
+Joining is approval-based, not paywalled. The optional membership tiers are there if you want to support the program, but connection is the point.
+
+For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully take down Princeton and Harvard.
+
+Come claim your member card at penngolfclubhouse.com.`
+
+const SCRIPT_120 = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
+
+This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many other Penn Golf guys were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family. Generations standing on the same range, pulling for the same program.
+
+That's the feeling I wanted to bottle.
+
+Golf has given me so much: opportunities, friendships, mentors, doors that opened because someone from this program took a phone call or sent a quick note. A lot of that traces back to people who came before us. But Penn Golf has had different coaches, classes, and generations, and the connection across all of that hasn't always been easy.
+
+So I built Penn Golf Clubhouse.
+
+I compiled our Member Book through online research and Penn historical data. Every player and manager I could find from 1948 onward, by name, year, and hometown. Then I built a private space for everyone who's carried the Penn Golf bag.
+
+Inside, you can find members across generations, see where everyone is on the map, ask for career advice without the awkwardness, set up coffee or drinks in any city, host or join a round at your home course, follow the current team, post moments from the road, and support the program if you choose.
+
+The idea is simple. Ask. Meet. Play. Gather.
+
+For current players, it makes it easier to reach out respectfully. For alumni, it makes it easy to help in a curated way and stay close to the team you spent four years building.
+
+Joining is approval-based, not paywalled. The optional membership tiers are there if you want to back the Clubhouse and the program. But connection is the point. Always.
+
+This is for the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
+
+Come claim your member card at penngolfclubhouse.com.`
+
+function countWords(s: string): number {
+  return s.trim().split(/\s+/).length
+}
+
+export const SCRIPTS: ScriptVersion[] = [
+  { id: '60', label: '60-second short cut', targetSeconds: 60, text: SCRIPT_60, wordCount: countWords(SCRIPT_60) },
+  { id: '90', label: '90-second main launch', targetSeconds: 90, text: SCRIPT_90, wordCount: countWords(SCRIPT_90) },
+  { id: '120', label: '2-minute founder walkthrough', targetSeconds: 120, text: SCRIPT_120, wordCount: countWords(SCRIPT_120) },
+]
+
+export function getScript(id: ScriptLength): ScriptVersion {
+  return SCRIPTS.find(s => s.id === id) ?? SCRIPTS[1]
+}
+
+/* ── Shot-by-shot storyboard (mapped to the 90-second cut) ───────── */
+
+export interface StoryboardBeat {
+  timestamp: string
+  voiceover: string
+  visual: string
+  route: string
+  notes: string
+}
+
+export const STORYBOARD: StoryboardBeat[] = [
+  {
+    timestamp: '0:00–0:06',
+    voiceover: '(silent open)',
+    visual: 'Landing hero with the curtain lift animation. Hold on the wordmark.',
+    route: '/',
+    notes: 'Let the curtain animation breathe. Cut on the first audio beat.',
+  },
+  {
+    timestamp: '0:06–0:16',
+    voiceover: 'Hey Penn Men\'s Golf family. I\'m Ryan Chang, a rising junior on the team from Brookline, Massachusetts.',
+    visual: 'Ryan piece-to-camera, outdoor or campus background. Friendly, eye-line straight to lens.',
+    route: '(talking head)',
+    notes: 'iPhone 4K, 24fps. Natural light if possible. Lavalier mic clipped under collar.',
+  },
+  {
+    timestamp: '0:16–0:25',
+    voiceover: 'This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us, and seeing Derek Rodgers, Carter Thompson, KJ, and so many other guys out there — it felt like a real Penn Golf family.',
+    visual: 'Cut to /launch hero text, then to /team-room. If you have Baltusrol B-roll, drop it in here.',
+    route: '/launch → /team-room',
+    notes: 'No real names of alumni shown on screen unless you have permission. Keep it on the Clubhouse surfaces.',
+  },
+  {
+    timestamp: '0:25–0:35',
+    voiceover: 'So I built Penn Golf Clubhouse. I compiled our Member Book through online research and Penn historical data.',
+    visual: 'Pan the Member Book registry. Hover a single card. Show the "Members / Generations" stats plaque.',
+    route: '/member-book',
+    notes: 'Linger on the year range plaque. It signals depth without saying anything corny.',
+  },
+  {
+    timestamp: '0:35–0:43',
+    voiceover: 'See where the Penn Golf family is on the map.',
+    visual: 'Member Map US view. Pan from the Northeast westward. Click a state list.',
+    route: '/member-map',
+    notes: 'Keep cursor smooth. If the map has motion, let it settle before clicking.',
+  },
+  {
+    timestamp: '0:43–0:53',
+    voiceover: 'Ask for career advice without the awkwardness.',
+    visual: 'Open the Guided Ask flow. Show the purpose chips, then the templated message preview.',
+    route: '/ask',
+    notes: 'Don\'t actually send a request. Just walk through one purpose to show the framework.',
+  },
+  {
+    timestamp: '0:53–1:02',
+    voiceover: 'Set up coffee, drinks, or host a round.',
+    visual: 'Quick sweep: /the-course Open Requests strip → /19th-hole gatherings.',
+    route: '/the-course → /19th-hole',
+    notes: 'Seed at least one Open Request beforehand so the strip is populated.',
+  },
+  {
+    timestamp: '1:02–1:10',
+    voiceover: 'Follow the current team. Post moments.',
+    visual: 'Cut /team-room then /moments. Show a real moment photo if posted.',
+    route: '/team-room → /moments',
+    notes: 'Pre-post 2–3 moments so the wall isn\'t empty.',
+  },
+  {
+    timestamp: '1:10–1:18',
+    voiceover: 'Support the program if you want to. The idea is simple. Ask. Meet. Play. Gather.',
+    visual: '/support page (briefly), then the Ask. Meet. Play. Gather. card on /launch.',
+    route: '/support → /launch',
+    notes: 'Hold on the four-word card for 1.5s. Let the phrase land.',
+  },
+  {
+    timestamp: '1:18–1:30',
+    voiceover: 'Approval-based, not paywalled. Come claim your member card at penngolfclubhouse.com.',
+    visual: 'Return to /launch hero with the "Claim Your Member Card" CTA highlighted.',
+    route: '/launch',
+    notes: 'End on the hero. Allow 1s of breath. Cut to black.',
+  },
+]
+
+/* ── Screen recording checklist (in order) ───────────────────────── */
+
+export interface RecordingStep {
+  route: string
+  pageName: string
+  action: string
+  why: string
+}
+
+export const RECORDING_CHECKLIST: RecordingStep[] = [
+  { route: '/', pageName: 'Landing', action: 'Let curtain lift, hold on wordmark for 2s.', why: 'Hero shot. The first frame.' },
+  { route: '/launch', pageName: 'Launch page', action: 'Slow scroll: hero → four rooms → access steps.', why: 'Pitches the product in one page.' },
+  { route: '/player', pageName: 'Clubhouse home', action: 'Show the dashboard once a signed-in member lands.', why: 'Visual proof there\'s a real "inside".' },
+  { route: '/member-book', pageName: 'Member Book', action: 'Scroll the registry. Hover one card. Show the year-range plaque.', why: 'Depth of the archive.' },
+  { route: '/member-map', pageName: 'Member Map', action: 'Pan the US map. Click a state, show the alumni list.', why: 'Geography of the family.' },
+  { route: '/ask', pageName: 'Guided Ask', action: 'Pick "Career advice", show one templated message preview. Don\'t send.', why: 'The respect framework in action.' },
+  { route: '/the-course', pageName: 'The Course', action: 'Show Open Requests strip, then Open to a Round section.', why: 'Round-hosting in action.' },
+  { route: '/19th-hole', pageName: '19th Hole', action: 'Show gatherings + Open Requests strip.', why: 'Social side.' },
+  { route: '/moments', pageName: 'Moments', action: 'Scroll a few photos.', why: 'The "we\'re alive" wall.' },
+  { route: '/team-room', pageName: 'Team Room', action: 'Show team news strip and roster.', why: 'Close to the program.' },
+  { route: '/support', pageName: 'Support', action: 'Show the tier cards briefly.', why: 'Optional, not the gate.' },
+]
+
+/* ── Marketing copy blocks ───────────────────────────────────────── */
+
+export interface CopyBlock {
+  id: string
+  label: string
+  surface: string
+  body: string
+}
+
+export const COPY_BLOCKS: CopyBlock[] = [
+  {
+    id: 'alumni-email',
+    label: 'Alumni email',
+    surface: 'Send to the full Member Book once. Personalize the first name.',
+    body: `Subject: Penn Golf Clubhouse — a place for everyone who carried the bag.
+
+Hey [first name],
+
+This spring at Ivy Champs at Baltusrol, with Patrick Cooper hosting and so many of you on the property, I felt something Penn Golf has always had but never quite captured in one place. A family.
+
+So I built Penn Golf Clubhouse. A private home for the program.
+
+Inside:
+• The Member Book — every player I could find from 1948 onward
+• The Member Map — where everyone is now
+• The Course — host or join a round wherever you're traveling
+• The 19th Hole — coffee, drinks, dinners
+• Career Room + Guided Ask — advice and intros without the awkwardness
+• Moments + Team Room — stay close to the current team
+
+Joining is approval-based, not paywalled. The optional support tiers are there if you want to back the Clubhouse and the program, but that's never the gate.
+
+Come claim your member card → penngolfclubhouse.com
+
+For the Penn Golf family,
+Ryan Chang
+Penn Men's Golf '27
+Brookline, MA`,
+  },
+  {
+    id: 'team-group-text',
+    label: 'Current team group text',
+    surface: 'The team chat. Casual. Lowercase.',
+    body: `yo penn golf
+
+built something for us 🏌️
+penngolfclubhouse.com
+
+it's a private clubhouse for the whole penn golf family. alumni, current team, parents. claim your card, see where everyone is, ask for advice, set up rounds.
+
+approval-based, takes 30s to sign up. let me know what you think and ping me if anything breaks`,
+  },
+  {
+    id: 'linkedin',
+    label: 'LinkedIn post',
+    surface: 'Posted from Ryan\'s personal profile. Tag Penn Athletics if appropriate.',
+    body: `Building Penn Golf Clubhouse.
+
+A private home for Penn Men's Golf alumni, current players, family, and friends of the program.
+
+The idea came at Ivy Champs at Baltusrol this spring, watching generations of Penn Golf on the same course. Different eras, different coaches, but the same family. There just wasn't a way for that family to find and help each other on a normal Tuesday.
+
+So we built one.
+
+Inside: the full Member Book (every player I could find from 1948 onward), a map of where everyone is now, a guided way to ask for career advice without the awkwardness, coffee and rounds in any city, and a place to follow the current team.
+
+Approval-based, not paywalled. The point is connection first.
+
+If you carried the Penn Golf bag, come claim your card → penngolfclubhouse.com
+
+For the Penn Golf family. Thanks to everyone who's already in. This wouldn't exist without you.`,
+  },
+  {
+    id: 'instagram',
+    label: 'Instagram caption',
+    surface: 'Posted alongside the 90-second main video. Reel format.',
+    body: `For everyone who carried the Penn Golf bag.
+
+Penn Golf Clubhouse is live → penngolfclubhouse.com 🏌️
+
+Ask. Meet. Play. Gather.
+
+#PennGolf #IvyGolf`,
+  },
+  {
+    id: 'sms-alumni',
+    label: 'Short SMS to recent alumni',
+    surface: 'For people in Ryan\'s contacts. Personal, low pressure.',
+    body: `Built Penn Golf Clubhouse — a private space for the whole Penn Golf family. Approval based, takes a sec. Come claim your card → penngolfclubhouse.com`,
+  },
+  {
+    id: 'parent-family',
+    label: 'Parent / family note',
+    surface: 'Sent by Ryan or a player to their own family.',
+    body: `Hi [parent first name],
+
+It's Ryan Chang, on the current Penn Men's Golf team. We just launched Penn Golf Clubhouse, a private space for the Penn Golf family that includes parents and longtime friends of the program.
+
+You can claim a Family & Affiliate card at penngolfclubhouse.com. It's free and approval-based. You'll be able to follow the team, see where alumni are around the country, and stay close to everything happening with the program.
+
+It would mean a lot to have [player name]'s family in there.
+
+Thanks for everything you do for Penn Golf,
+Ryan`,
+  },
+]
+
+/* ── AI B-roll prompts (atmosphere only — see warnings) ──────────── */
+
+export const AI_VIDEO_PROMPTS: string[] = [
+  'Cinematic private Ivy League golf clubhouse interior, late afternoon light through leaded glass windows, navy and parchment color palette, leather and wood, no people, no text, no logos, premium documentary style, shallow depth of field.',
+  'Slow pan across an antique scorecard, leather golf glove, and brass key on a polished oak clubhouse table. Warm afternoon light. Nostalgic, restrained, no text.',
+  'Close-up handheld shot of a hand removing a leather golf bag tag with a stitched generic patch. Neutral tones, cinematic, no faces visible, no real logos.',
+  'Aerial pull-back over an empty Northeast fairway at golden hour, subtle mist, no carts, no people, private club atmosphere, restrained color grading, no text.',
+  'Static wide shot of a worn leather armchair in a clubhouse library, single brass desk lamp, books stacked on the side table, a putter leaning in the corner. Warm dim light, dust motes in the air, no people, no text.',
+  'Macro tracking shot of a golf ball settling into rough grass after a chip, dawn light, dew on the blades, no real brand logos visible, cinematic.',
+  'Hands writing in a leather-bound notebook beside a coffee cup on a clubhouse table, soft window light, no faces visible, restrained, nostalgic, no text on screen.',
+  'Slow tilt up a vintage wooden golf locker, brass nameplate blurred, hanging wool sweater, warm interior light, no real names visible, cinematic.',
+]
+
+export const AI_VIDEO_WARNINGS: string[] = [
+  'Do not generate AI footage of any real Penn alumni, current players, coaches, or staff.',
+  'Do not use real names, faces, or likenesses in any AI-generated clip.',
+  'Do not show Penn-branded apparel or real logos in AI footage. Generic patches or blurred details only.',
+  'AI B-roll is atmosphere. Ryan\'s real piece-to-camera and the real screen recordings should carry the video.',
+]
+
+/* ── Recording flow + asset guidance ─────────────────────────────── */
+
+export interface SizeGuide {
+  ratio: string
+  pixels: string
+  where: string
+}
+
+export const RECORDING_SIZES: SizeGuide[] = [
+  { ratio: '16:9', pixels: '1920 × 1080', where: 'YouTube, website embed, email player.' },
+  { ratio: '9:16', pixels: '1080 × 1920', where: 'Instagram Reels, TikTok, Stories. Crop the talking head tight.' },
+  { ratio: '1:1', pixels: '1080 × 1080', where: 'LinkedIn feed, Instagram feed carousels.' },
+]
+
+export const RECORDING_FLOW: string[] = [
+  'Record Ryan\'s piece-to-camera on iPhone in 4K at 24fps. Lavalier mic clipped under the collar.',
+  'Record the website on QuickTime (Cmd-Shift-5) or Screen Studio. Chrome at 110% zoom, window mode (not full browser), 1920 × 1080 capture.',
+  'Edit in CapCut (free, fast), Final Cut, Descript, or Premiere. Cuts on the beat. Each on-screen scene 4-6 seconds max.',
+  'Auto-caption, then proofread. Captions on for silent autoplay.',
+  'Music: tasteful instrumental, low in the mix. Try Epidemic Sound\'s "Settle In" or "Field Notes" categories. Avoid TikTok-popular tracks.',
+  'Add 1 second of black at the start and 1 second at the end so social platforms don\'t clip the CTA.',
+]
+
+export const ASSET_REFS: Array<{ label: string; value: string; note?: string }> = [
+  { label: 'Site URL', value: 'penngolfclubhouse.com' },
+  { label: 'Brand color (navy)', value: '#0a1628', note: 'Hero backgrounds, deep accents.' },
+  { label: 'Brand color (parchment)', value: '#f8f5f0', note: 'Page background, warm fields.' },
+  { label: 'Brand color (Penn red)', value: '#990000', note: 'CTAs, links, action.' },
+  { label: 'Brand color (course green)', value: '#2d6a4f', note: '"On the Course" accent.' },
+  { label: 'Brand color (19th gold)', value: '#b8860b', note: '"19th Hole" accent.' },
+  { label: 'Display serif', value: 'Playfair Display', note: 'Headings, hero lines.' },
+  { label: 'Wordmark', value: 'PENN GOLF', note: 'Tracked caps, NavBar.' },
+  { label: 'Tagline', value: TAGLINE },
+  { label: 'Hero crest', value: '/clubhouse-cover.jpg', note: 'Landing background.' },
+  { label: 'Favicon', value: '/favicon.ico' },
+]
+
+/* ── Prohibited vocabulary (self-check) ──────────────────────────── */
+
+export const PROHIBITED_WORDS = [
+  'users',
+  'CRM',
+  'leads',
+  'pipeline',
+  'automation',
+  'engagement metrics',
+  'growth funnel',
+  'funnel',
+] as const
+
+export interface ProhibitedHit {
+  word: string
+  where: string
+  excerpt: string
+}
+
+function scanForProhibited(label: string, text: string): ProhibitedHit[] {
+  const hits: ProhibitedHit[] = []
+  const lower = text.toLowerCase()
+  for (const raw of PROHIBITED_WORDS) {
+    const w = raw.toLowerCase()
+    const idx = lower.indexOf(w)
+    if (idx === -1) continue
+    // Word-boundary check (avoid matching "automation" inside "automotive" etc).
+    const before = idx === 0 ? ' ' : lower[idx - 1]
+    const after = lower[idx + w.length] ?? ' '
+    if (/[a-z]/.test(before) || /[a-z]/.test(after)) continue
+    const start = Math.max(0, idx - 30)
+    const end = Math.min(text.length, idx + w.length + 30)
+    hits.push({ word: raw, where: label, excerpt: text.slice(start, end) })
+  }
+  return hits
+}
+
+/**
+ * Self-check: scan every script + copy block + hero string for
+ * prohibited corporate vocabulary. Returns empty array if clean.
+ * Surfaced on the kit page so it's a live signal, not a hidden test.
+ */
+export function getProhibitedHits(): ProhibitedHit[] {
+  const hits: ProhibitedHit[] = []
+  hits.push(...scanForProhibited('HERO_BODY', HERO_BODY))
+  hits.push(...scanForProhibited('FOUNDER_NOTE', FOUNDER_NOTE))
+  hits.push(...scanForProhibited('ACCESS_LINE', ACCESS_LINE))
+  for (const s of SCRIPTS) {
+    hits.push(...scanForProhibited(`SCRIPT_${s.id}`, s.text))
+  }
+  for (const c of COPY_BLOCKS) {
+    hits.push(...scanForProhibited(c.id, c.body))
+  }
+  return hits
+}
+
+export const ACCESS_AFFIRMATION = {
+  positive: 'approval-based, not paywalled',
+  appears: ACCESS_LINE.toLowerCase().includes('approval-based, not paywalled'),
+}

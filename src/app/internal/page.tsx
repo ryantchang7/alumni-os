@@ -47,6 +47,11 @@ const tools = [
     description: 'What every signup type fills out, and where each field surfaces. Reference doc — pulled from src/lib/role-requirements.ts.',
     href: '/internal/requirements',
   },
+  {
+    label: 'Launch Kit',
+    description: 'Script, storyboard, recording checklist, social copy, and AI B-roll prompts. Everything to record and ship the launch video.',
+    href: '/internal/launch-kit',
+  },
 ]
 
 export default async function InternalPage() {
