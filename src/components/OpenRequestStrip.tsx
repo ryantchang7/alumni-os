@@ -13,7 +13,7 @@
  */
 
 import Link from 'next/link'
-import { Beer, Coffee, Flag, MapPin, Utensils, Plus } from 'lucide-react'
+import { Beer, Coffee, Flag, MapPin, Plane, Utensils, Plus } from 'lucide-react'
 import type { OpenRequest, OpenRequestIntent } from '@/lib/store/types'
 import RespondButton from './RespondButton'
 
@@ -76,17 +76,22 @@ export default function OpenRequestStrip({
   if (requests.length === 0) {
     return (
       <div
-        className="bg-white border border-dashed border-[rgba(180,168,150,0.5)] rounded-xl px-6 py-5 flex items-center justify-between gap-4 flex-wrap"
-        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
+        className="rounded-xl px-6 py-5 flex items-center justify-between gap-4 flex-wrap border"
+        style={{
+          backgroundColor: `${accent}0A`,
+          borderColor: `${accent}30`,
+          boxShadow: '0 1px 3px rgba(10,22,40,0.04)',
+        }}
       >
         <div>
           <p
-            className="text-[10px] font-semibold uppercase tracking-[0.22em] mb-1"
+            className="text-[10px] font-semibold uppercase tracking-[0.22em] mb-1 inline-flex items-center gap-1.5"
             style={{ color: accent }}
           >
+            <Plane className="w-3 h-3" />
             {eyebrow}
           </p>
-          <p className="text-[13px] text-[#3d4a5c]">
+          <p className="text-[14px] font-medium text-[#3d4a5c]">
             Nobody&rsquo;s in town with an open ask right now.
           </p>
         </div>
@@ -112,12 +117,20 @@ export default function OpenRequestStrip({
           >
             {eyebrow}
           </p>
-          <h3
-            className="text-[#0a1628] text-lg font-medium"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            {title}
-          </h3>
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <h3
+              className="text-[#0a1628] text-xl font-medium"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              {title}
+            </h3>
+            <span
+              className="text-xs font-medium px-2 py-0.5 rounded-full"
+              style={{ color: accent, backgroundColor: `${accent}1A` }}
+            >
+              {requests.length} active
+            </span>
+          </div>
           {subtitle && (
             <p className="text-[12.5px] text-[#8a7f70] mt-0.5 max-w-md">{subtitle}</p>
           )}

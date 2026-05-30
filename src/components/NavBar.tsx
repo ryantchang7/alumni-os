@@ -111,6 +111,12 @@ function AccountAffordance() {
             Messages
           </Link>
           <Link
+            href="/requests/new"
+            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+          >
+            Post an Open Request
+          </Link>
+          <Link
             href="/player/requests"
             className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
           >

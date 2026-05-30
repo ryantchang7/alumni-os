@@ -407,19 +407,19 @@ export default async function TheCoursePage() {
           </div>
         )}
 
-        {/* Open Requests — members in town looking for a tee time. */}
-        {openRoundRequests.length > 0 && (
-          <div className="-mt-4 mb-2">
-            <OpenRequestStrip
-              requests={openRoundRequests}
-              eyebrow="Open Requests"
-              title="In town, looking for a round."
-              subtitle="Penn Golf members visiting somewhere — ping them if you can play host."
-              accent="#2d6a4f"
-              limit={6}
-            />
-          </div>
-        )}
+        {/* Open Requests — members in town looking for a tee time.
+            Always renders: the strip's empty state advertises the
+            "Post a request" CTA so the surface stays discoverable. */}
+        <div className="-mt-4 mb-2">
+          <OpenRequestStrip
+            requests={openRoundRequests}
+            eyebrow="Open Requests"
+            title="In town, looking for a round."
+            subtitle="Penn Golf members visiting somewhere — ping them if you can play host."
+            accent="#2d6a4f"
+            limit={6}
+          />
+        </div>
 
         {/* Open to a Round — Hole 2 */}
         <div id="open-to-rounds">
