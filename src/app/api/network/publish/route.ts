@@ -1,22 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { isPublishRole } from '@/lib/access/dev-permissions'
+import { requireCaptain } from '@/lib/auth/guards'
 
 export async function POST(request: NextRequest) {
-  let body: { teamSlug?: string; personId?: string; role?: string }
+  const gate = await requireCaptain()
+  if (!gate.ok) return gate.response
+
+  let body: { teamSlug?: string; personId?: string }
   try {
     body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { teamSlug, personId, role } = body
+  const { teamSlug, personId } = body
 
-  if (!teamSlug || !personId || !role) {
-    return NextResponse.json({ error: 'teamSlug, personId, and role are required' }, { status: 400 })
-  }
-
-  if (!isPublishRole(role)) {
-    return NextResponse.json({ error: 'Forbidden: insufficient role' }, { status: 403 })
+  if (!teamSlug || !personId) {
+    return NextResponse.json({ error: 'teamSlug and personId are required' }, { status: 400 })
   }
 
   const { getTeamBySlug, publishMembershipToNetwork } = await import('@/lib/store/local-store')
@@ -26,7 +25,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Team not found' }, { status: 404 })
   }
 
-  const ok = await publishMembershipToNetwork(team.id, personId, role)
+  const ok = await publishMembershipToNetwork(team.id, personId, 'captain')
   if (!ok) {
     return NextResponse.json({ error: 'Membership not found' }, { status: 404 })
   }

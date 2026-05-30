@@ -14,8 +14,12 @@ import {
   readStore,
   writeStore,
 } from '@/lib/store/local-store'
+import { requireCaptain } from '@/lib/auth/guards'
 
 export async function POST(request: Request) {
+  const gate = await requireCaptain()
+  if (!gate.ok) return gate.response
+
   let body: unknown
   try {
     body = await request.json()

@@ -37,6 +37,12 @@ function parseIntents(raw: string | null): OpenRequestIntent[] | undefined {
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
 export async function GET(request: Request) {
+  // Approved members only — names + travel windows shouldn't leak to the
+  // open internet, even though the page surfaces are already gated.
+  const session = await auth()
+  if (!session?.accountId || !session.linkedPersonId) {
+    return NextResponse.json({ error: 'Approved members only' }, { status: 403 })
+  }
   const team = await getTeamBySlug(TEAM_SLUG)
   if (!team) return NextResponse.json({ requests: [] })
   const { searchParams } = new URL(request.url)

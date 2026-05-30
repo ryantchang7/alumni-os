@@ -4,6 +4,7 @@ import { validateCrawlTarget } from '@/lib/scraping/guards'
 import { fetchPage } from '@/lib/scraping/fetch-page'
 import { discoverTeamPages } from '@/lib/scraping/discover-team-pages'
 import { extractRoster } from '@/lib/scraping/extract-roster'
+import { requireFounder } from '@/lib/auth/guards'
 
 const TRUST_NOTES = [
   'Preview only: no data is saved.',
@@ -15,6 +16,9 @@ const TRUST_NOTES = [
 ]
 
 export async function POST(req: NextRequest) {
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
   let body: unknown
   try {
     body = await req.json()

@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server'
 import { validateCrawlTarget } from '@/lib/scraping/guards'
 import { createTeam, readStore, getTeamBySlug } from '@/lib/store/local-store'
+import { requireFounder } from '@/lib/auth/guards'
 
 export async function POST(request: Request) {
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
   let body: unknown
   try {
     body = await request.json()

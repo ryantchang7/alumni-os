@@ -2,8 +2,12 @@ import { NextResponse } from 'next/server'
 import { validateCrawlTarget } from '@/lib/scraping/guards'
 import { fetchPage } from '@/lib/scraping/fetch-page'
 import { extractRoster } from '@/lib/scraping/extract-roster'
+import { requireFounder } from '@/lib/auth/guards'
 
 export async function POST(req: Request) {
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
   let body: unknown
   try {
     body = await req.json()
