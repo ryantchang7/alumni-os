@@ -1,11 +1,12 @@
 'use client'
 
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 /**
  * The clubhouse signature that closes every page. Thin gold rule + a
- * whisper-quiet attribution. Restraint over sitemap. Hidden on the
- * landing route so the cover image goes full-bleed.
+ * whisper-quiet attribution + Privacy + Terms. Restraint over sitemap.
+ * Hidden on the landing route so the cover image goes full-bleed.
  */
 export default function ClubhouseFooter() {
   const pathname = usePathname()
@@ -23,7 +24,7 @@ export default function ClubhouseFooter() {
           marginTop: '0',
         }}
       />
-      <div className="max-w-[1180px] mx-auto px-6 sm:px-10 py-6 text-center">
+      <div className="max-w-[1180px] mx-auto px-6 sm:px-10 py-6 text-center space-y-2">
         <p className="text-[10.5px] text-[#8a7f70] tracking-[0.06em]">
           Built by{' '}
           <a
@@ -35,6 +36,15 @@ export default function ClubhouseFooter() {
             Ryan Chang
           </a>
           .
+        </p>
+        <p className="text-[10.5px] text-[#8a7f70] tracking-[0.06em] flex items-center justify-center gap-3">
+          <Link href="/privacy" className="hover:text-[#0a1628] hover:underline transition-colors">
+            Privacy
+          </Link>
+          <span className="text-[#d9c8a8]">·</span>
+          <Link href="/terms" className="hover:text-[#0a1628] hover:underline transition-colors">
+            Terms
+          </Link>
         </p>
       </div>
     </footer>

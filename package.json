@@ -19,6 +19,7 @@
     "test:no-mock-leak": "tsx scripts/test-no-mock-leak.ts",
     "test:enrichment": "tsx scripts/test-enrichment-pipeline.ts",
     "test:api-validation": "tsx scripts/test-api-validation.ts",
+    "test:launch-smoke": "tsx scripts/launch-smoke-check.ts",
     "seed:demo-promoted": "tsx scripts/seed-demo-promoted-people.ts",
     "seed:agent-demo": "tsx scripts/seed-agent-demo.ts",
     "seed:network-demo": "tsx scripts/seed-network-demo.ts",

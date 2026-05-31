@@ -47,6 +47,11 @@ const tools = [
     description: 'Script, storyboard, recording checklist, social copy, and AI B-roll prompts. Everything to record and ship the launch video.',
     href: '/internal/launch-kit',
   },
+  {
+    label: 'Launch Readiness',
+    description: 'Pre-flight checklist before sharing the URL with alumni. Env vars, persistence roundtrip, test email, smoke tests, live counts.',
+    href: '/internal/launch-readiness',
+  },
 ]
 
 export default async function InternalPage() {

@@ -200,7 +200,7 @@ export default function SupportClient({ status }: Props) {
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16">
         <div className="max-w-[920px] mx-auto">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-4">
-            Membership
+            Optional support
           </p>
           <h1
             className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight"
@@ -210,6 +210,9 @@ export default function SupportClient({ status }: Props) {
           </h1>
           <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line mt-6">
             {heroBlurb}
+          </p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/55 mt-6 inline-block border border-white/15 px-3 py-1.5 rounded-full">
+            Joining the Clubhouse is approval-based, not paywalled.
           </p>
         </div>
       </div>

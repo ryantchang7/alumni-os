@@ -48,12 +48,24 @@ const REDIS_KEY = 'alumni-os:store:v1'
 
 // Lazy Redis client. Returns null if env vars aren't configured.
 let _redis: Redis | null | undefined
+let _warnedFsFallback = false
 function getRedis(): Redis | null {
   if (_redis !== undefined) return _redis
   const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL
   const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN
   if (!url || !token) {
     _redis = null
+    // On Vercel without KV, every write lands in /tmp and disappears on the
+    // next cold start. Warn loudly once per cold start so the signal shows
+    // up in Vercel logs even before the founder opens /internal/launch-readiness.
+    if (!_warnedFsFallback && process.env.VERCEL === '1') {
+      _warnedFsFallback = true
+      console.warn(
+        '[store] ⚠️  Running on Vercel without KV_REST_API_URL/KV_REST_API_TOKEN. ' +
+          'Writes are going to /tmp/alumni-os.json and WILL NOT persist across cold starts. ' +
+          'Set Upstash KV env vars before sharing the URL with members.',
+      )
+    }
     return null
   }
   _redis = new Redis({ url, token })
