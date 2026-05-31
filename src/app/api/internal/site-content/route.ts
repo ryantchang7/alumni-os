@@ -1,23 +1,19 @@
 /**
- * Captain-only API for editing site content slots.
+ * Founder-only API for editing site content slots.
  *
  *  - GET returns the full slots registry + current values (override OR default).
  *  - PUT body `{ slotId, value }` saves a new override. Empty string clears it.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/auth'
-import { isCaptain } from '@/lib/captains'
+import { requireFounder } from '@/lib/auth/guards'
 import { CONTENT_SLOTS, getSlotById } from '@/lib/site-content/slots'
 import { getAllSiteContent, setSiteContent } from '@/lib/store/local-store'
 
-const TEAM_SLUG = 'penn-mens-golf'
-
 export async function GET() {
-  const session = await auth()
-  if (!isCaptain(session?.user?.email, TEAM_SLUG)) {
-    return NextResponse.json({ error: 'Captains only' }, { status: 403 })
-  }
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
   const overrides = await getAllSiteContent()
   const slots = CONTENT_SLOTS.map(s => ({
     ...s,
@@ -28,10 +24,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const session = await auth()
-  if (!isCaptain(session?.user?.email, TEAM_SLUG)) {
-    return NextResponse.json({ error: 'Captains only' }, { status: 403 })
-  }
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
   let body: unknown
   try {
     body = await request.json()

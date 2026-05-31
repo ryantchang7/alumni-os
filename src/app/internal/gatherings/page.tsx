@@ -1,7 +1,10 @@
 import Link from 'next/link'
+import { requireFounderOr404 } from '@/lib/auth/founder-page-gate'
 import GatheringsManager from './GatheringsManager'
 
-export default function InternalGatheringsPage() {
+export default async function InternalGatheringsPage() {
+  await requireFounderOr404()
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">

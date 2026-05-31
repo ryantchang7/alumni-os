@@ -6,7 +6,7 @@
  */
 
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { requireFounder } from '@/lib/auth/guards'
 import {
   getProfileClaimRequestById,
   linkAccountToPerson,
@@ -15,7 +15,6 @@ import {
   updateProfileClaimRequestStatus,
 } from '@/lib/store/local-store'
 import { getCaptainEmails } from '@/lib/captains'
-import { isCaptainEmailWithOverrides } from '@/lib/captains-runtime'
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -24,11 +23,9 @@ interface RouteParams {
 const TEAM_SLUG = 'penn-mens-golf'
 
 export async function POST(request: Request, { params }: RouteParams) {
-  const session = await auth()
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
   const store = await readStore()
-  if (!isCaptainEmailWithOverrides(session?.user?.email, TEAM_SLUG, store.accounts)) {
-    return NextResponse.json({ error: 'Captains only' }, { status: 403 })
-  }
 
   const { id } = await params
 

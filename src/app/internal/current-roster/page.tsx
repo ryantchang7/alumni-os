@@ -1,9 +1,12 @@
 import Link from 'next/link'
+import { requireFounderOr404 } from '@/lib/auth/founder-page-gate'
 import RosterEditorClient from './RosterEditorClient'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
 export default async function CurrentRosterEditorPage() {
+  await requireFounderOr404()
+
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug(TEAM_SLUG)

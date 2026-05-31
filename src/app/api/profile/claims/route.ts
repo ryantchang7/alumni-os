@@ -1,16 +1,12 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
-import { getProfileClaimRequestsForTeam, getTeamBySlug, readStore } from '@/lib/store/local-store'
-import { isCaptainEmailWithOverrides } from '@/lib/captains-runtime'
+import { requireFounder } from '@/lib/auth/guards'
+import { getProfileClaimRequestsForTeam, getTeamBySlug } from '@/lib/store/local-store'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
 export async function GET() {
-  const session = await auth()
-  const store = await readStore()
-  if (!isCaptainEmailWithOverrides(session?.user?.email, TEAM_SLUG, store.accounts)) {
-    return NextResponse.json({ error: 'Captains only' }, { status: 403 })
-  }
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
 
   const team = await getTeamBySlug(TEAM_SLUG)
   if (!team) {
