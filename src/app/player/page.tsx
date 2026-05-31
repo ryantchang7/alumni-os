@@ -329,7 +329,7 @@ function ClubhouseInner() {
 
   const welcomeLine = useSiteContent(
     'player.welcome-line',
-    'Member Book, career connections, and the Penn Golf community in one place.',
+    'A private clubhouse for Penn Golf players, alumni, families, and friends to stay close, help the next generation, and keep playing together.',
   )
   const crestImage = useSiteContent('player.crest-image', '')
 

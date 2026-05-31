@@ -32,11 +32,11 @@ export default function CourseHero({ rounds }: Props) {
   const crestImage = useSiteContent('the-course.crest-image', '')
   const heroBlurb = useSiteContent(
     'the-course.hero-blurb',
-    'Tee times, foursomes, and home courses across the Penn Golf network. Every round here is hosted by a member.',
+    'A place for Penn Golf members to host rounds, join foursomes, share home courses, and stay connected through the game.',
   )
   const stageOneBlurb = useSiteContent(
     'the-course.stage-tee-blurb',
-    'Tee times, foursomes, and home courses across the Penn Golf network. Every round here is hosted by a member.',
+    'A place for Penn Golf members to host rounds, join foursomes, share home courses, and stay connected through the game.',
   )
   const stageOneCta = useSiteContent('the-course.stage-tee-cta', 'Find a Round')
   const stageOneSecondary = useSiteContent('the-course.stage-tee-secondary', 'Host a Round')

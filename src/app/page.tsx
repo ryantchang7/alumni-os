@@ -15,7 +15,7 @@ export default function LandingPage() {
   const subtitle = useSiteContent('landing.subtitle', '')
   const scopeNote = useSiteContent(
     'landing.scope-note',
-    "Penn Men's Golf today. Penn Women's Golf coming as we bring the data in.",
+    "Penn Men's Golf data currently. Penn Women's Golf coming as we bring the data in.",
   )
 
   useEffect(() => {
