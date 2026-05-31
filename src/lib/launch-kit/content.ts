@@ -543,3 +543,338 @@ export const ACCESS_AFFIRMATION = {
   positive: 'approval-based, not paywalled',
   appears: ACCESS_LINE.toLowerCase().includes('approval-based, not paywalled'),
 }
+
+/* ── Shoot Day playbook ──────────────────────────────────────────── */
+
+export interface ChecklistItem {
+  label: string
+  detail: string
+}
+
+export const DAY_BEFORE_CHECKLIST: ChecklistItem[] = [
+  {
+    label: 'Seed Open Requests so the strips are populated',
+    detail: 'Post one Round request and one Coffee request from a second test account (or your personal email). Empty strips look unfinished on camera.',
+  },
+  {
+    label: 'Seed Moments + Career Posts',
+    detail: 'Post 2-3 real photos to Moments and 2-3 Career posts. The walls should look alive, not freshly deployed.',
+  },
+  {
+    label: 'Sign in as yourself in a fresh Chrome profile',
+    detail: 'New profile, no extensions, no other tabs, no bookmarks bar. Stays clean across every take and never accidentally shows your inbox.',
+  },
+  {
+    label: 'Verify the deploy reads production',
+    detail: 'URL bar shows penngolfclubhouse.com. No localhost in the title bar. Sign-in works end to end. Open Requests strip shows your seeded entries.',
+  },
+  {
+    label: 'Charge devices to 100%',
+    detail: 'iPhone (talking head), Mac (screen capture), lavalier transmitter, ring light if you have one.',
+  },
+  {
+    label: 'Set Do Not Disturb on everything',
+    detail: 'Mac: Focus mode on. Phone: airplane mode for filming, off briefly to confirm posts went through. Notifications during a take kill the take.',
+  },
+  {
+    label: 'Pick wardrobe and lay it out',
+    detail: 'A Penn Golf polo or quarter-zip is on-brand. Avoid pure white (blows out) and busy patterns (moire on camera). Solid navy or cream reads best.',
+  },
+  {
+    label: 'Scout the talking-head location',
+    detail: 'Find one outdoor spot for golden hour and one indoor backup. Stand in both, take a test photo, check audio for traffic / HVAC.',
+  },
+  {
+    label: 'Test the full audio chain once',
+    detail: 'Clip the lavalier, record 30 seconds of voice on iPhone, listen back with headphones. If you hear crackle or rumble, fix it before the morning.',
+  },
+  {
+    label: 'Re-read the 90-second script out loud twice',
+    detail: 'Time yourself. If you land at 85-95 seconds, you\'re calibrated. If you\'re running long, mark the lines you can drop.',
+  },
+]
+
+export interface ShootPhase {
+  number: number
+  label: string
+  duration: string
+  goal: string
+  steps: string[]
+}
+
+export const SHOOT_DAY_PHASES: ShootPhase[] = [
+  {
+    number: 1,
+    label: 'Talking head, outdoors',
+    duration: '~30 min, golden hour',
+    goal: 'Capture the camera-facing piece while energy and light are at peak.',
+    steps: [
+      'Set up: tripod or stable surface, iPhone in 4K 24fps landscape, lavalier clipped, eye-line sticker beside the lens.',
+      'Sun behind camera, not behind subject. Even soft shade beats harsh direct sun.',
+      'Roll one continuous take of the full 90-second script as a baseline. Don\'t cut.',
+      'Then re-shoot in 4 chunks: opener, Baltusrol story, what\'s inside, closing CTA. Six takes per chunk, keep the best two of each.',
+      'Don\'t re-watch between takes. Watching kills momentum. Trust that one of the six will work.',
+    ],
+  },
+  {
+    number: 2,
+    label: 'Screen captures, indoors',
+    duration: '~45-60 min, midday',
+    goal: 'Clip every route the storyboard calls for in the cleanest pass possible.',
+    steps: [
+      'Quiet room. Mac plugged in. Screen recording app open and tested with a 5-second throwaway clip.',
+      'Go in storyboard order, not feature order. Each clip is its own take — don\'t try to chain routes in one continuous capture.',
+      'When you misclick or fumble, scrub back and re-roll. Cheap.',
+      'Capture B-roll pans: Member Book scroll, Member Map zoom, Open Requests strip, four-room cards on /launch. Each 8-12 seconds.',
+      'After every 4-5 takes, push to AirDrop or iCloud Drive so files exist in two places.',
+    ],
+  },
+  {
+    number: 3,
+    label: 'Rough cut + gap re-shoots',
+    duration: '~30-45 min, afternoon',
+    goal: 'Assemble enough of a cut to know what you still need.',
+    steps: [
+      'Drop the best baseline talking-head take into CapCut on the audio track.',
+      'Drop screen captures roughly to the storyboard timestamps. Don\'t obsess over frame-perfect — just see if the pacing works.',
+      'Note any moments where the screen capture doesn\'t exist or doesn\'t cut clean. Those are re-shoot candidates.',
+      'Re-shoot anything missing while light and energy still hold. Don\'t leave it for tomorrow.',
+      'Save the project. Do not finish the edit today. Sleep on it, finish tomorrow with fresh eyes.',
+    ],
+  },
+]
+
+export interface CapturePlay {
+  route: string
+  pageName: string
+  preState: string
+  move: string
+  dwellSeconds: string
+  hide: string
+  cursorHighlight: string
+}
+
+export const SCREEN_CAPTURE_PLAYBOOK: CapturePlay[] = [
+  {
+    route: '/',
+    pageName: 'Landing',
+    preState: 'Fresh page load. Curtain animation hasn\'t played yet. Cursor parked at top-left corner of the frame.',
+    move: 'Press record. Wait 1s. Let the curtain lift. Hold on the wordmark for 2s. Slow scroll halfway down the hero. Stop.',
+    dwellSeconds: '~6 seconds total',
+    hide: 'NavBar dropdown (you\'re signed in as founder, so the dropdown reveals admin links if hovered).',
+    cursorHighlight: 'no',
+  },
+  {
+    route: '/launch',
+    pageName: 'Launch page',
+    preState: 'Page loaded, scrolled to top. Cursor parked outside the hero.',
+    move: 'Slow scroll from hero through the founder note. Pause 1s on the four-room cards. Keep scrolling to the access steps. Stop.',
+    dwellSeconds: '~10 seconds total',
+    hide: 'Your own face avatar in NavBar (sign out first or use the second Chrome profile).',
+    cursorHighlight: 'yes (use it to draw the eye to "Ask. Meet. Play. Gather.")',
+  },
+  {
+    route: '/player',
+    pageName: 'Clubhouse home',
+    preState: 'Signed in as a regular member. Page fully loaded. No notification toasts on screen.',
+    move: 'Slow vertical pan from top to about 60% of the page. Don\'t scroll all the way down — you want the feeling of "more under the surface".',
+    dwellSeconds: '~5 seconds',
+    hide: 'Any captain-only admin chips, your own profile photo if you don\'t want it identifiable.',
+    cursorHighlight: 'no',
+  },
+  {
+    route: '/member-book',
+    pageName: 'Member Book',
+    preState: 'Page loaded with the hero in view. Stats plaque visible.',
+    move: 'Slow scroll down through the year-range plaque, then through 2 rows of member cards. Hover on YOUR OWN card for 1.5s.',
+    dwellSeconds: '~8 seconds',
+    hide: 'Real alumni names you haven\'t cleared. Don\'t linger on any single non-yours card.',
+    cursorHighlight: 'yes (highlight the year-range plaque)',
+  },
+  {
+    route: '/member-map',
+    pageName: 'Member Map',
+    preState: 'US map loaded. No state list expanded. Cursor parked outside the map.',
+    move: 'Pan slowly from Northeast westward across the map. Click on Pennsylvania (your home state). Let the state list open.',
+    dwellSeconds: '~7 seconds',
+    hide: 'Same — names in the state list that aren\'t pre-cleared. Scroll past, don\'t pause.',
+    cursorHighlight: 'yes',
+  },
+  {
+    route: '/ask',
+    pageName: 'Guided Ask',
+    preState: 'Ask flow open. Step 1 (purpose chips) showing.',
+    move: 'Click "Career advice". Wait for step 2 to render. Show the templated message preview. Do NOT click send.',
+    dwellSeconds: '~6 seconds',
+    hide: 'The actual recipient if you\'re pretending to send to someone real. Stop short of the recipient picker if needed.',
+    cursorHighlight: 'yes (point at "Career advice" before clicking)',
+  },
+  {
+    route: '/the-course',
+    pageName: 'The Course',
+    preState: 'Page loaded. Open Requests strip showing your seeded round request. Open to a Round section visible below.',
+    move: 'Slow scroll past the strip, dwell 1.5s on your seeded card, continue down to the Open to a Round grid.',
+    dwellSeconds: '~6 seconds',
+    hide: 'Other members\' real names — dwell on your own seeded card, not someone else\'s.',
+    cursorHighlight: 'yes',
+  },
+  {
+    route: '/19th-hole',
+    pageName: '19th Hole',
+    preState: 'Open Requests strip visible. Gatherings list below.',
+    move: 'Scroll through the strip, dwell 1.5s on the seeded coffee request, continue to Open to Coffee.',
+    dwellSeconds: '~5 seconds',
+    hide: 'Same — your seeded entries only.',
+    cursorHighlight: 'yes',
+  },
+  {
+    route: '/moments',
+    pageName: 'Moments',
+    preState: 'Photo wall loaded with your seeded posts visible.',
+    move: 'Scroll 2-3 cards at a measured pace. Hover on one photo for 1s.',
+    dwellSeconds: '~5 seconds',
+    hide: 'Photos of other people if not cleared. Use only your own seeded ones for safety.',
+    cursorHighlight: 'no',
+  },
+  {
+    route: '/team-room',
+    pageName: 'Team Room',
+    preState: 'Page loaded. Penn Athletics news strip and roster visible.',
+    move: 'Slow scroll past the news strip, pause 1s on the roster card.',
+    dwellSeconds: '~5 seconds',
+    hide: 'Nothing in particular — this page is safe.',
+    cursorHighlight: 'no',
+  },
+  {
+    route: '/support',
+    pageName: 'Support',
+    preState: 'Page loaded. Tier cards visible.',
+    move: 'Slow pan across the tier cards. Do not scroll into the donation form.',
+    dwellSeconds: '~4 seconds',
+    hide: 'Your own real billing status if it shows.',
+    cursorHighlight: 'no',
+  },
+]
+
+export interface TalkingHeadRule {
+  label: string
+  body: string
+}
+
+export const TALKING_HEAD_PLAYBOOK: TalkingHeadRule[] = [
+  {
+    label: 'Framing',
+    body: 'Rule of thirds: your eyes on the upper third of frame, small headroom above. Shoulders in frame, mid-chest crop. Landscape orientation, never vertical for the main cut.',
+  },
+  {
+    label: 'Eye line',
+    body: 'Look directly into the lens, not at your phone\'s preview screen. Stick a small piece of tape right next to the lens as your eye-line target. Looking at your own face on screen reads as distracted.',
+  },
+  {
+    label: 'Audio',
+    body: 'Lavalier mic clipped under your shirt collar, cable run inside the shirt down to the transmitter in your back pocket. iPhone built-in mic as backup. Record audio on both devices, sync in post.',
+  },
+  {
+    label: 'Lighting',
+    body: 'Large soft light source 45° off to camera-left, neutral wall behind. If outdoors at golden hour: sun behind the camera, not behind you. Backlight makes your face a silhouette.',
+  },
+  {
+    label: 'Takes',
+    body: 'Six takes per chunk. Don\'t watch between takes — that\'s a momentum killer. Just keep rolling. The keeper is usually take 3-5, after you\'ve loosened up and before you\'re tired of the line.',
+  },
+  {
+    label: 'Cutaways to plan for',
+    body: 'B-roll you can drop in to cover edits: hands resting on a golf club, a leather bag tag, the Penn campus, a chalkboard, a scorecard on a clubhouse table. These let you trim filler words invisibly.',
+  },
+  {
+    label: 'Energy',
+    body: 'Smile before you start each take. Talk a touch louder and slower than feels natural. The camera flattens energy — what feels like 80% in person reads as 60% on camera.',
+  },
+]
+
+export interface ToolCompare {
+  tool: string
+  cost: string
+  bestFor: string
+  watchOut: string
+  pickIf: string
+}
+
+export const TOOL_COMPARISON: ToolCompare[] = [
+  {
+    tool: 'Screen Studio',
+    cost: '$30 one-time (Mac)',
+    bestFor: 'Polished launch videos. Automatic cursor zoom and smoothing make every clip look professional out of the box.',
+    watchOut: 'Mac only. Worth the $30 if this is the main launch asset.',
+    pickIf: 'You want the cleanest output with the least edit work. Recommended first pick.',
+  },
+  {
+    tool: 'QuickTime',
+    cost: 'Free (Mac built-in)',
+    bestFor: 'Raw clean captures. Cmd-Shift-5 then "Record selected portion" gives you a precise window.',
+    watchOut: 'No cursor highlight or smoothing. You add cursor zoom in CapCut afterwards if you want polish.',
+    pickIf: 'Skipping the $30. The whole flow still works, just adds 20 min of CapCut work per clip.',
+  },
+  {
+    tool: 'Loom',
+    cost: 'Free tier',
+    bestFor: 'Quick narrated walkthroughs where you talk over your screen live.',
+    watchOut: 'Compression. Not ideal source footage for a cut you\'re going to edit into a polished video.',
+    pickIf: 'You want a "raw director\'s walkthrough" version as a separate asset. Not for the main launch.',
+  },
+  {
+    tool: 'OBS',
+    cost: 'Free',
+    bestFor: 'Multi-source production with scenes, transitions, live overlays.',
+    watchOut: 'Setup tax is real. You\'ll spend an hour configuring scenes before you record anything.',
+    pickIf: 'You\'ve used it before. Otherwise skip — it\'s overkill for v1.',
+  },
+]
+
+export interface PostProductionStep {
+  label: string
+  body: string
+}
+
+export const POST_PRODUCTION_LAYOUT: PostProductionStep[] = [
+  {
+    label: 'Project settings',
+    body: '1920×1080, 30 fps, target 90 seconds. Render preset H.264 / AAC. Square crop (1080×1080) and vertical (1080×1920) get rendered as separate exports after the master is locked.',
+  },
+  {
+    label: 'Track 1 — Voice (master)',
+    body: 'The best talking-head take, top to bottom. This is the spine of the cut. Trim breaths and filler words ("um", "like", long pauses) using the razor tool.',
+  },
+  {
+    label: 'Track 2 — Screen captures',
+    body: 'Clips placed to the storyboard timestamps. Use J-cuts: the screen cap arrives ~10 frames before the voice line that introduces it.',
+  },
+  {
+    label: 'Track 3 — B-roll cutaways',
+    body: 'Hand-on-club, bag tag, campus shots. Use these to cover edits in the talking head so the cut is invisible. 1-2 second clips.',
+  },
+  {
+    label: 'Track 4 — Music',
+    body: 'Tasteful instrumental at -20 dB. Duck to -28 dB whenever voice is present (CapCut\'s "Auto Volume" handles this if turned on). Music starts on the title card and runs through the end.',
+  },
+  {
+    label: 'Track 5 — Captions',
+    body: 'Penn navy text (#0a1628) on parchment background (#f8f5f0), bottom third of frame, 2 lines max. Auto-caption then proofread every word. The captions are what people read on muted autoplay.',
+  },
+]
+
+export const POST_PRODUCTION_REVIEW_PASSES: string[] = [
+  'Pass 1 — Pacing only. Mute the audio entirely. Watch the cut. Anything that lingers too long or jumps too fast jumps out without dialogue to distract.',
+  'Pass 2 — Audio only. Close your eyes. Listen end to end. Trim every breath, every "um", every soft pause. Voice should sound conversational, not edited.',
+  'Pass 3 — Captions + final color. Match exposure across talking-head and screen captures (screen captures usually need a slight desaturation). Proofread every caption frame.',
+]
+
+export const COMMON_MISTAKES: string[] = [
+  'Don\'t show real alumni names on screen without explicit permission. Linger on your own Member Book card, not someone else\'s.',
+  'Don\'t show captain or founder admin surfaces. /internal/*, /internal/launch-kit, /internal/claims must never appear in the cut.',
+  'Don\'t film vertically by accident. Lock the iPhone in landscape orientation. Vertical 9:16 is a separate render, not the source.',
+  'Don\'t move the cursor on every word. Cursor motion is punctuation, not a constant. Move it to draw the eye to one thing per scene, then park it.',
+  'Don\'t auto-caption and skip proofreading. Auto-captions get names and Penn-specific terms wrong. Read every line before exporting.',
+  'Don\'t forget 1 second of black at the start and end. Instagram and TikTok clip the first and last beats — give the CTA room to breathe.',
+]
+

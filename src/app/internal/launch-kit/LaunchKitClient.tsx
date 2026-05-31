@@ -33,6 +33,14 @@ import {
   PROHIBITED_WORDS,
   ACCESS_AFFIRMATION,
   TAGLINE,
+  DAY_BEFORE_CHECKLIST,
+  SHOOT_DAY_PHASES,
+  SCREEN_CAPTURE_PLAYBOOK,
+  TALKING_HEAD_PLAYBOOK,
+  TOOL_COMPARISON,
+  POST_PRODUCTION_LAYOUT,
+  POST_PRODUCTION_REVIEW_PASSES,
+  COMMON_MISTAKES,
   getProhibitedHits,
 } from '@/lib/launch-kit/content'
 
@@ -40,6 +48,7 @@ const SECTIONS = [
   { id: 'plan', label: 'Plan' },
   { id: 'scripts', label: 'Scripts' },
   { id: 'storyboard', label: 'Storyboard' },
+  { id: 'shoot', label: 'Shoot Day' },
   { id: 'recording', label: 'Recording' },
   { id: 'copy', label: 'Copy blocks' },
   { id: 'broll', label: 'AI B-roll' },
@@ -281,6 +290,243 @@ export default function LaunchKitClient() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </section>
+
+        {/* Shoot Day playbook */}
+        <section id="shoot" className="mb-16 scroll-mt-24">
+          <h2
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-2"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            Shoot Day
+          </h2>
+          <p className="text-[13px] text-[#8a7f70] mb-7">
+            Open this on your phone during the shoot. Day-before prep, day-of running order, per-route directing notes, talking-head playbook, tool comparison, edit workflow, and the six gotchas to avoid.
+          </p>
+
+          {/* Day-before checklist */}
+          <div className="mb-8">
+            <h3
+              className="text-[#0a1628] text-lg font-medium mb-3"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              The night before
+            </h3>
+            <ol className="space-y-2">
+              {DAY_BEFORE_CHECKLIST.map((c, i) => (
+                <li
+                  key={i}
+                  className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-5 py-4 flex items-start gap-4"
+                >
+                  <div className="flex-none w-7 h-7 rounded-full border-2 border-[#0a1628]/30 text-[#0a1628] text-[12px] font-semibold flex items-center justify-center mt-0.5">
+                    {i + 1}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[#0a1628] font-medium text-[14px]">{c.label}</p>
+                    <p className="text-[12.5px] text-[#8a7f70] leading-relaxed mt-1">{c.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {/* Day-of phases */}
+          <div className="mb-8">
+            <h3
+              className="text-[#0a1628] text-lg font-medium mb-3"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Day-of running order
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+              {SHOOT_DAY_PHASES.map(phase => (
+                <article
+                  key={phase.number}
+                  className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-5"
+                >
+                  <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-2">
+                    Phase {phase.number} · {phase.duration}
+                  </p>
+                  <h4
+                    className="text-[#0a1628] text-lg font-medium mb-1"
+                    style={{ fontFamily: 'var(--font-playfair)' }}
+                  >
+                    {phase.label}
+                  </h4>
+                  <p className="text-[12.5px] text-[#8a7f70] italic mb-3">{phase.goal}</p>
+                  <ul className="space-y-1.5 text-[12.5px] text-[#0a1628]">
+                    {phase.steps.map((s, i) => (
+                      <li key={i} className="flex gap-2">
+                        <span className="text-[#990000] flex-none">·</span>
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          {/* Per-route screen capture playbook */}
+          <div className="mb-8">
+            <h3
+              className="text-[#0a1628] text-lg font-medium mb-1"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Screen capture playbook
+            </h3>
+            <p className="text-[12.5px] text-[#8a7f70] mb-4">
+              Per-route directing notes. Pre-state, cursor move, dwell, what to hide, whether to add cursor highlight in post.
+            </p>
+            <div className="space-y-2">
+              {SCREEN_CAPTURE_PLAYBOOK.map((cap, i) => (
+                <details
+                  key={i}
+                  className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-5 py-3 group"
+                >
+                  <summary className="cursor-pointer flex items-center justify-between gap-3 flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <code className="text-[11.5px] font-semibold text-[#990000]">{cap.route}</code>
+                      <span className="text-[#0a1628] font-medium" style={{ fontFamily: 'var(--font-playfair)' }}>
+                        {cap.pageName}
+                      </span>
+                    </div>
+                    <span className="text-[10.5px] uppercase tracking-[0.16em] text-[#8a7f70]">
+                      {cap.dwellSeconds}
+                    </span>
+                  </summary>
+                  <div className="mt-3 pt-3 border-t border-[rgba(180,168,150,0.35)] grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-[12.5px] text-[#0a1628]">
+                    <div>
+                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-1">Pre-state</p>
+                      <p>{cap.preState}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-1">Move</p>
+                      <p>{cap.move}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-1">What to hide</p>
+                      <p>{cap.hide}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-1">Cursor highlight</p>
+                      <p>{cap.cursorHighlight.startsWith('yes') ? `Yes — ${cap.cursorHighlight.replace(/^yes\s*\(?/, '').replace(/\)$/, '')}` : 'No — keep cursor still or off-frame'}</p>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          {/* Talking head playbook */}
+          <div className="mb-8">
+            <h3
+              className="text-[#0a1628] text-lg font-medium mb-3"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Talking head playbook
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {TALKING_HEAD_PLAYBOOK.map((rule, i) => (
+                <div key={i} className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl p-5">
+                  <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-2">
+                    {rule.label}
+                  </p>
+                  <p className="text-[12.5px] text-[#0a1628] leading-relaxed">{rule.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tool comparison */}
+          <div className="mb-8">
+            <h3
+              className="text-[#0a1628] text-lg font-medium mb-1"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Screen capture tool — pick one
+            </h3>
+            <p className="text-[12.5px] text-[#8a7f70] mb-4">
+              Four common options. The recommended pick is in the first row.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl overflow-hidden text-[13px]">
+                <thead>
+                  <tr className="bg-[#0a1628] text-white text-left">
+                    <th className="px-4 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px]">Tool</th>
+                    <th className="px-4 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px]">Cost</th>
+                    <th className="px-4 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px]">Best for</th>
+                    <th className="px-4 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px]">Watch out</th>
+                    <th className="px-4 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px]">Pick if</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {TOOL_COMPARISON.map((t, i) => (
+                    <tr key={i} className="border-t border-[rgba(180,168,150,0.35)] align-top">
+                      <td className="px-4 py-3 font-semibold text-[#0a1628] whitespace-nowrap">{t.tool}</td>
+                      <td className="px-4 py-3 text-[#8a7f70] whitespace-nowrap">{t.cost}</td>
+                      <td className="px-4 py-3 text-[#0a1628]">{t.bestFor}</td>
+                      <td className="px-4 py-3 text-[#8a7f70]">{t.watchOut}</td>
+                      <td className="px-4 py-3 text-[#0a1628]">{t.pickIf}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Post-production */}
+          <div className="mb-8">
+            <h3
+              className="text-[#0a1628] text-lg font-medium mb-3"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Post-production in CapCut
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+              {POST_PRODUCTION_LAYOUT.map((step, i) => (
+                <div key={i} className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl p-5">
+                  <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-2">
+                    {step.label}
+                  </p>
+                  <p className="text-[12.5px] text-[#0a1628] leading-relaxed">{step.body}</p>
+                </div>
+              ))}
+            </div>
+            <div className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-5">
+              <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-3">
+                Three review passes
+              </p>
+              <ul className="space-y-2 text-[12.5px] text-[#0a1628]">
+                {POST_PRODUCTION_REVIEW_PASSES.map((p, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="text-[#990000] font-semibold flex-none">{i + 1}.</span>
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Common mistakes */}
+          <div>
+            <h3
+              className="text-[#0a1628] text-lg font-medium mb-3"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              Don&rsquo;t do this
+            </h3>
+            <div className="bg-[#990000]/8 border border-[#990000]/25 rounded-2xl p-5">
+              <ul className="space-y-2 text-[13px] text-[#0a1628]">
+                {COMMON_MISTAKES.map((m, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="text-[#990000] flex-none">·</span>
+                    <span>{m}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
