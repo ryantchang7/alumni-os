@@ -244,6 +244,179 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     default:
       'The Penn Golf Clubhouse is the private alumni network for the program. 70% of every membership and contribution goes directly to Penn Men’s Golf; the remaining 30% maintains the platform. Cancel anytime.',
   },
+
+  // ── Public launch page (`/launch`) — all the marketing copy ─────────────
+  {
+    id: 'launch.hero-eyebrow',
+    label: '/launch — hero eyebrow',
+    hint: 'Small ALL CAPS line above the title on /launch.',
+    kind: 'text',
+    default: "Penn Men's Golf · Clubhouse",
+  },
+  {
+    id: 'launch.hero-subtitle',
+    label: '/launch — hero subtitle (italic line)',
+    hint: 'The italic line right under the big title.',
+    kind: 'longtext',
+    default: 'For everyone who carried the Penn Golf bag.',
+  },
+  {
+    id: 'launch.hero-body',
+    label: '/launch — hero body paragraph',
+    hint: 'The longer description below the italic line.',
+    kind: 'longtext',
+    default:
+      'A private clubhouse for Penn Golf players, alumni, family, and friends to ask for advice, meet, play rounds, gather, and stay connected to the program.',
+  },
+  {
+    id: 'launch.tagline',
+    label: '/launch — tagline pill',
+    hint: 'Small pill at the bottom of the hero. Also used as a section header below.',
+    kind: 'text',
+    default: 'Ask. Meet. Play. Gather.',
+  },
+  {
+    id: 'launch.founder-note',
+    label: '/launch — founder note (long)',
+    hint: 'The full personal note from Ryan that lives in the parchment card. Paragraphs separated by a blank line. The line that starts with — is treated as the signature.',
+    kind: 'longtext',
+    default: `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
+
+This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many other Penn Golf guys were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family. Generations standing on the same range, pulling for the same program.
+
+That's the feeling I wanted to bottle.
+
+Golf has given me so much: opportunities, friendships, mentors, doors that opened because someone from this program took a phone call. A lot of that traces back to the people who came before us. But Penn Golf has had different coaches, classes, and generations, and the connection across all of that hasn't always been easy.
+
+So I built Penn Golf Clubhouse.
+
+I compiled our Member Book through online research and Penn historical data — every player and manager I could find from 1948 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
+
+For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
+
+— Ryan Chang, Penn Men's Golf '27, Brookline, MA`,
+  },
+  {
+    id: 'launch.ask-blurb',
+    label: '/launch — Ask card blurb',
+    hint: 'One-line description of the Ask room.',
+    kind: 'longtext',
+    default: 'Career advice, mentorship, and warm introductions without the awkward DM.',
+  },
+  {
+    id: 'launch.meet-blurb',
+    label: '/launch — Meet card blurb',
+    hint: 'One-line description of the Meet room.',
+    kind: 'longtext',
+    default: 'Coffee, drinks, dinners, and city gatherings with the Penn Golf family.',
+  },
+  {
+    id: 'launch.play-blurb',
+    label: '/launch — Play card blurb',
+    hint: 'One-line description of the Play room.',
+    kind: 'longtext',
+    default: 'Host a round at your home course, or find a tee time wherever you are.',
+  },
+  {
+    id: 'launch.gather-blurb',
+    label: '/launch — Gather card blurb',
+    hint: 'One-line description of the Gather room.',
+    kind: 'longtext',
+    default: 'Events, alumni weekends, team updates, and the next generation of Penn Golf.',
+  },
+  {
+    id: 'launch.access-line',
+    label: '/launch — access explanation',
+    hint: 'The paragraph below "Approval-based, not paywalled."',
+    kind: 'longtext',
+    default:
+      'Joining is approval-based, not paywalled. Optional membership tiers are there if you want to back the Clubhouse and the program, but connection is the point.',
+  },
+  {
+    id: 'launch.closing-line',
+    label: '/launch — closing line',
+    hint: 'The big closing line on the dark closing CTA section.',
+    kind: 'text',
+    default: 'Come into the Clubhouse.',
+  },
+
+  // ── Room heroes (mostly hardcoded today) ────────────────────────────────
+  {
+    id: '19th-hole.hero-blurb',
+    label: '19th Hole — hero blurb',
+    hint: 'Paragraph under the 19th Hole title.',
+    kind: 'longtext',
+    default: 'Coffee, dinners, and signature Penn Golf gatherings — wherever you are.',
+  },
+  {
+    id: 'career-room.hero-blurb',
+    label: 'Career Room — hero blurb',
+    hint: 'Paragraph under the Career Room title.',
+    kind: 'longtext',
+    default: 'Advice, introductions, and career paths from Penn Golf alumni.',
+  },
+  {
+    id: 'member-book.subtitle',
+    label: 'Member Book — subtitle',
+    hint: 'The line right under "The Member Book" headline.',
+    kind: 'longtext',
+    default: 'A registry of Penn Men’s Golf members, across generations.',
+  },
+  {
+    id: 'member-book.scope-note',
+    label: 'Member Book — scope note (italic)',
+    hint: 'Italic line below the subtitle. Use to communicate scope (e.g., women\'s coming).',
+    kind: 'text',
+    default: "Penn Women's Golf coming as we bring the data in.",
+  },
+
+  // ── Login + parent signup ──────────────────────────────────────────────
+  {
+    id: 'login.body',
+    label: 'Login page — body paragraph',
+    hint: 'The paragraph under the "Sign in to the Clubhouse" heading.',
+    kind: 'longtext',
+    default:
+      'Sign in with Google to claim your Member Book card and keep your profile up to date.',
+  },
+  {
+    id: 'parent-signup.body',
+    label: 'Parent / Family signup — body paragraph',
+    hint: 'The opening paragraph on /parent-signup.',
+    kind: 'longtext',
+    default:
+      'Parents, family, and longtime affiliates of Penn Men’s Golf can claim a card and stay close to the program.',
+  },
+
+  // ── Landing splash extras ──────────────────────────────────────────────
+  {
+    id: 'landing.eyebrow',
+    label: 'Landing — eyebrow above title',
+    hint: 'Small ALL CAPS line above the headline on /. Leave blank to hide.',
+    kind: 'text',
+    default: 'Welcome to the',
+  },
+  {
+    id: 'landing.primary-cta',
+    label: 'Landing — primary button label',
+    hint: 'Button that goes to /player.',
+    kind: 'text',
+    default: 'Enter Clubhouse',
+  },
+  {
+    id: 'landing.secondary-cta',
+    label: 'Landing — secondary button label',
+    hint: 'Button that goes to the claim flow.',
+    kind: 'text',
+    default: 'Claim Alumni Profile',
+  },
+  {
+    id: 'landing.family-cta',
+    label: 'Landing — family / affiliate pill',
+    hint: 'Pill below the buttons that links to /parent-signup.',
+    kind: 'text',
+    default: 'Family or affiliate? Join here →',
+  },
 ]
 
 export function getSlotById(id: string): ContentSlot | undefined {

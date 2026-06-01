@@ -9,6 +9,10 @@ import HeroCrest from '@/components/HeroCrest'
  */
 export default function NineteenthHoleHero() {
   const crestImage = useSiteContent('19th-hole.crest-image', '')
+  const heroBlurb = useSiteContent(
+    '19th-hole.hero-blurb',
+    'Coffee, dinners, and signature Penn Golf gatherings — wherever you are.',
+  )
 
   return (
     <div className="relative overflow-hidden bg-[#0a1628]">
@@ -27,8 +31,7 @@ export default function NineteenthHoleHero() {
               The 19th Hole
             </h1>
             <p className="text-[#f4ecdb]/65 text-[15px] leading-relaxed max-w-md mt-5">
-              Coffee, dinners, and signature Penn Golf gatherings — wherever
-              members find each other.
+              {heroBlurb}
             </p>
           </div>
         </div>

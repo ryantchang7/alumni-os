@@ -10,6 +10,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useSiteContent } from '@/lib/site-content/use-site-content'
 import {
   HERO_TITLE,
   HERO_SUBTITLE,
@@ -39,6 +40,25 @@ export default function LaunchPage() {
     return () => clearTimeout(t)
   }, [])
 
+  // All copy is editable from /internal/studio — defaults match content.ts.
+  const heroEyebrow = useSiteContent('launch.hero-eyebrow', "Penn Men's Golf · Clubhouse")
+  const heroSubtitle = useSiteContent('launch.hero-subtitle', HERO_SUBTITLE)
+  const heroBody = useSiteContent('launch.hero-body', HERO_BODY)
+  const tagline = useSiteContent('launch.tagline', TAGLINE)
+  const founderNote = useSiteContent('launch.founder-note', FOUNDER_NOTE)
+  const accessLine = useSiteContent('launch.access-line', ACCESS_LINE)
+  const closingLine = useSiteContent('launch.closing-line', CLOSING_LINE)
+  const askBlurb = useSiteContent('launch.ask-blurb', ROOM_CARDS[0].blurb)
+  const meetBlurb = useSiteContent('launch.meet-blurb', ROOM_CARDS[1].blurb)
+  const playBlurb = useSiteContent('launch.play-blurb', ROOM_CARDS[2].blurb)
+  const gatherBlurb = useSiteContent('launch.gather-blurb', ROOM_CARDS[3].blurb)
+  const roomBlurbBy: Record<string, string> = {
+    Ask: askBlurb,
+    Meet: meetBlurb,
+    Play: playBlurb,
+    Gather: gatherBlurb,
+  }
+
   return (
     <div className="bg-[#f8f5f0] min-h-[calc(100dvh-60px)]">
       {/* Hero */}
@@ -50,7 +70,7 @@ export default function LaunchPage() {
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
             transition={{ delay: 0.1, duration: 0.7, ease }}
           >
-            Penn Men&rsquo;s Golf · Clubhouse
+            {heroEyebrow}
           </motion.p>
           <motion.h1
             className="text-white text-5xl sm:text-6xl lg:text-[5.5rem] font-medium tracking-tight leading-[1.02] mb-5 max-w-3xl"
@@ -68,7 +88,7 @@ export default function LaunchPage() {
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
             transition={{ delay: 0.45, duration: 0.7, ease }}
           >
-            {HERO_SUBTITLE}
+            {heroSubtitle}
           </motion.p>
           <motion.p
             className="text-white/65 text-[14.5px] sm:text-base max-w-2xl leading-relaxed mb-9"
@@ -76,7 +96,7 @@ export default function LaunchPage() {
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
             transition={{ delay: 0.6, duration: 0.7, ease }}
           >
-            {HERO_BODY}
+            {heroBody}
           </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md sm:max-w-none"
@@ -110,7 +130,7 @@ export default function LaunchPage() {
             animate={ready ? { opacity: 1 } : { opacity: 0 }}
             transition={{ delay: 1.05, duration: 0.7, ease }}
           >
-            {TAGLINE}
+            {tagline}
           </motion.p>
         </div>
 
@@ -137,7 +157,7 @@ export default function LaunchPage() {
             className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-8 sm:px-10 sm:py-12"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.05)' }}
           >
-            {FOUNDER_NOTE.split('\n\n').map((para, i) => {
+            {founderNote.split('\n\n').map((para, i) => {
               const isSig = para.startsWith('— ')
               return (
                 <p
@@ -168,7 +188,7 @@ export default function LaunchPage() {
               className="text-[#0a1628] text-3xl sm:text-4xl font-medium"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
-              {TAGLINE}
+              {tagline}
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
@@ -193,7 +213,7 @@ export default function LaunchPage() {
                     {room.title}.
                   </h3>
                   <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-4">
-                    {room.blurb}
+                    {roomBlurbBy[room.title] ?? room.blurb}
                   </p>
                   <ul className="text-[12.5px] text-[#8a7f70] space-y-1 mb-5">
                     {room.examples.map((ex, i) => (
@@ -267,7 +287,7 @@ export default function LaunchPage() {
               Approval-based, not paywalled.
             </h2>
             <p className="text-[14.5px] sm:text-[15px] text-[#3d4a5c] leading-relaxed max-w-2xl">
-              {ACCESS_LINE}
+              {accessLine}
             </p>
           </div>
           <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -305,7 +325,7 @@ export default function LaunchPage() {
             className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium leading-tight tracking-tight mb-8"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
-            {CLOSING_LINE}
+            {closingLine}
           </h2>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto sm:max-w-none sm:justify-center">
             <Link
@@ -322,7 +342,7 @@ export default function LaunchPage() {
             </Link>
           </div>
           <p className="mt-10 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/45">
-            {TAGLINE}
+            {tagline}
           </p>
         </div>
       </section>

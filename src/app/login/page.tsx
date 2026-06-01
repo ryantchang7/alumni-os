@@ -4,11 +4,16 @@ import { Suspense } from 'react'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { useSiteContent } from '@/lib/site-content/use-site-content'
 
 function LoginInner() {
   const params = useSearchParams()
   const next = params.get('next') ?? '/account/setup'
   const error = params.get('error')
+  const body = useSiteContent(
+    'login.body',
+    'Sign in with Google to claim your Member Book card and keep your profile up to date.',
+  )
 
   return (
     <div className="min-h-[calc(100dvh-60px)] flex items-center justify-center px-6 py-16 bg-[#f8f5f0]">
@@ -29,7 +34,7 @@ function LoginInner() {
           Sign in to the Clubhouse
         </h1>
         <p className="text-[13px] text-[#8a7f70] mb-8 leading-relaxed">
-          Sign in with Google to claim your Member Book card and keep your profile up to date.
+          {body}
         </p>
 
         <button

@@ -17,6 +17,10 @@ export default function LandingPage() {
     'landing.scope-note',
     "Penn Men's Golf data currently. Penn Women's Golf coming as we bring the data in.",
   )
+  const eyebrow = useSiteContent('landing.eyebrow', 'Welcome to the')
+  const primaryCta = useSiteContent('landing.primary-cta', 'Enter Clubhouse')
+  const secondaryCta = useSiteContent('landing.secondary-cta', 'Claim Alumni Profile')
+  const familyCta = useSiteContent('landing.family-cta', 'Family or affiliate? Join here →')
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 120)
@@ -75,7 +79,7 @@ export default function LandingPage() {
           animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
           transition={{ delay: 0.9, duration: 0.7, ease }}
         >
-          Welcome to the
+          {eyebrow}
         </motion.p>
 
         {/* Title */}
@@ -118,14 +122,14 @@ export default function LandingPage() {
             data-testid="enter-clubhouse"
             className="text-sm font-semibold bg-[#f5f0e8] text-[#0a1628] border border-[rgba(245,240,232,0.9)] px-10 py-3.5 rounded-lg hover:bg-white transition-colors shadow-lg text-center tracking-wide"
           >
-            Enter Clubhouse
+            {primaryCta}
           </Link>
           <Link
             href="/login?next=/account/setup"
             data-testid="claim-alumni-profile"
             className="text-sm font-semibold border border-white/40 text-white/90 px-10 py-3.5 rounded-lg hover:bg-white/10 hover:border-white/60 transition-colors text-center tracking-wide"
           >
-            Claim Alumni Profile
+            {secondaryCta}
           </Link>
         </motion.div>
 
@@ -152,7 +156,7 @@ export default function LandingPage() {
             className="inline-flex items-center gap-2 text-[14px] sm:text-[15px] font-medium text-white hover:text-[#c8a84b] transition-colors border border-white/40 hover:border-[#c8a84b]/70 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12]"
             style={{ textShadow: '0 1px 8px rgba(10,22,40,0.45)' }}
           >
-            Family or affiliate? Join here &rarr;
+            {familyCta}
           </Link>
         </motion.div>
       </div>

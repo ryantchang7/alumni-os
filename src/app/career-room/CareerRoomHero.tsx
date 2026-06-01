@@ -9,6 +9,10 @@ import HeroCrest from '@/components/HeroCrest'
  */
 export default function CareerRoomHero() {
   const crestImage = useSiteContent('career-room.crest-image', '')
+  const heroBlurb = useSiteContent(
+    'career-room.hero-blurb',
+    'Advice, introductions, and career paths from Penn Golf alumni. Take the meeting; pay it forward.',
+  )
 
   return (
     <div className="relative overflow-hidden bg-[#0a1628]">
@@ -27,8 +31,7 @@ export default function CareerRoomHero() {
               Career Room
             </h1>
             <p className="text-[#f4ecdb]/65 text-[15px] leading-relaxed max-w-md mt-5">
-              Advice, introductions, and career paths from Penn Golf alumni.
-              Take the meeting; pay it forward.
+              {heroBlurb}
             </p>
           </div>
 
