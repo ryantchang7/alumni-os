@@ -11,7 +11,7 @@ export default function CareerRoomHero() {
   const crestImage = useSiteContent('career-room.crest-image', '')
   const heroBlurb = useSiteContent(
     'career-room.hero-blurb',
-    'Advice, introductions, and career paths from Penn Golf alumni. Take the meeting; pay it forward.',
+    'Find Penn Golf members by industry, company, and experience. Ask questions, get thoughtful advice, and help the next player when it’s your turn.',
   )
 
   return (

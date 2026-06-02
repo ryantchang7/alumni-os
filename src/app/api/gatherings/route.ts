@@ -6,6 +6,19 @@ const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const VALID_AUDIENCES = ['players', 'alumni', 'both'] as const
 const VALID_VIBES = ['casual', 'competitive', 'career', 'social', 'formal'] as const
 
+/** Normalize a pasted link — prefix https:// when missing, validate, else drop. */
+function cleanUrl(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') return undefined
+  const v = raw.trim()
+  if (!v) return undefined
+  const withScheme = /^https?:\/\//i.test(v) ? v : `https://${v}`
+  try {
+    return new URL(withScheme).toString()
+  } catch {
+    return undefined
+  }
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
@@ -86,6 +99,8 @@ export async function POST(request: NextRequest) {
     capacity: typeof body.capacity === 'number' ? body.capacity : undefined,
     audience: audience as (typeof VALID_AUDIENCES)[number],
     vibe,
+    imageUrl: cleanUrl(body.imageUrl),
+    mapsUrl: cleanUrl(body.mapsUrl),
     status: 'open',
   })
 

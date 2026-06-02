@@ -274,6 +274,11 @@ export interface ClubhouseGathering {
   audience: 'players' | 'alumni' | 'both'
   vibe?: 'casual' | 'competitive' | 'career' | 'social' | 'formal'
   status: 'open' | 'full' | 'closed'
+  /** Optional host-supplied photo or short video clip of the venue/vibe. */
+  imageUrl?: string
+  /** Optional Google Maps link the host pasted. When absent, the card
+   * auto-generates a Maps search from venue + city/state. */
+  mapsUrl?: string
   /** Marks a seeded/demo gathering so the UI can label it "Example". Real
    * gatherings created by hosts never get this flag. */
   isExample?: boolean
@@ -359,6 +364,31 @@ export interface TeamNewsItem {
   imageUrl?: string
   publishedAt?: string
   fetchedAt: string
+}
+
+/**
+ * A founder-authored Season Tracker entry — qualifying, tournament results,
+ * stats, or a general note about the current team. Hand-written from
+ * /internal/season (unlike TeamNewsItem, which is auto-fetched). Surfaces as
+ * a timeline in the Team Room, newest first.
+ */
+export interface SeasonUpdate {
+  id: string
+  teamId: string
+  /** What kind of update this is — drives the tag on the card. */
+  kind: 'qualifying' | 'tournament' | 'stat' | 'note'
+  /** Headline, e.g. "Ivy Championship" or "Regional Qualifier". */
+  title: string
+  /** Freeform date/label, e.g. "May 28" or "Championship Weekend". */
+  dateText: string
+  /** The update itself — results, context, who's in contention. */
+  body?: string
+  /** Optional link to paste — results page, GolfStat, a tweet, an article. */
+  linkUrl?: string
+  /** Optional label for the link; falls back to the link's domain. */
+  linkLabel?: string
+  createdAt: string
+  updatedAt: string
 }
 
 /**
@@ -551,6 +581,7 @@ export interface Store {
   openRequests: OpenRequest[]
   careerPosts: CareerPost[]
   teamNewsItems: TeamNewsItem[]
+  seasonUpdates: SeasonUpdate[]
   chatConversations: ChatConversation[]
   chatMessages: ChatMessage[]
   donations: Donation[]

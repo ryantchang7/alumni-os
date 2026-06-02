@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { Person, TeamMembership, TeamNewsItem } from '@/lib/store/types'
+import type { Person, TeamMembership, TeamNewsItem, SeasonUpdate } from '@/lib/store/types'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import FoundersWall from '@/components/FoundersWall'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
@@ -16,6 +16,13 @@ interface PlayerEntry {
 }
 
 const CLASS_ORDER: Record<string, number> = { 'Sr.': 0, 'Jr.': 1, 'So.': 2, 'Fr.': 3 }
+
+const SEASON_KIND_LABELS: Record<SeasonUpdate['kind'], string> = {
+  tournament: 'Tournament',
+  qualifying: 'Qualifying',
+  stat: 'Stat',
+  note: 'Note',
+}
 
 const SUPPORT_CARDS = [
   {
@@ -42,7 +49,7 @@ const SUPPORT_CARDS = [
 ]
 
 export default async function TeamRoomPage() {
-  const { readStore, getTeamBySlug, getRecentTeamNewsItems } = await import('@/lib/store/local-store')
+  const { readStore, getTeamBySlug, getRecentTeamNewsItems, getSeasonUpdatesForTeam } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
 
@@ -50,6 +57,7 @@ export default async function TeamRoomPage() {
   let coaches: PlayerEntry[] = []
   let recentAlumni: PlayerEntry[] = []
   let newsItems: TeamNewsItem[] = []
+  let seasonUpdates: SeasonUpdate[] = []
   let founders: FounderEntry[] = []
   let familySupporters: FamilySupporterEntry[] = []
   const captainNote = await getSiteContentOrDefault('team-room.captain-note')
@@ -67,6 +75,7 @@ export default async function TeamRoomPage() {
       .filter((x): x is PlayerEntry => x !== null)
       .sort((a, b) => a.person.canonicalName.localeCompare(b.person.canonicalName))
     newsItems = await getRecentTeamNewsItems(team.id, 4)
+    seasonUpdates = await getSeasonUpdatesForTeam(team.id)
     currentPlayers = store.teamMemberships
       .filter(m => m.teamId === team.id && m.memberRole === 'current_player')
       .map(m => {
@@ -108,7 +117,7 @@ export default async function TeamRoomPage() {
               Team Room
             </h1>
             <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-              Current roster, program tradition, and the alumni who carry Penn Golf forward.
+              The current roster — grinding for an Ivy championship.
             </p>
           </div>
         </div>
@@ -154,6 +163,73 @@ export default async function TeamRoomPage() {
                   </Link>
                 )
               })}
+            </div>
+          )}
+        </section>
+
+        {/* Season Tracker — founder-authored qualifying/tournament/stat
+            updates from /internal/season. Falls back to a "work in progress"
+            card until the first update is posted. */}
+        <section>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#990000] mb-1.5">
+            Live from the Course
+          </p>
+          <h2 className="text-base font-semibold text-[#0a1628] mb-1">Season Tracker</h2>
+          <p className="text-sm text-[#8a7f70] mb-6">
+            Qualifying, tournament results, and stats as the season unfolds.
+          </p>
+          {seasonUpdates.length > 0 ? (
+            <ol className="relative border-l border-[rgba(180,168,150,0.45)] pl-6 space-y-5">
+              {seasonUpdates.map(u => (
+                <li key={u.id} className="relative">
+                  <span className="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full bg-[#990000] ring-4 ring-[#f8f5f0]" />
+                  <div
+                    className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
+                    style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+                  >
+                    <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0a1628] bg-[#0a1628]/8 px-2 py-0.5 rounded-full">
+                        {SEASON_KIND_LABELS[u.kind]}
+                      </span>
+                      <span className="text-[11px] text-[#8a7f70]">{u.dateText}</span>
+                    </div>
+                    <p className="text-sm font-semibold text-[#0a1628]">{u.title}</p>
+                    {u.body && (
+                      <p className="text-sm text-[#8a7f70] mt-1.5 leading-relaxed whitespace-pre-line">{u.body}</p>
+                    )}
+                    {u.linkUrl && (
+                      <a
+                        href={u.linkUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[#990000] hover:underline font-medium mt-2.5 inline-block"
+                      >
+                        {u.linkLabel || 'View'} &rarr;
+                      </a>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div className="relative overflow-hidden rounded-xl">
+              <div
+                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-12 text-center opacity-50 select-none"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+                aria-hidden="true"
+              >
+                <p className="text-sm font-semibold text-[#0a1628]">
+                  Live qualifying, tournament results, and stats are coming soon.
+                </p>
+                <p className="text-xs text-[#8a7f70] mt-2 max-w-md mx-auto">
+                  We&apos;ll sync the season feed here once it&apos;s ready — scores, finishes, and who&apos;s in contention for the Ivy title.
+                </p>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white bg-[#0a1628]/90 px-4 py-2 rounded-full shadow-[0_2px_18px_rgba(10,22,40,0.35)]">
+                  Work in progress
+                </span>
+              </div>
             </div>
           )}
         </section>

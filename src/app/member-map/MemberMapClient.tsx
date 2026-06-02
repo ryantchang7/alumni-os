@@ -188,8 +188,8 @@ function ContextualRow({ member }: { member: MapMember }) {
 type Lens = 'hometown' | 'current'
 
 const LENS_LABELS: Record<Lens, string> = {
-  hometown: 'Hometowns',
   current: 'Where They Are Now',
+  hometown: 'Hometowns',
 }
 
 type MapView = 'all' | 'family'
@@ -204,7 +204,7 @@ export default function MemberMapClient({
   familyStates: MapState[]
 }) {
   const [view, setView] = useState<MapView>('all')
-  const [lens, setLens] = useState<Lens>('hometown')
+  const [lens, setLens] = useState<Lens>('current')
   const [geos, setGeos] = useState<StateGeo[]>([])
   const [geoError, setGeoError] = useState(false)
   const [hovered, setHovered] = useState<string | null>(null)
@@ -381,7 +381,7 @@ export default function MemberMapClient({
           <p className="text-[12px] text-[#8a7f70] sm:text-right max-w-md">
             {lens === 'hometown'
               ? 'Where Penn Golf members grew up, drawn from the Member Book.'
-              : 'Where alumni live now — only members who have updated their location appear.'}
+              : 'Where Penn Golf members live now — only members who have updated their location appear.'}
           </p>
         </div>
       )}

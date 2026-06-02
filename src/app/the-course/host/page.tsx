@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { Flag, ArrowLeft } from 'lucide-react'
+import PhotoUpload from '@/components/PhotoUpload'
 
 const VIBE_OPTIONS = [
   { value: 'casual', label: 'Casual' },
@@ -25,6 +26,8 @@ export default function HostRoundPage() {
   const [capacity, setCapacity] = useState('3')
   const [description, setDescription] = useState('')
   const [audience, setAudience] = useState<'players' | 'alumni' | 'both'>('both')
+  const [imageUrl, setImageUrl] = useState('')
+  const [mapsUrl, setMapsUrl] = useState('')
 
   const [submitting, setSubmitting] = useState(false)
   const [submittedId, setSubmittedId] = useState<string | null>(null)
@@ -62,6 +65,8 @@ export default function HostRoundPage() {
             ? Number.parseInt(capacity, 10)
             : undefined,
           description: description.trim() || undefined,
+          imageUrl: imageUrl.trim() || undefined,
+          mapsUrl: mapsUrl.trim() || undefined,
         }),
       })
       if (!res.ok) {
@@ -90,6 +95,8 @@ export default function HostRoundPage() {
       setDescription('')
       setAudience('both')
       setVibe('casual')
+      setImageUrl('')
+      setMapsUrl('')
       setSubmittedId(null)
     }
     return (
@@ -234,6 +241,20 @@ export default function HostRoundPage() {
               </div>
             </div>
 
+            {/* Google Maps link */}
+            <div>
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#5a7a3e] mb-2">
+                Google Maps link (optional)
+              </label>
+              <input
+                type="text"
+                value={mapsUrl}
+                onChange={(e) => setMapsUrl(e.target.value)}
+                placeholder="Paste a Google Maps link — or leave blank and we'll map the course"
+                className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#5a7a3e]/30 focus:border-[#5a7a3e]"
+              />
+            </div>
+
             {/* Date / Time */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -334,6 +355,20 @@ export default function HostRoundPage() {
                   )
                 })}
               </div>
+            </div>
+
+            {/* Photo / video */}
+            <div>
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#5a7a3e] mb-2">
+                Photo or video (optional)
+              </label>
+              <PhotoUpload
+                value={imageUrl}
+                onChange={setImageUrl}
+                label=""
+                shape="wide"
+                allowVideo
+              />
             </div>
 
             {/* Notes */}

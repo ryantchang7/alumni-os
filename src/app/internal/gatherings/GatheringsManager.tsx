@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { GatheringStatusPill, type GatheringData } from '@/components/gatherings/GatheringCard'
+import PhotoUpload from '@/components/PhotoUpload'
 
 const TYPE_OPTIONS = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const AUDIENCE_OPTIONS = ['players', 'alumni', 'both'] as const
@@ -63,6 +64,8 @@ export default function GatheringsManager() {
     capacity: '',
     audience: 'both' as typeof AUDIENCE_OPTIONS[number],
     vibe: 'social' as typeof VIBE_OPTIONS[number],
+    imageUrl: '',
+    mapsUrl: '',
   })
   const [submitting, setSubmitting] = useState(false)
   const [createError, setCreateError] = useState<string | null>(null)
@@ -98,6 +101,8 @@ export default function GatheringsManager() {
           capacity: form.capacity ? parseInt(form.capacity) : undefined,
           audience: form.audience,
           vibe: form.vibe,
+          imageUrl: form.imageUrl.trim() || undefined,
+          mapsUrl: form.mapsUrl.trim() || undefined,
         }),
       })
       if (!res.ok) {
@@ -111,7 +116,7 @@ export default function GatheringsManager() {
       setForm({
         type: 'event', title: '', description: '', hostName: 'Penn Golf Alumni',
         city: '', state: '', venue: '', dateText: '', timeText: '', capacity: '',
-        audience: 'both', vibe: 'social',
+        audience: 'both', vibe: 'social', imageUrl: '', mapsUrl: '',
       })
     } catch {
       setCreateError('Could not connect.')
@@ -205,6 +210,16 @@ export default function GatheringsManager() {
             <div>
               <label className={labelCls}>Venue</label>
               <input type="text" value={form.venue} onChange={e => setForm(f => ({ ...f, venue: e.target.value }))} className={inputCls} />
+            </div>
+
+            <div>
+              <label className={labelCls}>Google Maps link (optional)</label>
+              <input type="text" value={form.mapsUrl} onChange={e => setForm(f => ({ ...f, mapsUrl: e.target.value }))} placeholder="Paste a Maps link — or leave blank to auto-map the venue" className={inputCls} />
+            </div>
+
+            <div>
+              <label className={labelCls}>Photo or video (optional)</label>
+              <PhotoUpload value={form.imageUrl} onChange={url => setForm(f => ({ ...f, imageUrl: url }))} label="" shape="wide" allowVideo />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -34,6 +34,7 @@ import type {
   OpenRequestIntent,
   CareerPost,
   TeamNewsItem,
+  SeasonUpdate,
   ChatConversation,
   ChatMessage,
   Donation,
@@ -90,6 +91,7 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.openRequests) parsed.openRequests = []
   if (!parsed.careerPosts) parsed.careerPosts = []
   if (!parsed.teamNewsItems) parsed.teamNewsItems = []
+  if (!parsed.seasonUpdates) parsed.seasonUpdates = []
   if (!parsed.chatConversations) parsed.chatConversations = []
   if (!parsed.chatMessages) parsed.chatMessages = []
   if (!parsed.donations) parsed.donations = []
@@ -131,6 +133,7 @@ const EMPTY_STORE: Store = {
   openRequests: [],
   careerPosts: [],
   teamNewsItems: [],
+  seasonUpdates: [],
   chatConversations: [],
   chatMessages: [],
   donations: [],
@@ -1142,6 +1145,56 @@ export async function updateClubhouseGathering(
   }
   await writeStore(store)
   return store.clubhouseGatherings[idx]
+}
+
+// ── Season Updates ────────────────────────────────────────────────────────────
+
+export async function createSeasonUpdate(
+  input: Omit<SeasonUpdate, 'id' | 'createdAt' | 'updatedAt'>,
+): Promise<SeasonUpdate> {
+  const store = await readStore()
+  const now = new Date().toISOString()
+  const update: SeasonUpdate = {
+    id: crypto.randomUUID(),
+    ...input,
+    createdAt: now,
+    updatedAt: now,
+  }
+  store.seasonUpdates.push(update)
+  await writeStore(store)
+  return update
+}
+
+export async function getSeasonUpdatesForTeam(teamId: string): Promise<SeasonUpdate[]> {
+  const store = await readStore()
+  return store.seasonUpdates
+    .filter(u => u.teamId === teamId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+}
+
+export async function updateSeasonUpdate(
+  id: string,
+  patch: Partial<Omit<SeasonUpdate, 'id' | 'teamId' | 'createdAt'>>,
+): Promise<SeasonUpdate | null> {
+  const store = await readStore()
+  const idx = store.seasonUpdates.findIndex(u => u.id === id)
+  if (idx === -1) return null
+  store.seasonUpdates[idx] = {
+    ...store.seasonUpdates[idx],
+    ...patch,
+    updatedAt: new Date().toISOString(),
+  }
+  await writeStore(store)
+  return store.seasonUpdates[idx]
+}
+
+export async function deleteSeasonUpdate(id: string): Promise<boolean> {
+  const store = await readStore()
+  const before = store.seasonUpdates.length
+  store.seasonUpdates = store.seasonUpdates.filter(u => u.id !== id)
+  if (store.seasonUpdates.length === before) return false
+  await writeStore(store)
+  return true
 }
 
 export async function createClubhouseGatheringRequest(input: {

@@ -56,7 +56,7 @@ const CHECKS: EnvCheck[] = [
   { key: 'STRIPE_WEBHOOK_SECRET', category: 'Stripe', severity: 'required', label: 'Stripe webhook signing secret', hint: 'Without this, subscription status never syncs back.' },
 
   // Storage
-  { key: 'BLOB_READ_WRITE_TOKEN', category: 'Storage', severity: 'required', label: 'Vercel Blob read/write token', hint: 'Without this, profile photos and Moments fall back to "paste a URL."' },
+  { key: 'BLOB_READ_WRITE_TOKEN', category: 'Storage', severity: 'required', label: 'Vercel Blob read/write token', hint: 'Powers all photo/video uploads — Moments, Locker Room, profiles, and gathering photos. Without it they fall back to "paste a URL." Fix: Vercel → Storage → Create Database → Blob → connect to the project (auto-injects this), then redeploy.' },
 
   // Cron
   { key: 'CRON_SECRET', category: 'Cron', severity: 'recommended', label: 'Shared secret for cron endpoints', hint: 'Vercel cron sends an Authorization header; without this, /api/cron/* refuses in production.' },

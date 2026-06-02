@@ -28,6 +28,11 @@ const tools = [
     href: '/internal/gatherings',
   },
   {
+    label: 'Season Tracker',
+    description: 'Post qualifying, tournament results, and stats with links. Shows as a timeline in the Team Room.',
+    href: '/internal/season',
+  },
+  {
     label: 'Studio',
     description: 'Edit text and images across the site — headlines, hero images, page copy.',
     href: '/internal/studio',

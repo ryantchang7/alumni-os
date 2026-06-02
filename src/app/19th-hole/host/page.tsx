@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { Beer, ArrowLeft } from 'lucide-react'
+import PhotoUpload from '@/components/PhotoUpload'
 
 const TYPE_OPTIONS = [
   { value: 'drinks', label: 'Drinks', helper: 'Bar, lounge, or watering hole.' },
@@ -31,6 +32,8 @@ export default function HostNineteenthHolePage() {
   const [timeText, setTimeText] = useState('')
   const [audience, setAudience] = useState<(typeof AUDIENCE_OPTIONS)[number]['value']>('both')
   const [description, setDescription] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [mapsUrl, setMapsUrl] = useState('')
 
   const [submitting, setSubmitting] = useState(false)
   const [submittedVenue, setSubmittedVenue] = useState<string | null>(null)
@@ -71,6 +74,8 @@ export default function HostNineteenthHolePage() {
           audience,
           vibe: 'social',
           description: description.trim() || undefined,
+          imageUrl: imageUrl.trim() || undefined,
+          mapsUrl: mapsUrl.trim() || undefined,
         }),
       })
       if (!res.ok) {
@@ -95,6 +100,8 @@ export default function HostNineteenthHolePage() {
       setTimeText('')
       setAudience('both')
       setDescription('')
+      setImageUrl('')
+      setMapsUrl('')
       setSubmittedVenue(null)
     }
     return (
@@ -267,6 +274,20 @@ export default function HostNineteenthHolePage() {
               </div>
             </div>
 
+            {/* Google Maps link */}
+            <div>
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#b8860b] mb-2">
+                Google Maps link (optional)
+              </label>
+              <input
+                type="text"
+                value={mapsUrl}
+                onChange={(e) => setMapsUrl(e.target.value)}
+                placeholder="Paste a Google Maps link — or leave blank and we'll map the venue"
+                className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#b8860b]/30 focus:border-[#b8860b]"
+              />
+            </div>
+
             {/* Date / Time */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -320,6 +341,20 @@ export default function HostNineteenthHolePage() {
                   )
                 })}
               </div>
+            </div>
+
+            {/* Photo / video */}
+            <div>
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#b8860b] mb-2">
+                Photo or video (optional)
+              </label>
+              <PhotoUpload
+                value={imageUrl}
+                onChange={setImageUrl}
+                label=""
+                shape="wide"
+                allowVideo
+              />
             </div>
 
             {/* Notes */}

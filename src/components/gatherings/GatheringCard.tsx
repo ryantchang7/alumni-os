@@ -20,6 +20,8 @@ export interface GatheringData {
   audience: 'players' | 'alumni' | 'both'
   vibe?: 'casual' | 'competitive' | 'career' | 'social' | 'formal'
   status: 'open' | 'full' | 'closed'
+  imageUrl?: string
+  mapsUrl?: string
   isExample?: boolean
 }
 
@@ -46,6 +48,17 @@ const VIBE_LABEL: Record<string, string> = {
   career: 'Career',
   social: 'Social',
   formal: 'Formal',
+}
+
+const VIDEO_EXT_RE = /\.(mp4|mov|m4v|webm)(\?|$)/i
+
+/** Prefer the host's pasted Maps link; otherwise build a Google Maps search
+ * from the venue + city/state. Returns null when there's nothing to map. */
+function gatheringMapUrl(g: GatheringData): string | null {
+  if (g.mapsUrl) return g.mapsUrl
+  const query = [g.venue, g.city, g.state].filter(Boolean).join(' ').trim()
+  if (!query) return null
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
 }
 
 export function GatheringStatusPill({ status }: { status: GatheringData['status'] }) {
@@ -130,6 +143,26 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
       className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
+      {/* Host-supplied photo or short clip of the venue/vibe. */}
+      {gathering.imageUrl && (
+        VIDEO_EXT_RE.test(gathering.imageUrl) ? (
+          <video
+            src={gathering.imageUrl}
+            controls
+            playsInline
+            preload="metadata"
+            className="w-full aspect-[3/2] object-cover bg-black"
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={gathering.imageUrl}
+            alt={gathering.title}
+            className="w-full aspect-[3/2] object-cover"
+          />
+        )
+      )}
+
       <div className="border-l-4 border-[#0a1628] px-5 pt-5 pb-4">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-2">
@@ -164,14 +197,29 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             <span>{gathering.dateText}{gathering.timeText ? ` · ${gathering.timeText}` : ''}</span>
           </div>
           {(gathering.city || gathering.venue) && (
-            <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">
-              <MapPin className="w-3 h-3 text-[#8a7f70] flex-shrink-0" />
-              <span>
-                {gathering.venue
-                  ? gathering.venue
-                  : `${gathering.city}${gathering.state ? `, ${gathering.state}` : ''}`}
-              </span>
-            </div>
+            (() => {
+              const mapUrl = gatheringMapUrl(gathering)
+              const locationText = gathering.venue
+                ? gathering.venue
+                : `${gathering.city}${gathering.state ? `, ${gathering.state}` : ''}`
+              return mapUrl ? (
+                <a
+                  href={mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs text-[#4a5568] hover:text-[#0a1628] group/map"
+                >
+                  <MapPin className="w-3 h-3 text-[#8a7f70] flex-shrink-0" />
+                  <span className="group-hover/map:underline">{locationText}</span>
+                  <span className="text-[#990000] text-[11px] font-medium">· Map</span>
+                </a>
+              ) : (
+                <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">
+                  <MapPin className="w-3 h-3 text-[#8a7f70] flex-shrink-0" />
+                  <span>{locationText}</span>
+                </div>
+              )
+            })()
           )}
           {(liveCount > 0 || gathering.capacity) && (
             <div className="flex items-center gap-1.5 text-xs text-[#8a7f70]">

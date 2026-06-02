@@ -242,7 +242,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Paragraph under the headline on /support.',
     kind: 'longtext',
     default:
-      'The Penn Golf Clubhouse is the private alumni network for the program. 70% of every membership and contribution goes directly to Penn Men’s Golf; the remaining 30% maintains the platform. Cancel anytime.',
+      'The Penn Golf Clubhouse is the private network for the program. 70% of every membership and contribution goes directly to Penn Men’s Golf; the remaining 30% maintains the platform. Cancel anytime.',
   },
 
   // ── Public launch page (`/launch`) — all the marketing copy ─────────────
@@ -353,7 +353,8 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
     label: 'Career Room — hero blurb',
     hint: 'Paragraph under the Career Room title.',
     kind: 'longtext',
-    default: 'Advice, introductions, and career paths from Penn Golf alumni.',
+    default:
+      'Find Penn Golf members by industry, company, and experience. Ask questions, get thoughtful advice, and help the next player when it’s your turn.',
   },
   {
     id: 'member-book.subtitle',

@@ -29,6 +29,7 @@ interface GatheringSnippet {
   state?: string
   venue?: string
   status: 'open' | 'full' | 'closed'
+  isExample?: boolean
 }
 
 const GATHERING_HREF: Record<GatheringSnippet['type'], string> = {
@@ -101,9 +102,19 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
             className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:shadow-md transition-shadow group"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <p className="text-[10px] font-semibold text-[#0a1628] bg-[#0a1628]/8 px-2 py-0.5 rounded-full inline-block mb-2 capitalize">
-              {g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner' ? '19th Hole' : g.type === 'round' ? 'The Course' : 'Event'}
-            </p>
+            <div className="flex items-center gap-1.5 flex-wrap mb-2">
+              <span className="text-[10px] font-semibold text-[#0a1628] bg-[#0a1628]/8 px-2 py-0.5 rounded-full inline-block capitalize">
+                {g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner' ? '19th Hole' : g.type === 'round' ? 'The Course' : 'Event'}
+              </span>
+              {g.isExample && (
+                <span
+                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a7f70] bg-[#faf7f2] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
+                  title="Sample gathering — host a real one to replace it."
+                >
+                  Example
+                </span>
+              )}
+            </div>
             <p className="font-semibold text-[#0a1628] text-sm leading-snug mb-1.5">{g.title}</p>
             <div className="space-y-0.5">
               <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">

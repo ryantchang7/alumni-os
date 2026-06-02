@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Upload, ImageIcon } from 'lucide-react'
+import { Upload, ImageIcon, Camera } from 'lucide-react'
 import PhotoCropper from './PhotoCropper'
 
 interface Props {
@@ -43,6 +43,7 @@ export default function PhotoUpload({
   skipCropper = false,
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
+  const captureRef = useRef<HTMLInputElement>(null)
   const [pickedFile, setPickedFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -77,11 +78,16 @@ export default function PhotoUpload({
       // Skip the cropper — upload raw. Used for videos always, and for
       // pre-designed artwork (badges/logos) when skipCropper is set.
       void uploadFile(file)
-      if (fileRef.current) fileRef.current.value = ''
+      clearInputs()
       onMediaTypeChange?.(file.type.startsWith('video/') ? 'video' : 'image')
       return
     }
     setPickedFile(file)
+  }
+
+  function clearInputs() {
+    if (fileRef.current) fileRef.current.value = ''
+    if (captureRef.current) captureRef.current.value = ''
   }
 
   async function onCropComplete(blob: Blob) {
@@ -94,13 +100,13 @@ export default function PhotoUpload({
     setPickedFile(null)
     const file = new File([blob], filename, { type: mime })
     await uploadFile(file)
-    if (fileRef.current) fileRef.current.value = ''
+    clearInputs()
     onMediaTypeChange?.('image')
   }
 
   function onCropCancel() {
     setPickedFile(null)
-    if (fileRef.current) fileRef.current.value = ''
+    clearInputs()
   }
 
   const previewClass =
@@ -152,23 +158,48 @@ export default function PhotoUpload({
               if (f) onFilePicked(f)
             }}
           />
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            disabled={uploading}
-            className="inline-flex items-center gap-2 bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded-lg transition-colors disabled:opacity-50"
-          >
-            <Upload className="w-3.5 h-3.5" />
-            {uploading
-              ? 'Uploading…'
-              : value
-                ? allowVideo
-                  ? 'Replace media'
-                  : 'Replace photo'
-                : allowVideo
-                  ? 'Upload photo or video'
-                  : 'Upload photo'}
-          </button>
+          {/* Separate input with `capture` so mobile opens the camera directly.
+             On desktop `capture` is ignored and this falls back to the file
+             dialog — harmless. */}
+          <input
+            ref={captureRef}
+            type="file"
+            accept={allowVideo ? 'image/*,video/*' : 'image/*'}
+            capture="environment"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0]
+              if (f) onFilePicked(f)
+            }}
+          />
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="inline-flex items-center gap-2 bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              {uploading
+                ? 'Uploading…'
+                : value
+                  ? allowVideo
+                    ? 'Replace media'
+                    : 'Replace photo'
+                  : allowVideo
+                    ? 'Upload photo or video'
+                    : 'Upload photo'}
+            </button>
+            <button
+              type="button"
+              onClick={() => captureRef.current?.click()}
+              disabled={uploading}
+              className="inline-flex items-center gap-2 bg-white border border-[#0a1628]/25 hover:border-[#0a1628] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              {allowVideo ? 'Take photo or video' : 'Take photo'}
+            </button>
+          </div>
           <p className="text-[11px] text-[#8a7f70]">
             {allowVideo
               ? 'Photo or short video clip from your camera roll. Or paste a URL below.'

@@ -1,0 +1,8 @@
+# Design source images live in the repo root for reference only — the app
+# serves runtime images from /public, so keep these (root-level only) out of
+# the deploy upload. Anchored with a leading slash so /public/*.png still ship.
+/*.png
+
+# Local agent/vector DB artifacts — not needed in production
+agentdb.rvf.lock
+ruvector.db

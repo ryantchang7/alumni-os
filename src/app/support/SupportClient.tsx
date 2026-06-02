@@ -87,7 +87,7 @@ const TIERS: TierConfig[] = [
 export default function SupportClient({ status }: Props) {
   const heroBlurb = useSiteContent(
     'support.hero-blurb',
-    'The Penn Golf Clubhouse is the private alumni network for the program. 70% of every membership and contribution goes directly to Penn Men’s Golf; the remaining 30% maintains the platform. Cancel anytime.',
+    'The Penn Golf Clubhouse is the private network for the program. 70% of every membership and contribution goes directly to Penn Men’s Golf; the remaining 30% maintains the platform. Cancel anytime.',
   )
   const [configured, setConfigured] = useState<boolean | null>(null)
   const [foundingConfigured, setFoundingConfigured] = useState(false)
@@ -210,9 +210,6 @@ export default function SupportClient({ status }: Props) {
           </h1>
           <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line mt-6">
             {heroBlurb}
-          </p>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/55 mt-6 inline-block border border-white/15 px-3 py-1.5 rounded-full">
-            Joining the Clubhouse is approval-based, not paywalled.
           </p>
         </div>
       </div>
