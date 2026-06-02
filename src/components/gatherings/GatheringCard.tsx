@@ -11,6 +11,7 @@ export interface GatheringData {
   title: string
   description?: string
   hostName: string
+  hostPersonId?: string
   city?: string
   state?: string
   venue?: string
@@ -52,13 +53,26 @@ const VIBE_LABEL: Record<string, string> = {
 
 const VIDEO_EXT_RE = /\.(mp4|mov|m4v|webm)(\?|$)/i
 
+/** The location query used for the map — venue + city/state. */
+function gatheringMapQuery(g: GatheringData): string {
+  return [g.venue, g.city, g.state].filter(Boolean).join(' ').trim()
+}
+
 /** Prefer the host's pasted Maps link; otherwise build a Google Maps search
  * from the venue + city/state. Returns null when there's nothing to map. */
 function gatheringMapUrl(g: GatheringData): string | null {
   if (g.mapsUrl) return g.mapsUrl
-  const query = [g.venue, g.city, g.state].filter(Boolean).join(' ').trim()
+  const query = gatheringMapQuery(g)
   if (!query) return null
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
+}
+
+/** Embeddable map preview built from the location query. No API key needed
+ * (the classic `output=embed` form). Returns null when there's no location. */
+function gatheringMapEmbedUrl(g: GatheringData): string | null {
+  const query = gatheringMapQuery(g)
+  if (!query) return null
+  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`
 }
 
 export function GatheringStatusPill({ status }: { status: GatheringData['status'] }) {
@@ -86,11 +100,38 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
 }) {
   const { data: session, status: sessionStatus } = useSession()
   const approved = sessionStatus === 'authenticated' && !!session?.linkedPersonId
+  // The host of this gathering — they shouldn't RSVP to their own event,
+  // and they get a Remove control instead.
+  const isHost =
+    approved && !!gathering.hostPersonId && session?.linkedPersonId === gathering.hostPersonId
 
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const [removed, setRemoved] = useState(false)
+  const [removing, setRemoving] = useState(false)
+
+  async function handleRemove() {
+    if (!confirm('Remove this gathering? It comes off the board for everyone.')) return
+    setRemoving(true)
+    try {
+      const res = await fetch(`/api/gatherings?id=${encodeURIComponent(gathering.id)}`, {
+        method: 'DELETE',
+      })
+      if (res.ok) {
+        setRemoved(true)
+      } else {
+        const d = await res.json().catch(() => ({}))
+        setError(d.error ?? 'Could not remove. Try again.')
+        setRemoving(false)
+      }
+    } catch {
+      setError('Could not connect. Try again.')
+      setRemoving(false)
+    }
+  }
 
   const [attendees, setAttendees] = useState<Attendee[] | null>(null)
   const liveCount = attendees ? attendees.length : (interestedCount ?? 0) + (sent ? 1 : 0)
@@ -136,6 +177,14 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
       setError('Could not connect. Try again.')
       setSubmitting(false)
     }
+  }
+
+  if (removed) {
+    return (
+      <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4">
+        <p className="text-xs text-[#8a7f70]">Removed. It&rsquo;s off the board.</p>
+      </div>
+    )
   }
 
   return (
@@ -239,6 +288,26 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
           )}
         </div>
 
+        {/* Map preview — a real map of the spot. Lazy-loaded so a list of
+            cards doesn't fire every iframe at once. */}
+        {gatheringMapEmbedUrl(gathering) && (
+          <a
+            href={gatheringMapUrl(gathering) ?? '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded-lg overflow-hidden border border-[rgba(180,168,150,0.4)] mb-3 group/mapimg"
+            title="Open in Google Maps"
+          >
+            <iframe
+              src={gatheringMapEmbedUrl(gathering)!}
+              title={`Map of ${gathering.venue ?? gathering.city ?? 'the gathering'}`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full h-32 pointer-events-none"
+            />
+          </a>
+        )}
+
         {/* Description */}
         {gathering.description && (
           <p className="text-xs text-[#4a5568] leading-relaxed mb-4">{gathering.description}</p>
@@ -271,12 +340,27 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         )}
 
         {/* Action */}
-        {gathering.isExample && (
+        {gathering.isExample ? (
           <p className="text-xs text-[#8a7f70] italic">
             Sample gathering — host a real one to replace it.
           </p>
-        )}
-        {gathering.status === 'open' && !gathering.isExample && (
+        ) : isHost ? (
+          // Host view — no RSVP to your own event; a Remove control instead.
+          <div className="mt-1 space-y-2">
+            <p className="text-xs text-[#2d6a4f] font-medium">
+              You&rsquo;re hosting this. Members can pencil themselves in.
+            </p>
+            {error && <p className="text-xs text-[#990000]">{error}</p>}
+            <button
+              type="button"
+              onClick={handleRemove}
+              disabled={removing}
+              className="text-xs font-semibold text-[#990000] border border-[#990000]/30 hover:bg-[#990000] hover:text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-40"
+            >
+              {removing ? 'Removing…' : 'Remove this gathering'}
+            </button>
+          </div>
+        ) : gathering.status === 'open' ? (
           <>
             {!approved && sessionStatus !== 'loading' && (
               <p className="inline-flex items-center gap-1.5 text-xs text-[#8a7f70]">
@@ -315,11 +399,9 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
               </p>
             )}
           </>
-        )}
-
-        {gathering.status === 'full' && (
+        ) : gathering.status === 'full' ? (
           <p className="text-xs text-[#8a7f70]">This gathering is full.</p>
-        )}
+        ) : null}
       </div>
     </div>
   )

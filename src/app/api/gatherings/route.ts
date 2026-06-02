@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { requireApprovedMember } from '@/lib/auth/guards'
+import { FOUNDER_EMAILS } from '@/lib/badges'
 import { isExampleGathering, isHiddenGathering } from '@/lib/seed-data/example-gatherings'
 
 const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
@@ -105,4 +107,30 @@ export async function POST(request: NextRequest) {
   })
 
   return NextResponse.json({ gathering }, { status: 201 })
+}
+
+export async function DELETE(request: NextRequest) {
+  // Only the host who created it (or a founder) can take a gathering down.
+  const gate = await requireApprovedMember()
+  if (!gate.ok) return gate.response
+
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })
+
+  const { getClubhouseGatheringById, updateClubhouseGathering } = await import('@/lib/store/local-store')
+  const gathering = await getClubhouseGatheringById(id)
+  if (!gathering) return NextResponse.json({ error: 'Gathering not found' }, { status: 404 })
+
+  const isHost = !!gathering.hostPersonId && gathering.hostPersonId === gate.session.linkedPersonId
+  const isFounder = FOUNDER_EMAILS.has(gate.email)
+  if (!isHost && !isFounder) {
+    return NextResponse.json({ error: 'Only the host can remove this gathering.' }, { status: 403 })
+  }
+
+  // Soft-delete by closing it: the GET above filters out `status === 'closed'`,
+  // so it drops off The Course / 19th Hole / Clubhouse immediately, and it's
+  // reversible if needed.
+  await updateClubhouseGathering(id, { status: 'closed' })
+  return NextResponse.json({ ok: true })
 }
