@@ -13,7 +13,7 @@
 import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Lock, Reply, SmilePlus } from 'lucide-react'
+import { Lock, Reply, SmilePlus, Trash2 } from 'lucide-react'
 import type { ClubhouseMoment, MomentComment, MomentReaction } from '@/lib/store/types'
 import type { BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
@@ -79,6 +79,31 @@ export default function MomentCard({
   const [replyDraft, setReplyDraft] = useState('')
   const [posting, setPosting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Take-down — only the poster sees this, in case they posted by mistake.
+  const isOwn = !!viewerAccountId && viewerAccountId === moment.postedByAccountId
+  const [removed, setRemoved] = useState(false)
+  const [removing, setRemoving] = useState(false)
+  const [removeError, setRemoveError] = useState<string | null>(null)
+
+  async function handleRemove() {
+    if (!confirm('Take this down? It will be removed for everyone.')) return
+    setRemoving(true)
+    setRemoveError(null)
+    try {
+      const res = await fetch(`/api/moments/${encodeURIComponent(moment.id)}`, { method: 'DELETE' })
+      if (res.ok) {
+        setRemoved(true)
+      } else {
+        const d = await res.json().catch(() => ({}))
+        setRemoveError(d.error ?? 'Could not take it down. Try again.')
+        setRemoving(false)
+      }
+    } catch {
+      setRemoveError('Could not connect. Try again.')
+      setRemoving(false)
+    }
+  }
 
   // Group reactions by emoji and count; track whether the current viewer
   // is one of the reactors for cheap toggle UI.
@@ -194,6 +219,14 @@ export default function MomentCard({
     }
   }
 
+  if (removed) {
+    return (
+      <article className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-6 py-5">
+        <p className="text-[13px] text-[#8a7f70]">Taken down. This moment was removed.</p>
+      </article>
+    )
+  }
+
   return (
     <article
       className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl overflow-hidden"
@@ -254,8 +287,23 @@ export default function MomentCard({
             </p>
             <MemberBadges badges={posterBadges} size="sm" />
           </div>
-          <span className="text-[#b0a898]">{timeAgo(moment.createdAt)}</span>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            {isOwn && (
+              <button
+                type="button"
+                onClick={handleRemove}
+                disabled={removing}
+                title="Take down this moment"
+                className="inline-flex items-center gap-1 text-[#990000]/70 hover:text-[#990000] disabled:opacity-40 transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-medium">{removing ? 'Removing…' : 'Remove'}</span>
+              </button>
+            )}
+            <span className="text-[#b0a898]">{timeAgo(moment.createdAt)}</span>
+          </div>
         </div>
+        {removeError && <p className="text-[11.5px] text-[#990000] mt-2">{removeError}</p>}
 
         {/* Reactions row */}
         <div className="mt-4 flex items-center gap-2 flex-wrap relative">

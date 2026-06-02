@@ -242,24 +242,24 @@ export default function ChatThreadClient({
             return (
               <div key={m.id}>
                 {showDay && (
-                  <div className="flex items-center gap-3 my-4">
-                    <div className="flex-1 h-px bg-[rgba(180,168,150,0.4)]" />
-                    <span className="text-[10.5px] font-medium uppercase tracking-[0.18em] text-[#8a7f70]">
+                  <div className="flex items-center gap-3 my-5">
+                    <div className="flex-1 h-px bg-[rgba(180,168,150,0.3)]" />
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] px-2.5 py-0.5 rounded-full">
                       {fmtDay(m.createdAt)}
                     </span>
-                    <div className="flex-1 h-px bg-[rgba(180,168,150,0.4)]" />
+                    <div className="flex-1 h-px bg-[rgba(180,168,150,0.3)]" />
                   </div>
                 )}
                 <div className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[78%] ${mine ? 'items-end' : 'items-start'} flex flex-col`}>
                     {!mine && (
-                      <p className="text-[11px] text-[#8a7f70] mb-1 ml-3">{m.fromName}</p>
+                      <p className="text-[11px] font-medium text-[#8a7f70] mb-1 ml-3.5 tracking-wide">{m.fromName}</p>
                     )}
                     <div
-                      className={`px-4 py-2.5 rounded-2xl text-[14px] leading-snug whitespace-pre-wrap break-words ${
+                      className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed whitespace-pre-wrap break-words ${
                         mine
-                          ? 'bg-[#0a1628] text-white rounded-br-sm'
-                          : 'bg-white text-[#0a1628] border border-[rgba(180,168,150,0.4)] rounded-bl-sm'
+                          ? 'bg-[#0a1628] text-white rounded-br-md shadow-[0_2px_10px_rgba(10,22,40,0.16)]'
+                          : 'bg-white text-[#0a1628] border border-[rgba(180,168,150,0.45)] rounded-bl-md shadow-[0_1px_2px_rgba(10,22,40,0.05)]'
                       }`}
                     >
                       {m.body}
@@ -289,8 +289,8 @@ export default function ChatThreadClient({
       </div>
 
       {/* Composer */}
-      <div className="border-t border-[rgba(180,168,150,0.35)] bg-white px-5 sm:px-8 py-4">
-        <div className="max-w-[680px] mx-auto flex items-end gap-2">
+      <div className="border-t border-[rgba(180,168,150,0.35)] bg-white px-5 sm:px-8 py-4 shadow-[0_-2px_12px_rgba(10,22,40,0.05)]">
+        <div className="max-w-[680px] mx-auto flex items-end gap-2.5">
           <textarea
             value={draft}
             onChange={e => setDraft(e.target.value)}
@@ -303,7 +303,7 @@ export default function ChatThreadClient({
             rows={1}
             maxLength={4000}
             placeholder="Type a message…"
-            className="flex-1 border border-[rgba(180,168,150,0.5)] rounded-2xl px-4 py-2.5 text-[14px] text-[#0a1628] resize-none focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+            className="flex-1 bg-[#faf7f2] border border-[rgba(180,168,150,0.5)] rounded-2xl px-4 py-3 text-[14px] text-[#0a1628] placeholder-[#b5ad9e] resize-none focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0a1628]/15 focus:border-[#0a1628]/30 transition-colors"
             style={{ maxHeight: 160 }}
           />
           <button
@@ -311,7 +311,7 @@ export default function ChatThreadClient({
             onClick={() => sendMessage()}
             disabled={sending || !draft.trim()}
             aria-label="Send"
-            className="bg-[#0a1628] hover:bg-[#112240] disabled:opacity-40 text-white p-3 rounded-full transition-colors flex-shrink-0"
+            className="bg-[#0a1628] hover:bg-[#112240] disabled:opacity-40 text-white p-3 rounded-full transition-colors flex-shrink-0 shadow-[0_2px_8px_rgba(10,22,40,0.2)]"
           >
             <Send className="w-4 h-4" />
           </button>

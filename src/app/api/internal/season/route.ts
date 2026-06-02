@@ -8,9 +8,22 @@ import {
   deleteSeasonUpdate,
 } from '@/lib/store/local-store'
 import { detectStoreBackend } from '@/lib/launch/persistence-check'
+import { fetchLinkPreview } from '@/lib/link-preview/fetch-link-preview'
 import type { SeasonUpdate } from '@/lib/store/types'
 
 const VALID_KINDS = new Set<SeasonUpdate['kind']>(['qualifying', 'tournament', 'stat', 'note'])
+
+type PreviewFields = Pick<SeasonUpdate, 'previewImageUrl' | 'previewTitle' | 'previewDescription'>
+
+/** Manual image wins; otherwise auto-pull the link's Open Graph preview. */
+async function resolvePreview(linkUrl: string | undefined, manualImage: string | undefined): Promise<PreviewFields> {
+  if (manualImage) return { previewImageUrl: manualImage, previewTitle: undefined, previewDescription: undefined }
+  if (linkUrl) {
+    const p = await fetchLinkPreview(linkUrl)
+    return { previewImageUrl: p.imageUrl, previewTitle: p.title, previewDescription: p.description }
+  }
+  return { previewImageUrl: undefined, previewTitle: undefined, previewDescription: undefined }
+}
 
 function cleanUrl(raw: unknown): string | undefined {
   if (typeof raw !== 'string') return undefined
@@ -66,14 +79,18 @@ export async function POST(request: Request) {
   if (!title) return NextResponse.json({ error: 'title required' }, { status: 400 })
   if (!dateText) return NextResponse.json({ error: 'dateText required' }, { status: 400 })
 
+  const linkUrl = cleanUrl(body.linkUrl)
+  const preview = await resolvePreview(linkUrl, cleanUrl(body.previewImageUrl))
+
   const update = await createSeasonUpdate({
     teamId: team.id,
     kind,
     title,
     dateText,
     body: typeof body.body === 'string' && body.body.trim() ? body.body.trim() : undefined,
-    linkUrl: cleanUrl(body.linkUrl),
+    linkUrl,
     linkLabel: typeof body.linkLabel === 'string' && body.linkLabel.trim() ? body.linkLabel.trim() : undefined,
+    ...preview,
   })
 
   return NextResponse.json({ update }, { status: 201 })
@@ -111,6 +128,17 @@ export async function PATCH(request: Request) {
   if (typeof body.body === 'string') patch.body = body.body.trim() || undefined
   if (body.linkUrl !== undefined) patch.linkUrl = cleanUrl(body.linkUrl)
   if (typeof body.linkLabel === 'string') patch.linkLabel = body.linkLabel.trim() || undefined
+
+  // Recompute the preview when the link or the manual image changed.
+  const manualImage = cleanUrl(body.previewImageUrl)
+  if (body.previewImageUrl !== undefined && manualImage) {
+    Object.assign(patch, { previewImageUrl: manualImage, previewTitle: undefined, previewDescription: undefined })
+  } else if (body.linkUrl !== undefined) {
+    Object.assign(patch, await resolvePreview(patch.linkUrl, undefined))
+  } else if (body.previewImageUrl !== undefined && !manualImage) {
+    // Founder cleared the custom image — drop the preview image, keep the link.
+    Object.assign(patch, { previewImageUrl: undefined, previewTitle: undefined, previewDescription: undefined })
+  }
 
   const update = await updateSeasonUpdate(id, patch)
   if (!update) return NextResponse.json({ error: 'Update not found' }, { status: 404 })

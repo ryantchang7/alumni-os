@@ -387,6 +387,12 @@ export interface SeasonUpdate {
   linkUrl?: string
   /** Optional label for the link; falls back to the link's domain. */
   linkLabel?: string
+  /** Preview image for the link card. Auto-pulled from the link's Open Graph
+   * image on save, or set manually by the founder (manual wins). */
+  previewImageUrl?: string
+  /** Auto-pulled OG title/description for the link preview card. */
+  previewTitle?: string
+  previewDescription?: string
   createdAt: string
   updatedAt: string
 }

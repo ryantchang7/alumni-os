@@ -4,6 +4,7 @@ import TeamNewsStrip from '@/components/TeamNewsStrip'
 import FoundersWall from '@/components/FoundersWall'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import HeroCrest from '@/components/HeroCrest'
+import LinkPreviewImage from '@/components/LinkPreviewImage'
 import {
   computeFoundersForTeam,
   computeFamilySupportersForTeam,
@@ -22,6 +23,15 @@ const SEASON_KIND_LABELS: Record<SeasonUpdate['kind'], string> = {
   qualifying: 'Qualifying',
   stat: 'Stat',
   note: 'Note',
+}
+
+/** Bare domain for a link's "source" label, e.g. "golfstat.com". */
+function seasonLinkDomain(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '')
+  } catch {
+    return 'Link'
+  }
 }
 
 const SUPPORT_CARDS = [
@@ -198,14 +208,41 @@ export default async function TeamRoomPage() {
                       <p className="text-sm text-[#8a7f70] mt-1.5 leading-relaxed whitespace-pre-line">{u.body}</p>
                     )}
                     {u.linkUrl && (
-                      <a
-                        href={u.linkUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-[#990000] hover:underline font-medium mt-2.5 inline-block"
-                      >
-                        {u.linkLabel || 'View'} &rarr;
-                      </a>
+                      u.previewImageUrl ? (
+                        <a
+                          href={u.linkUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block mt-3 rounded-lg overflow-hidden border border-[rgba(180,168,150,0.4)] hover:border-[#0a1628]/30 transition-colors group/link"
+                        >
+                          <LinkPreviewImage
+                            src={u.previewImageUrl}
+                            className="w-full h-40 object-cover bg-[#faf7f2]"
+                          />
+                          <div className="px-3.5 py-3">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
+                              {seasonLinkDomain(u.linkUrl)}
+                            </p>
+                            {(u.previewTitle || u.linkLabel) && (
+                              <p className="text-[13px] font-semibold text-[#0a1628] mt-1 leading-snug line-clamp-2">
+                                {u.previewTitle || u.linkLabel}
+                              </p>
+                            )}
+                            <span className="text-xs text-[#990000] font-medium mt-1.5 inline-block group-hover/link:underline">
+                              {u.linkLabel || 'View'} &rarr;
+                            </span>
+                          </div>
+                        </a>
+                      ) : (
+                        <a
+                          href={u.linkUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs text-[#990000] hover:underline font-medium mt-2.5 border border-[#990000]/25 rounded-full px-3 py-1.5"
+                        >
+                          {u.linkLabel || seasonLinkDomain(u.linkUrl)} &rarr;
+                        </a>
+                      )
                     )}
                   </div>
                 </li>

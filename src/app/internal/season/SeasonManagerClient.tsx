@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import PhotoUpload from '@/components/PhotoUpload'
 
 type Kind = 'qualifying' | 'tournament' | 'stat' | 'note'
 
@@ -13,6 +14,9 @@ interface SeasonUpdate {
   body?: string
   linkUrl?: string
   linkLabel?: string
+  previewImageUrl?: string
+  previewTitle?: string
+  previewDescription?: string
   createdAt: string
   updatedAt: string
 }
@@ -38,6 +42,7 @@ const EMPTY_FORM = {
   body: '',
   linkUrl: '',
   linkLabel: '',
+  previewImageUrl: '',
 }
 
 interface PersistenceStatus {
@@ -85,6 +90,7 @@ export default function SeasonManagerClient() {
       body: u.body ?? '',
       linkUrl: u.linkUrl ?? '',
       linkLabel: u.linkLabel ?? '',
+      previewImageUrl: u.previewImageUrl ?? '',
     })
     setShowForm(true)
     setError(null)
@@ -104,6 +110,7 @@ export default function SeasonManagerClient() {
         body: form.body.trim(),
         linkUrl: form.linkUrl.trim(),
         linkLabel: form.linkLabel.trim(),
+        previewImageUrl: form.previewImageUrl.trim(),
         ...(editingId ? { id: editingId } : {}),
       }
       const res = await fetch('/api/internal/season', {
@@ -259,6 +266,19 @@ export default function SeasonManagerClient() {
               </div>
             </div>
 
+            <div>
+              <label className={labelCls}>Preview image (optional)</label>
+              <p className="text-[11px] text-[#8a7f70] mb-2 -mt-0.5">
+                Leave blank to auto-pull the picture from the link. Upload one to override it.
+              </p>
+              <PhotoUpload
+                value={form.previewImageUrl}
+                onChange={url => setForm(f => ({ ...f, previewImageUrl: url }))}
+                label=""
+                shape="wide"
+              />
+            </div>
+
             {error && <p className="text-xs text-[#990000]">{error}</p>}
 
             <button
@@ -292,6 +312,15 @@ export default function SeasonManagerClient() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
+                  {u.previewImageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={u.previewImageUrl}
+                      alt=""
+                      className="w-full max-w-[180px] h-20 object-cover rounded-md mb-2 border border-[rgba(180,168,150,0.4)]"
+                      onError={e => { e.currentTarget.style.display = 'none' }}
+                    />
+                  )}
                   <div className="flex items-center gap-2 flex-wrap mb-1">
                     <span className="text-[10px] font-semibold text-[#0a1628] bg-[#0a1628]/8 px-2 py-0.5 rounded-full">
                       {KIND_LABELS[u.kind]}
