@@ -45,6 +45,7 @@ import {
 } from '@/lib/launch-kit/content'
 
 const SECTIONS = [
+  { id: 'prefilm', label: 'Pre-Film Check' },
   { id: 'plan', label: 'Plan' },
   { id: 'scripts', label: 'Scripts' },
   { id: 'storyboard', label: 'Storyboard' },
@@ -54,6 +55,50 @@ const SECTIONS = [
   { id: 'broll', label: 'AI B-roll' },
   { id: 'assets', label: 'Assets' },
 ] as const
+
+/**
+ * Live-site QA to run the morning of the shoot. Tick each as you confirm it
+ * works. Storage (Vercel Blob + KV) is connected, so everything you post saves.
+ */
+const PRE_FILM_CHECK: { area: string; items: { text: string; route?: string }[] }[] = [
+  {
+    area: 'Gatherings — host it, click in, interact',
+    items: [
+      { text: 'Host a round/gathering with a photo + a pasted Google Maps link, then submit', route: '/the-course/host or /19th-hole/host' },
+      { text: 'The card shows the photo banner + map preview', route: '/the-course or /19th-hole' },
+      { text: 'Click the title or “View details →” → it opens the gathering’s own page', route: '/gatherings/[id]' },
+      { text: 'Add to calendar → “Google” opens pre-filled; “Apple / Outlook” downloads an .ics' },
+      { text: 'As the host you see “You’re hosting this” + Remove (NOT “Pencil me in”)' },
+      { text: 'Tap Remove → it disappears; revisiting the old link shows a friendly “not available” message' },
+      { text: '(2nd account / non-host) “Pencil me in” RSVPs and lands you on the sheet' },
+    ],
+  },
+  {
+    area: 'Season Tracker',
+    items: [
+      { text: 'Post an update with a link → it appears', route: '/internal/season' },
+      { text: 'It shows in the Season Tracker timeline — delete the test one after', route: '/team-room' },
+    ],
+  },
+  {
+    area: 'Uploads (photo + video)',
+    items: [
+      { text: 'Both “Upload” (camera roll) and “Take photo” (camera) buttons appear; upload a photo or short video → it posts', route: '/moments/new' },
+      { text: 'Same upload works on Locker Room, profile photo, and Studio' },
+    ],
+  },
+  {
+    area: 'Copy & visuals (quick eyeball)',
+    items: [
+      { text: 'Career Room blurb updated (“Find Penn Golf members by industry…”)', route: '/career-room' },
+      { text: 'Team Room subtitle + Season Tracker section present', route: '/team-room' },
+      { text: '“private network” (not “private alumni network”), no approval-based pill', route: '/support' },
+      { text: '“Where They Are Now” map loads first; caption “Where Penn Golf members live now”', route: '/member-map' },
+      { text: 'Header is tighter but the 3-stage animation still plays', route: '/the-course' },
+      { text: '“This Week” cards show “Example” tags and open the specific gathering', route: '/player' },
+    ],
+  },
+]
 
 function CopyButton({ value, label = 'Copy' }: { value: string; label?: string }) {
   const [done, setDone] = useState(false)
@@ -168,6 +213,53 @@ export default function LaunchKitClient() {
             </ul>
           )}
         </div>
+
+        {/* Pre-Film Check — live-site QA to run the morning of the shoot. */}
+        <section id="prefilm" className="mb-16 scroll-mt-24">
+          <h2
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            Pre-Film Check
+          </h2>
+          <p className="text-[13px] text-[#8a7f70] mb-5">
+            Run this on the live site the morning of the shoot &mdash; tick each as you confirm it
+            works. Storage (Vercel Blob + KV) is connected, so everything you post saves for real.
+          </p>
+          <div className="space-y-5">
+            {PRE_FILM_CHECK.map((group) => (
+              <div
+                key={group.area}
+                className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-6"
+              >
+                <h3
+                  className="text-[#0a1628] text-lg font-medium mb-3"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  {group.area}
+                </h3>
+                <ul className="space-y-2.5">
+                  {group.items.map((item, i) => (
+                    <li key={i}>
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="mt-1 h-4 w-4 flex-none accent-[#0a1628] cursor-pointer"
+                        />
+                        <span className="text-[13px] text-[#0a1628] leading-relaxed">
+                          {item.text}
+                          {item.route && (
+                            <code className="ml-2 text-[11.5px] text-[#990000]">{item.route}</code>
+                          )}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Plan */}
         <section id="plan" className="mb-16 scroll-mt-24">
