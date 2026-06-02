@@ -192,25 +192,59 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
       className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
-      {/* Host-supplied photo or short clip of the venue/vibe. */}
-      {gathering.imageUrl && (
-        VIDEO_EXT_RE.test(gathering.imageUrl) ? (
-          <video
-            src={gathering.imageUrl}
-            controls
-            playsInline
-            preload="metadata"
-            className="w-full aspect-[3/2] object-cover bg-black"
-          />
+      {/* Visual header — host photo + live map. When both exist, they sit
+          side by side (half/half); otherwise whichever exists goes full-width. */}
+      {(gathering.imageUrl || gatheringMapEmbedUrl(gathering)) && (() => {
+        const mapEmbed = gatheringMapEmbedUrl(gathering)
+        const isVideo = !!gathering.imageUrl && VIDEO_EXT_RE.test(gathering.imageUrl)
+        const both = !!gathering.imageUrl && !!mapEmbed
+
+        const photo = gathering.imageUrl ? (
+          isVideo ? (
+            <video
+              src={gathering.imageUrl}
+              controls
+              playsInline
+              preload="metadata"
+              className={`w-full object-cover bg-black ${both ? 'h-44' : 'aspect-[3/2]'}`}
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={gathering.imageUrl}
+              alt={gathering.title}
+              className={`w-full object-cover ${both ? 'h-44' : 'aspect-[3/2]'}`}
+            />
+          )
+        ) : null
+
+        const map = mapEmbed ? (
+          <a
+            href={gatheringMapUrl(gathering) ?? '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block h-full"
+            title="Open in Google Maps"
+          >
+            <iframe
+              src={mapEmbed}
+              title={`Map of ${gathering.venue ?? gathering.city ?? 'the gathering'}`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full h-44 pointer-events-none"
+            />
+          </a>
+        ) : null
+
+        return both ? (
+          <div className="grid grid-cols-2 gap-[2px] bg-[rgba(180,168,150,0.45)]">
+            {photo}
+            {map}
+          </div>
         ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={gathering.imageUrl}
-            alt={gathering.title}
-            className="w-full aspect-[3/2] object-cover"
-          />
+          photo ?? map
         )
-      )}
+      })()}
 
       <div className="border-l-4 border-[#0a1628] px-5 pt-5 pb-4">
         {/* Header */}
@@ -287,26 +321,6 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             </div>
           )}
         </div>
-
-        {/* Map preview — a real map of the spot. Lazy-loaded so a list of
-            cards doesn't fire every iframe at once. */}
-        {gatheringMapEmbedUrl(gathering) && (
-          <a
-            href={gatheringMapUrl(gathering) ?? '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block rounded-lg overflow-hidden border border-[rgba(180,168,150,0.4)] mb-3 group/mapimg"
-            title="Open in Google Maps"
-          >
-            <iframe
-              src={gatheringMapEmbedUrl(gathering)!}
-              title={`Map of ${gathering.venue ?? gathering.city ?? 'the gathering'}`}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-32 pointer-events-none"
-            />
-          </a>
-        )}
 
         {/* Description */}
         {gathering.description && (
