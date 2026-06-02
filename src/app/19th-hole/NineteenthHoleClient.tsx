@@ -184,6 +184,7 @@ export default function NineteenthHoleClient({
                   key={g.id}
                   gathering={g}
                   interestedCount={interestedCounts?.[g.id] ?? 0}
+                  detailHref={`/gatherings/${g.id}`}
                 />
               ))}
             </div>

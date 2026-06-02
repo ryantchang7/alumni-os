@@ -32,14 +32,6 @@ interface GatheringSnippet {
   isExample?: boolean
 }
 
-const GATHERING_HREF: Record<GatheringSnippet['type'], string> = {
-  round: '/the-course',
-  coffee: '/19th-hole',
-  drinks: '/19th-hole',
-  dinner: '/19th-hole',
-  event: '/19th-hole',
-}
-
 function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boolean }) {
   const [gatherings, setGatherings] = useState<GatheringSnippet[]>([])
   const [totalCount, setTotalCount] = useState(0)
@@ -98,7 +90,7 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
         {gatherings.map(g => (
           <Link
             key={g.id}
-            href={GATHERING_HREF[g.type]}
+            href={`/gatherings/${g.id}`}
             className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:shadow-md transition-shadow group"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >

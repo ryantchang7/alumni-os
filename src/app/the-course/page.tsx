@@ -399,6 +399,7 @@ export default async function TheCoursePage() {
                     key={g.id}
                     gathering={g}
                     interestedCount={interestedByGathering.get(g.id) ?? 0}
+                    detailHref={`/gatherings/${g.id}`}
                   />
                 ))}
               </div>

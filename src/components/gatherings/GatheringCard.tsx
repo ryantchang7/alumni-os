@@ -94,10 +94,13 @@ export function GatheringStatusPill({ status }: { status: GatheringData['status'
   return null
 }
 
-export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', interestedCount }: {
+export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', interestedCount, detailHref }: {
   gathering: GatheringData
   teamSlug?: string
   interestedCount?: number
+  /** When set, the title + a "View details" link point to the gathering's
+   * own page. Omitted on the detail page itself. */
+  detailHref?: string
 }) {
   const { data: session, status: sessionStatus } = useSession()
   const approved = sessionStatus === 'authenticated' && !!session?.linkedPersonId
@@ -255,7 +258,16 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 </span>
               )}
             </div>
-            <p className="font-semibold text-[#0a1628] text-sm leading-snug">{gathering.title}</p>
+            {detailHref ? (
+              <Link
+                href={detailHref}
+                className="font-semibold text-[#0a1628] text-sm leading-snug hover:underline"
+              >
+                {gathering.title}
+              </Link>
+            ) : (
+              <p className="font-semibold text-[#0a1628] text-sm leading-snug">{gathering.title}</p>
+            )}
           </div>
         </div>
 
@@ -358,6 +370,16 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
               Apple / Outlook
             </button>
           </div>
+        )}
+
+        {/* Click into the full gathering page. */}
+        {detailHref && (
+          <Link
+            href={detailHref}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-[#0a1628] hover:underline mb-4"
+          >
+            View details &rarr;
+          </Link>
         )}
 
         {/* Attendee list (approved members only) */}
