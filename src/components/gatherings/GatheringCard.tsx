@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
-import { MapPin, Clock, Users, Calendar, Lock } from 'lucide-react'
+import { MapPin, Clock, Users, Calendar, CalendarPlus, Lock } from 'lucide-react'
+import { buildIcs, buildGoogleCalendarUrl } from '@/lib/calendar/ics'
 
 export interface GatheringData {
   id: string
@@ -131,6 +132,25 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
       setError('Could not connect. Try again.')
       setRemoving(false)
     }
+  }
+
+  // "Add to calendar" — same Google Cal + .ics the RSVP email uses, but
+  // right on the card so it works instantly without depending on email.
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
+  const clubhouseUrl = `${baseUrl}${gathering.type === 'round' ? '/the-course' : '/19th-hole'}`
+  const googleCalUrl = buildGoogleCalendarUrl(gathering, clubhouseUrl)
+
+  function downloadIcs() {
+    const ics = buildIcs(gathering, clubhouseUrl)
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${(gathering.title || 'gathering').replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.ics`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 
   const [attendees, setAttendees] = useState<Attendee[] | null>(null)
@@ -311,6 +331,33 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         {/* Description */}
         {gathering.description && (
           <p className="text-xs text-[#4a5568] leading-relaxed mb-4">{gathering.description}</p>
+        )}
+
+        {/* Add to calendar — instant Google Cal link + .ics download, right
+            on the card so it works without depending on the RSVP email. */}
+        {!gathering.isExample && (
+          <div className="flex items-center gap-2 flex-wrap mb-4 text-xs">
+            <span className="inline-flex items-center gap-1.5 text-[#8a7f70]">
+              <CalendarPlus className="w-3.5 h-3.5" />
+              Add to calendar:
+            </span>
+            <a
+              href={googleCalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-[#990000] hover:underline"
+            >
+              Google
+            </a>
+            <span className="text-[#cfc6b8]" aria-hidden>·</span>
+            <button
+              type="button"
+              onClick={downloadIcs}
+              className="font-medium text-[#990000] hover:underline"
+            >
+              Apple / Outlook
+            </button>
+          </div>
         )}
 
         {/* Attendee list (approved members only) */}

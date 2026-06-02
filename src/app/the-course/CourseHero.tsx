@@ -61,7 +61,7 @@ export default function CourseHero({ rounds }: Props) {
 
   return (
     <section className="relative bg-[#0a1628] border-b border-white/[0.08] overflow-hidden">
-      <div className="relative max-w-[1180px] mx-auto px-6 sm:px-10 pt-12 pb-14">
+      <div className="relative max-w-[1180px] mx-auto px-6 sm:px-10 pt-10 pb-12">
         {/* Eyebrow + crest + title row — matches every other tab hero so
             the flow below feels like a continuation rather than a
             different page. */}
@@ -83,9 +83,9 @@ export default function CourseHero({ rounds }: Props) {
         {/* Two-column flow zone — narrative on the left, visual on the
             right. Both columns top-aligned so the visual feels anchored
             to the same baseline as the headline copy. */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-x-12 gap-y-10 items-start">
+        <div className="mt-7 grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-x-12 gap-y-8 items-start">
           {/* LEFT — copy + CTAs change per stage */}
-          <div className="min-h-[280px]">
+          <div className="min-h-[200px]">
             <AnimatePresence mode="wait">
               {stage === 'plaque' && (
                 <motion.div
@@ -190,7 +190,7 @@ export default function CourseHero({ rounds }: Props) {
 
             {/* Stage indicator. Quieter than v1 — single gold rule that
                 grows as you progress, with a clear textual stage label. */}
-            <div className="flex items-center gap-3 mt-10">
+            <div className="flex items-center gap-3 mt-7">
               {(['plaque', 'sheet', 'on-green'] as Stage[]).map((s, i) => {
                 const reached =
                   stage === s ||
@@ -220,7 +220,7 @@ export default function CourseHero({ rounds }: Props) {
           </div>
 
           {/* RIGHT — the visual swaps per stage. */}
-          <div className="relative min-h-[380px] flex items-start justify-center">
+          <div className="relative min-h-[300px] flex items-start justify-center">
             <AnimatePresence mode="wait">
               {stage === 'plaque' && <HolePlaque key="vis-plaque" />}
               {stage === 'sheet' && (

@@ -11,6 +11,14 @@
 
 import type { ClubhouseGathering } from '@/lib/store/types'
 
+/** The subset of gathering fields the calendar helpers actually need.
+ * Both the full `ClubhouseGathering` (server) and the lighter `GatheringData`
+ * the card holds (client) satisfy this, so both can build calendar links. */
+export type CalendarGathering = Pick<
+  ClubhouseGathering,
+  'id' | 'title' | 'description' | 'hostName' | 'city' | 'state' | 'venue' | 'dateText' | 'timeText'
+>
+
 interface CalendarEvent {
   /** Stable identifier — used as ICS UID. */
   uid: string
@@ -48,7 +56,7 @@ function parseGatheringInstant(g: Pick<ClubhouseGathering, 'dateText' | 'timeTex
   return { start, end }
 }
 
-function gatheringToEvent(g: ClubhouseGathering, clubhouseUrl: string): CalendarEvent {
+function gatheringToEvent(g: CalendarGathering, clubhouseUrl: string): CalendarEvent {
   const { start, end } = parseGatheringInstant(g)
   const locationBits = [g.venue, g.city, g.state].filter(Boolean) as string[]
   const description = [
@@ -92,7 +100,7 @@ function escapeIcsText(s: string): string {
 }
 
 /** Build a single-event ICS file body suitable for emailing as an attachment. */
-export function buildIcs(g: ClubhouseGathering, clubhouseUrl: string): string {
+export function buildIcs(g: CalendarGathering, clubhouseUrl: string): string {
   const ev = gatheringToEvent(g, clubhouseUrl)
   const lines = [
     'BEGIN:VCALENDAR',
@@ -118,7 +126,7 @@ export function buildIcs(g: ClubhouseGathering, clubhouseUrl: string): string {
 }
 
 /** Build a one-click "Add to Google Calendar" URL for the same event. */
-export function buildGoogleCalendarUrl(g: ClubhouseGathering, clubhouseUrl: string): string {
+export function buildGoogleCalendarUrl(g: CalendarGathering, clubhouseUrl: string): string {
   const ev = gatheringToEvent(g, clubhouseUrl)
   const fmt = (d: Date) =>
     d
