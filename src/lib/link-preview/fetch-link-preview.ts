@@ -90,7 +90,7 @@ export async function fetchLinkPreview(rawUrl: string): Promise<LinkPreview> {
     }
 
     const rawImage = meta(['og:image', 'og:image:url', 'twitter:image', 'twitter:image:src'])
-    const title = meta(['og:title', 'twitter:title']) ?? $('title').first().text().trim() || undefined
+    const title = meta(['og:title', 'twitter:title']) ?? ($('title').first().text().trim() || undefined)
     const description = meta(['og:description', 'twitter:description', 'description'])
 
     // Resolve a relative og:image against the final page URL.
