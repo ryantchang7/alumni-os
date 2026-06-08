@@ -78,6 +78,7 @@ const PRE_FILM_CHECK: { area: string; items: { text: string; route?: string }[] 
     items: [
       { text: 'Post an update with a link → it appears', route: '/internal/season' },
       { text: 'It shows in the Season Tracker timeline — delete the test one after', route: '/team-room' },
+      { text: 'A pasted link renders a preview card with the link’s image + title; or upload a custom preview image to override it', route: '/internal/season → /team-room' },
     ],
   },
   {
@@ -85,6 +86,14 @@ const PRE_FILM_CHECK: { area: string; items: { text: string; route?: string }[] 
     items: [
       { text: 'Both “Upload” (camera roll) and “Take photo” (camera) buttons appear; upload a photo or short video → it posts', route: '/moments/new' },
       { text: 'Same upload works on Locker Room, profile photo, and Studio' },
+      { text: 'On a moment YOU posted (wall or Locker Room), a “Remove” control shows on your card only → tap it → it’s taken down (and stays gone on reload)', route: '/moments or /locker-room' },
+    ],
+  },
+  {
+    area: 'Chat',
+    items: [
+      { text: 'Open a conversation → bubbles, pill day-separators, and the composer look polished + on-theme; sending still works', route: '/chat' },
+      { text: 'The conversation list looks refined (avatars, unread badges)', route: '/chat' },
     ],
   },
   {
