@@ -34,8 +34,9 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
   if (!membership.publishedToNetwork) notFound()
 
   const enrichment = await getPersonEnrichment(person.id, team.id)
-  // Published members (incl. family/affiliate) always render so list cards
-  // never dead-link to a 404. `visibleToPlayers` only gates contact details.
+  // Members hidden from players (visibleToPlayers === false) are filtered out
+  // of every list + the profiles API, so their detail page 404s to match.
+  if (enrichment?.visibleToPlayers === false) notFound()
 
   // Profile photo: the member's uploaded photo, else their Google avatar
   // (stored on the linked Account at sign-in) — same merge as
