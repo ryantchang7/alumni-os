@@ -249,6 +249,8 @@ export default function MomentCard({
           <img
             src={moment.photoUrl}
             alt={moment.caption}
+            loading="lazy"
+            decoding="async"
             className="w-full max-h-[640px] object-cover"
           />
         )}

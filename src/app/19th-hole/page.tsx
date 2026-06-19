@@ -26,6 +26,7 @@ export default async function NineteenthHolePage() {
     parentRelationship?: string
     handicap?: string
     openToCoffee?: boolean
+    photoUrl?: string | null
   }
 
   let openToCoffee: AlumniEntry[] = []
@@ -66,6 +67,11 @@ export default async function NineteenthHolePage() {
     const enrichMap = new Map(
       store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
     )
+    const accountImg = new Map(
+      store.accounts
+        .filter(a => a.teamId === team.id && a.linkedPersonId && a.image)
+        .map(a => [a.linkedPersonId as string, a.image as string]),
+    )
 
     type VisibleEntry = AlumniEntry & { updatedAt?: string }
     const visible: VisibleEntry[] = memberships
@@ -86,6 +92,7 @@ export default async function NineteenthHolePage() {
           parentRelationship: m.parentRelationship,
           handicap: enrichment?.handicap,
           openToCoffee: enrichment?.openToCoffee,
+          photoUrl: enrichment?.photoUrl ?? accountImg.get(person.id) ?? null,
           updatedAt: enrichment?.updatedAt,
         }
       })

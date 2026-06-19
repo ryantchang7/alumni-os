@@ -8,6 +8,7 @@ import CourseHero from './CourseHero'
 import CourseHoleSection, { CartPathDivider } from './CourseHoleSection'
 import CourseRoll, { type CourseRollEntry as CourseRollEntryData } from './CourseRoll'
 import OpenRequestStrip from '@/components/OpenRequestStrip'
+import MemberAvatar from '@/components/MemberAvatar'
 import { auth } from '@/auth'
 import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 import { bucketHandicap, BUCKET_LABELS, BUCKET_SHORT, type HandicapBucket } from '@/lib/handicap'
@@ -16,10 +17,11 @@ interface AlumniEntry {
   person: Person
   membership: TeamMembership
   enrichment: PersonEnrichment
+  photoUrl?: string | null
 }
 
 function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
-  const { person, membership, enrichment } = entry
+  const { person, membership, enrichment, photoUrl } = entry
   // City + state when both are set, otherwise whichever exists, then
   // hometown as a last-resort fallback. Matches the Career Room card
   // treatment so "Brookline" reads as "Brookline, MA".
@@ -35,7 +37,9 @@ function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
     >
       <div className="border-l-4 border-[#2d6a4f] px-5 py-4">
         <div className="flex items-start justify-between gap-3 mb-2">
-          <div className="min-w-0">
+          <div className="flex items-start gap-3 min-w-0">
+            <MemberAvatar photoUrl={photoUrl} name={person.canonicalName} size={44} tone="navy" />
+            <div className="min-w-0">
             <p
               className="text-[#0a1628] text-base font-medium leading-snug"
               style={{ fontFamily: 'var(--font-playfair)' }}
@@ -51,6 +55,7 @@ function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
                   HCP {enrichment.handicap}
                 </span>
               )}
+            </div>
             </div>
           </div>
           <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-2 py-1 rounded-full whitespace-nowrap">
@@ -100,6 +105,7 @@ export default async function TheCoursePage() {
     personId: string
     name: string
     isHome: boolean
+    photoUrl?: string | null
   }
   const courseMembers = new Map<string, CourseRollMember[]>()
   const interestedByGathering = new Map<string, number>()
@@ -122,6 +128,13 @@ export default async function TheCoursePage() {
     const enrichMap = new Map(
       store.personEnrichments.filter((e) => e.teamId === team.id).map((e) => [e.personId, e]),
     )
+    const accountImg = new Map(
+      store.accounts
+        .filter((a) => a.teamId === team.id && a.linkedPersonId && a.image)
+        .map((a) => [a.linkedPersonId as string, a.image as string]),
+    )
+    const photoFor = (personId: string): string | null =>
+      enrichMap.get(personId)?.photoUrl ?? accountImg.get(personId) ?? null
 
     const visible: AlumniEntry[] = memberships
       .map((m) => {
@@ -129,7 +142,7 @@ export default async function TheCoursePage() {
         const enrichment = enrichMap.get(m.personId)
         if (!person || !enrichment) return null
         if (enrichment.visibleToPlayers === false) return null
-        return { person, membership: m, enrichment }
+        return { person, membership: m, enrichment, photoUrl: photoFor(m.personId) }
       })
       .filter((x): x is AlumniEntry => x !== null)
 
@@ -204,6 +217,7 @@ export default async function TheCoursePage() {
           personId: v.person.id,
           name: v.person.canonicalName,
           isHome,
+          photoUrl: photoFor(v.person.id),
         })
         courseMembers.set(key, list)
       }
@@ -495,11 +509,11 @@ export default async function TheCoursePage() {
                           </span>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {rows.slice(0, 12).map((entry) => (
+                          {rows.slice(0, 24).map((entry) => (
                             <AlumniRoundCard key={entry.person.id} entry={entry} />
                           ))}
                         </div>
-                        {rows.length > 12 && (
+                        {rows.length > 24 && (
                           <div className="mt-3">
                             <Link
                               href="/member-book"
@@ -539,11 +553,11 @@ export default async function TheCoursePage() {
               Penn Golf members in your bucket — {BUCKET_LABELS[viewerBucket].toLowerCase()}.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {similarPlayers.slice(0, 12).map(entry => (
+              {similarPlayers.slice(0, 24).map(entry => (
                 <AlumniRoundCard key={entry.person.id} entry={entry} />
               ))}
             </div>
-            {similarPlayers.length > 12 && (
+            {similarPlayers.length > 24 && (
               <div className="mt-3">
                 <Link
                   href="/member-book"
