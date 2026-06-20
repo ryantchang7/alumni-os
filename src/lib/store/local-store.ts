@@ -391,6 +391,38 @@ export async function writeStore(store: Store): Promise<void> {
   await fs.writeFile(STORE_PATH, JSON.stringify(store, null, 2))
 }
 
+// ── Serialized read-modify-write ────────────────────────────────────────────
+// Every mutation used to do readStore() → mutate → writeStore() on its own, so
+// two concurrent requests would both read the same base and the second write
+// would clobber the first (the whole store is a single Redis blob). mutateStore
+// funnels the read-modify-write cycle through one in-process promise chain, so
+// concurrent mutations on the same instance apply in sequence — each reads the
+// previous one's committed result.
+//
+// Caveat: this serializes within ONE Node instance, which covers the common
+// case (Vercel reuses warm instances for bursts of traffic). It is not a
+// cross-instance lock; that would need a Redis-side CAS. Good enough for launch
+// scale and a strict improvement over the unguarded pattern.
+let _mutateChain: Promise<unknown> = Promise.resolve()
+
+export async function mutateStore<T>(
+  mutator: (store: Store) => T | Promise<T>,
+): Promise<T> {
+  const run = _mutateChain.then(async () => {
+    const store = await readStore()
+    const result = await mutator(store)
+    await writeStore(store)
+    return result
+  })
+  // Keep the chain alive even when a mutation rejects, so one failed write
+  // doesn't wedge every subsequent mutation behind a rejected promise.
+  _mutateChain = run.then(
+    () => undefined,
+    () => undefined,
+  )
+  return run
+}
+
 export async function createTeam(
   input: Omit<Team, 'id' | 'slug' | 'createdAt'> & { slug?: string },
 ): Promise<Team> {
@@ -933,7 +965,7 @@ export async function updatePersonEnrichmentSafeFields(
   teamId: string,
   fields: Partial<AlumniSafeFields>,
 ): Promise<PersonEnrichment | null> {
-  const store = await readStore()
+  return mutateStore((store) => {
   const now = new Date().toISOString()
   const idx = store.personEnrichments.findIndex(
     e => e.personId === personId && e.teamId === teamId,
@@ -972,7 +1004,6 @@ export async function updatePersonEnrichmentSafeFields(
       ...(fields.openToWarmIntroductions !== undefined ? { openToWarmIntroductions: fields.openToWarmIntroductions } : {}),
       updatedAt: now,
     }
-    await writeStore(store)
     return store.personEnrichments[idx]
   }
   // No enrichment record yet — create one with safe fields only
@@ -1012,8 +1043,8 @@ export async function updatePersonEnrichmentSafeFields(
     updatedAt: now,
   }
   store.personEnrichments.push(enrichment)
-  await writeStore(store)
   return enrichment
+  })
 }
 
 // ── Player → Alumni requests ──────────────────────────────────────────────────
@@ -1320,7 +1351,7 @@ export async function updateProfileClaimRequestStatus(
   id: string,
   status: ClubhouseProfileClaimRequest['status'],
 ): Promise<ClubhouseProfileClaimRequest | null> {
-  const store = await readStore()
+  return mutateStore((store) => {
   const idx = store.profileClaimRequests.findIndex(r => r.id === id)
   if (idx === -1) return null
   const now = new Date().toISOString()
@@ -1343,8 +1374,8 @@ export async function updateProfileClaimRequestStatus(
       }
     }
   }
-  await writeStore(store)
   return store.profileClaimRequests[idx]
+  })
 }
 
 // ── Accounts (Google sign-in) ────────────────────────────────────────────────
@@ -1587,7 +1618,7 @@ export async function toggleMomentReaction(input: {
   fromAccountId: string
   emoji: string
 }): Promise<{ reaction: MomentReaction | null; removed: boolean }> {
-  const store = await readStore()
+  return mutateStore((store) => {
   const existingIdx = store.momentReactions.findIndex(
     r =>
       r.momentId === input.momentId &&
@@ -1596,7 +1627,6 @@ export async function toggleMomentReaction(input: {
   )
   if (existingIdx !== -1) {
     store.momentReactions.splice(existingIdx, 1)
-    await writeStore(store)
     return { reaction: null, removed: true }
   }
   const reaction: MomentReaction = {
@@ -1608,8 +1638,8 @@ export async function toggleMomentReaction(input: {
     createdAt: new Date().toISOString(),
   }
   store.momentReactions.push(reaction)
-  await writeStore(store)
   return { reaction, removed: false }
+  })
 }
 
 export async function unlinkAccount(accountId: string): Promise<Account | null> {
