@@ -27,6 +27,7 @@ export default function ClaimsManager() {
   const [claims, setClaims] = useState<ClaimRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState<string | null>(null)
+  const [bulkApproving, setBulkApproving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -60,6 +61,32 @@ export default function ClaimsManager() {
 
   const pending = claims.filter(c => c.status === 'pending')
   const resolved = claims.filter(c => c.status !== 'pending')
+
+  // Approve every pending claim in one click. Posts sequentially so the
+  // serialized store applies each cleanly, and updates each row as it lands
+  // (so a mid-way failure still shows what already went through).
+  async function approveAllPending() {
+    const ids = pending.map(c => c.id)
+    if (ids.length === 0 || bulkApproving) return
+    setBulkApproving(true)
+    setError(null)
+    try {
+      for (const id of ids) {
+        const res = await fetch(`/api/profile/claims/${id}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'approved' }),
+        })
+        if (!res.ok) throw new Error(`Error ${res.status}`)
+        const data = await res.json()
+        setClaims(prev => prev.map(c => c.id === id ? { ...c, ...data.claim } : c))
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Some claims could not be approved')
+    } finally {
+      setBulkApproving(false)
+    }
+  }
 
   if (loading) {
     return <p className="text-sm text-[#8a7f70] py-8 text-center">Loading claims...</p>
@@ -151,6 +178,15 @@ export default function ClaimsManager() {
             <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
               {pending.length}
             </span>
+            {pending.length > 1 && (
+              <button
+                onClick={approveAllPending}
+                disabled={bulkApproving || updating !== null}
+                className="ml-auto text-xs font-semibold text-[#2d6a4f] bg-[#2d6a4f]/10 border border-[#2d6a4f]/25 hover:bg-[#2d6a4f]/15 px-3 py-1 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {bulkApproving ? 'Approving…' : `Approve all ${pending.length}`}
+              </button>
+            )}
           </div>
           <div className="space-y-3">
             {pending.map(c => <ClaimRow key={c.id} claim={c} />)}
