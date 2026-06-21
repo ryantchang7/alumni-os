@@ -15,6 +15,7 @@ export interface ProfileForScoring {
   classLabel?: string
   rosterStartYear?: number
   rosterEndYear?: number
+  photoUrl?: string | null
 }
 
 export interface ScoredProfile extends ProfileForScoring {

@@ -14,11 +14,13 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { ChevronDown, ChevronRight, Search, X } from 'lucide-react'
+import MemberAvatar from '@/components/MemberAvatar'
 
 export interface CourseRollMember {
   personId: string
   name: string
   isHome: boolean
+  photoUrl?: string | null
 }
 
 export interface CourseRollEntry {
@@ -135,7 +137,10 @@ export default function CourseRoll({ entries }: Props) {
                           href={`/player/alumni/${encodeURIComponent(m.personId)}?teamSlug=penn-mens-golf`}
                           className="block px-5 py-2.5 text-[13px] text-[#0a1628] hover:bg-white transition-colors flex items-center justify-between gap-2"
                         >
-                          <span className="truncate">{m.name}</span>
+                          <span className="flex items-center gap-2.5 min-w-0">
+                            <MemberAvatar photoUrl={m.photoUrl} name={m.name} size={28} tone="navy" />
+                            <span className="truncate">{m.name}</span>
+                          </span>
                           {m.isHome && (
                             <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] whitespace-nowrap">
                               Home

@@ -9,6 +9,7 @@ import type {
 } from '@/lib/store/types'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
+import MemberAvatar from '@/components/MemberAvatar'
 import CareerRoomHero from './CareerRoomHero'
 import { INDUSTRY_OPTIONS, industryToSlug } from '@/lib/industries'
 import { auth } from '@/auth'
@@ -94,6 +95,7 @@ interface AlumniEntry {
   person: Person
   membership: TeamMembership
   enrichment: PersonEnrichment
+  photoUrl?: string | null
 }
 
 // Pulled from @/lib/industries so the tiles, the editor chips, and
@@ -106,13 +108,16 @@ const INDUSTRIES = INDUSTRY_OPTIONS.map(label => ({
 }))
 
 function AlumniCard({ entry }: { entry: AlumniEntry }) {
-  const { person, membership, enrichment } = entry
+  const { person, membership, enrichment, photoUrl } = entry
   return (
     <Link
       href={`/player/alumni/${person.id}?teamSlug=penn-mens-golf`}
       className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:shadow-md transition-shadow group"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
+      <div className="flex items-start gap-3">
+        <MemberAvatar photoUrl={photoUrl} name={person.canonicalName} size={44} tone="navy" />
+        <div className="min-w-0">
       <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
       {(enrichment.currentRole || enrichment.currentCompany) && (
         <p className="text-xs text-[#4a5568] mt-0.5">
@@ -129,6 +134,8 @@ function AlumniCard({ entry }: { entry: AlumniEntry }) {
       {membership.classLabel && (
         <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>
       )}
+        </div>
+      </div>
       <span className="text-xs font-medium text-[#990000] group-hover:underline mt-3 block">
         View profile &rarr;
       </span>
@@ -175,6 +182,11 @@ export default async function CareerRoomPage() {
     )
     const enrichments = store.personEnrichments.filter(e => e.teamId === team.id)
     const enrichMap = new Map(enrichments.map(e => [e.personId, e]))
+    const accountImg = new Map(
+      store.accounts
+        .filter(a => a.teamId === team.id && a.linkedPersonId && a.image)
+        .map(a => [a.linkedPersonId as string, a.image as string]),
+    )
 
     alumni = memberships
       .map(m => {
@@ -182,7 +194,8 @@ export default async function CareerRoomPage() {
         const enrichment = enrichMap.get(m.personId)
         if (!person || !enrichment) return null
         if (enrichment.visibleToPlayers === false) return null
-        return { person, membership: m, enrichment }
+        const photoUrl = enrichment.photoUrl ?? accountImg.get(m.personId) ?? null
+        return { person, membership: m, enrichment, photoUrl }
       })
       .filter((x): x is AlumniEntry => x !== null)
 
@@ -391,11 +404,11 @@ export default async function CareerRoomPage() {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {openToMentorship.slice(0, 12).map(entry => (
+                {openToMentorship.slice(0, 24).map(entry => (
                   <AlumniCard key={entry.person.id} entry={entry} />
                 ))}
               </div>
-              {openToMentorship.length > 12 && (
+              {openToMentorship.length > 24 && (
                 <div className="mt-4">
                   <Link
                     href="/member-book"
@@ -430,11 +443,11 @@ export default async function CareerRoomPage() {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {openToIntros.slice(0, 12).map(entry => (
+                {openToIntros.slice(0, 24).map(entry => (
                   <AlumniCard key={entry.person.id} entry={entry} />
                 ))}
               </div>
-              {openToIntros.length > 12 && (
+              {openToIntros.length > 24 && (
                 <div className="mt-4">
                   <Link
                     href="/member-book"
@@ -469,11 +482,11 @@ export default async function CareerRoomPage() {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {openToCoffee.slice(0, 12).map(entry => (
+                {openToCoffee.slice(0, 24).map(entry => (
                   <AlumniCard key={entry.person.id} entry={entry} />
                 ))}
               </div>
-              {openToCoffee.length > 12 && (
+              {openToCoffee.length > 24 && (
                 <div className="mt-4">
                   <Link
                     href="/member-book"

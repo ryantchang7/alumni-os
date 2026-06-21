@@ -166,6 +166,10 @@ export default async function MemberDetailPage({
                 <img
                   src={photoUrl}
                   alt={member.displayName}
+                  width={80}
+                  height={80}
+                  loading="lazy"
+                  decoding="async"
                   className="w-20 h-20 rounded-full object-cover border border-[rgba(180,168,150,0.4)] flex-shrink-0"
                 />
               ) : (

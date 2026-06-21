@@ -391,6 +391,58 @@ export async function writeStore(store: Store): Promise<void> {
   await fs.writeFile(STORE_PATH, JSON.stringify(store, null, 2))
 }
 
+// ── Optimistic-concurrency write guard ───────────────────────────────────────
+// The store is a single JSON blob, so a naive readStore()→mutate→writeStore()
+// can lose updates when two requests interleave (e.g. the captain approving a
+// claim while a member saves their profile). mutateStore() captures the current
+// revision, applies the mutator, then commits with a compare-and-set: if the
+// revision moved underneath us we re-read and retry. Hot/concurrent write paths
+// use this instead of readStore()+writeStore().
+const REV_KEY = `${REDIS_KEY}:rev`
+const MUTATE_MAX_RETRIES = 6
+// KEYS[1]=store, KEYS[2]=rev. ARGV[1]=expectedRev, ARGV[2]=storeJson, ARGV[3]=nextRev.
+const CAS_SCRIPT = `
+local cur = redis.call('GET', KEYS[2])
+if cur == false then cur = '0' end
+if cur == ARGV[1] then
+  redis.call('SET', KEYS[1], ARGV[2])
+  redis.call('SET', KEYS[2], ARGV[3])
+  return 1
+end
+return 0
+`
+
+export async function mutateStore<T>(
+  mutator: (store: Store) => T | Promise<T>,
+): Promise<T> {
+  const redis = getRedis()
+  // File-backed/dev path: single process, no contention to guard against.
+  if (!redis) {
+    const store = await readStore()
+    const result = await mutator(store)
+    await writeStore(store)
+    return result
+  }
+  for (let attempt = 0; attempt < MUTATE_MAX_RETRIES; attempt++) {
+    // Read the revision BEFORE the store so a write landing mid-read makes the
+    // CAS fail (rather than silently overwriting with stale data).
+    const expectedRev = Number((await redis.get<number>(REV_KEY)) ?? 0)
+    const store = await readStore()
+    const result = await mutator(store)
+    const ok = await redis.eval(
+      CAS_SCRIPT,
+      [REDIS_KEY, REV_KEY],
+      [String(expectedRev), JSON.stringify(store), String(expectedRev + 1)],
+    )
+    if (Number(ok) === 1) return result
+    // Lost the race — brief backoff, then re-read and re-apply the mutation.
+    await new Promise(r => setTimeout(r, 25 + attempt * 50))
+  }
+  throw new Error(
+    `mutateStore: write contention — failed to commit after ${MUTATE_MAX_RETRIES} attempts`,
+  )
+}
+
 export async function createTeam(
   input: Omit<Team, 'id' | 'slug' | 'createdAt'> & { slug?: string },
 ): Promise<Team> {
@@ -933,8 +985,8 @@ export async function updatePersonEnrichmentSafeFields(
   teamId: string,
   fields: Partial<AlumniSafeFields>,
 ): Promise<PersonEnrichment | null> {
-  const store = await readStore()
   const now = new Date().toISOString()
+  return mutateStore(store => {
   const idx = store.personEnrichments.findIndex(
     e => e.personId === personId && e.teamId === teamId,
   )
@@ -972,7 +1024,6 @@ export async function updatePersonEnrichmentSafeFields(
       ...(fields.openToWarmIntroductions !== undefined ? { openToWarmIntroductions: fields.openToWarmIntroductions } : {}),
       updatedAt: now,
     }
-    await writeStore(store)
     return store.personEnrichments[idx]
   }
   // No enrichment record yet — create one with safe fields only
@@ -1012,8 +1063,8 @@ export async function updatePersonEnrichmentSafeFields(
     updatedAt: now,
   }
   store.personEnrichments.push(enrichment)
-  await writeStore(store)
   return enrichment
+  })
 }
 
 // ── Player → Alumni requests ──────────────────────────────────────────────────
@@ -1320,7 +1371,7 @@ export async function updateProfileClaimRequestStatus(
   id: string,
   status: ClubhouseProfileClaimRequest['status'],
 ): Promise<ClubhouseProfileClaimRequest | null> {
-  const store = await readStore()
+  return mutateStore(store => {
   const idx = store.profileClaimRequests.findIndex(r => r.id === id)
   if (idx === -1) return null
   const now = new Date().toISOString()
@@ -1343,8 +1394,8 @@ export async function updateProfileClaimRequestStatus(
       }
     }
   }
-  await writeStore(store)
   return store.profileClaimRequests[idx]
+  })
 }
 
 // ── Accounts (Google sign-in) ────────────────────────────────────────────────
@@ -1587,7 +1638,7 @@ export async function toggleMomentReaction(input: {
   fromAccountId: string
   emoji: string
 }): Promise<{ reaction: MomentReaction | null; removed: boolean }> {
-  const store = await readStore()
+  return mutateStore(store => {
   const existingIdx = store.momentReactions.findIndex(
     r =>
       r.momentId === input.momentId &&
@@ -1596,7 +1647,6 @@ export async function toggleMomentReaction(input: {
   )
   if (existingIdx !== -1) {
     store.momentReactions.splice(existingIdx, 1)
-    await writeStore(store)
     return { reaction: null, removed: true }
   }
   const reaction: MomentReaction = {
@@ -1608,8 +1658,8 @@ export async function toggleMomentReaction(input: {
     createdAt: new Date().toISOString(),
   }
   store.momentReactions.push(reaction)
-  await writeStore(store)
   return { reaction, removed: false }
+  })
 }
 
 export async function unlinkAccount(accountId: string): Promise<Account | null> {

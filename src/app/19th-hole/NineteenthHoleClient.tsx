@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import OpenRequestStrip from '@/components/OpenRequestStrip'
+import MemberAvatar from '@/components/MemberAvatar'
 import type { OpenRequest } from '@/lib/store/types'
 
 interface AlumniEntry {
@@ -19,6 +20,7 @@ interface AlumniEntry {
   handicap?: string
   openToCoffee?: boolean
   openToMentorship?: boolean
+  photoUrl?: string | null
 }
 
 // Order matters — this is the rendered top-to-bottom group order.
@@ -36,6 +38,9 @@ function MemberCard({ entry }: { entry: AlumniEntry }) {
       className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:shadow-md transition-shadow group"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
+      <div className="flex items-start gap-3">
+        <MemberAvatar photoUrl={entry.photoUrl} name={entry.canonicalName} size={44} tone={entry.memberRole === 'parent' ? 'red' : 'navy'} />
+        <div className="min-w-0">
       <p className="font-semibold text-[#0a1628] text-sm">{entry.canonicalName}</p>
       {(entry.city || entry.state) && (
         <p className="text-xs text-[#8a7f70] mt-0.5">
@@ -61,6 +66,8 @@ function MemberCard({ entry }: { entry: AlumniEntry }) {
           {[entry.currentRole, entry.currentCompany].filter(Boolean).join(' · ')}
         </p>
       )}
+        </div>
+      </div>
       <span className="text-xs font-medium text-[#990000] group-hover:underline mt-3 block">
         View profile &rarr;
       </span>
@@ -258,11 +265,11 @@ export default function NineteenthHoleClient({
                     </span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {rows.slice(0, 12).map(entry => (
+                    {rows.slice(0, 24).map(entry => (
                       <MemberCard key={entry.personId} entry={entry} />
                     ))}
                   </div>
-                  {rows.length > 12 && (
+                  {rows.length > 24 && (
                     <div className="mt-3">
                       <Link
                         href="/member-book"

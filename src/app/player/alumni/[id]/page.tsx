@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Mail, Phone, ExternalLink, Lock } from 'lucide-react'
 import { auth } from '@/auth'
+import MemberAvatar from '@/components/MemberAvatar'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -16,6 +17,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
     getPeopleForTeam,
     getTeamMembershipsForTeam,
     getPersonEnrichment,
+    getAllLinkedAccountsForTeam,
   } = await import('@/lib/store/local-store')
 
   const team = await getTeamBySlug('penn-mens-golf')
@@ -32,7 +34,17 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
   if (!membership.publishedToNetwork) notFound()
 
   const enrichment = await getPersonEnrichment(person.id, team.id)
+  // Members hidden from players (visibleToPlayers === false) are filtered out
+  // of every list + the profiles API, so their detail page 404s to match.
   if (enrichment?.visibleToPlayers === false) notFound()
+
+  // Profile photo: the member's uploaded photo, else their Google avatar
+  // (stored on the linked Account at sign-in) — same merge as
+  // api/player/profiles/route.ts and the Member Book detail page.
+  const linkedAccount = (await getAllLinkedAccountsForTeam(team.id)).find(
+    a => a.linkedPersonId === person.id,
+  )
+  const photoUrl = enrichment?.photoUrl ?? linkedAccount?.image ?? null
 
   const hasCareer = !!(enrichment?.currentRole || enrichment?.currentCompany)
   const isCurrentPlayer = membership.memberRole === 'current_player'
@@ -95,7 +107,9 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
 
           {/* Main header row */}
           <div className="flex items-end justify-between gap-6 flex-wrap">
-            <div>
+            <div className="flex items-start gap-5">
+              <MemberAvatar photoUrl={photoUrl} name={person.canonicalName} size={80} tone="onDark" />
+              <div className="min-w-0">
               {/* Role tag */}
               <span className={`inline-block text-[9px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-sm border mb-3 ${
                 isCurrentPlayer
@@ -119,6 +133,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 </p>
               )}
               {location && <p className="text-white/40 text-sm mt-1">{location}</p>}
+              </div>
             </div>
 
             {!isCurrentPlayer && (

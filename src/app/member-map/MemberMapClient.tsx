@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import type { MapState, MapMember } from '@/app/api/member-map/route'
+import MemberAvatar from '@/components/MemberAvatar'
 
 // ── Minimal topojson decoder ──────────────────────────────────────────────────
 interface Topology {
@@ -145,7 +146,9 @@ function ContextualRow({ member }: { member: MapMember }) {
       className="group block border-b border-[rgba(180,168,150,0.25)] last:border-b-0 px-4 py-3 hover:bg-[#faf7f2] transition-colors"
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+        <div className="flex items-start gap-3 min-w-0">
+          <MemberAvatar photoUrl={member.photoUrl} name={member.canonicalName} size={40} tone={isParent ? 'red' : 'navy'} />
+          <div className="min-w-0">
           <p
             className="text-[#0a1628] text-[14px] font-medium leading-snug"
             style={{ fontFamily: 'var(--font-playfair)' }}
@@ -166,6 +169,7 @@ function ContextualRow({ member }: { member: MapMember }) {
               {member.locationLabel}
             </p>
           )}
+          </div>
         </div>
         {isCP && (
           <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap mt-0.5">
@@ -624,10 +628,10 @@ export default function MemberMapClient({
                   </p>
                 ) : (
                   <>
-                    {filteredMembers.slice(0, 12).map((m) => (
+                    {filteredMembers.slice(0, 24).map((m) => (
                       <ContextualRow key={m.personId} member={m} />
                     ))}
-                    {filteredMembers.length > 12 && (
+                    {filteredMembers.length > 24 && (
                       <div className="px-4 py-3 border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2]">
                         <Link
                           href="/member-book"

@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { scoreAndSort, generateDraft, type ProfileForScoring, type ScoredProfile } from '@/lib/ask/scoring'
+import MemberAvatar from '@/components/MemberAvatar'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -51,6 +52,7 @@ const PURPOSE_PARAM_MAP: Record<string, string> = {
 interface ApiProfile {
   personId: string
   canonicalName: string
+  photoUrl?: string | null
   firstName?: string
   memberRole: 'current_player' | 'alumni' | 'parent'
   classLabel?: string
@@ -116,7 +118,6 @@ function MemberCard({
   selected: boolean
   onSelect: () => void
 }) {
-  const initial = profile.canonicalName.charAt(0).toUpperCase()
   const careerLine = profile.career?.currentRole && profile.career?.currentCompany
     ? `${profile.career.currentRole} at ${profile.career.currentCompany}`
     : profile.career?.currentRole ?? profile.career?.currentCompany ?? null
@@ -137,9 +138,7 @@ function MemberCard({
       }`}
     >
       <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-full bg-[#0a1628] flex items-center justify-center flex-shrink-0">
-          <span className="text-white text-sm font-semibold">{initial}</span>
-        </div>
+        <MemberAvatar photoUrl={profile.photoUrl} name={profile.canonicalName} size={36} tone="navy" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <p className="font-semibold text-[#0a1628] text-sm">{profile.canonicalName}</p>

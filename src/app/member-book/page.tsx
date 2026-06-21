@@ -110,6 +110,10 @@ function RegistryEntry({
               <img
                 src={photoUrl}
                 alt={member.displayName}
+                width={48}
+                height={48}
+                loading="lazy"
+                decoding="async"
                 className="w-12 h-12 rounded-full object-cover border border-[rgba(180,168,150,0.5)] flex-shrink-0"
               />
             ) : (
@@ -196,6 +200,10 @@ function FamilyRegistryEntry({
             <img
               src={entry.photoUrl}
               alt={entry.canonicalName}
+              width={48}
+              height={48}
+              loading="lazy"
+              decoding="async"
               className="w-12 h-12 rounded-full object-cover border border-[rgba(180,168,150,0.5)] flex-shrink-0"
             />
           ) : (

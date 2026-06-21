@@ -5,6 +5,7 @@ import { hometownToStateCode, enrichmentStateToCode, CODE_TO_NAME } from '@/lib/
 export interface MapMember {
   personId: string
   canonicalName: string
+  photoUrl?: string
   memberRole: 'current_player' | 'alumni' | 'coach' | 'parent'
   classLabel?: string
   classYearEstimate?: string
@@ -238,6 +239,24 @@ export async function GET(request: Request) {
           locationLabel: loc.label,
         })
       }
+    }
+  }
+
+  // Attach profile photos (uploaded photo, else linked Google avatar) by
+  // personId so the per-state member list can show avatars.
+  const photoByPerson = new Map<string, string>()
+  for (const e of enrichMap.values()) {
+    if (e.photoUrl) photoByPerson.set(e.personId, e.photoUrl)
+  }
+  for (const a of store.accounts) {
+    if (a.teamId === team.id && a.linkedPersonId && a.image && !photoByPerson.has(a.linkedPersonId)) {
+      photoByPerson.set(a.linkedPersonId, a.image)
+    }
+  }
+  for (const s of stateMap.values()) {
+    for (const mem of s.members) {
+      const url = photoByPerson.get(mem.personId)
+      if (url) mem.photoUrl = url
     }
   }
 
