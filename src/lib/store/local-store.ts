@@ -391,36 +391,56 @@ export async function writeStore(store: Store): Promise<void> {
   await fs.writeFile(STORE_PATH, JSON.stringify(store, null, 2))
 }
 
-// ── Serialized read-modify-write ────────────────────────────────────────────
-// Every mutation used to do readStore() → mutate → writeStore() on its own, so
-// two concurrent requests would both read the same base and the second write
-// would clobber the first (the whole store is a single Redis blob). mutateStore
-// funnels the read-modify-write cycle through one in-process promise chain, so
-// concurrent mutations on the same instance apply in sequence — each reads the
-// previous one's committed result.
-//
-// Caveat: this serializes within ONE Node instance, which covers the common
-// case (Vercel reuses warm instances for bursts of traffic). It is not a
-// cross-instance lock; that would need a Redis-side CAS. Good enough for launch
-// scale and a strict improvement over the unguarded pattern.
-let _mutateChain: Promise<unknown> = Promise.resolve()
+// ── Optimistic-concurrency write guard ───────────────────────────────────────
+// The store is a single JSON blob, so a naive readStore()→mutate→writeStore()
+// can lose updates when two requests interleave (e.g. the captain approving a
+// claim while a member saves their profile). mutateStore() captures the current
+// revision, applies the mutator, then commits with a compare-and-set: if the
+// revision moved underneath us we re-read and retry. Hot/concurrent write paths
+// use this instead of readStore()+writeStore().
+const REV_KEY = `${REDIS_KEY}:rev`
+const MUTATE_MAX_RETRIES = 6
+// KEYS[1]=store, KEYS[2]=rev. ARGV[1]=expectedRev, ARGV[2]=storeJson, ARGV[3]=nextRev.
+const CAS_SCRIPT = `
+local cur = redis.call('GET', KEYS[2])
+if cur == false then cur = '0' end
+if cur == ARGV[1] then
+  redis.call('SET', KEYS[1], ARGV[2])
+  redis.call('SET', KEYS[2], ARGV[3])
+  return 1
+end
+return 0
+`
 
 export async function mutateStore<T>(
   mutator: (store: Store) => T | Promise<T>,
 ): Promise<T> {
-  const run = _mutateChain.then(async () => {
+  const redis = getRedis()
+  // File-backed/dev path: single process, no contention to guard against.
+  if (!redis) {
     const store = await readStore()
     const result = await mutator(store)
     await writeStore(store)
     return result
-  })
-  // Keep the chain alive even when a mutation rejects, so one failed write
-  // doesn't wedge every subsequent mutation behind a rejected promise.
-  _mutateChain = run.then(
-    () => undefined,
-    () => undefined,
+  }
+  for (let attempt = 0; attempt < MUTATE_MAX_RETRIES; attempt++) {
+    // Read the revision BEFORE the store so a write landing mid-read makes the
+    // CAS fail (rather than silently overwriting with stale data).
+    const expectedRev = Number((await redis.get<number>(REV_KEY)) ?? 0)
+    const store = await readStore()
+    const result = await mutator(store)
+    const ok = await redis.eval(
+      CAS_SCRIPT,
+      [REDIS_KEY, REV_KEY],
+      [String(expectedRev), JSON.stringify(store), String(expectedRev + 1)],
+    )
+    if (Number(ok) === 1) return result
+    // Lost the race — brief backoff, then re-read and re-apply the mutation.
+    await new Promise(r => setTimeout(r, 25 + attempt * 50))
+  }
+  throw new Error(
+    `mutateStore: write contention — failed to commit after ${MUTATE_MAX_RETRIES} attempts`,
   )
-  return run
 }
 
 export async function createTeam(
@@ -965,8 +985,8 @@ export async function updatePersonEnrichmentSafeFields(
   teamId: string,
   fields: Partial<AlumniSafeFields>,
 ): Promise<PersonEnrichment | null> {
-  return mutateStore((store) => {
   const now = new Date().toISOString()
+  return mutateStore(store => {
   const idx = store.personEnrichments.findIndex(
     e => e.personId === personId && e.teamId === teamId,
   )
@@ -1351,7 +1371,7 @@ export async function updateProfileClaimRequestStatus(
   id: string,
   status: ClubhouseProfileClaimRequest['status'],
 ): Promise<ClubhouseProfileClaimRequest | null> {
-  return mutateStore((store) => {
+  return mutateStore(store => {
   const idx = store.profileClaimRequests.findIndex(r => r.id === id)
   if (idx === -1) return null
   const now = new Date().toISOString()
@@ -1618,7 +1638,7 @@ export async function toggleMomentReaction(input: {
   fromAccountId: string
   emoji: string
 }): Promise<{ reaction: MomentReaction | null; removed: boolean }> {
-  return mutateStore((store) => {
+  return mutateStore(store => {
   const existingIdx = store.momentReactions.findIndex(
     r =>
       r.momentId === input.momentId &&

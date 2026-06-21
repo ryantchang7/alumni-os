@@ -27,8 +27,9 @@ export default function ClaimsManager() {
   const [claims, setClaims] = useState<ClaimRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState<string | null>(null)
-  const [bulkApproving, setBulkApproving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [bulk, setBulk] = useState<{ done: number; total: number } | null>(null)
 
   useEffect(() => {
     fetch('/api/profile/claims')
@@ -40,18 +41,22 @@ export default function ClaimsManager() {
       .catch(() => setLoading(false))
   }, [])
 
+  async function postStatus(id: string, status: 'approved' | 'declined') {
+    const res = await fetch(`/api/profile/claims/${id}/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    })
+    if (!res.ok) throw new Error(`Error ${res.status}`)
+    const data = await res.json()
+    setClaims(prev => prev.map(c => c.id === id ? { ...c, ...data.claim } : c))
+  }
+
   async function updateStatus(id: string, status: 'approved' | 'declined') {
     setUpdating(id)
     setError(null)
     try {
-      const res = await fetch(`/api/profile/claims/${id}/status`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
-      })
-      if (!res.ok) throw new Error(`Error ${res.status}`)
-      const data = await res.json()
-      setClaims(prev => prev.map(c => c.id === id ? { ...c, ...data.claim } : c))
+      await postStatus(id, status)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update')
     } finally {
@@ -59,34 +64,40 @@ export default function ClaimsManager() {
     }
   }
 
+  function toggleSelected(id: string) {
+    setSelected(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  // Approve claims one at a time. Writes are version-guarded server-side, so
+  // sequential calls won't lose updates; we show progress and stop on the first
+  // failure so the captain sees exactly where it halted.
+  async function approveMany(ids: string[]) {
+    if (ids.length === 0 || bulk) return
+    setError(null)
+    setBulk({ done: 0, total: ids.length })
+    for (let i = 0; i < ids.length; i++) {
+      try {
+        await postStatus(ids[i], 'approved')
+      } catch (err) {
+        setError(
+          `Stopped after ${i} of ${ids.length}: ${err instanceof Error ? err.message : 'failed to approve'}`,
+        )
+        setBulk(null)
+        return
+      }
+      setBulk({ done: i + 1, total: ids.length })
+    }
+    setBulk(null)
+    setSelected(new Set())
+  }
+
   const pending = claims.filter(c => c.status === 'pending')
   const resolved = claims.filter(c => c.status !== 'pending')
-
-  // Approve every pending claim in one click. Posts sequentially so the
-  // serialized store applies each cleanly, and updates each row as it lands
-  // (so a mid-way failure still shows what already went through).
-  async function approveAllPending() {
-    const ids = pending.map(c => c.id)
-    if (ids.length === 0 || bulkApproving) return
-    setBulkApproving(true)
-    setError(null)
-    try {
-      for (const id of ids) {
-        const res = await fetch(`/api/profile/claims/${id}/status`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'approved' }),
-        })
-        if (!res.ok) throw new Error(`Error ${res.status}`)
-        const data = await res.json()
-        setClaims(prev => prev.map(c => c.id === id ? { ...c, ...data.claim } : c))
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Some claims could not be approved')
-    } finally {
-      setBulkApproving(false)
-    }
-  }
 
   if (loading) {
     return <p className="text-sm text-[#8a7f70] py-8 text-center">Loading claims...</p>
@@ -144,16 +155,26 @@ export default function ClaimsManager() {
 
           {isPending && (
             <div className="flex items-center gap-2 flex-shrink-0">
+              <label className="flex items-center gap-1.5 text-[10px] text-[#8a7f70] cursor-pointer select-none mr-1">
+                <input
+                  type="checkbox"
+                  checked={selected.has(claim.id)}
+                  onChange={() => toggleSelected(claim.id)}
+                  disabled={!!bulk}
+                  className="accent-[#2d6a4f]"
+                />
+                Select
+              </label>
               <button
                 onClick={() => updateStatus(claim.id, 'approved')}
-                disabled={isUpdating}
+                disabled={isUpdating || !!bulk}
                 className="text-xs font-semibold bg-[#2d6a4f] hover:bg-[#2d6a4f]/90 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg transition-colors"
               >
                 {isUpdating ? '...' : 'Approve'}
               </button>
               <button
                 onClick={() => updateStatus(claim.id, 'declined')}
-                disabled={isUpdating}
+                disabled={isUpdating || !!bulk}
                 className="text-xs font-medium text-[#8a7f70] hover:text-[#0a1628] border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/30 px-3 py-1.5 rounded-lg transition-colors"
               >
                 Decline
@@ -173,20 +194,35 @@ export default function ClaimsManager() {
 
       {pending.length > 0 && (
         <section>
-          <div className="flex items-center gap-2 mb-3">
-            <h2 className="text-sm font-semibold text-[#0a1628]">Pending</h2>
-            <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-              {pending.length}
-            </span>
-            {pending.length > 1 && (
-              <button
-                onClick={approveAllPending}
-                disabled={bulkApproving || updating !== null}
-                className="ml-auto text-xs font-semibold text-[#2d6a4f] bg-[#2d6a4f]/10 border border-[#2d6a4f]/25 hover:bg-[#2d6a4f]/15 px-3 py-1 rounded-lg transition-colors disabled:opacity-50"
-              >
-                {bulkApproving ? 'Approving…' : `Approve all ${pending.length}`}
-              </button>
-            )}
+          <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-semibold text-[#0a1628]">Pending</h2>
+              <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                {pending.length}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {bulk ? (
+                <span className="text-[11px] text-[#8a7f70] tabular-nums">Approving {bulk.done}/{bulk.total}…</span>
+              ) : (
+                <>
+                  {selected.size > 0 && (
+                    <button
+                      onClick={() => approveMany(pending.filter(c => selected.has(c.id)).map(c => c.id))}
+                      className="text-xs font-semibold text-[#2d6a4f] border border-[#2d6a4f]/30 hover:bg-[#2d6a4f]/10 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      Approve selected ({selected.size})
+                    </button>
+                  )}
+                  <button
+                    onClick={() => approveMany(pending.map(c => c.id))}
+                    className="text-xs font-semibold bg-[#2d6a4f] hover:bg-[#2d6a4f]/90 text-white px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    Approve all ({pending.length})
+                  </button>
+                </>
+              )}
+            </div>
           </div>
           <div className="space-y-3">
             {pending.map(c => <ClaimRow key={c.id} claim={c} />)}
