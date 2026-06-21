@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# design mockups (large, currently unused — kept in the working tree, not committed)
+/*.png
