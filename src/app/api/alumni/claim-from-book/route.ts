@@ -10,8 +10,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import {
-  readStore,
-  writeStore,
+  mutateStore,
   getTeamBySlug,
   linkAccountToPerson,
 } from '@/lib/store/local-store'
@@ -82,75 +81,88 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Team not found' }, { status: 404 })
   }
 
-  const store = await readStore()
-
-  // Idempotent: if a team-store person already matches this book entry, return it.
-  const existing = findTeamStorePersonForBookEntry(entry, store.people)
-  if (existing) {
-    const onThisTeam = store.teamMemberships.some(
-      (m) => m.personId === existing.id && m.teamId === team.id,
-    )
-    if (onThisTeam) {
-      return NextResponse.json({
-        personId: existing.id,
-        alreadyExisted: true,
-      })
+  // Resolve-or-create the team-store records atomically. The whole
+  // read→idempotency-check→push→write block runs inside mutateStore so the
+  // CAS guard prevents a concurrent claim from clobbering these new rows.
+  const result = await mutateStore<
+    { alreadyExisted: true; personId: string } | { alreadyExisted: false; personId: string }
+  >((store) => {
+    // Idempotent: if a team-store person already matches this book entry, return it.
+    const existing = findTeamStorePersonForBookEntry(entry, store.people)
+    if (existing) {
+      const onThisTeam = store.teamMemberships.some(
+        (m) => m.personId === existing.id && m.teamId === team.id,
+      )
+      if (onThisTeam) {
+        return { alreadyExisted: true, personId: existing.id }
+      }
     }
-  }
 
-  // Create new records bootstrapped from the Member Book entry.
-  const now = new Date().toISOString()
-  const personId = existing?.id ?? crypto.randomUUID()
-  const { firstName, lastName } = splitName(entry.displayName)
+    // Create new records bootstrapped from the Member Book entry.
+    const now = new Date().toISOString()
+    const personId = existing?.id ?? crypto.randomUUID()
+    const { firstName, lastName } = splitName(entry.displayName)
 
-  if (!existing) {
-    const newPerson: Person = {
-      id: personId,
-      canonicalName: entry.displayName,
-      normalizedName: storeNormalizeName(entry.displayName),
-      firstName,
-      lastName,
+    if (!existing) {
+      const newPerson: Person = {
+        id: personId,
+        canonicalName: entry.displayName,
+        normalizedName: storeNormalizeName(entry.displayName),
+        firstName,
+        lastName,
+        createdAt: now,
+      }
+      store.people.push(newPerson)
+    }
+
+    const newMembership: TeamMembership = {
+      id: crypto.randomUUID(),
+      personId,
+      teamId: team.id,
+      memberRole: 'alumni',
+      memberStatus: 'verified',
+      rosterStartYear: entry.career.startYear ?? entry.letterWinner.firstYear ?? undefined,
+      rosterEndYear: entry.career.finishYear ?? entry.letterWinner.lastYear ?? undefined,
+      classYearEstimate: entry.profile.classYearEstimate ?? undefined,
+      classLabel: entry.profile.latestRosterClass ?? undefined,
+      hometown: entry.profile.hometown ?? undefined,
+      highSchool: entry.profile.highSchool ?? undefined,
+      bioUrls: [],
+      sourceUrls: [...entry.sources.sourceUrls],
+      confidence: 1,
+      publishedToNetwork: true,
+      publishedAt: now,
+      publishedByRole: 'admin',
       createdAt: now,
+      updatedAt: now,
     }
-    store.people.push(newPerson)
+    store.teamMemberships.push(newMembership)
+
+    const newEnrichment: PersonEnrichment = {
+      id: crypto.randomUUID(),
+      personId,
+      teamId: team.id,
+      visibleToPlayers: true,
+      verificationStatus: 'unverified',
+      sourceUrls: [],
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.personEnrichments.push(newEnrichment)
+
+    return { alreadyExisted: false, personId }
+  })
+
+  // Idempotent short-circuit: records already existed on this team, so the
+  // account was claimed previously — return without re-linking.
+  if (result.alreadyExisted) {
+    return NextResponse.json({
+      personId: result.personId,
+      alreadyExisted: true,
+    })
   }
 
-  const newMembership: TeamMembership = {
-    id: crypto.randomUUID(),
-    personId,
-    teamId: team.id,
-    memberRole: 'alumni',
-    memberStatus: 'verified',
-    rosterStartYear: entry.career.startYear ?? entry.letterWinner.firstYear ?? undefined,
-    rosterEndYear: entry.career.finishYear ?? entry.letterWinner.lastYear ?? undefined,
-    classYearEstimate: entry.profile.classYearEstimate ?? undefined,
-    classLabel: entry.profile.latestRosterClass ?? undefined,
-    hometown: entry.profile.hometown ?? undefined,
-    highSchool: entry.profile.highSchool ?? undefined,
-    bioUrls: [],
-    sourceUrls: [...entry.sources.sourceUrls],
-    confidence: 1,
-    publishedToNetwork: true,
-    publishedAt: now,
-    publishedByRole: 'admin',
-    createdAt: now,
-    updatedAt: now,
-  }
-  store.teamMemberships.push(newMembership)
-
-  const newEnrichment: PersonEnrichment = {
-    id: crypto.randomUUID(),
-    personId,
-    teamId: team.id,
-    visibleToPlayers: true,
-    verificationStatus: 'unverified',
-    sourceUrls: [],
-    createdAt: now,
-    updatedAt: now,
-  }
-  store.personEnrichments.push(newEnrichment)
-
-  await writeStore(store)
+  const personId = result.personId
 
   // Bind account → person (idempotent if same account already linked).
   const linked = await linkAccountToPerson(session.accountId, personId)

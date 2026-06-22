@@ -12,7 +12,7 @@ import {
   saveExtractedRosterEntries,
   addReviewItem,
   readStore,
-  writeStore,
+  mutateStore,
 } from '@/lib/store/local-store'
 import { requireCaptain } from '@/lib/auth/guards'
 
@@ -187,15 +187,19 @@ async function _bumpRunCounters(
   counts: { completed?: number; successful?: number; failed?: number; entries?: number },
   log?: string,
 ) {
-  const store = await readStore()
-  const run = store.historicalImportRuns.find(r => r.id === runId)
-  if (!run) return
-  // Transition run from pending → running on first season activity
-  if (run.status === 'pending') run.status = 'running'
-  if (counts.completed) run.completedSeasons += counts.completed
-  if (counts.successful) run.successfulSeasons += counts.successful
-  if (counts.failed) run.failedSeasons += counts.failed
-  if (counts.entries) run.totalEntries += counts.entries
-  if (log) run.logs.push(`[${new Date().toISOString()}] ${log}`)
-  await writeStore(store)
+  // Counter bumps are read-modify-write increments fired several times across
+  // a single season run (and seasons can run concurrently), so route them
+  // through mutateStore — the CAS guard turns each += into an atomic increment
+  // instead of a last-writer-wins clobber.
+  await mutateStore((store) => {
+    const run = store.historicalImportRuns.find(r => r.id === runId)
+    if (!run) return
+    // Transition run from pending → running on first season activity
+    if (run.status === 'pending') run.status = 'running'
+    if (counts.completed) run.completedSeasons += counts.completed
+    if (counts.successful) run.successfulSeasons += counts.successful
+    if (counts.failed) run.failedSeasons += counts.failed
+    if (counts.entries) run.totalEntries += counts.entries
+    if (log) run.logs.push(`[${new Date().toISOString()}] ${log}`)
+  })
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { requireFounder } from '@/lib/auth/guards'
-import { getTeamBySlug, readStore, writeStore } from '@/lib/store/local-store'
+import { getTeamBySlug, readStore, mutateStore } from '@/lib/store/local-store'
 import type { PersonEnrichment } from '@/lib/store/types'
 
 const CLASS_ORDER: Record<string, number> = { 'Sr.': 0, 'Jr.': 1, 'So.': 2, 'Fr.': 3 }
@@ -87,105 +87,127 @@ export async function PATCH(request: Request) {
   const team = await getTeamBySlug(teamSlug as string)
   if (!team) return NextResponse.json({ error: `Team not found: ${teamSlug}` }, { status: 404 })
 
-  const store = await readStore()
+  // Apply all three patches atomically. Lookups + validation live inside the
+  // mutator so the CAS guard keeps this PATCH from clobbering a concurrent
+  // write (e.g. an alum editing their own profile) to the same blob. Errors
+  // are returned as { error, status } and turned into a response outside.
+  const result = await mutateStore<
+    | { error: string; status: number }
+    | { ok: true; person: unknown; membership: unknown; enrichment: unknown }
+  >((store) => {
+    const personIdx = store.people.findIndex(p => p.id === personId)
+    if (personIdx === -1) return { error: 'Person not found', status: 404 }
 
-  const personIdx = store.people.findIndex(p => p.id === personId)
-  if (personIdx === -1) return NextResponse.json({ error: 'Person not found' }, { status: 404 })
+    const membershipIdx = store.teamMemberships.findIndex(
+      m => m.personId === personId && m.teamId === team.id,
+    )
+    if (membershipIdx === -1) return { error: 'Membership not found', status: 404 }
 
-  const membershipIdx = store.teamMemberships.findIndex(
-    m => m.personId === personId && m.teamId === team.id,
-  )
-  if (membershipIdx === -1) return NextResponse.json({ error: 'Membership not found' }, { status: 404 })
-
-  if (store.teamMemberships[membershipIdx].memberRole !== 'current_player') {
-    return NextResponse.json({ error: 'Person is not a current player' }, { status: 403 })
-  }
-
-  const now = new Date().toISOString()
-
-  // Apply person patch
-  if (personPatch) {
-    if (typeof personPatch.canonicalName === 'string' && personPatch.canonicalName.trim()) {
-      store.people[personIdx].canonicalName = personPatch.canonicalName.trim()
-      store.people[personIdx].normalizedName = normName(personPatch.canonicalName.trim())
-      const parts = personPatch.canonicalName.trim().split(' ')
-      store.people[personIdx].firstName = parts[0]
-      store.people[personIdx].lastName = parts.slice(1).join(' ')
+    if (store.teamMemberships[membershipIdx].memberRole !== 'current_player') {
+      return { error: 'Person is not a current player', status: 403 }
     }
-  }
 
-  // Apply membership patch
-  if (membershipPatch) {
-    const m = store.teamMemberships[membershipIdx]
-    if (typeof membershipPatch.classLabel === 'string') {
-      if (!VALID_CLASS_LABELS.has(membershipPatch.classLabel)) {
-        return NextResponse.json({ error: 'classLabel must be Sr., Jr., So., or Fr.' }, { status: 400 })
-      }
-      m.classLabel = membershipPatch.classLabel
+    // Validate inputs BEFORE mutating — mutateStore commits whatever the
+    // callback leaves on the store, so returning an error after a partial
+    // mutation would still persist it. Reject bad input up front.
+    if (
+      membershipPatch &&
+      typeof membershipPatch.classLabel === 'string' &&
+      !VALID_CLASS_LABELS.has(membershipPatch.classLabel)
+    ) {
+      return { error: 'classLabel must be Sr., Jr., So., or Fr.', status: 400 }
     }
-    if (typeof membershipPatch.classYearEstimate === 'string') m.classYearEstimate = membershipPatch.classYearEstimate
-    if (typeof membershipPatch.hometown === 'string') m.hometown = membershipPatch.hometown || undefined
-    if (typeof membershipPatch.highSchool === 'string') m.highSchool = membershipPatch.highSchool || undefined
-    if (membershipPatch.rosterStartYear !== undefined) {
-      const y = Number(membershipPatch.rosterStartYear)
-      if (!isNaN(y)) m.rosterStartYear = y
-    }
-    if (membershipPatch.rosterEndYear !== undefined) {
-      const y = Number(membershipPatch.rosterEndYear)
-      if (!isNaN(y)) m.rosterEndYear = y
-    }
-    if (typeof membershipPatch.publishedToNetwork === 'boolean') m.publishedToNetwork = membershipPatch.publishedToNetwork
-    m.updatedAt = now
-  }
 
-  // Apply enrichment patch — create if missing
-  const enrichmentIdx = store.personEnrichments.findIndex(
-    e => e.personId === personId && e.teamId === team.id,
-  )
+    const now = new Date().toISOString()
 
-  if (enrichmentPatch) {
-    const safe: Partial<PersonEnrichment> = {}
-    if (typeof enrichmentPatch.alumniBio === 'string') safe.alumniBio = enrichmentPatch.alumniBio || undefined
-    if (Array.isArray(enrichmentPatch.helpTopics) && enrichmentPatch.helpTopics.every((t: unknown) => typeof t === 'string')) {
-      safe.helpTopics = enrichmentPatch.helpTopics as string[]
-    }
-    if (typeof enrichmentPatch.contactPreference === 'string') safe.contactPreference = enrichmentPatch.contactPreference as PersonEnrichment['contactPreference']
-    if (typeof enrichmentPatch.availabilityLevel === 'string') safe.availabilityLevel = enrichmentPatch.availabilityLevel as PersonEnrichment['availabilityLevel']
-    if (typeof enrichmentPatch.openToGolfRounds === 'boolean') safe.openToGolfRounds = enrichmentPatch.openToGolfRounds
-    if (typeof enrichmentPatch.openToCoffee === 'boolean') safe.openToCoffee = enrichmentPatch.openToCoffee
-    if (typeof enrichmentPatch.openToMentorship === 'boolean') safe.openToMentorship = enrichmentPatch.openToMentorship
-    if (typeof enrichmentPatch.openToWarmIntroductions === 'boolean') safe.openToWarmIntroductions = enrichmentPatch.openToWarmIntroductions
-    if (typeof enrichmentPatch.favoritePennGolfMemory === 'string') safe.favoritePennGolfMemory = enrichmentPatch.favoritePennGolfMemory || undefined
-    if (typeof enrichmentPatch.favoriteCourses === 'string') safe.favoriteCourses = enrichmentPatch.favoriteCourses || undefined
-    if (typeof enrichmentPatch.visibleToPlayers === 'boolean') safe.visibleToPlayers = enrichmentPatch.visibleToPlayers
-
-    if (enrichmentIdx === -1) {
-      store.personEnrichments.push({
-        id: crypto.randomUUID(),
-        personId: personId as string,
-        teamId: team.id,
-        verificationStatus: 'unverified',
-        sourceUrls: [],
-        ...safe,
-        createdAt: now,
-        updatedAt: now,
-      })
-    } else {
-      store.personEnrichments[enrichmentIdx] = {
-        ...store.personEnrichments[enrichmentIdx],
-        ...safe,
-        updatedAt: now,
+    // Apply person patch
+    if (personPatch) {
+      if (typeof personPatch.canonicalName === 'string' && personPatch.canonicalName.trim()) {
+        store.people[personIdx].canonicalName = personPatch.canonicalName.trim()
+        store.people[personIdx].normalizedName = normName(personPatch.canonicalName.trim())
+        const parts = personPatch.canonicalName.trim().split(' ')
+        store.people[personIdx].firstName = parts[0]
+        store.people[personIdx].lastName = parts.slice(1).join(' ')
       }
     }
+
+    // Apply membership patch
+    if (membershipPatch) {
+      const m = store.teamMemberships[membershipIdx]
+      if (typeof membershipPatch.classLabel === 'string') {
+        if (!VALID_CLASS_LABELS.has(membershipPatch.classLabel)) {
+          return { error: 'classLabel must be Sr., Jr., So., or Fr.', status: 400 }
+        }
+        m.classLabel = membershipPatch.classLabel
+      }
+      if (typeof membershipPatch.classYearEstimate === 'string') m.classYearEstimate = membershipPatch.classYearEstimate
+      if (typeof membershipPatch.hometown === 'string') m.hometown = membershipPatch.hometown || undefined
+      if (typeof membershipPatch.highSchool === 'string') m.highSchool = membershipPatch.highSchool || undefined
+      if (membershipPatch.rosterStartYear !== undefined) {
+        const y = Number(membershipPatch.rosterStartYear)
+        if (!isNaN(y)) m.rosterStartYear = y
+      }
+      if (membershipPatch.rosterEndYear !== undefined) {
+        const y = Number(membershipPatch.rosterEndYear)
+        if (!isNaN(y)) m.rosterEndYear = y
+      }
+      if (typeof membershipPatch.publishedToNetwork === 'boolean') m.publishedToNetwork = membershipPatch.publishedToNetwork
+      m.updatedAt = now
+    }
+
+    // Apply enrichment patch — create if missing
+    const enrichmentIdx = store.personEnrichments.findIndex(
+      e => e.personId === personId && e.teamId === team.id,
+    )
+
+    if (enrichmentPatch) {
+      const safe: Partial<PersonEnrichment> = {}
+      if (typeof enrichmentPatch.alumniBio === 'string') safe.alumniBio = enrichmentPatch.alumniBio || undefined
+      if (Array.isArray(enrichmentPatch.helpTopics) && enrichmentPatch.helpTopics.every((t: unknown) => typeof t === 'string')) {
+        safe.helpTopics = enrichmentPatch.helpTopics as string[]
+      }
+      if (typeof enrichmentPatch.contactPreference === 'string') safe.contactPreference = enrichmentPatch.contactPreference as PersonEnrichment['contactPreference']
+      if (typeof enrichmentPatch.availabilityLevel === 'string') safe.availabilityLevel = enrichmentPatch.availabilityLevel as PersonEnrichment['availabilityLevel']
+      if (typeof enrichmentPatch.openToGolfRounds === 'boolean') safe.openToGolfRounds = enrichmentPatch.openToGolfRounds
+      if (typeof enrichmentPatch.openToCoffee === 'boolean') safe.openToCoffee = enrichmentPatch.openToCoffee
+      if (typeof enrichmentPatch.openToMentorship === 'boolean') safe.openToMentorship = enrichmentPatch.openToMentorship
+      if (typeof enrichmentPatch.openToWarmIntroductions === 'boolean') safe.openToWarmIntroductions = enrichmentPatch.openToWarmIntroductions
+      if (typeof enrichmentPatch.favoritePennGolfMemory === 'string') safe.favoritePennGolfMemory = enrichmentPatch.favoritePennGolfMemory || undefined
+      if (typeof enrichmentPatch.favoriteCourses === 'string') safe.favoriteCourses = enrichmentPatch.favoriteCourses || undefined
+      if (typeof enrichmentPatch.visibleToPlayers === 'boolean') safe.visibleToPlayers = enrichmentPatch.visibleToPlayers
+
+      if (enrichmentIdx === -1) {
+        store.personEnrichments.push({
+          id: crypto.randomUUID(),
+          personId: personId as string,
+          teamId: team.id,
+          verificationStatus: 'unverified',
+          sourceUrls: [],
+          ...safe,
+          createdAt: now,
+          updatedAt: now,
+        })
+      } else {
+        store.personEnrichments[enrichmentIdx] = {
+          ...store.personEnrichments[enrichmentIdx],
+          ...safe,
+          updatedAt: now,
+        }
+      }
+    }
+
+    const updatedPerson = store.people[personIdx]
+    const updatedMembership = store.teamMemberships[membershipIdx]
+    const updatedEnrichment = store.personEnrichments.find(
+      e => e.personId === personId && e.teamId === team.id,
+    ) ?? null
+
+    return { ok: true, person: updatedPerson, membership: updatedMembership, enrichment: updatedEnrichment }
+  })
+
+  if ('error' in result) {
+    return NextResponse.json({ error: result.error }, { status: result.status })
   }
 
-  await writeStore(store)
-
-  const updatedPerson = store.people[personIdx]
-  const updatedMembership = store.teamMemberships[membershipIdx]
-  const updatedEnrichment = store.personEnrichments.find(
-    e => e.personId === personId && e.teamId === team.id,
-  ) ?? null
-
-  return NextResponse.json({ person: updatedPerson, membership: updatedMembership, enrichment: updatedEnrichment })
+  return NextResponse.json({ person: result.person, membership: result.membership, enrichment: result.enrichment })
 }

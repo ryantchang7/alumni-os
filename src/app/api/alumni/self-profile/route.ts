@@ -7,8 +7,7 @@ import {
   getTeamMembershipsForTeam,
   getPersonEnrichment,
   updatePersonEnrichmentSafeFields,
-  readStore,
-  writeStore,
+  mutateStore,
 } from '@/lib/store/local-store'
 import type { PersonEnrichment } from '@/lib/store/types'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
@@ -245,21 +244,24 @@ export async function POST(request: Request) {
   }
 
   // Hometown lives on the team-membership, not the enrichment.
-  // Persist it separately when present in the body.
+  // Persist it separately when present in the body. This is a second write
+  // in the same request (after updatePersonEnrichmentSafeFields above), so it
+  // MUST go through mutateStore — the CAS guard is what keeps the two writes
+  // from clobbering each other when they interleave under concurrency.
   if (typeof body.hometown === 'string') {
     const hometown = body.hometown.trim()
-    const store = await readStore()
-    const idx = store.teamMemberships.findIndex(
-      (m) => m.personId === personId && m.teamId === team.id,
-    )
-    if (idx !== -1) {
-      store.teamMemberships[idx] = {
-        ...store.teamMemberships[idx],
-        hometown: hometown || undefined,
-        updatedAt: new Date().toISOString(),
+    await mutateStore((store) => {
+      const idx = store.teamMemberships.findIndex(
+        (m) => m.personId === personId && m.teamId === team.id,
+      )
+      if (idx !== -1) {
+        store.teamMemberships[idx] = {
+          ...store.teamMemberships[idx],
+          hometown: hometown || undefined,
+          updatedAt: new Date().toISOString(),
+        }
       }
-      await writeStore(store)
-    }
+    })
   }
 
   return NextResponse.json({ ok: true, personId })

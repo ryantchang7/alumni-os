@@ -12,8 +12,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import {
-  readStore,
-  writeStore,
+  mutateStore,
   getTeamBySlug,
   createProfileClaimRequest,
   getAccountById,
@@ -73,65 +72,76 @@ export async function POST(request: Request) {
   const account = await getAccountById(session.accountId)
   if (!account) return NextResponse.json({ error: 'Account not found' }, { status: 404 })
 
-  // Block: a single account can only have one outstanding parent signup.
-  const store = await readStore()
-  const existing = store.profileClaimRequests.find(
-    r =>
-      r.teamId === team.id &&
-      r.requesterAccountId === session.accountId &&
-      r.status === 'pending',
-  )
-  if (existing) {
+  // Bootstrap a new Person + unpublished Membership + Enrichment record. The
+  // "one outstanding signup per account" guard lives inside the mutator so the
+  // dedupe check + the inserts commit atomically under the CAS guard — a
+  // double-submit can't create two person/membership rows.
+  const result = await mutateStore<
+    { conflict: true; claimId: string } | { conflict: false; personId: string }
+  >((store) => {
+    const existing = store.profileClaimRequests.find(
+      r =>
+        r.teamId === team.id &&
+        r.requesterAccountId === session.accountId &&
+        r.status === 'pending',
+    )
+    if (existing) {
+      return { conflict: true, claimId: existing.id }
+    }
+
+    const now = new Date().toISOString()
+    const personId = crypto.randomUUID()
+    const { firstName, lastName } = splitName(name)
+
+    const newPerson: Person = {
+      id: personId,
+      canonicalName: name,
+      normalizedName: normalizeName(name),
+      firstName,
+      lastName,
+      createdAt: now,
+    }
+    store.people.push(newPerson)
+
+    const newMembership: TeamMembership = {
+      id: crypto.randomUUID(),
+      personId,
+      teamId: team.id,
+      memberRole: 'parent',
+      memberStatus: 'imported',
+      parentRelationship: relationship,
+      bioUrls: [],
+      sourceUrls: [],
+      confidence: 1,
+      publishedToNetwork: false,
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.teamMemberships.push(newMembership)
+
+    const newEnrichment: PersonEnrichment = {
+      id: crypto.randomUUID(),
+      personId,
+      teamId: team.id,
+      visibleToPlayers: true,
+      verificationStatus: 'unverified',
+      sourceUrls: [],
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.personEnrichments.push(newEnrichment)
+
+    return { conflict: false, personId }
+  })
+
+  if (result.conflict) {
     return NextResponse.json(
-      { error: 'You already have a request in front of the captain.', claimId: existing.id },
+      { error: 'You already have a request in front of the captain.', claimId: result.claimId },
       { status: 409 },
     )
   }
 
-  // Bootstrap a new Person + unpublished Membership + Enrichment record.
-  const now = new Date().toISOString()
-  const personId = crypto.randomUUID()
-  const { firstName, lastName } = splitName(name)
-
-  const newPerson: Person = {
-    id: personId,
-    canonicalName: name,
-    normalizedName: normalizeName(name),
-    firstName,
-    lastName,
-    createdAt: now,
-  }
-  store.people.push(newPerson)
-
-  const newMembership: TeamMembership = {
-    id: crypto.randomUUID(),
-    personId,
-    teamId: team.id,
-    memberRole: 'parent',
-    memberStatus: 'imported',
-    parentRelationship: relationship,
-    bioUrls: [],
-    sourceUrls: [],
-    confidence: 1,
-    publishedToNetwork: false,
-    createdAt: now,
-    updatedAt: now,
-  }
-  store.teamMemberships.push(newMembership)
-
-  const newEnrichment: PersonEnrichment = {
-    id: crypto.randomUUID(),
-    personId,
-    teamId: team.id,
-    visibleToPlayers: true,
-    verificationStatus: 'unverified',
-    sourceUrls: [],
-    createdAt: now,
-    updatedAt: now,
-  }
-  store.personEnrichments.push(newEnrichment)
-
-  await writeStore(store)
+  const personId = result.personId
 
   // Queue captain approval.
   const claim = await createProfileClaimRequest({

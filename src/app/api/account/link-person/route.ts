@@ -10,7 +10,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import {
   readStore,
-  writeStore,
+  mutateStore,
   getTeamBySlug,
   createProfileClaimRequest,
   getAccountById,
@@ -70,25 +70,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Team not found' }, { status: 404 })
   }
 
-  const store = await readStore()
-
-  // Resolve a team-store person. If none matches by name, bootstrap one
-  // from the Member Book entry.
-  let personId: string
-  const matched = findTeamStorePersonForBookEntry(entry, store.people)
-  if (matched) {
-    const onThisTeam = store.teamMemberships.some(
-      (m) => m.personId === matched.id && m.teamId === team.id,
-    )
-    if (onThisTeam) {
-      personId = matched.id
-    } else {
+  // Resolve a team-store person, bootstrapping one from the Member Book entry
+  // when none matches. Both former write sites (add-membership-to-existing and
+  // create-brand-new) are folded into this single mutateStore so the resolve +
+  // all pushes happen atomically under the CAS guard — a concurrent claim can
+  // no longer clobber these rows.
+  const personId = await mutateStore<string>((store) => {
+    const matched = findTeamStorePersonForBookEntry(entry, store.people)
+    if (matched) {
+      const onThisTeam = store.teamMemberships.some(
+        (m) => m.personId === matched.id && m.teamId === team.id,
+      )
+      if (onThisTeam) {
+        // Already on this team — nothing to write.
+        return matched.id
+      }
       // Person record exists but no membership on this team — create one.
-      personId = matched.id
       const now = new Date().toISOString()
       const newMembership: TeamMembership = {
         id: crypto.randomUUID(),
-        personId,
+        personId: matched.id,
         teamId: team.id,
         memberRole: 'alumni',
         memberStatus: 'verified',
@@ -110,11 +111,11 @@ export async function POST(request: Request) {
         updatedAt: now,
       }
       store.teamMemberships.push(newMembership)
-      await writeStore(store)
+      return matched.id
     }
-  } else {
+
     // Brand-new person record.
-    personId = crypto.randomUUID()
+    const personId = crypto.randomUUID()
     const now = new Date().toISOString()
     const { firstName, lastName } = splitName(entry.displayName)
 
@@ -165,8 +166,8 @@ export async function POST(request: Request) {
     }
     store.personEnrichments.push(newEnrichment)
 
-    await writeStore(store)
-  }
+    return personId
+  })
 
   // Don't link directly anymore — queue a claim for the captain to review.
   // The person/membership/enrichment records are now in place; the captain's
@@ -176,7 +177,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Account not found' }, { status: 404 })
   }
 
-  // Block submitting a second claim while one is already pending.
+  // Block submitting a second claim while one is already pending. Re-read the
+  // store fresh (the mutateStore above no longer hands back a snapshot); this
+  // is a pure read used only to compute the response.
+  const store = await readStore()
   const existing = store.profileClaimRequests.find(
     r =>
       r.teamId === team.id &&

@@ -12,8 +12,7 @@
 import { NextResponse } from 'next/server'
 import { requireFounder } from '@/lib/auth/guards'
 import {
-  readStore,
-  writeStore,
+  mutateStore,
   getTeamBySlug,
 } from '@/lib/store/local-store'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
@@ -74,70 +73,81 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Team not found' }, { status: 404 })
   }
 
-  const store = await readStore()
   const norm = normalizeName(name)
-  const now = new Date().toISOString()
 
-  // Check for an existing Person on this team with the same normalized name.
-  const existing = store.people.find(
-    p =>
-      p.normalizedName === norm &&
-      store.teamMemberships.some(m => m.personId === p.id && m.teamId === team.id),
-  )
-  if (existing) {
+  // Insert person + membership + enrichment atomically. The duplicate-name
+  // guard lives inside the mutator so a concurrent add-member for the same
+  // name can't slip a second copy in between the check and the write.
+  const result = await mutateStore<
+    { conflict: true; personId: string } | { conflict: false; personId: string }
+  >((store) => {
+    const now = new Date().toISOString()
+
+    // Check for an existing Person on this team with the same normalized name.
+    const existing = store.people.find(
+      p =>
+        p.normalizedName === norm &&
+        store.teamMemberships.some(m => m.personId === p.id && m.teamId === team.id),
+    )
+    if (existing) {
+      return { conflict: true, personId: existing.id }
+    }
+
+    const { firstName, lastName } = splitName(name)
+
+    const person: Person = {
+      id: crypto.randomUUID(),
+      canonicalName: name,
+      normalizedName: norm,
+      firstName,
+      lastName,
+      createdAt: now,
+    }
+    store.people.push(person)
+
+    const membership: TeamMembership = {
+      id: crypto.randomUUID(),
+      personId: person.id,
+      teamId: team.id,
+      memberRole,
+      memberStatus: 'verified',
+      rosterStartYear,
+      rosterEndYear,
+      classLabel,
+      hometown,
+      bioUrls: [],
+      sourceUrls: [],
+      confidence: 1,
+      publishedToNetwork: true,
+      publishedAt: now,
+      publishedByRole: 'captain',
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.teamMemberships.push(membership)
+
+    const enrichment: PersonEnrichment = {
+      id: crypto.randomUUID(),
+      personId: person.id,
+      teamId: team.id,
+      visibleToPlayers: true,
+      contactPreference: 'team_intro',
+      verificationStatus: 'unverified',
+      sourceUrls: [],
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.personEnrichments.push(enrichment)
+
+    return { conflict: false, personId: person.id }
+  })
+
+  if (result.conflict) {
     return NextResponse.json(
-      { error: 'A member with this name already exists on this team.', personId: existing.id },
+      { error: 'A member with this name already exists on this team.', personId: result.personId },
       { status: 409 },
     )
   }
 
-  const { firstName, lastName } = splitName(name)
-
-  const person: Person = {
-    id: crypto.randomUUID(),
-    canonicalName: name,
-    normalizedName: norm,
-    firstName,
-    lastName,
-    createdAt: now,
-  }
-  store.people.push(person)
-
-  const membership: TeamMembership = {
-    id: crypto.randomUUID(),
-    personId: person.id,
-    teamId: team.id,
-    memberRole,
-    memberStatus: 'verified',
-    rosterStartYear,
-    rosterEndYear,
-    classLabel,
-    hometown,
-    bioUrls: [],
-    sourceUrls: [],
-    confidence: 1,
-    publishedToNetwork: true,
-    publishedAt: now,
-    publishedByRole: 'captain',
-    createdAt: now,
-    updatedAt: now,
-  }
-  store.teamMemberships.push(membership)
-
-  const enrichment: PersonEnrichment = {
-    id: crypto.randomUUID(),
-    personId: person.id,
-    teamId: team.id,
-    visibleToPlayers: true,
-    contactPreference: 'team_intro',
-    verificationStatus: 'unverified',
-    sourceUrls: [],
-    createdAt: now,
-    updatedAt: now,
-  }
-  store.personEnrichments.push(enrichment)
-
-  await writeStore(store)
-
-  return NextResponse.json({ personId: person.id }, { status: 201 })
+  return NextResponse.json({ personId: result.personId }, { status: 201 })
 }
