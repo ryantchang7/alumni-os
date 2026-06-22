@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireApprovedMember, requireFounder } from '@/lib/auth/guards'
 import type { PlayerAlumniRequest } from '@/lib/store/types'
 
 const PURPOSE_LABELS: Record<string, string> = {
@@ -28,6 +29,9 @@ const CONTEXT_LABELS: Record<string, string> = {
 }
 
 export async function GET(request: NextRequest) {
+  const g = await requireApprovedMember()
+  if (!g.ok) return g.response
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')
   const fromName = searchParams.get('fromName')
@@ -44,6 +48,26 @@ export async function GET(request: NextRequest) {
   }
 
   const store = await readStore()
+
+  // Scope to the caller's own sent requests. These carry private free-text
+  // messages, and the `fromName` filter would otherwise let any signed-in
+  // member enumerate another person's outreach by guessing their name. We
+  // bind the lookup to the caller's authoritative linked-person name; a
+  // member may only read requests they themselves sent. Founders may query
+  // any name.
+  const linkedPerson = store.people.find(p => p.id === g.session.linkedPersonId)
+  const callerName = (linkedPerson?.canonicalName ?? g.session.user?.name ?? '').trim().toLowerCase()
+  const requested = fromName.trim().toLowerCase()
+  if (requested !== callerName) {
+    const founder = await requireFounder()
+    if (!founder.ok) {
+      return NextResponse.json(
+        { error: 'You can only view requests you sent' },
+        { status: 403 },
+      )
+    }
+  }
+
   const needle = fromName.trim().toLowerCase()
 
   const rawRequests = store.playerAlumniRequests

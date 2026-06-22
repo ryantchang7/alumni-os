@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { requireFounder } from '@/lib/auth/guards'
 import {
   getTeamBySlug,
   getPeopleForTeam,
@@ -22,6 +23,9 @@ interface Context {
 }
 
 export async function GET(request: Request, { params }: Context) {
+  const g = await requireFounder()
+  if (!g.ok) return g.response
+
   const { personId } = await params
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')

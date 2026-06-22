@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { requireApprovedMember, requireFounder } from '@/lib/auth/guards'
 
 const PURPOSE_LABELS: Record<string, string> = {
   career_advice: 'Career advice',
@@ -27,6 +28,9 @@ const CONTEXT_LABELS: Record<string, string> = {
 }
 
 export async function GET(request: Request) {
+  const g = await requireApprovedMember()
+  if (!g.ok) return g.response
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')
   const personId = searchParams.get('personId')
@@ -36,6 +40,19 @@ export async function GET(request: Request) {
       { error: 'teamSlug and personId are required' },
       { status: 400 },
     )
+  }
+
+  // Scope to the caller's own inbox. These requests carry private free-text
+  // messages, so a member may only read requests addressed to their own
+  // linked person. Founders may read any inbox.
+  if (personId !== g.session.linkedPersonId) {
+    const founder = await requireFounder()
+    if (!founder.ok) {
+      return NextResponse.json(
+        { error: 'You can only view requests addressed to you' },
+        { status: 403 },
+      )
+    }
   }
 
   const { getTeamBySlug, getTeamMembershipsForTeam, getRequestsForAlumni } = await import(

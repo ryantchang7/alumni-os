@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { requireApprovedMember } from '@/lib/auth/guards'
 import type { CareerPostSector } from '@/lib/store/types'
 
 const VALID_SECTORS: CareerPostSector[] = [
@@ -22,6 +23,9 @@ const HEADLINE_MAX = 120
 const BODY_MAX = 600
 
 export async function GET(request: NextRequest) {
+  const g = await requireApprovedMember()
+  if (!g.ok) return g.response
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
   const kindFilter = searchParams.get('kind') as (typeof VALID_KINDS)[number] | null

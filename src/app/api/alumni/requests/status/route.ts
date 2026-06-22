@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireApprovedMember } from '@/lib/auth/guards'
 import type { PlayerAlumniRequest } from '@/lib/store/types'
 
 const VALID_STATUSES: PlayerAlumniRequest['status'][] = [
@@ -6,6 +7,9 @@ const VALID_STATUSES: PlayerAlumniRequest['status'][] = [
 ]
 
 export async function POST(request: NextRequest) {
+  const g = await requireApprovedMember()
+  if (!g.ok) return g.response
+
   let body: {
     teamSlug?: string
     personId?: string
@@ -27,6 +31,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: 'teamSlug, personId, requestId, and status are required' },
       { status: 400 },
+    )
+  }
+
+  // Ownership: a member may only respond to requests addressed to their own
+  // linked alumni profile. The request→personId match is enforced below
+  // (req.alumniPersonId === personId), so binding personId to the caller
+  // guarantees the request belongs to them.
+  if (personId !== g.session.linkedPersonId) {
+    return NextResponse.json(
+      { error: 'You can only respond to requests addressed to you' },
+      { status: 403 },
     )
   }
 

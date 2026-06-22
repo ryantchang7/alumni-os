@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { requireApprovedMember } from '@/lib/auth/guards'
 import {
   getTeamBySlug,
   getPeopleForTeam,
@@ -20,6 +21,9 @@ const ALLOWED_CONTACT_PREFS: PersonEnrichment['contactPreference'][] = [
 ]
 
 export async function GET(request: Request) {
+  const g = await requireApprovedMember()
+  if (!g.ok) return g.response
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')
   const personId = searchParams.get('personId')
@@ -28,6 +32,15 @@ export async function GET(request: Request) {
     return NextResponse.json(
       { error: 'Missing required query params: teamSlug, personId' },
       { status: 400 },
+    )
+  }
+
+  // Ownership: the signed-in account may only read its own self-profile.
+  // Mirrors the POST handler's check below.
+  if (g.session.linkedPersonId !== personId) {
+    return NextResponse.json(
+      { error: 'You can only view your own profile' },
+      { status: 403 },
     )
   }
 

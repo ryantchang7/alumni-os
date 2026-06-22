@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { requireFounder } from '@/lib/auth/guards'
 import {
   getTeamBySlug,
   getPeopleForTeam,
@@ -17,6 +18,9 @@ function normalizeName(name: string): string {
 }
 
 export async function GET(request: Request) {
+  const g = await requireFounder()
+  if (!g.ok) return g.response
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')
 
