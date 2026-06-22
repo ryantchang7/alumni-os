@@ -1,9 +1,11 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import NavBar from '@/components/NavBar'
 import ClubhouseFooter from '@/components/ClubhouseFooter'
 import SessionProviderWrapper from '@/components/SessionProviderWrapper'
+import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
+import InstallAppBanner from '@/components/InstallAppBanner'
 import './globals.css'
 
 const geistSans = Geist({
@@ -30,12 +32,24 @@ export const metadata: Metadata = {
   },
   description:
     "The private alumni network for Penn Men's Golf.",
-  // Favicon — the Penn Golf shield in /public. Overrides the default
-  // Next.js triangle in browser tabs and bookmarks.
+  applicationName: 'Penn Golf Clubhouse',
+  // Lets an installed iOS home-screen launch open full-screen (no Safari chrome).
+  appleWebApp: {
+    capable: true,
+    title: 'Penn Golf',
+    statusBarStyle: 'default',
+  },
+  // Favicon — the Penn Golf shield in /public. The Apple touch icon is the
+  // navy-backed shield so the iOS home-screen tile isn't transparent/black.
   icons: {
     icon: '/penn-golf-shield.png',
-    apple: '/penn-golf-shield.png',
+    apple: '/apple-icon-180.png',
   },
+}
+
+// theme-color drives the browser / installed-app toolbar tint (brand navy).
+export const viewport: Viewport = {
+  themeColor: '#0a1628',
 }
 
 export default function RootLayout({
@@ -56,6 +70,8 @@ export default function RootLayout({
             <ClubhouseFooter />
           </TooltipProvider>
         </SessionProviderWrapper>
+        <ServiceWorkerRegister />
+        <InstallAppBanner />
       </body>
     </html>
   )
