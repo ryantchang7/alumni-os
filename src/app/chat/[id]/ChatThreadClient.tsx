@@ -198,7 +198,7 @@ export default function ChatThreadClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] flex flex-col">
+    <div className="bg-[#f8f5f0] flex flex-col" style={{ height: 'calc(100dvh - 60px)' }}>
       {/* Header */}
       <div className="bg-[#0a1628] px-5 sm:px-8 py-4 sticky top-[60px] z-10">
         <div className="max-w-[820px] mx-auto flex items-center justify-between gap-3">
