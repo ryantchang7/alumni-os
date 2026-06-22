@@ -17,6 +17,7 @@ import { Lock, Reply, SmilePlus, Trash2 } from 'lucide-react'
 import type { ClubhouseMoment, MomentComment, MomentReaction } from '@/lib/store/types'
 import type { BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 // emoji-picker-react is browser-only and large; load it lazily so it
 // doesn't bloat the initial bundle. The picker only mounts after the
@@ -85,9 +86,9 @@ export default function MomentCard({
   const [removed, setRemoved] = useState(false)
   const [removing, setRemoving] = useState(false)
   const [removeError, setRemoveError] = useState<string | null>(null)
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
 
   async function handleRemove() {
-    if (!confirm('Take this down? It will be removed for everyone.')) return
     setRemoving(true)
     setRemoveError(null)
     try {
@@ -293,7 +294,7 @@ export default function MomentCard({
             {isOwn && (
               <button
                 type="button"
-                onClick={handleRemove}
+                onClick={() => setConfirmRemoveOpen(true)}
                 disabled={removing}
                 title="Take down this moment"
                 className="inline-flex items-center gap-1 text-[#990000]/70 hover:text-[#990000] disabled:opacity-40 transition-colors"
@@ -409,6 +410,19 @@ export default function MomentCard({
           )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmRemoveOpen}
+        title="Take this down?"
+        message="It will be removed for everyone."
+        confirmLabel="Take down"
+        destructive
+        onConfirm={() => {
+          setConfirmRemoveOpen(false)
+          handleRemove()
+        }}
+        onCancel={() => setConfirmRemoveOpen(false)}
+      />
     </article>
   )
 }

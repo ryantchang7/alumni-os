@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import PhotoUpload from '@/components/PhotoUpload'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 type Kind = 'qualifying' | 'tournament' | 'stat' | 'note'
 
@@ -56,6 +57,8 @@ export default function SeasonManagerClient() {
   const [loading, setLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
   const [persistence, setPersistence] = useState<PersistenceStatus | null>(null)
+
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -134,7 +137,6 @@ export default function SeasonManagerClient() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Delete this update? This cannot be undone.')) return
     const res = await fetch(`/api/internal/season?id=${encodeURIComponent(id)}`, { method: 'DELETE' })
     if (res.ok) {
       if (editingId === id) resetForm()
@@ -350,7 +352,7 @@ export default function SeasonManagerClient() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleDelete(u.id)}
+                    onClick={() => setConfirmDeleteId(u.id)}
                     className="text-xs font-medium text-[#990000] border border-[rgba(180,168,150,0.5)] hover:border-[#990000] px-2.5 py-1 rounded-md transition-colors"
                   >
                     Delete
@@ -368,6 +370,19 @@ export default function SeasonManagerClient() {
           View the Team Room &rarr;
         </Link>
       </div>
+
+      <ConfirmDialog
+        open={confirmDeleteId !== null}
+        title="Delete this update?"
+        message="This cannot be undone."
+        confirmLabel="Delete"
+        destructive
+        onConfirm={() => {
+          if (confirmDeleteId) handleDelete(confirmDeleteId)
+          setConfirmDeleteId(null)
+        }}
+        onCancel={() => setConfirmDeleteId(null)}
+      />
     </div>
   )
 }

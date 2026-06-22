@@ -750,9 +750,29 @@ function MemberBookPageInner() {
 
 // Suspense wrapper — useSearchParams() requires the component that reads
 // it to live inside a <Suspense> boundary in Next 16.
+function MemberBookSkeleton() {
+  return (
+    <div className="min-h-screen bg-[#f8f5f0] animate-pulse">
+      {/* Header */}
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-16">
+        <div className="max-w-5xl mx-auto space-y-4">
+          <div className="h-3 w-32 bg-white/10 rounded" />
+          <div className="h-10 w-1/2 bg-white/15 rounded" />
+        </div>
+      </div>
+      {/* Cards */}
+      <div className="max-w-5xl mx-auto px-6 sm:px-8 mt-8 space-y-3">
+        {[0, 1, 2, 3, 4, 5].map(i => (
+          <div key={i} className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl h-20" />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function MemberBookPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0]" />}>
+    <Suspense fallback={<MemberBookSkeleton />}>
       <MemberBookPageInner />
     </Suspense>
   )

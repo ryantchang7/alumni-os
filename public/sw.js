@@ -32,6 +32,9 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/api/')) return
 
   // Immutable hashed assets: cache-first.
+  // After storing a new entry, trim the cache to a max of 60 entries so
+  // repeated deploys don't cause unbounded storage growth.
+  const STATIC_MAX = 60
   if (url.pathname.startsWith('/_next/static/')) {
     event.respondWith(
       caches.match(request).then(
@@ -39,7 +42,26 @@ self.addEventListener('fetch', (event) => {
           cached ||
           fetch(request).then((res) => {
             const copy = res.clone()
-            caches.open(CACHE).then((c) => c.put(request, copy))
+            caches.open(CACHE).then((c) => {
+              c.put(request, copy)
+              // Trim only old /_next/static entries once we exceed the cap.
+              // Filtering to static keys protects the precached offline shell
+              // ('/', shield, icon) and cached member photos from eviction.
+              c.keys().then((keys) => {
+                const staticKeys = keys.filter((k) => {
+                  try {
+                    return new URL(k.url).pathname.startsWith('/_next/static/')
+                  } catch {
+                    return false
+                  }
+                })
+                if (staticKeys.length > STATIC_MAX) {
+                  staticKeys
+                    .slice(0, staticKeys.length - STATIC_MAX)
+                    .forEach((k) => c.delete(k))
+                }
+              })
+            })
             return res
           }),
       ),

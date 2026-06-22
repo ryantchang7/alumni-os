@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { MapPin, Clock, Users, Calendar, CalendarPlus, Lock } from 'lucide-react'
 import { buildIcs, buildGoogleCalendarUrl } from '@/lib/calendar/ics'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 export interface GatheringData {
   id: string
@@ -116,9 +117,9 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
 
   const [removed, setRemoved] = useState(false)
   const [removing, setRemoving] = useState(false)
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
 
   async function handleRemove() {
-    if (!confirm('Remove this gathering? It comes off the board for everyone.')) return
     setRemoving(true)
     try {
       const res = await fetch(`/api/gatherings?id=${encodeURIComponent(gathering.id)}`, {
@@ -422,7 +423,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             {error && <p className="text-xs text-[#990000]">{error}</p>}
             <button
               type="button"
-              onClick={handleRemove}
+              onClick={() => setConfirmRemoveOpen(true)}
               disabled={removing}
               className="text-xs font-semibold text-[#990000] border border-[#990000]/30 hover:bg-[#990000] hover:text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-40"
             >
@@ -472,6 +473,19 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
           <p className="text-xs text-[#8a7f70]">This gathering is full.</p>
         ) : null}
       </div>
+
+      <ConfirmDialog
+        open={confirmRemoveOpen}
+        title="Remove this gathering?"
+        message="It comes off the board for everyone."
+        confirmLabel="Remove"
+        destructive
+        onConfirm={() => {
+          setConfirmRemoveOpen(false)
+          handleRemove()
+        }}
+        onCancel={() => setConfirmRemoveOpen(false)}
+      />
     </div>
   )
 }

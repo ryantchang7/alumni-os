@@ -21,8 +21,15 @@ export default async function AskPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#f8f5f0] py-20 text-center">
-          <p className="text-sm text-[#8a7f70]">Loading…</p>
+        <div className="min-h-screen bg-[#f8f5f0] animate-pulse px-6 pt-16 max-w-2xl mx-auto">
+          <div className="h-8 w-48 bg-[#e8e3db] rounded mb-4" />
+          <div className="h-4 w-full bg-[#e8e3db] rounded mb-2" />
+          <div className="h-4 w-3/4 bg-[#e8e3db] rounded mb-8" />
+          <div className="space-y-4">
+            {[0, 1, 2].map(i => (
+              <div key={i} className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl h-24" />
+            ))}
+          </div>
         </div>
       }
     >

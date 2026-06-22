@@ -48,8 +48,11 @@ export const metadata: Metadata = {
 }
 
 // theme-color drives the browser / installed-app toolbar tint (brand navy).
+// viewportFit: 'cover' lets the app extend under the notch/Dynamic Island and
+// home indicator so we can handle insets ourselves with env(safe-area-inset-*).
 export const viewport: Viewport = {
   themeColor: '#0a1628',
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({

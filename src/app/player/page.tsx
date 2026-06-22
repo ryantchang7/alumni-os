@@ -611,9 +611,35 @@ function ClubhouseInner() {
   )
 }
 
+function ClubhouseSkeleton() {
+  return (
+    <div className="min-h-screen bg-[#f8f5f0] animate-pulse">
+      {/* Header skeleton */}
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
+        <div className="max-w-[1320px] mx-auto flex items-center gap-5">
+          <div className="w-16 h-16 rounded-full bg-white/10 flex-shrink-0" />
+          <div className="flex-1 space-y-3">
+            <div className="h-3 w-24 bg-white/10 rounded" />
+            <div className="h-8 w-3/4 bg-white/15 rounded" />
+            <div className="h-4 w-1/2 bg-white/10 rounded" />
+          </div>
+        </div>
+      </div>
+      {/* Room cards skeleton */}
+      <div className="max-w-[1320px] mx-auto px-6 sm:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 h-40" />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function PlayerPage() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-sm text-[#8a7f70]">Loading...</div>}>
+    <Suspense fallback={<ClubhouseSkeleton />}>
       <ClubhouseInner />
     </Suspense>
   )

@@ -75,7 +75,8 @@ export default function InstallAppBanner() {
     <div
       role="dialog"
       aria-label="Install Penn Golf Clubhouse"
-      className="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-md"
+      className="fixed inset-x-3 z-[60] mx-auto max-w-md"
+      style={{ bottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))' }}
     >
       <div className="flex items-center gap-3 rounded-2xl border border-[#c8a84b]/30 bg-[#0a1628] px-4 py-3 shadow-[0_8px_30px_rgba(10,22,40,0.45)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}

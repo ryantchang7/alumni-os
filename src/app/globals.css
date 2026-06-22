@@ -137,6 +137,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Push content above the iPhone home indicator when installed as a PWA.
+       max() means this collapses to 0 on non-notch devices — no visual change
+       on desktop or older iPhones without a home indicator. */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   html {
     @apply font-sans;
