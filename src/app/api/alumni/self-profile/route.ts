@@ -155,10 +155,14 @@ export async function POST(request: Request) {
   // Only allow safe fields — silently drop anything else
   const safeUpdate: Parameters<typeof updatePersonEnrichmentSafeFields>[2] = {}
 
-  if (typeof body.currentRole === 'string') safeUpdate.currentRole = body.currentRole.trim()
-  if (typeof body.currentCompany === 'string') safeUpdate.currentCompany = body.currentCompany.trim()
-  if (typeof body.industry === 'string') safeUpdate.industry = body.industry.trim()
-  if (typeof body.city === 'string') safeUpdate.city = body.city.trim()
+  // Per-field length caps. These free-text fields are persisted into a single
+  // JSON blob that's deserialized on every read, so an oversized field taxes
+  // every request. We TRUNCATE with .slice(N) (matching the handicap 32-cap
+  // below) rather than reject, so the UX never hard-fails on a long paste.
+  if (typeof body.currentRole === 'string') safeUpdate.currentRole = body.currentRole.trim().slice(0, 160)
+  if (typeof body.currentCompany === 'string') safeUpdate.currentCompany = body.currentCompany.trim().slice(0, 160)
+  if (typeof body.industry === 'string') safeUpdate.industry = body.industry.trim().slice(0, 160)
+  if (typeof body.city === 'string') safeUpdate.city = body.city.trim().slice(0, 160)
   if (typeof body.state === 'string') {
     // Normalize "New York" / "Calif." / "ny" → "NY" so the member map can
     // bucket the alum into the right state. Falls back to raw uppercase
@@ -167,7 +171,7 @@ export async function POST(request: Request) {
     const raw = body.state.trim()
     safeUpdate.state = enrichmentStateToCode(raw) ?? raw.toUpperCase().slice(0, 2)
   }
-  if (typeof body.country === 'string') safeUpdate.country = body.country.trim()
+  if (typeof body.country === 'string') safeUpdate.country = body.country.trim().slice(0, 160)
   if (body.inTown === null) {
     safeUpdate.inTown = undefined
   } else if (typeof body.inTown === 'object' && body.inTown !== null) {
@@ -210,17 +214,17 @@ export async function POST(request: Request) {
       .slice(0, 4)
     safeUpdate.additionalLocations = clean
   }
-  if (typeof body.alumniBio === 'string') safeUpdate.alumniBio = body.alumniBio.trim()
-  if (typeof body.homeCourse === 'string') safeUpdate.homeCourse = body.homeCourse.trim()
+  if (typeof body.alumniBio === 'string') safeUpdate.alumniBio = body.alumniBio.trim().slice(0, 800)
+  if (typeof body.homeCourse === 'string') safeUpdate.homeCourse = body.homeCourse.trim().slice(0, 160)
   if (typeof body.noHomeCourse === 'boolean') safeUpdate.noHomeCourse = body.noHomeCourse
   if (typeof body.handicap === 'string') safeUpdate.handicap = body.handicap.trim().slice(0, 32)
-  if (typeof body.favoriteCourses === 'string') safeUpdate.favoriteCourses = body.favoriteCourses.trim()
-  if (typeof body.favoritePennGolfMemory === 'string') safeUpdate.favoritePennGolfMemory = body.favoritePennGolfMemory.trim()
-  if (typeof body.interests === 'string') safeUpdate.interests = body.interests.trim()
-  if (typeof body.email === 'string') safeUpdate.email = body.email.trim()
-  if (typeof body.phone === 'string') safeUpdate.phone = body.phone.trim()
-  if (typeof body.linkedinUrl === 'string') safeUpdate.linkedinUrl = body.linkedinUrl.trim()
-  if (typeof body.photoUrl === 'string') safeUpdate.photoUrl = body.photoUrl.trim()
+  if (typeof body.favoriteCourses === 'string') safeUpdate.favoriteCourses = body.favoriteCourses.trim().slice(0, 400)
+  if (typeof body.favoritePennGolfMemory === 'string') safeUpdate.favoritePennGolfMemory = body.favoritePennGolfMemory.trim().slice(0, 800)
+  if (typeof body.interests === 'string') safeUpdate.interests = body.interests.trim().slice(0, 400)
+  if (typeof body.email === 'string') safeUpdate.email = body.email.trim().slice(0, 200)
+  if (typeof body.phone === 'string') safeUpdate.phone = body.phone.trim().slice(0, 40)
+  if (typeof body.linkedinUrl === 'string') safeUpdate.linkedinUrl = body.linkedinUrl.trim().slice(0, 512)
+  if (typeof body.photoUrl === 'string') safeUpdate.photoUrl = body.photoUrl.trim().slice(0, 512)
   if (Array.isArray(body.helpTopics) && body.helpTopics.every(t => typeof t === 'string')) {
     safeUpdate.helpTopics = body.helpTopics as string[]
   }

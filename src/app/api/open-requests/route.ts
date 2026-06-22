@@ -79,7 +79,7 @@ export async function POST(request: Request) {
   if (!note) return NextResponse.json({ error: 'note required' }, { status: 400 })
   if (note.length > 400) return NextResponse.json({ error: 'note too long (400 max)' }, { status: 400 })
 
-  const city = typeof body.city === 'string' ? body.city.trim() || undefined : undefined
+  const city = typeof body.city === 'string' ? body.city.trim().slice(0, 160) || undefined : undefined
   const state = typeof body.state === 'string'
     ? body.state.trim().toUpperCase().slice(0, 2) || undefined
     : undefined

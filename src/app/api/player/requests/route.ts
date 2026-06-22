@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireApprovedMember, requireFounder } from '@/lib/auth/guards'
+import { checkRateLimit, ipFromRequest } from '@/lib/rate-limit'
 import type { PlayerAlumniRequest } from '@/lib/store/types'
 
 const PURPOSE_LABELS: Record<string, string> = {
@@ -115,6 +116,19 @@ const VALID_PURPOSES: PlayerAlumniRequest['purpose'][] = [
 ]
 
 export async function POST(request: NextRequest) {
+  // Public, unauthenticated endpoint that accepts attacker-controlled input —
+  // rate-limit per IP before any heavy work. Generous window so no real user
+  // hits it; the limiter fails open if Redis is down.
+  // TODO: CAPTCHA — add a provider-keyed challenge here as a stronger
+  // anti-abuse layer once a CAPTCHA provider key is available.
+  const { ok } = await checkRateLimit(`player-request:${ipFromRequest(request)}`, 6, 600)
+  if (!ok) {
+    return NextResponse.json(
+      { error: 'Too many requests — please try again in a few minutes.' },
+      { status: 429 },
+    )
+  }
+
   let body: {
     teamSlug?: string
     alumniPersonId?: string
@@ -215,7 +229,10 @@ export async function POST(request: NextRequest) {
     fromName: trimmedName,
     fromEmail: fromEmail?.trim() || undefined,
     purpose: purpose as PlayerAlumniRequest['purpose'],
-    context: context?.trim() || undefined,
+    // `context` is free-text (not enum-validated like `purpose`), so cap it
+    // before it lands in the single JSON blob. fromName/message/additionalContext
+    // already enforce length above.
+    context: context?.trim().slice(0, 400) || undefined,
     additionalContext: additionalContext?.trim() || undefined,
     message: trimmedMessage,
   })

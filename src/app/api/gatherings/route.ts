@@ -61,11 +61,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
+  // Cap free-text fields with .slice(N) before they're persisted into the
+  // single JSON blob (truncate, don't reject). type/audience/vibe are
+  // enum-checked and image/maps URLs are validated separately.
   const teamSlug = typeof body.teamSlug === 'string' ? body.teamSlug : 'penn-mens-golf'
   const type = body.type as string
-  const title = typeof body.title === 'string' ? body.title.trim() : ''
-  const hostName = typeof body.hostName === 'string' ? body.hostName.trim() : ''
-  const dateText = typeof body.dateText === 'string' ? body.dateText.trim() : ''
+  const title = typeof body.title === 'string' ? body.title.trim().slice(0, 160) : ''
+  const hostName = typeof body.hostName === 'string' ? body.hostName.trim().slice(0, 160) : ''
+  const dateText = typeof body.dateText === 'string' ? body.dateText.trim().slice(0, 160) : ''
   const audience = body.audience as string
 
   if (!VALID_TYPES.includes(type as (typeof VALID_TYPES)[number])) {
@@ -90,14 +93,14 @@ export async function POST(request: NextRequest) {
     teamId: team.id,
     type: type as (typeof VALID_TYPES)[number],
     title,
-    description: typeof body.description === 'string' ? body.description.trim() : undefined,
+    description: typeof body.description === 'string' ? body.description.trim().slice(0, 800) : undefined,
     hostPersonId: typeof body.hostPersonId === 'string' ? body.hostPersonId : undefined,
     hostName,
-    city: typeof body.city === 'string' ? body.city.trim() : undefined,
-    state: typeof body.state === 'string' ? body.state.trim() : undefined,
-    venue: typeof body.venue === 'string' ? body.venue.trim() : undefined,
+    city: typeof body.city === 'string' ? body.city.trim().slice(0, 160) : undefined,
+    state: typeof body.state === 'string' ? body.state.trim().slice(0, 40) : undefined,
+    venue: typeof body.venue === 'string' ? body.venue.trim().slice(0, 200) : undefined,
     dateText,
-    timeText: typeof body.timeText === 'string' ? body.timeText.trim() : undefined,
+    timeText: typeof body.timeText === 'string' ? body.timeText.trim().slice(0, 80) : undefined,
     capacity: typeof body.capacity === 'number' ? body.capacity : undefined,
     audience: audience as (typeof VALID_AUDIENCES)[number],
     vibe,
