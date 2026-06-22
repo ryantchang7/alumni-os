@@ -19,7 +19,11 @@ export default function LandingPage() {
   )
   const eyebrow = useSiteContent('landing.eyebrow', 'Welcome to the')
   const primaryCta = useSiteContent('landing.primary-cta', 'Enter Clubhouse')
-  const secondaryCta = useSiteContent('landing.secondary-cta', 'Claim Alumni Profile')
+  const secondaryCta = useSiteContent('landing.secondary-cta', 'Claim Profile')
+  const claimNote = useSiteContent(
+    'landing.claim-note',
+    'For alumni and current players — find your name and make it yours.',
+  )
   const familyCta = useSiteContent('landing.family-cta', 'Family or affiliate? Join here →')
 
   useEffect(() => {
@@ -132,6 +136,18 @@ export default function LandingPage() {
             {secondaryCta}
           </Link>
         </motion.div>
+
+        {claimNote && (
+          <motion.p
+            className="mt-4 text-[12px] sm:text-[12.5px] text-white/75"
+            style={{ textShadow: '0 1px 8px rgba(10,22,40,0.45)' }}
+            initial={{ opacity: 0 }}
+            animate={ready ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ delay: 1.62, duration: 0.65, ease }}
+          >
+            {claimNote}
+          </motion.p>
+        )}
 
         {scopeNote && (
           <motion.p

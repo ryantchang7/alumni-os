@@ -409,7 +409,14 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
     label: 'Landing — secondary button label',
     hint: 'Button that goes to the claim flow.',
     kind: 'text',
-    default: 'Claim Alumni Profile',
+    default: 'Claim Profile',
+  },
+  {
+    id: 'landing.claim-note',
+    label: 'Landing — claim note (under buttons)',
+    hint: 'Small line under the buttons clarifying who can claim a profile.',
+    kind: 'text',
+    default: 'For alumni and current players — find your name and make it yours.',
   },
   {
     id: 'landing.family-cta',
