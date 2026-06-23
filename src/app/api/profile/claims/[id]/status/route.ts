@@ -15,6 +15,7 @@ import {
   updateProfileClaimRequestStatus,
 } from '@/lib/store/local-store'
 import { getCaptainEmails } from '@/lib/captains'
+import { notify, notifyMany } from '@/lib/notifications/notify'
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -67,6 +68,40 @@ export async function POST(request: Request, { params }: RouteParams) {
   const updated = await updateProfileClaimRequestStatus(id, status)
   if (!updated) {
     return NextResponse.json({ error: 'Claim request not found' }, { status: 404 })
+  }
+
+  // In-app + push notifications on approval. Additive, never blocks the
+  // response: notify() / notifyMany() swallow their own errors.
+  if (status === 'approved') {
+    // 1) Personal: welcome the newly-linked member.
+    if (claim.requesterAccountId) {
+      await notify(claim.requesterAccountId, {
+        type: 'approved',
+        title: "You're in — welcome to the Clubhouse",
+        body: 'Your Penn Golf membership is live. Tap to explore.',
+        href: '/player',
+      })
+    }
+    // 2) Community: tell the rest of the members someone just joined.
+    try {
+      const fresh = await readStore()
+      const newMemberName = claim.requesterName.split(/\s+/)[0] || claim.requesterName
+      const recipients = fresh.accounts
+        .filter(a => a.teamId === claim.teamId && a.linkedPersonId)
+        .map(a => a.id)
+      await notifyMany(
+        recipients,
+        {
+          type: 'new_member',
+          title: `${newMemberName} just joined the Clubhouse`,
+          body: 'Say hello in the Member Book.',
+          href: '/member-book',
+        },
+        { excludeAccountId: claim.requesterAccountId },
+      )
+    } catch (e) {
+      console.warn('[claim-approve-notify] broadcast setup failed:', e)
+    }
   }
 
   // Send notification email. Awaited so the serverless function doesn't

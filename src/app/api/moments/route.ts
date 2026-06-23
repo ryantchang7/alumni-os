@@ -12,6 +12,7 @@ import {
   readStore,
 } from '@/lib/store/local-store'
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
+import { notifyMany } from '@/lib/notifications/notify'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -128,6 +129,32 @@ export async function POST(request: Request) {
       ? (body.taggedPersonIds as unknown[]).filter((x): x is string => typeof x === 'string')
       : [],
   })
+
+  // Broadcast new PUBLIC moments to the rest of the members (community type —
+  // honors the mute; skips the poster). Locker-room-only moments are not
+  // broadcast (they'd leak the post's existence to people who can't see it).
+  // Additive; notifyMany swallows its own errors and never blocks the post.
+  if (audience === 'public') {
+    try {
+      const fresh = await readStore()
+      const posterFirst = (account.name ?? session.user?.name ?? 'A member').split(/\s+/)[0]
+      const recipients = fresh.accounts
+        .filter(a => a.teamId === team.id && a.linkedPersonId)
+        .map(a => a.id)
+      await notifyMany(
+        recipients,
+        {
+          type: 'new_moment',
+          title: `${posterFirst} shared a Moment`,
+          body: caption.slice(0, 120),
+          href: '/moments',
+        },
+        { excludeAccountId: account.id },
+      )
+    } catch (e) {
+      console.warn('[moment-notify] broadcast setup failed:', e)
+    }
+  }
 
   return NextResponse.json({ moment }, { status: 201 })
 }

@@ -91,3 +91,54 @@ self.addEventListener('fetch', (event) => {
     }),
   )
 })
+
+// ── Web Push ─────────────────────────────────────────────────────────────────
+// Added below the caching/offline logic above; the install/activate/fetch
+// handlers are untouched. These only run when a push arrives, which only
+// happens once VAPID keys are configured server-side and the user has
+// granted permission — otherwise they're dormant.
+
+// Show the notification pushed from the server. Payload is JSON:
+// { title, body, href?, tag? }.
+self.addEventListener('push', (event) => {
+  let data = {}
+  try {
+    data = event.data ? event.data.json() : {}
+  } catch (e) {
+    data = {}
+  }
+  const title = data.title || 'Penn Golf Clubhouse'
+  const options = {
+    body: data.body || '',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
+    tag: data.tag,
+    data: { href: data.href || '/' },
+  }
+  event.waitUntil(self.registration.showNotification(title, options))
+})
+
+// Clicking a notification focuses an existing Clubhouse tab (navigating it to
+// the target href) or opens a new one.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const href = (event.notification.data && event.notification.data.href) || '/'
+  const targetUrl = new URL(href, self.location.origin).href
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          // Reuse any open same-origin tab.
+          if (new URL(client.url).origin === self.location.origin && 'focus' in client) {
+            return client.focus().then((c) => {
+              if ('navigate' in c) return c.navigate(targetUrl)
+              return c
+            })
+          }
+        }
+        if (self.clients.openWindow) return self.clients.openWindow(targetUrl)
+        return undefined
+      }),
+  )
+})

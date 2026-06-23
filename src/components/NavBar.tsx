@@ -7,6 +7,7 @@ import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { FOUNDER_EMAILS } from '@/lib/badges'
+import NotificationBell from '@/components/NotificationBell'
 
 // Hall of Fame is intentionally not a top-level tab — lives under Clubhouse.
 // Chat is intentionally not a top-level tab — you start a chat from a
@@ -185,6 +186,7 @@ export default function NavBar() {
 
         {/* Right side */}
         <div className="hidden md:flex items-center gap-3">
+          <NotificationBell />
           <AccountAffordance />
           {isFounder && (
             <Link
@@ -196,16 +198,19 @@ export default function NavBar() {
           )}
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          type="button"
-          className="md:hidden text-gray-300 hover:text-white p-2 -mr-2"
-          onClick={() => setMobileOpen(v => !v)}
-          aria-label="Open navigation menu"
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        {/* Mobile: bell + hamburger */}
+        <div className="md:hidden flex items-center gap-1 -mr-2">
+          <NotificationBell />
+          <button
+            type="button"
+            className="text-gray-300 hover:text-white p-2"
+            onClick={() => setMobileOpen(v => !v)}
+            aria-label="Open navigation menu"
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile dropdown */}

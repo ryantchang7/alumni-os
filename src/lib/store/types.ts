@@ -332,6 +332,49 @@ export interface Account {
   /** Founder-granted captain access. Stacks on top of the hardcoded
    *  CAPTAIN_EMAILS_BY_TEAM list in src/lib/captains.ts. */
   manualCaptain?: boolean
+  /** When true, the member has opted OUT of community-wide notifications
+   *  (new member joined, new moment posted). Personal notifications
+   *  (a request addressed to them, their claim being approved) ignore this
+   *  flag and always send. Defaults to ON (undefined === not muted). */
+  mutedCommunityNotifications?: boolean
+}
+
+/**
+ * In-app notification shown in the NavBar bell. One row per (recipient,
+ * event). `type` distinguishes personal notifications (request/approved —
+ * always delivered) from community broadcasts (new_member/new_moment —
+ * suppressed when the recipient muted community updates). Stored newest-
+ * first and capped per account to protect the single JSON blob.
+ */
+export interface AppNotification {
+  id: string
+  /** Recipient account id — the only account that may read this row. */
+  accountId: string
+  type: 'request' | 'approved' | 'new_member' | 'new_moment'
+  title: string
+  body: string
+  /** Where clicking the notification takes the member (e.g. '/player'). */
+  href?: string
+  createdAt: string
+  /** ISO timestamp the recipient marked it read; undefined === unread. */
+  readAt?: string
+}
+
+/**
+ * A Web Push subscription endpoint for one account+device. Created when a
+ * member taps "Turn on notifications". Deduped by endpoint. Pruned when a
+ * push send returns 404/410 (subscription expired/unsubscribed at the
+ * push service). Inert unless VAPID keys are configured server-side.
+ */
+export interface PushSubscriptionRecord {
+  id: string
+  accountId: string
+  endpoint: string
+  keys: {
+    p256dh: string
+    auth: string
+  }
+  createdAt: string
 }
 
 /**
@@ -591,6 +634,11 @@ export interface Store {
   chatConversations: ChatConversation[]
   chatMessages: ChatMessage[]
   donations: Donation[]
+  /** In-app notifications, one row per (recipient, event). Capped per
+   * account in the store helpers to protect the single blob. */
+  notifications: AppNotification[]
+  /** Web Push subscription endpoints, deduped by endpoint. */
+  pushSubscriptions: PushSubscriptionRecord[]
   /** Captain-editable text + image overrides for content slots across the
    * site. Keys come from src/lib/site-content/slots.ts; values are either
    * plain strings (text slots) or URLs (image slots). */

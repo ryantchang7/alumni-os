@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireApprovedMember, requireFounder } from '@/lib/auth/guards'
 import { checkRateLimit, ipFromRequest } from '@/lib/rate-limit'
 import { verifyTurnstile } from '@/lib/turnstile'
+import { notify } from '@/lib/notifications/notify'
 import type { PlayerAlumniRequest } from '@/lib/store/types'
 
 const PURPOSE_LABELS: Record<string, string> = {
@@ -247,6 +248,22 @@ export async function POST(request: NextRequest) {
     additionalContext: additionalContext?.trim() || undefined,
     message: trimmedMessage,
   })
+
+  // Notify the target alumnus (if their account is linked). Additive — a
+  // notification failure never blocks the request itself. notify() handles
+  // its own errors so we just await it.
+  const recipient = store.accounts.find(
+    a => a.linkedPersonId === alumniPersonId && a.teamId === team.id,
+  )
+  if (recipient) {
+    const purposeLabel = PURPOSE_LABELS[purpose as string] ?? 'a request'
+    await notify(recipient.id, {
+      type: 'request',
+      title: `${trimmedName} reached out`,
+      body: `${purposeLabel} — open your requests to respond.`,
+      href: '/player/requests',
+    })
+  }
 
   return NextResponse.json({
     request: {

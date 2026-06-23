@@ -38,6 +38,8 @@ import type {
   ChatConversation,
   ChatMessage,
   Donation,
+  AppNotification,
+  PushSubscriptionRecord,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -95,6 +97,8 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.chatConversations) parsed.chatConversations = []
   if (!parsed.chatMessages) parsed.chatMessages = []
   if (!parsed.donations) parsed.donations = []
+  if (!parsed.notifications) parsed.notifications = []
+  if (!parsed.pushSubscriptions) parsed.pushSubscriptions = []
   if (!parsed.siteContent) parsed.siteContent = {}
   return parsed
 }
@@ -137,6 +141,8 @@ const EMPTY_STORE: Store = {
   chatConversations: [],
   chatMessages: [],
   donations: [],
+  notifications: [],
+  pushSubscriptions: [],
   siteContent: {},
 }
 
@@ -2146,4 +2152,182 @@ export async function getDonationTotalForTeam(teamId: string): Promise<{
     totalCents,
     recurringCount,
   }
+}
+
+// ── Notifications (in-app bell) ────────────────────────────────────────────────
+//
+// One JSON blob holds everyone's notifications, so every account is capped to
+// the newest N rows on write. All writes go through mutateStore (the
+// optimistic-concurrency path) because the bell is a concurrent surface:
+// a member can be reading their notifications while a broadcast lands.
+
+/** Max notifications retained per account. Older rows are dropped on insert. */
+const NOTIFICATIONS_PER_ACCOUNT_CAP = 50
+
+/**
+ * Append a notification for one recipient, then trim that account back to the
+ * newest NOTIFICATIONS_PER_ACCOUNT_CAP rows. Returns the created row.
+ */
+export async function addNotification(input: {
+  accountId: string
+  type: AppNotification['type']
+  title: string
+  body: string
+  href?: string
+}): Promise<AppNotification> {
+  const now = new Date().toISOString()
+  const notification: AppNotification = {
+    id: `ntf_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    accountId: input.accountId,
+    type: input.type,
+    title: input.title,
+    body: input.body,
+    href: input.href,
+    createdAt: now,
+  }
+  return mutateStore(store => {
+    store.notifications.push(notification)
+    // Trim this account to the newest CAP rows (keep other accounts intact).
+    const mine = store.notifications
+      .filter(n => n.accountId === input.accountId)
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    if (mine.length > NOTIFICATIONS_PER_ACCOUNT_CAP) {
+      const keep = new Set(mine.slice(0, NOTIFICATIONS_PER_ACCOUNT_CAP).map(n => n.id))
+      store.notifications = store.notifications.filter(
+        n => n.accountId !== input.accountId || keep.has(n.id),
+      )
+    }
+    return notification
+  })
+}
+
+/** A recipient's notifications, newest first, plus an unread count. */
+export async function getNotificationsForAccount(
+  accountId: string,
+  limit = NOTIFICATIONS_PER_ACCOUNT_CAP,
+): Promise<{ notifications: AppNotification[]; unreadCount: number }> {
+  const store = await readStore()
+  const mine = store.notifications
+    .filter(n => n.accountId === accountId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  const unreadCount = mine.filter(n => !n.readAt).length
+  return { notifications: mine.slice(0, limit), unreadCount }
+}
+
+/**
+ * Mark one notification (by id) or ALL of this account's notifications read.
+ * Strictly scoped: a caller can never mark another account's rows read —
+ * the id path also checks ownership. Returns how many rows were updated.
+ */
+export async function markNotificationsRead(
+  accountId: string,
+  opts: { id?: string; all?: boolean },
+): Promise<number> {
+  const now = new Date().toISOString()
+  return mutateStore(store => {
+    let updated = 0
+    for (let i = 0; i < store.notifications.length; i++) {
+      const n = store.notifications[i]
+      if (n.accountId !== accountId) continue
+      if (!opts.all && n.id !== opts.id) continue
+      if (n.readAt) continue
+      store.notifications[i] = { ...n, readAt: now }
+      updated++
+    }
+    return updated
+  })
+}
+
+// ── Push subscriptions (Web Push) ──────────────────────────────────────────────
+
+/** All push subscriptions for an account (one per installed device/browser). */
+export async function getPushSubscriptionsForAccount(
+  accountId: string,
+): Promise<PushSubscriptionRecord[]> {
+  const store = await readStore()
+  return store.pushSubscriptions.filter(s => s.accountId === accountId)
+}
+
+/**
+ * Store a push subscription for an account, deduped by endpoint. If the same
+ * endpoint already exists we refresh its keys + owner rather than adding a
+ * second row (the same browser re-subscribing after a key rotation).
+ */
+export async function addPushSubscription(input: {
+  accountId: string
+  endpoint: string
+  keys: { p256dh: string; auth: string }
+}): Promise<PushSubscriptionRecord> {
+  const now = new Date().toISOString()
+  return mutateStore(store => {
+    const idx = store.pushSubscriptions.findIndex(s => s.endpoint === input.endpoint)
+    if (idx !== -1) {
+      store.pushSubscriptions[idx] = {
+        ...store.pushSubscriptions[idx],
+        accountId: input.accountId,
+        keys: input.keys,
+      }
+      return store.pushSubscriptions[idx]
+    }
+    const record: PushSubscriptionRecord = {
+      id: `psub_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      accountId: input.accountId,
+      endpoint: input.endpoint,
+      keys: input.keys,
+      createdAt: now,
+    }
+    store.pushSubscriptions.push(record)
+    return record
+  })
+}
+
+/**
+ * Remove a push subscription by endpoint. Scoped to the caller's account so a
+ * member can't delete someone else's subscription. Returns true if removed.
+ */
+export async function removePushSubscription(
+  accountId: string,
+  endpoint: string,
+): Promise<boolean> {
+  return mutateStore(store => {
+    const before = store.pushSubscriptions.length
+    store.pushSubscriptions = store.pushSubscriptions.filter(
+      s => !(s.accountId === accountId && s.endpoint === endpoint),
+    )
+    return store.pushSubscriptions.length < before
+  })
+}
+
+/**
+ * Prune dead subscriptions by endpoint, regardless of owner. Called when a
+ * push send returns 404/410 (Gone) — the subscription no longer exists at the
+ * push service, so we drop it everywhere.
+ */
+export async function prunePushSubscriptionsByEndpoints(
+  endpoints: string[],
+): Promise<number> {
+  if (endpoints.length === 0) return 0
+  const dead = new Set(endpoints)
+  return mutateStore(store => {
+    const before = store.pushSubscriptions.length
+    store.pushSubscriptions = store.pushSubscriptions.filter(s => !dead.has(s.endpoint))
+    return before - store.pushSubscriptions.length
+  })
+}
+
+/** Flip the community-updates mute on an account. Returns the patched row. */
+export async function setMutedCommunityNotifications(
+  accountId: string,
+  muted: boolean,
+): Promise<Account | null> {
+  return mutateStore(store => {
+    const idx = store.accounts.findIndex(a => a.id === accountId)
+    if (idx === -1) return null
+    const next: Account = { ...store.accounts[idx] }
+    if (muted) next.mutedCommunityNotifications = true
+    else delete next.mutedCommunityNotifications
+    next.updatedAt = new Date().toISOString()
+    store.accounts[idx] = next
+    return next
+  })
 }

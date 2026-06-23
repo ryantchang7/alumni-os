@@ -12,6 +12,7 @@ import {
   getAccountById,
   readStore,
 } from '@/lib/store/local-store'
+import { notifyMany } from '@/lib/notifications/notify'
 
 const BODY_MIN = 1
 const BODY_MAX = 4000
@@ -81,5 +82,19 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   if (!message) {
     return NextResponse.json({ error: 'Failed to create message' }, { status: 500 })
   }
+
+  // Notify the other participants. Type 'request' (personal — ignores the
+  // community mute). Additive; notifyMany swallows its own errors.
+  await notifyMany(
+    g.convo.memberAccountIds,
+    {
+      type: 'request',
+      title: `New message from ${fromName}`,
+      body: raw.slice(0, 120),
+      href: `/chat/${g.convo.id}`,
+    },
+    { excludeAccountId: g.session.accountId! },
+  )
+
   return NextResponse.json({ message }, { status: 201 })
 }

@@ -11,6 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
+import { notify } from '@/lib/notifications/notify'
 
 export async function POST(request: NextRequest) {
   const session = await auth()
@@ -85,6 +86,23 @@ export async function POST(request: NextRequest) {
     fromEmail: account.email,
     note,
   })
+
+  // In-app + push notification to the host (when their account is linked).
+  // Additive; notify() swallows its own errors and never blocks the RSVP.
+  if (gathering.hostPersonId) {
+    const hostAccount = store.accounts.find(
+      a => a.linkedPersonId === gathering.hostPersonId && a.teamId === team.id,
+    )
+    if (hostAccount && hostAccount.id !== account.id) {
+      const gatheringHref = gathering.type === 'round' ? '/the-course' : '/19th-hole'
+      await notify(hostAccount.id, {
+        type: 'request',
+        title: `${fromName} is in for "${gathering.title}"`,
+        body: 'A new RSVP just landed. Tap to see the sheet.',
+        href: gatheringHref,
+      })
+    }
+  }
 
   // Send confirmation + host notification. Awaited so Vercel doesn't
   // terminate the function before delivery.

@@ -95,7 +95,7 @@ export default function InstallAppBanner() {
             </p>
           ) : (
             <p className="mt-0.5 text-[12px] leading-snug text-white/70">
-              Open the Clubhouse like an app — one tap.
+              Add it to your home screen — a full app is coming as the family grows.
             </p>
           )}
         </div>
