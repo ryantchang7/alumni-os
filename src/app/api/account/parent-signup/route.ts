@@ -17,8 +17,6 @@ import {
   createProfileClaimRequest,
   getAccountById,
 } from '@/lib/store/local-store'
-import { ipFromRequest } from '@/lib/rate-limit'
-import { verifyTurnstile } from '@/lib/turnstile'
 import type {
   Person,
   TeamMembership,
@@ -56,17 +54,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  // CAPTCHA (Cloudflare Turnstile). No-op fail-open until TURNSTILE_SECRET_KEY
-  // is set — behavior is identical to today until keys exist.
-  const turnstileToken =
-    typeof body.turnstileToken === 'string' ? body.turnstileToken : undefined
-  const captchaOk = await verifyTurnstile(turnstileToken, ipFromRequest(request))
-  if (!captchaOk) {
-    return NextResponse.json(
-      { error: 'Verification failed — please try again.' },
-      { status: 403 },
-    )
-  }
+  // Turnstile is intentionally omitted here: this endpoint already requires a
+  // signed-in session (checked above) and the post-OAuth auto-submit can't
+  // carry a fresh CAPTCHA token. /api/profile/claim and /api/player/requests
+  // keep Turnstile.
 
   const name = typeof body.name === 'string' ? body.name.trim() : ''
   const relationship =

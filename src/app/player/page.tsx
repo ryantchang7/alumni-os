@@ -386,7 +386,7 @@ function ClubhouseInner() {
           <HeroCrest src={crestImage} alt="Penn Golf crest" />
           <div className="min-w-0 flex-1">
             <motion.p
-              className="text-xs text-gray-500 uppercase tracking-widest mb-3"
+              className="text-xs text-white/35 uppercase tracking-widest mb-3"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
@@ -402,7 +402,7 @@ function ClubhouseInner() {
               Welcome to the Penn Golf Clubhouse.
             </motion.h1>
             <motion.p
-              className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl"
+              className="text-white/55 text-sm sm:text-base mt-2 max-w-xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35 }}

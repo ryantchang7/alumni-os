@@ -290,9 +290,9 @@ export default function AskClient() {
       <div className="min-h-screen bg-[#f8f5f0]">
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
           <div className="max-w-[680px] mx-auto">
-            <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Penn Golf · Clubhouse</p>
+            <p className="text-xs text-white/35 uppercase tracking-widest mb-3">Penn Golf · Clubhouse</p>
             <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Request sent.</h1>
-            <p className="text-gray-400 text-sm mt-2">Your message is in {first}&rsquo;s Clubhouse inbox.</p>
+            <p className="text-white/55 text-sm mt-2">Your message is in {first}&rsquo;s Clubhouse inbox.</p>
           </div>
         </div>
         <div className="max-w-[680px] mx-auto px-6 sm:px-8 py-10">
@@ -327,11 +327,11 @@ export default function AskClient() {
       {/* Header */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
         <div className="max-w-[680px] mx-auto">
-          <Link href="/player" className="text-xs text-gray-400 hover:text-gray-200 mb-3 inline-block">
+          <Link href="/player" className="text-xs text-white/55 hover:text-gray-200 mb-3 inline-block">
             &larr; Clubhouse
           </Link>
           <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Send a request</h1>
-          <p className="text-gray-400 text-sm mt-2">
+          <p className="text-white/55 text-sm mt-2">
             Find an alum. Ask for what you need. Four quick steps. We&rsquo;ll draft the note for you.
           </p>
         </div>

@@ -152,7 +152,7 @@ export default function HallOfFamePage() {
                   </span>
                 </div>
                 {members.length === 0 ? (
-                  <p className="text-[12.5px] text-[#8a7f70] italic">Pulling this roster from the archive.</p>
+                  <p className="text-[12.5px] text-[#8a7f70] italic">Roster data for this year is still being compiled.</p>
                 ) : (
                   <ul className="space-y-1">
                     {members.map((m) => (
@@ -225,7 +225,7 @@ export default function HallOfFamePage() {
               className="text-[#0a1628] text-base font-medium"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
-              Every Penn Golf member, 1948–2025
+              Every Penn Golf member, 1948–present
             </p>
             <p className="text-[12.5px] text-[#8a7f70] mt-1">
               The full registry, beyond championship rosters.

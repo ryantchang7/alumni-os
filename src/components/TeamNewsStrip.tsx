@@ -32,7 +32,7 @@ function PlaceholderThumb() {
   )
 }
 
-function NewsThumb({ src }: { src: string }) {
+function NewsThumb({ src, alt }: { src: string; alt: string }) {
   const [errored, setErrored] = useState(false)
   if (errored) return <PlaceholderThumb />
   // Route through wsrv.nl — a battle-tested public image proxy. Our own
@@ -48,7 +48,7 @@ function NewsThumb({ src }: { src: string }) {
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={proxied}
-      alt=""
+      alt={alt}
       className="w-full h-32 object-contain bg-[#0a1628]"
       loading="lazy"
       onError={() => setErrored(true)}
@@ -99,7 +99,7 @@ export default function TeamNewsStrip({ items }: Props) {
             className="group block bg-white border border-[rgba(180,168,150,0.4)] rounded-xl overflow-hidden hover:shadow-md transition-shadow"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            {item.imageUrl ? <NewsThumb src={item.imageUrl} /> : <PlaceholderThumb />}
+            {item.imageUrl ? <NewsThumb src={item.imageUrl} alt={item.title || 'Article thumbnail'} /> : <PlaceholderThumb />}
             <div className="p-4">
               <p
                 className="text-[#0a1628] text-[13.5px] font-medium leading-snug line-clamp-3 group-hover:text-[#990000] transition-colors"

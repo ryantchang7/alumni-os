@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { useSession, signIn } from 'next-auth/react'
 import { ArrowLeft, Heart } from 'lucide-react'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
-import TurnstileWidget from '@/components/TurnstileWidget'
 
 // Stash the form across the Google OAuth round-trip so the user doesn't
 // have to retype after sign-in. sessionStorage clears on tab close, which
@@ -64,9 +63,6 @@ export default function ParentSignupPage() {
   const [relationship, setRelationship] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  // CAPTCHA token — null until solved (or when no Turnstile key is configured,
-  // in which case the widget never renders and the server skips verification).
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   // Guard so we only run the post-OAuth auto-restore + auto-submit once.
   const autoRanRef = useRef(false)
 
@@ -83,7 +79,6 @@ export default function ParentSignupPage() {
           body: JSON.stringify({
             name: payload.name.trim(),
             relationship: payload.relationship.trim(),
-            turnstileToken: turnstileToken ?? undefined,
           }),
         })
         const j = await res.json().catch(() => ({}))
@@ -102,7 +97,7 @@ export default function ParentSignupPage() {
         setSubmitting(false)
       }
     },
-    [router, turnstileToken],
+    [router],
   )
 
   // Post-OAuth resume: if we land back here signed-in with a stored
@@ -217,8 +212,6 @@ export default function ParentSignupPage() {
                 <p className="text-[13px] text-[#990000]">{error}</p>
               </div>
             )}
-
-            <TurnstileWidget onToken={setTurnstileToken} />
 
             <div className="flex items-center gap-4 pt-2">
               <button

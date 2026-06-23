@@ -59,6 +59,8 @@ const SUPPORT_CARDS = [
 ]
 
 export default async function TeamRoomPage() {
+  const y = new Date().getFullYear()
+  const rosterLabel = `${y}–${String(y + 1).slice(2)} Roster`
   const { readStore, getTeamBySlug, getRecentTeamNewsItems, getSeasonUpdatesForTeam } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
@@ -139,9 +141,9 @@ export default async function TeamRoomPage() {
             since it's the most "current team" thing here */}
         {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
 
-        {/* 2026-27 Roster */}
+        {/* Current season roster */}
         <section>
-          <h2 className="text-base font-semibold text-[#0a1628] mb-1">2026-27 Roster</h2>
+          <h2 className="text-base font-semibold text-[#0a1628] mb-1">{rosterLabel}</h2>
           <p className="text-sm text-[#8a7f70] mb-6">Current players on the Penn Men&apos;s Golf team.</p>
           {currentPlayers.length === 0 ? (
             <p className="text-sm text-[#8a7f70]">Roster will appear here once players are added to the Clubhouse.</p>
@@ -249,24 +251,16 @@ export default async function TeamRoomPage() {
               ))}
             </ol>
           ) : (
-            <div className="relative overflow-hidden rounded-xl">
-              <div
-                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-12 text-center opacity-50 select-none"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-                aria-hidden="true"
-              >
-                <p className="text-sm font-semibold text-[#0a1628]">
-                  Live qualifying, tournament results, and stats are coming soon.
-                </p>
-                <p className="text-xs text-[#8a7f70] mt-2 max-w-md mx-auto">
-                  We&apos;ll sync the season feed here once it&apos;s ready — scores, finishes, and who&apos;s in contention for the Ivy title.
-                </p>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white bg-[#0a1628]/90 px-4 py-2 rounded-full shadow-[0_2px_18px_rgba(10,22,40,0.35)]">
-                  Work in progress
-                </span>
-              </div>
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-12 text-center"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+            >
+              <p className="text-sm font-semibold text-[#0a1628]">
+                Live qualifying, tournament results, and stats are coming soon.
+              </p>
+              <p className="text-xs text-[#8a7f70] mt-2 max-w-md mx-auto">
+                Updates will appear here as the season unfolds.
+              </p>
             </div>
           )}
         </section>

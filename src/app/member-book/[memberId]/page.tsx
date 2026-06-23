@@ -281,7 +281,7 @@ export default async function MemberDetailPage({
               )}
               {!years && totalLetters === 0 && totalSeasons === 0 && (
                 <p className="text-[14px] text-[#8a7f70] italic">
-                  Years and letter history coming as the archive is reconciled.
+                  Historical records for this era are limited.
                 </p>
               )}
             </Section>

@@ -201,7 +201,8 @@ export default function NavBar() {
           type="button"
           className="md:hidden text-gray-300 hover:text-white p-2 -mr-2"
           onClick={() => setMobileOpen(v => !v)}
-          aria-label="Toggle menu"
+          aria-label="Open navigation menu"
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>

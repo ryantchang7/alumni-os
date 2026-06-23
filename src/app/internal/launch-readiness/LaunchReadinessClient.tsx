@@ -159,7 +159,7 @@ export default function LaunchReadinessClient({
             : 'No AUTH_URL / NEXTAUTH_URL / NEXT_PUBLIC_BASE_URL set.',
           hint: productionUrl.looksProduction
             ? undefined
-            : 'Google OAuth callback must match exactly: https://penngolfclubhouse.com/api/auth/callback/google',
+            : 'Google OAuth callback must match exactly: https://www.penngolfclubhouse.com/api/auth/callback/google',
         },
       ],
     },
