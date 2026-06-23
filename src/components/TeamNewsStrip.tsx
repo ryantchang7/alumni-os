@@ -109,7 +109,7 @@ export default function TeamNewsStrip({ items }: Props) {
               </p>
               <p className="text-[10.5px] text-[#8a7f70] mt-2 flex items-center gap-1">
                 {timeAgo(item.publishedAt)}
-                <ArrowUpRight className="w-2.5 h-2.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                <ArrowUpRight className="w-2.5 h-2.5 ml-auto opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity" />
               </p>
             </div>
           </a>

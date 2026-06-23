@@ -317,7 +317,7 @@ export default function SupportClient({ status }: Props) {
                       {tier.name}
                     </p>
                     {tier.accent && (
-                      <span className="text-[9.5px] font-semibold uppercase tracking-[0.14em] bg-[#c8a84b]/15 text-[#7a6420] px-2 py-1 rounded-full">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.14em] bg-[#c8a84b]/15 text-[#7a6420] px-2 py-1 rounded-full">
                         Most support
                       </span>
                     )}

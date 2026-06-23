@@ -125,7 +125,7 @@ export default function ClaimsManager() {
                 {claim.status}
               </span>
               {claim.requesterAccountId && (
-                <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/10 border border-[#2d6a4f]/25 px-2 py-0.5 rounded-full">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/10 border border-[#2d6a4f]/25 px-2 py-0.5 rounded-full">
                   Google verified
                 </span>
               )}

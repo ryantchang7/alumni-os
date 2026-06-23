@@ -116,7 +116,7 @@ export default function CourseRoll({ entries }: Props) {
                       {entry.course}
                     </span>
                     {entry.isHomeForAnyone && (
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
                         Home course
                       </span>
                     )}
@@ -142,7 +142,7 @@ export default function CourseRoll({ entries }: Props) {
                             <span className="truncate">{m.name}</span>
                           </span>
                           {m.isHome && (
-                            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] whitespace-nowrap">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] whitespace-nowrap">
                               Home
                             </span>
                           )}

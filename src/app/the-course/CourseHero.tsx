@@ -384,7 +384,7 @@ function TeeSheet({
                         </p>
                       )}
                     </div>
-                    <span className="text-[10.5px] uppercase tracking-[0.16em] text-[#0a1628] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <span className="text-[10.5px] uppercase tracking-[0.16em] text-[#0a1628] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity whitespace-nowrap">
                       Pick →
                     </span>
                   </div>

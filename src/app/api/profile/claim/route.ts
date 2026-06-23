@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createProfileClaimRequest, getTeamBySlug } from '@/lib/store/local-store'
 import { checkRateLimit, ipFromRequest } from '@/lib/rate-limit'
+import { verifyTurnstile } from '@/lib/turnstile'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -8,9 +9,8 @@ export async function POST(request: Request) {
   // Public, unauthenticated endpoint that also emails the captain — rate-limit
   // per IP before any heavy work. Generous window so no real alum hits it; the
   // limiter fails open if Redis is down (legitimate signups never blocked).
-  // TODO: CAPTCHA — add a provider-keyed challenge here as a stronger
-  // anti-abuse layer once a CAPTCHA provider key is available.
-  const { ok } = await checkRateLimit(`claim:${ipFromRequest(request)}`, 6, 600)
+  const ip = ipFromRequest(request)
+  const { ok } = await checkRateLimit(`claim:${ip}`, 6, 600)
   if (!ok) {
     return NextResponse.json(
       { error: 'Too many requests — please try again in a few minutes.' },
@@ -25,7 +25,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { memberId, requesterName, requesterEmail, pennGolfYears, note } = body as Record<string, unknown>
+  const { memberId, requesterName, requesterEmail, pennGolfYears, note, turnstileToken } =
+    body as Record<string, unknown>
+
+  // CAPTCHA (Cloudflare Turnstile). No-op fail-open until TURNSTILE_SECRET_KEY
+  // is set — behavior is identical to today until keys exist.
+  const captchaOk = await verifyTurnstile(
+    typeof turnstileToken === 'string' ? turnstileToken : undefined,
+    ip,
+  )
+  if (!captchaOk) {
+    return NextResponse.json(
+      { error: 'Verification failed — please try again.' },
+      { status: 403 },
+    )
+  }
 
   if (!memberId || typeof memberId !== 'string') {
     return NextResponse.json({ error: 'Missing memberId' }, { status: 400 })

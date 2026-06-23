@@ -178,7 +178,7 @@ function TraditionSection() {
             style={{ backgroundImage: 'repeating-linear-gradient(0deg, white, white 1px, transparent 1px, transparent 22px)' }}
           />
           <div className="relative">
-            <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/35 mb-2.5">Penn Men&apos;s Golf</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/35 mb-2.5">Penn Men&apos;s Golf</p>
             <h2
               className="text-xl sm:text-2xl font-medium text-white leading-tight mb-2"
               style={{ fontFamily: 'var(--font-playfair)' }}
@@ -273,7 +273,7 @@ function MiniMemberCard({ profile, teamSlug }: { profile: PlayerProfile; teamSlu
       <div className="flex items-start justify-between gap-1 mb-1">
         <p className="font-semibold text-[#0a1628] text-xs leading-snug truncate">{profile.canonicalName}</p>
         {isCurrentPlayer && (
-          <span className="flex-shrink-0 text-[9px] font-semibold text-[#2d6a4f] bg-[#2d6a4f]/10 px-1.5 py-0.5 rounded-full">
+          <span className="flex-shrink-0 text-[11px] font-semibold text-[#2d6a4f] bg-[#2d6a4f]/10 px-1.5 py-0.5 rounded-full">
             Player
           </span>
         )}
@@ -554,10 +554,14 @@ function ClubhouseInner() {
                     <p className="text-[10px] font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
                       Current Players
                     </p>
-                    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                      {currentPlayers.map(p => (
-                        <MiniMemberCard key={p.personId} profile={p} teamSlug={teamSlug} />
-                      ))}
+                    <div className="relative">
+                      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                        {currentPlayers.map(p => (
+                          <MiniMemberCard key={p.personId} profile={p} teamSlug={teamSlug} />
+                        ))}
+                      </div>
+                      {/* Right-edge fade hints more cards scroll into view. */}
+                      <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white to-transparent" />
                     </div>
                   </div>
                 )}
@@ -568,19 +572,23 @@ function ClubhouseInner() {
                     <p className="text-[10px] font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
                       Alumni
                     </p>
-                    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                      {alumni.slice(0, 12).map(p => (
-                        <MiniMemberCard key={p.personId} profile={p} teamSlug={teamSlug} />
-                      ))}
-                      {alumni.length > 12 && (
-                        <Link
-                          href="/member-book"
-                          className="flex-shrink-0 w-[140px] bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 flex flex-col items-center justify-center hover:bg-white transition-colors"
-                        >
-                          <p className="text-xs font-semibold text-[#0a1628]">All {TOTAL_MEMBERS} members</p>
-                          <p className="text-[10px] text-[#990000] mt-1">Open Member Book &rarr;</p>
-                        </Link>
-                      )}
+                    <div className="relative">
+                      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                        {alumni.slice(0, 12).map(p => (
+                          <MiniMemberCard key={p.personId} profile={p} teamSlug={teamSlug} />
+                        ))}
+                        {alumni.length > 12 && (
+                          <Link
+                            href="/member-book"
+                            className="flex-shrink-0 w-[140px] bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 flex flex-col items-center justify-center hover:bg-white transition-colors"
+                          >
+                            <p className="text-xs font-semibold text-[#0a1628]">All {TOTAL_MEMBERS} members</p>
+                            <p className="text-[10px] text-[#990000] mt-1">Open Member Book &rarr;</p>
+                          </Link>
+                        )}
+                      </div>
+                      {/* Right-edge fade hints more cards scroll into view. */}
+                      <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white to-transparent" />
                     </div>
                   </div>
                 )}

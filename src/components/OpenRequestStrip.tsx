@@ -175,7 +175,7 @@ export default function OpenRequestStrip({
                   {INTENT_LABEL[req.intent]}
                 </span>
                 {req.guestFeesOffered && (
-                  <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
                     Guest fees on me
                   </span>
                 )}

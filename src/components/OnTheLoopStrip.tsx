@@ -141,7 +141,7 @@ export default function OnTheLoopStrip({ approved }: Props) {
                   &ldquo;{m.note}&rdquo;
                 </p>
               )}
-              <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#990000] mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#990000] mt-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                 Say hello →
               </p>
             </Link>

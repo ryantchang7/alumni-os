@@ -2,24 +2,16 @@
  * Daily news refresh cron. Pulls the Penn Athletics RSS feed for men's
  * golf and upserts new items (dedupe by sourceUrl).
  *
- * Auth: Authorization: Bearer <CRON_SECRET>. Vercel Cron handles this
- * header automatically when CRON_SECRET is set.
+ * Auth: Authorization: Bearer <CRON_SECRET> (header-only, constant-time
+ * compared). Vercel Cron handles this header automatically when CRON_SECRET
+ * is set.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-
-function checkAuth(req: NextRequest): boolean {
-  const secret = process.env.CRON_SECRET
-  if (!secret) return process.env.NODE_ENV !== 'production'
-  const header = req.headers.get('authorization') ?? ''
-  if (header === `Bearer ${secret}`) return true
-  // Also accept ?secret=... so the cron can be manually triggered from a
-  // browser (useful for the first run after deploy).
-  return req.nextUrl.searchParams.get('secret') === secret
-}
+import { checkCronAuth } from '@/lib/cron-auth'
 
 export async function GET(req: NextRequest) {
-  if (!checkAuth(req)) {
+  if (!checkCronAuth(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

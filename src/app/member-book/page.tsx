@@ -151,7 +151,7 @@ function RegistryEntry({
             </div>
           </div>
           {member.role === 'coach' ? (
-            <span className="inline-flex items-center gap-1 text-[9.5px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full text-[#c8a84b] bg-[#0a1628] border border-[#c8a84b]/55 whitespace-nowrap mt-1">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full text-[#c8a84b] bg-[#0a1628] border border-[#c8a84b]/55 whitespace-nowrap mt-1">
               Coach
             </span>
           ) : isCurrent ? (
@@ -160,7 +160,7 @@ function RegistryEntry({
             </span>
           ) : null}
         </div>
-        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
           View Member &rarr;
         </p>
       </Link>
@@ -238,7 +238,7 @@ function FamilyRegistryEntry({
             )}
           </div>
         </div>
-        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
           View profile &rarr;
         </p>
       </Link>

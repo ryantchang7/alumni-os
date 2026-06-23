@@ -58,7 +58,7 @@ function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
             </div>
             </div>
           </div>
-          <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-2 py-1 rounded-full whitespace-nowrap">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-2 py-1 rounded-full whitespace-nowrap">
             Open
           </span>
         </div>
@@ -73,7 +73,7 @@ function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
             &ldquo;{enrichment.favoriteCourses}&rdquo;
           </p>
         )}
-        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#990000] mt-3 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#990000] mt-3 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center gap-1">
           Send a note <ArrowRight className="w-3 h-3" />
         </span>
       </div>

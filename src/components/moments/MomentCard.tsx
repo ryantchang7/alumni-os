@@ -256,7 +256,7 @@ export default function MomentCard({
           />
         )}
         {showLockerPill && moment.audience === 'locker-room' ? (
-          <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#0a1628]/90 backdrop-blur-sm text-[#c8a84b] text-[9.5px] font-semibold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full border border-[#c8a84b]/55">
+          <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#0a1628]/90 backdrop-blur-sm text-[#c8a84b] text-[11px] font-semibold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full border border-[#c8a84b]/55">
             <Lock className="w-2.5 h-2.5" />
             Locker Room
           </span>

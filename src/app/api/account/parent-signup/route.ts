@@ -17,6 +17,8 @@ import {
   createProfileClaimRequest,
   getAccountById,
 } from '@/lib/store/local-store'
+import { ipFromRequest } from '@/lib/rate-limit'
+import { verifyTurnstile } from '@/lib/turnstile'
 import type {
   Person,
   TeamMembership,
@@ -52,6 +54,18 @@ export async function POST(request: Request) {
     body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  // CAPTCHA (Cloudflare Turnstile). No-op fail-open until TURNSTILE_SECRET_KEY
+  // is set — behavior is identical to today until keys exist.
+  const turnstileToken =
+    typeof body.turnstileToken === 'string' ? body.turnstileToken : undefined
+  const captchaOk = await verifyTurnstile(turnstileToken, ipFromRequest(request))
+  if (!captchaOk) {
+    return NextResponse.json(
+      { error: 'Verification failed — please try again.' },
+      { status: 403 },
+    )
   }
 
   const name = typeof body.name === 'string' ? body.name.trim() : ''

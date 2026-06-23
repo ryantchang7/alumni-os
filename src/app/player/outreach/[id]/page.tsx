@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
+import TurnstileWidget from '@/components/TurnstileWidget'
 
 interface PlayerProfile {
   personId: string
@@ -160,6 +161,8 @@ function OutreachPageInner() {
   const [submitting, setSubmitting] = useState(false)
   const [requestSent, setRequestSent] = useState(false)
   const [requestError, setRequestError] = useState<string | null>(null)
+  // CAPTCHA token — null until solved (or when no Turnstile key is configured).
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   useEffect(() => {
     fetch(`/api/player/profiles/${id}?teamSlug=${teamSlug}`)
@@ -198,6 +201,7 @@ function OutreachPageInner() {
           fromEmail: fromEmail.trim() || undefined,
           purpose,
           message: displayDraft,
+          turnstileToken: turnstileToken ?? undefined,
         }),
       })
       if (!res.ok) {
@@ -499,6 +503,7 @@ function OutreachPageInner() {
                 {requestError && (
                   <p className="text-xs text-[#990000]">{requestError}</p>
                 )}
+                <TurnstileWidget onToken={setTurnstileToken} />
                 <button
                   type="button"
                   onClick={handleSendRequest}

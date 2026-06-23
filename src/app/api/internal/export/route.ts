@@ -5,9 +5,10 @@
  * snapshot so the caller (or the daily cron) can confirm it landed.
  *
  * Auth: EITHER a valid founder session (requireFounder) OR the cron secret
- * (Authorization: Bearer <CRON_SECRET>, mirroring /api/cron/refresh-news).
- * In non-production the cron path falls open exactly like refresh-news so the
- * backup can be exercised locally without a secret set.
+ * (Authorization: Bearer <CRON_SECRET>, header-only + constant-time compared,
+ * mirroring /api/cron/refresh-news). In non-production the cron path falls
+ * open exactly like refresh-news so the backup can be exercised locally
+ * without a secret set.
  *
  * Requires BLOB_READ_WRITE_TOKEN (same env var as the upload route). Without
  * it the route 503s with a clear message instead of throwing.
@@ -17,17 +18,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { requireFounder } from '@/lib/auth/guards'
 import { readStore } from '@/lib/store/local-store'
-
-// Mirrors checkAuth() in /api/cron/refresh-news: accept the cron Bearer token,
-// also accept ?secret=... for manual browser triggers, and fall open only in
-// non-production when no secret is configured.
-function checkCronAuth(req: NextRequest): boolean {
-  const secret = process.env.CRON_SECRET
-  if (!secret) return process.env.NODE_ENV !== 'production'
-  const header = req.headers.get('authorization') ?? ''
-  if (header === `Bearer ${secret}`) return true
-  return req.nextUrl.searchParams.get('secret') === secret
-}
+import { checkCronAuth } from '@/lib/cron-auth'
 
 export async function GET(req: NextRequest) {
   // Either gate is sufficient. Check the cron secret first (cheap, header-only),

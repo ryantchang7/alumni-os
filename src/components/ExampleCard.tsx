@@ -33,7 +33,7 @@ export default function ExampleCard({
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
       <span
-        className="absolute top-3 right-3 text-[9px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-full border bg-white text-[#8a7f70] border-[#8a7f70]/30"
+        className="absolute top-3 right-3 text-[11px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-full border bg-white text-[#8a7f70] border-[#8a7f70]/30"
         title="Example — not a real event"
       >
         Example
@@ -41,7 +41,7 @@ export default function ExampleCard({
       <div className="flex items-center gap-2 mb-1.5">
         {kind && (
           <span
-            className="text-[9.5px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-full border"
+            className="text-[11px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-full border"
             style={{
               color: kindAccent,
               backgroundColor: `${kindAccent}10`,

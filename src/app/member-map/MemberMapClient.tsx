@@ -172,17 +172,17 @@ function ContextualRow({ member }: { member: MapMember }) {
           </div>
         </div>
         {isCP && (
-          <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap mt-0.5">
+          <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap mt-0.5">
             Current
           </span>
         )}
         {isParent && (
-          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full text-[#990000] bg-[#990000]/8 border border-[#990000]/30 whitespace-nowrap mt-0.5">
+          <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full text-[#990000] bg-[#990000]/8 border border-[#990000]/30 whitespace-nowrap mt-0.5">
             Family
           </span>
         )}
       </div>
-      <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
         View Member &rarr;
       </p>
     </Link>
@@ -473,7 +473,7 @@ export default function MemberMapClient({
 
         <div className="flex items-end gap-4 flex-wrap pt-1">
           <div>
-            <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-1.5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-1.5">
               State
             </p>
             <select

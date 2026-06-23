@@ -6,8 +6,14 @@ import {
   readStore,
 } from '@/lib/store/local-store'
 import { buildAgentSummary } from '@/lib/agent/build-agent-summary'
+import { requireFounder } from '@/lib/auth/guards'
 
 export async function GET(request: Request) {
+  // Builder-only tooling (sole caller: /builder/agent). Exposes internal roster
+  // + enrichment counts → founder-gated.
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')
 

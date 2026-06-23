@@ -4,32 +4,21 @@
  * the Clubhouse this week" — new members, new gatherings, new asks/offers,
  * new Moments, and recent Penn Athletics news.
  *
- * Guards on Authorization: Bearer <CRON_SECRET>. Vercel Cron sends this
- * header automatically when CRON_SECRET is set on the project.
+ * Guards on Authorization: Bearer <CRON_SECRET> (header-only, constant-time
+ * compared). Vercel Cron sends this header automatically when CRON_SECRET is
+ * set on the project.
  *
  * Idempotency: stamps Account.lastDigestSentAt after each send. Re-runs
  * within the same week are a no-op per recipient.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { checkCronAuth } from '@/lib/cron-auth'
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000
 
 function unauthorized(): NextResponse {
   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-}
-
-function checkAuth(req: NextRequest): boolean {
-  const secret = process.env.CRON_SECRET
-  if (!secret) {
-    // No secret configured — allow only in dev so local testing works.
-    return process.env.NODE_ENV !== 'production'
-  }
-  const header = req.headers.get('authorization') ?? ''
-  if (header === `Bearer ${secret}`) return true
-  // Also accept ?secret=... so the cron can be manually triggered from a
-  // browser (useful for the first run + dryRun inspection).
-  return req.nextUrl.searchParams.get('secret') === secret
 }
 
 function formatWeekOf(now: Date): string {
@@ -40,7 +29,7 @@ function formatWeekOf(now: Date): string {
 }
 
 export async function GET(req: NextRequest) {
-  if (!checkAuth(req)) return unauthorized()
+  if (!checkCronAuth(req)) return unauthorized()
 
   const teamSlug = req.nextUrl.searchParams.get('teamSlug') ?? 'penn-mens-golf'
   const dryRun = req.nextUrl.searchParams.get('dryRun') === '1'

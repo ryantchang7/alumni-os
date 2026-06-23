@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { scoreAndSort, generateDraft, type ProfileForScoring, type ScoredProfile } from '@/lib/ask/scoring'
 import MemberAvatar from '@/components/MemberAvatar'
+import TurnstileWidget from '@/components/TurnstileWidget'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -191,6 +192,8 @@ export default function AskClient() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // CAPTCHA token — null until solved (or when no Turnstile key is configured).
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/player/profiles?teamSlug=penn-mens-golf')
@@ -262,6 +265,7 @@ export default function AskClient() {
           context: contextKey || undefined,
           additionalContext: additionalContext.trim() || undefined,
           message: draft.trim(),
+          turnstileToken: turnstileToken ?? undefined,
         }),
       })
       if (!res.ok) {
@@ -557,6 +561,8 @@ export default function AskClient() {
               {error && (
                 <p className="text-sm text-[#990000] mb-4">{error}</p>
               )}
+
+              <TurnstileWidget onToken={setTurnstileToken} className="mb-4" />
 
               <div className="flex items-center justify-between gap-4">
                 <p className="text-xs text-[#8a7f70]">

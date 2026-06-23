@@ -111,7 +111,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               <MemberAvatar photoUrl={photoUrl} name={person.canonicalName} size={80} tone="onDark" />
               <div className="min-w-0">
               {/* Role tag */}
-              <span className={`inline-block text-[9px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-sm border mb-3 ${
+              <span className={`inline-block text-[11px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-sm border mb-3 ${
                 isCurrentPlayer
                   ? 'text-[#2d6a4f] bg-[#2d6a4f]/15 border-[#2d6a4f]/30'
                   : 'text-white/45 bg-white/8 border-white/15'
