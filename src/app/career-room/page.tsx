@@ -54,7 +54,7 @@ function PostCard({ post }: { post: CareerPost }) {
     >
       <div className="flex items-center gap-2 flex-wrap">
         <span
-          className="text-[9.5px] font-semibold uppercase tracking-[0.18em] px-2 py-1 rounded-full border"
+          className="text-[11px] font-semibold uppercase tracking-[0.18em] px-2 py-1 rounded-full border"
           style={{ color: accent, backgroundColor: accentBg, borderColor: accent + '40' }}
         >
           {isAsk ? 'Ask' : 'Offer'}
@@ -95,7 +95,7 @@ interface AlumniEntry {
   person: Person
   membership: TeamMembership
   enrichment: PersonEnrichment
-  photoUrl?: string | null
+  photoUrl: string | null
 }
 
 // Pulled from @/lib/industries so the tiles, the editor chips, and

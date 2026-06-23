@@ -17,7 +17,7 @@ interface AlumniEntry {
   person: Person
   membership: TeamMembership
   enrichment: PersonEnrichment
-  photoUrl?: string | null
+  photoUrl: string | null
 }
 
 function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {

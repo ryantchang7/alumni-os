@@ -24,7 +24,7 @@ export default function ClubhouseFooter() {
           marginTop: '0',
         }}
       />
-      <div className="max-w-[1180px] mx-auto px-6 sm:px-10 py-6 text-center space-y-2">
+      <div className="max-w-[1320px] mx-auto px-6 sm:px-10 py-6 text-center space-y-2">
         <p className="text-[10.5px] text-[#8a7f70] tracking-[0.06em]">
           Built by{' '}
           <a

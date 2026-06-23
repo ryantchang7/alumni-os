@@ -440,7 +440,7 @@ export default function SupportClient({ status }: Props) {
                 value={donCustom}
                 onChange={e => setDonCustom(e.target.value)}
                 placeholder="other"
-                className="w-20 text-[14px] text-[#0a1628] focus:outline-none"
+                className="w-20 text-[14px] text-[#0a1628] rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0a1628]/40"
               />
             </div>
           </div>

@@ -155,7 +155,7 @@ function RegistryEntry({
               Coach
             </span>
           ) : isCurrent ? (
-            <span className="text-[9px] font-medium px-2 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap mt-1">
+            <span className="text-[11px] font-medium px-2 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap mt-1">
               Current Player
             </span>
           ) : null}

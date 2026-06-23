@@ -9,7 +9,9 @@ const nextConfig = {
   serverExternalPackages: ['cheerio', 'parse5', 'parse5-htmlparser2-tree-adapter', 'htmlparser2'],
   transpilePackages: ['framer-motion'],
   typescript: {
-    ignoreBuildErrors: true,
+    // Type errors now FAIL the build (defense-in-depth) — catches DTO-shape
+    // mistakes like a route accidentally returning a raw enrichment/PII object.
+    ignoreBuildErrors: false,
   },
   async redirects() {
     return [

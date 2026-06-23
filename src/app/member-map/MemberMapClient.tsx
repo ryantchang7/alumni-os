@@ -426,7 +426,7 @@ export default function MemberMapClient({
         {view === 'all' && (
           <>
             <div data-testid="role-filter">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
                 Who
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -448,7 +448,7 @@ export default function MemberMapClient({
             </div>
 
             <div data-testid="era-filter">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
                 Era
               </p>
               <div className="flex flex-wrap gap-1.5">

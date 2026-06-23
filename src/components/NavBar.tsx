@@ -52,7 +52,7 @@ function AccountAffordance() {
       <button
         type="button"
         onClick={() => signIn('google', { callbackUrl: '/account/profile' })}
-        className="text-[12px] font-medium text-white border border-white/30 hover:border-white/60 px-3 py-1.5 rounded transition-colors"
+        className="text-[12px] font-medium text-white border border-white/30 hover:border-white/60 px-3 py-2.5 rounded transition-colors focus-visible:ring-2 focus-visible:ring-[#0a1628]/40 focus:outline-none"
       >
         Sign in
       </button>
@@ -70,7 +70,7 @@ function AccountAffordance() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         onBlur={() => setTimeout(() => setOpen(false), 120)}
-        className="flex items-center gap-2 text-[13px] text-gray-200 hover:text-white px-2 py-1 rounded"
+        className="flex items-center gap-2 text-[13px] text-gray-200 hover:text-white px-2 py-1 rounded focus-visible:ring-2 focus-visible:ring-[#0a1628]/40 focus:outline-none"
       >
         {showImage ? (
           // Plain <img> + referrerPolicy="no-referrer" — avoids both
@@ -222,7 +222,7 @@ export default function NavBar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-[13px] text-gray-300 hover:text-white transition-colors py-2.5 border-b border-white/[0.06] last:border-0"
+                  className="text-[13px] text-gray-300 hover:text-white transition-colors py-3 border-b border-white/[0.06] last:border-0"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}

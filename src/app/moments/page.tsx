@@ -171,7 +171,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                   ? 'text-white/55 hover:text-white border border-transparent'
                   : 'bg-white text-[#0a1628] shadow-[0_2px_10px_rgba(0,0,0,0.25)]'
               }`}
-              aria-pressed={!isLockerView}
+              aria-current={!isLockerView ? 'page' : undefined}
             >
               All Moments
             </Link>
@@ -182,7 +182,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                   ? 'bg-[#c8a84b] text-[#0a1628] shadow-[0_2px_18px_rgba(200,168,75,0.45)]'
                   : 'text-[#c8a84b] border border-[#c8a84b]/45 hover:border-[#c8a84b] hover:bg-[#c8a84b]/10'
               }`}
-              aria-pressed={isLockerView}
+              aria-current={isLockerView ? 'page' : undefined}
             >
               <Lock className="w-3.5 h-3.5" />
               Locker Room
@@ -191,7 +191,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                   className={`text-[10.5px] tabular-nums px-1.5 py-0.5 rounded-full ${
                     isLockerView
                       ? 'bg-[#0a1628]/15 text-[#0a1628]'
-                      : 'bg-[#c8a84b]/15 text-[#c8a84b]'
+                      : 'bg-[#c8a84b]/15 text-[#0a1628]/70'
                   }`}
                 >
                   {lockerCount}
