@@ -304,7 +304,7 @@ export default async function CareerRoomPage() {
                 className="text-[#0a1628] text-base font-medium"
                 style={{ fontFamily: 'var(--font-playfair)' }}
               >
-                The floor is open.
+                No posts yet.
               </p>
               <p className="text-[13px] text-[#8a7f70] mt-2 max-w-md mx-auto">
                 Post a specific ask (&ldquo;Warm intro to PE associate in NYC&rdquo;) or a specific
@@ -315,7 +315,7 @@ export default async function CareerRoomPage() {
                 href="/career-room/post"
                 className="inline-block mt-5 bg-[#0a1628] hover:bg-[#112240] text-white text-[12px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
               >
-                Drop the first one
+                Post the first one
               </Link>
             </div>
           ) : (

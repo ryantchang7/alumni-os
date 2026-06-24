@@ -3,6 +3,9 @@ import type { Person, TeamMembership, TeamNewsItem, SeasonUpdate } from '@/lib/s
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import FoundersWall from '@/components/FoundersWall'
 import CaptainsLineup from '@/components/CaptainsLineup'
+import MemberAvatar from '@/components/MemberAvatar'
+import MemberBadges from '@/components/MemberBadges'
+import { badgesForPerson } from '@/lib/badges'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import HeroCrest from '@/components/HeroCrest'
 import LinkPreviewImage from '@/components/LinkPreviewImage'
@@ -114,6 +117,28 @@ export default async function TeamRoomPage() {
       .slice(0, 6)
   }
 
+  // Resolve a member's photo the same way /the-course does: enrichment photo
+  // first, then their account image. Returns null for the initials fallback.
+  const photoFor = (personId: string): string | null => {
+    if (!team) return null
+    return (
+      store.personEnrichments.find(e => e.personId === personId && e.teamId === team.id)
+        ?.photoUrl ??
+      store.accounts.find(a => a.linkedPersonId === personId)?.image ??
+      null
+    )
+  }
+
+  // Everyone rendered in the roster / alumni / staff sections — by personId
+  // AND by normalized name — so a captain who already appears in one of those
+  // sections is skipped in CaptainsLineup (each person shows exactly once).
+  const renderedPersonIds: string[] = []
+  const renderedNames: string[] = []
+  for (const { person } of [...currentPlayers, ...recentAlumni, ...coaches]) {
+    renderedPersonIds.push(person.id)
+    renderedNames.push(person.canonicalName.toLowerCase().trim())
+  }
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14 overflow-hidden">
@@ -130,7 +155,7 @@ export default async function TeamRoomPage() {
               Team Room
             </h1>
             <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-              The current roster — grinding for an Ivy championship.
+              The current roster, the season as it unfolds, and the people behind the program.
             </p>
           </div>
         </div>
@@ -152,6 +177,7 @@ export default async function TeamRoomPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {currentPlayers.map(({ person, membership }) => {
                 const classShort = membership.classYearEstimate?.split(' / ')[0]
+                const badges = badgesForPerson(person.id, store.accounts)
                 return (
                   <Link
                     key={person.id}
@@ -160,7 +186,17 @@ export default async function TeamRoomPage() {
                     style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <MemberAvatar photoUrl={photoFor(person.id)} name={person.canonicalName} size={40} tone="navy" />
+                        <div className="min-w-0">
+                          <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                          {badges.length > 0 && (
+                            <div className="mt-1">
+                              <MemberBadges badges={badges} size="sm" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
                       {classShort && (
                         <span className="text-[10px] font-medium text-[#2d6a4f] bg-[#2d6a4f]/10 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
                           {classShort}
@@ -168,7 +204,7 @@ export default async function TeamRoomPage() {
                       )}
                     </div>
                     {membership.hometown && (
-                      <p className="text-xs text-[#8a7f70] mt-1">{membership.hometown}</p>
+                      <p className="text-xs text-[#8a7f70] mt-2">{membership.hometown}</p>
                     )}
                     {membership.highSchool && (
                       <p className="text-xs text-[#8a7f70]">{membership.highSchool}</p>
@@ -272,23 +308,36 @@ export default async function TeamRoomPage() {
             <h2 className="text-base font-semibold text-[#0a1628] mb-1">Coaching Staff</h2>
             <p className="text-sm text-[#8a7f70] mb-6">The coaches behind the program.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {coaches.map(({ person, membership }) => (
-                <div
-                  key={person.id}
-                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4"
-                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
-                    <span className="text-[10px] font-medium text-white bg-[#0a1628] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
-                      Coach
-                    </span>
+              {coaches.map(({ person, membership }) => {
+                const badges = badgesForPerson(person.id, store.accounts)
+                return (
+                  <div
+                    key={person.id}
+                    className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4"
+                    style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <MemberAvatar photoUrl={photoFor(person.id)} name={person.canonicalName} size={40} tone="navy" />
+                        <div className="min-w-0">
+                          <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                          {badges.length > 0 && (
+                            <div className="mt-1">
+                              <MemberBadges badges={badges} size="sm" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-medium text-white bg-[#0a1628] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+                        Coach
+                      </span>
+                    </div>
+                    {membership.hometown && (
+                      <p className="text-xs text-[#8a7f70] mt-2">{membership.hometown}</p>
+                    )}
                   </div>
-                  {membership.hometown && (
-                    <p className="text-xs text-[#8a7f70] mt-1">{membership.hometown}</p>
-                  )}
-                </div>
-              ))}
+                )
+              })}
             </div>
           </section>
         )}
@@ -318,33 +367,53 @@ export default async function TeamRoomPage() {
             <h2 className="text-base font-semibold text-[#0a1628] mb-1">Recent Alumni</h2>
             <p className="text-sm text-[#8a7f70] mb-6">Just finished their Penn Golf careers.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {recentAlumni.map(({ person, membership }) => (
-                <Link
-                  key={person.id}
-                  href={`/player/alumni/${person.id}`}
-                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:border-[#0a1628]/30 transition-colors block"
-                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
-                    {membership.rosterEndYear && (
-                      <span className="text-[10px] font-medium text-[#8a7f70] bg-[#f8f5f0] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border border-[rgba(180,168,150,0.35)]">
-                        &apos;{String(membership.rosterEndYear).slice(2)}
-                      </span>
+              {recentAlumni.map(({ person, membership }) => {
+                const badges = badgesForPerson(person.id, store.accounts)
+                return (
+                  <Link
+                    key={person.id}
+                    href={`/player/alumni/${person.id}`}
+                    className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:border-[#0a1628]/30 transition-colors block"
+                    style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <MemberAvatar photoUrl={photoFor(person.id)} name={person.canonicalName} size={40} tone="navy" />
+                        <div className="min-w-0">
+                          <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
+                          {badges.length > 0 && (
+                            <div className="mt-1">
+                              <MemberBadges badges={badges} size="sm" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {membership.rosterEndYear && (
+                        <span className="text-[10px] font-medium text-[#8a7f70] bg-[#f8f5f0] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border border-[rgba(180,168,150,0.35)]">
+                          &apos;{String(membership.rosterEndYear).slice(2)}
+                        </span>
+                      )}
+                    </div>
+                    {membership.hometown && (
+                      <p className="text-xs text-[#8a7f70] mt-2">{membership.hometown}</p>
                     )}
-                  </div>
-                  {membership.hometown && (
-                    <p className="text-xs text-[#8a7f70] mt-1">{membership.hometown}</p>
-                  )}
-                </Link>
-              ))}
+                  </Link>
+                )
+              })}
             </div>
           </section>
         )}
 
-        {/* Captains Lineup — who runs this Clubhouse */}
+        {/* Captains Lineup — who runs this Clubhouse. Exclude anyone already
+            shown above (roster / alumni / staff) so a captain who's also on
+            the roster appears exactly once, on their roster card. */}
         {team && (
-          <CaptainsLineup store={store} teamId={team.id} />
+          <CaptainsLineup
+            store={store}
+            teamId={team.id}
+            excludePersonIds={renderedPersonIds}
+            excludeNames={renderedNames}
+          />
         )}
 
         {/* Support the Program — three ways */}

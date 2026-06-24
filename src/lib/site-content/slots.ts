@@ -207,7 +207,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     label: 'Moments empty-state headline',
     hint: 'Big text shown when the All Moments feed is empty.',
     kind: 'text',
-    default: 'Bag’s empty.',
+    default: 'No moments yet.',
   },
   {
     id: 'moments.empty-blurb',
@@ -215,7 +215,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Body text shown when the All Moments feed is empty.',
     kind: 'longtext',
     default:
-      'Drop the first one. A photo from a round, a tournament, an alumni dinner. The wall grows one moment at a time.',
+      'Post the first one — a photo from a round, a tournament, an alumni dinner. The wall grows one moment at a time.',
   },
 
   // ── Locker Room (`/locker-room`) ─────────────────────────────────────────
@@ -224,7 +224,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     label: 'Locker Room empty-state headline',
     hint: 'Big text shown when the Locker Room feed is empty.',
     kind: 'text',
-    default: 'Locker’s empty.',
+    default: 'Nothing in the Locker Room yet.',
   },
   {
     id: 'locker-room.empty-blurb',
@@ -232,7 +232,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Body text shown when the Locker Room feed is empty. Players + alumni only see this surface.',
     kind: 'longtext',
     default:
-      'Drop the first Locker Room post — a road trip dinner, a pre-round shot, the Penn-Princeton afterparty. Players + alumni see it. No one else.',
+      'Post the first Locker Room moment — a road trip dinner, a pre-round shot, the Penn-Princeton afterparty. Players and alumni see it. No one else.',
   },
 
   // ── Support / membership (`/support`) ────────────────────────────────────

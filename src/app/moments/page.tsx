@@ -253,7 +253,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                   className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.16em] px-5 py-2.5 rounded-lg transition-all hover:shadow-[0_0_22px_rgba(200,168,75,0.45)]"
                 >
                   <Lock className="w-4 h-4" />
-                  Post the first
+                  Post the first Moment
                 </Link>
               </div>
             </div>
@@ -276,7 +276,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                 href="/moments/new"
                 className="inline-block bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
               >
-                Post the first
+                Post the first Moment
               </Link>
             </div>
           )

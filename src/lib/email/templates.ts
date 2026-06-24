@@ -67,7 +67,7 @@ export function renderWelcomeEmail(input: {
     <ul style="margin:0 0 28px 0;padding:0 0 0 20px;font-size:14px;line-height:1.7;color:#3d4a5c;">
       <li>Set your city on your locker card.</li>
       <li>Mark one availability &mdash; coffee, a round, or a warm intro.</li>
-      <li>Drop a Moment, a tee time, or an ask on the Career Room floor.</li>
+      <li>Post a Moment, a tee time, or an ask in the Career Room.</li>
     </ul>
     <p style="margin:0;">${btn(input.clubhouseUrl, 'Open the Clubhouse')}</p>
   `

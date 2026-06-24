@@ -48,7 +48,7 @@ export default function ClubhouseChecklist({
   const steps: Step[] = [
     {
       done: hasCity,
-      label: 'Drop your city on your locker',
+      label: 'Add your city to your profile',
       helper: 'So alumni traveling through can find you.',
       cta: { href: '/account/profile', label: 'Set city' },
     },
@@ -60,9 +60,9 @@ export default function ClubhouseChecklist({
     },
     {
       done: hasFirstPost,
-      label: 'Drop one thing on the boards',
-      helper: 'A Moment, a tee time, or an ask on the Career Room floor.',
-      cta: { href: '/moments', label: 'Drop a Moment' },
+      label: 'Post one thing to the community',
+      helper: 'A Moment, a tee time, or an ask in the Career Room.',
+      cta: { href: '/moments', label: 'Post a Moment' },
     },
   ]
   const completed = steps.filter(s => s.done).length
