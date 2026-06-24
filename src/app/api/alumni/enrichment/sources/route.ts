@@ -7,7 +7,7 @@ import {
   readStore,
 } from '@/lib/store/local-store'
 import type { EnrichmentSource } from '@/lib/store/types'
-import { requireCaptain } from '@/lib/auth/guards'
+import { requireFounder } from '@/lib/auth/guards'
 
 const VALID_SOURCE_TYPES: EnrichmentSource['sourceType'][] = [
   'team_roster',
@@ -20,7 +20,7 @@ const VALID_SOURCE_TYPES: EnrichmentSource['sourceType'][] = [
 ]
 
 export async function POST(request: Request) {
-  const gate = await requireCaptain()
+  const gate = await requireFounder()
   if (!gate.ok) return gate.response
 
   let body: {
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const gate = await requireCaptain()
+  const gate = await requireFounder()
   if (!gate.ok) return gate.response
 
   const { searchParams } = new URL(request.url)

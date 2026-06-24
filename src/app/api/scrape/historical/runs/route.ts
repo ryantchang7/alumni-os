@@ -4,10 +4,10 @@ import {
   getHistoricalImportRunsForTeam,
   getHistoricalSeasonResultsForRun,
 } from '@/lib/store/local-store'
-import { requireCaptain } from '@/lib/auth/guards'
+import { requireFounder } from '@/lib/auth/guards'
 
 export async function GET(request: Request) {
-  const gate = await requireCaptain()
+  const gate = await requireFounder()
   if (!gate.ok) return gate.response
 
   const { searchParams } = new URL(request.url)

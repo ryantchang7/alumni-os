@@ -14,10 +14,10 @@ import {
   readStore,
   mutateStore,
 } from '@/lib/store/local-store'
-import { requireCaptain } from '@/lib/auth/guards'
+import { requireFounder } from '@/lib/auth/guards'
 
 export async function POST(request: Request) {
-  const gate = await requireCaptain()
+  const gate = await requireFounder()
   if (!gate.ok) return gate.response
 
   let body: unknown

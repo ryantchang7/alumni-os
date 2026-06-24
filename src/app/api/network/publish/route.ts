@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireCaptain } from '@/lib/auth/guards'
+import { requireFounder } from '@/lib/auth/guards'
 
 export async function POST(request: NextRequest) {
-  const gate = await requireCaptain()
+  const gate = await requireFounder()
   if (!gate.ok) return gate.response
 
   let body: { teamSlug?: string; personId?: string }

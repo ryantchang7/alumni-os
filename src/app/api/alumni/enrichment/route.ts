@@ -7,7 +7,7 @@ import {
   upsertPersonEnrichment,
 } from '@/lib/store/local-store'
 import type { PersonEnrichment } from '@/lib/store/types'
-import { requireCaptain } from '@/lib/auth/guards'
+import { requireFounder } from '@/lib/auth/guards'
 
 const VALID_VERIFICATION_STATUSES: PersonEnrichment['verificationStatus'][] = [
   'unverified',
@@ -61,7 +61,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const gate = await requireCaptain()
+  const gate = await requireFounder()
   if (!gate.ok) return gate.response
 
   let body: {
