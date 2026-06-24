@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Person, TeamMembership, TeamNewsItem, SeasonUpdate } from '@/lib/store/types'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import FoundersWall from '@/components/FoundersWall'
+import CaptainsLineup from '@/components/CaptainsLineup'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import HeroCrest from '@/components/HeroCrest'
 import LinkPreviewImage from '@/components/LinkPreviewImage'
@@ -339,6 +340,11 @@ export default async function TeamRoomPage() {
               ))}
             </div>
           </section>
+        )}
+
+        {/* Captains Lineup — who runs this Clubhouse */}
+        {team && (
+          <CaptainsLineup store={store} teamId={team.id} />
         )}
 
         {/* Support the Program — three ways */}

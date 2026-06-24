@@ -464,6 +464,10 @@ export interface ClubhouseMoment {
   audience?: 'public' | 'locker-room'
   taggedPersonIds: string[]
   status: 'published' | 'pending' | 'removed'
+  /** ISO timestamp when a captain featured this moment. Undefined = not featured. */
+  featuredAt?: string
+  /** Name of the captain who featured it (snapshot at feature time). */
+  featuredByName?: string
   createdAt: string
 }
 

@@ -20,8 +20,10 @@ import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import MomentCard from '@/components/moments/MomentCard'
+import { isCaptainEmailWithOverrides } from '@/lib/captains-runtime'
 
 const TEAM_SLUG = 'penn-mens-golf'
+const FOUNDER_EMAILS_SET = new Set(['rtchang@sas.upenn.edu', 'ryan.taylor.chang@gmail.com'])
 
 type View = 'all' | 'locker-room'
 
@@ -47,9 +49,14 @@ export default async function MomentsPage({ searchParams }: PageProps) {
 
   const session = await auth()
   let canSeeLockerRoom = false
+  let viewerIsCaptain = false
   if (session?.accountId && team && store) {
     const account = await getAccountById(session.accountId)
     canSeeLockerRoom = canSeeLockerRoomForAccount(account, store, team.id)
+    const viewerEmail = (session.user?.email ?? '').toLowerCase().trim()
+    viewerIsCaptain =
+      FOUNDER_EMAILS_SET.has(viewerEmail) ||
+      isCaptainEmailWithOverrides(viewerEmail, 'penn-mens-golf', store.accounts)
   }
 
   // Fall back to "all" if the viewer asks for locker-room but isn't eligible.
@@ -57,10 +64,16 @@ export default async function MomentsPage({ searchParams }: PageProps) {
 
   // The "All Moments" tab is public-only; locker-room posts live in their
   // own tab so the audience always reads cleanly from where you're standing.
-  const moments =
+  const momentsByTab =
     view === 'locker-room'
       ? allMoments.filter(m => m.audience === 'locker-room')
       : allMoments.filter(m => m.audience !== 'locker-room')
+
+  // Featured moments float to the top; within each group, reverse-chrono.
+  const moments = [
+    ...momentsByTab.filter(m => !!m.featuredAt),
+    ...momentsByTab.filter(m => !m.featuredAt),
+  ]
 
   const lockerCount = allMoments.filter(m => m.audience === 'locker-room').length
 
@@ -282,6 +295,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                 viewerAccountId={viewerAccountId}
                 canPost={canPost}
                 showLockerPill={isLockerView}
+                isCaptain={viewerIsCaptain}
               />
             ))}
           </div>

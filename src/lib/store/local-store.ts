@@ -1551,6 +1551,34 @@ export async function createMoment(input: {
   return moment
 }
 
+/**
+ * Toggle the "Captain's Pick" featured flag on a Moment. Reversible: calling
+ * again clears it. Returns the updated Moment, or null if not found.
+ * Gated at the API layer by requireCaptain — this function does no auth check.
+ */
+export async function toggleMomentFeatured(
+  momentId: string,
+  byName: string,
+): Promise<ClubhouseMoment | null> {
+  return mutateStore(store => {
+    const idx = store.moments.findIndex(m => m.id === momentId)
+    if (idx === -1) return null
+    const current = store.moments[idx]
+    if (current.featuredAt) {
+      // Unfeature
+      store.moments[idx] = { ...current, featuredAt: undefined, featuredByName: undefined }
+    } else {
+      // Feature
+      store.moments[idx] = {
+        ...current,
+        featuredAt: new Date().toISOString(),
+        featuredByName: byName,
+      }
+    }
+    return store.moments[idx]
+  })
+}
+
 export async function deleteMoment(
   momentId: string,
   byAccountId: string,

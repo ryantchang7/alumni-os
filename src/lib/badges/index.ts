@@ -32,54 +32,77 @@ export interface BadgeMeta {
   icon: 'crown' | 'shield' | 'star' | 'check' | 'heart'
 }
 
-export const BADGE_META: Record<BadgeId, BadgeMeta> = {
-  // Founder is intentionally elaborate — gradient navy with gold text, gold
-  // border + shadow halo. The renderer keys off `id === 'founder'` for the
-  // extra shadow that Tailwind classNames can't easily express.
+export interface BadgeGlow {
+  /** CSS box-shadow value for the insignia glow. */
+  boxShadow: string
+}
+
+export const BADGE_META: Record<BadgeId, BadgeMeta & { glow?: BadgeGlow }> = {
+  // Founder — deepest navy gradient, gold text, gold ring, gold halo glow.
   founder: {
     id: 'founder',
     label: 'Founder',
     tooltip: 'Built the Penn Golf Clubhouse',
     className:
-      'bg-gradient-to-r from-[#0a1628] to-[#1a2d4a] text-[#c8a84b] border border-[#c8a84b]/70',
+      'bg-gradient-to-br from-[#0a1628] via-[#0f1f3d] to-[#0a1628] text-[#c8a84b] border border-[#c8a84b]/80',
     icon: 'crown',
+    glow: {
+      boxShadow:
+        '0 0 0 1px rgba(200,168,75,0.30), 0 1px 2px rgba(10,22,40,0.22), 0 4px 18px rgba(200,168,75,0.28), 0 0 28px rgba(200,168,75,0.12)',
+    },
   },
-  // Captain — navy outline, matches the brand's primary surface chrome.
+  // Captain — leadership tier. Navy gradient, GOLD ring, soft gold glow.
+  // Clearly above Member; distinctly below Founder.
   captain: {
     id: 'captain',
     label: 'PGC Captain',
     tooltip: 'Penn Golf Clubhouse Captain',
     className:
-      'bg-[#0a1628] text-white border border-[#0a1628]',
+      'bg-gradient-to-br from-[#0d1e38] to-[#0a1628] text-[#e8d49c] border border-[#c8a84b]/70',
     icon: 'shield',
+    glow: {
+      boxShadow:
+        '0 0 0 1px rgba(200,168,75,0.20), 0 1px 2px rgba(10,22,40,0.20), 0 3px 12px rgba(200,168,75,0.20)',
+    },
   },
-  // Founding Member — gold accent, the brand's prestige color.
+  // Founding Member — richer gold gradient, warm glow.
   'founding-member': {
     id: 'founding-member',
     label: 'Founding Member',
     tooltip: 'Founding Member of the Clubhouse',
     className:
-      'bg-[#c8a84b]/20 text-[#7a6420] border border-[#c8a84b]/55',
+      'bg-gradient-to-br from-[#c8a84b]/28 to-[#c8a84b]/14 text-[#7a6420] border border-[#c8a84b]/65',
     icon: 'star',
+    glow: {
+      boxShadow:
+        '0 0 0 1px rgba(200,168,75,0.18), 0 1px 2px rgba(10,22,40,0.10), 0 3px 10px rgba(200,168,75,0.18)',
+    },
   },
-  // Supporting Member — cream/muted, soft brand tone.
+  // Supporting Member — clean cream/tan, polished but humble.
   member: {
     id: 'member',
     label: 'Supporting Member',
     tooltip: 'Supporting Member of the Clubhouse',
     className:
-      'bg-[#faf7f2] text-[#3d4a5c] border border-[rgba(180,168,150,0.55)]',
+      'bg-gradient-to-br from-[#faf7f2] to-[#f3efe8] text-[#4a5568] border border-[rgba(180,168,150,0.65)]',
     icon: 'check',
+    glow: {
+      boxShadow:
+        '0 0 0 1px rgba(180,168,150,0.20), 0 1px 2px rgba(10,22,40,0.08)',
+    },
   },
-  // Family & Affiliate — Penn red, the brand's warmth/accent color, but
-  // softer than a Captain's navy.
+  // Family & Affiliate — soft Penn-red gradient, subtle red glow.
   parent: {
     id: 'parent',
     label: 'Family & Affiliate',
     tooltip: 'Family or longtime affiliate of the program',
     className:
-      'bg-[#990000]/8 text-[#990000] border border-[#990000]/30',
+      'bg-gradient-to-br from-[#990000]/12 to-[#990000]/6 text-[#990000] border border-[#990000]/38',
     icon: 'heart',
+    glow: {
+      boxShadow:
+        '0 0 0 1px rgba(153,0,0,0.14), 0 1px 2px rgba(10,22,40,0.08), 0 3px 10px rgba(153,0,0,0.12)',
+    },
   },
 }
 

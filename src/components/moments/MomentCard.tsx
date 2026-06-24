@@ -13,7 +13,7 @@
 import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Lock, Reply, SmilePlus, Trash2 } from 'lucide-react'
+import { Lock, Reply, SmilePlus, Star, Trash2 } from 'lucide-react'
 import type { ClubhouseMoment, MomentComment, MomentReaction } from '@/lib/store/types'
 import type { BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
@@ -42,6 +42,9 @@ interface Props {
    *  /locker-room feed. /moments suppresses it (audience is implicit
    *  from the tab). */
   showLockerPill?: boolean
+  /** True when the current viewer is a captain or founder — shows the
+   *  Feature/Unfeature toggle. Never exposed to regular members. */
+  isCaptain?: boolean
 }
 
 function timeAgo(iso: string): string {
@@ -71,6 +74,7 @@ export default function MomentCard({
   viewerAccountId,
   canPost,
   showLockerPill,
+  isCaptain = false,
 }: Props) {
   const [reactions, setReactions] = useState<MomentReaction[]>(initialReactions)
   const [comments, setComments] = useState<MomentComment[]>(initialComments)
@@ -87,6 +91,25 @@ export default function MomentCard({
   const [removing, setRemoving] = useState(false)
   const [removeError, setRemoveError] = useState<string | null>(null)
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
+
+  // Captain's Pick — captains + founder can feature / unfeature.
+  const [featured, setFeatured] = useState(!!moment.featuredAt)
+  const [featuring, setFeaturing] = useState(false)
+
+  async function handleFeatureToggle() {
+    setFeaturing(true)
+    try {
+      const res = await fetch(`/api/moments/${encodeURIComponent(moment.id)}/feature`, {
+        method: 'POST',
+      })
+      if (res.ok) {
+        const data = await res.json() as { featured: boolean }
+        setFeatured(data.featured)
+      }
+    } finally {
+      setFeaturing(false)
+    }
+  }
 
   async function handleRemove() {
     setRemoving(true)
@@ -261,6 +284,15 @@ export default function MomentCard({
             Locker Room
           </span>
         ) : null}
+        {/* Captain's Pick ribbon — visible to everyone when featured */}
+        {featured && (
+          <span className="absolute top-3 right-3 inline-flex items-center gap-1 bg-[#c8a84b] text-[#0a1628] text-[10.5px] font-bold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full"
+            style={{ boxShadow: '0 2px 8px rgba(200,168,75,0.45)' }}
+          >
+            <Star className="w-2.5 h-2.5 fill-current" />
+            Captain&apos;s Pick
+          </span>
+        )}
       </div>
 
       <div className="px-6 sm:px-8 py-5">
@@ -291,6 +323,23 @@ export default function MomentCard({
             <MemberBadges badges={posterBadges} size="sm" />
           </div>
           <div className="flex items-center gap-3 flex-shrink-0">
+            {/* Captain's Pick toggle — captains + founder only, never regular members */}
+            {isCaptain && (
+              <button
+                type="button"
+                onClick={handleFeatureToggle}
+                disabled={featuring}
+                title={featured ? 'Remove Captain\'s Pick' : 'Feature as Captain\'s Pick'}
+                className={`inline-flex items-center gap-1 text-[11px] font-medium transition-colors disabled:opacity-40 ${
+                  featured
+                    ? 'text-[#c8a84b] hover:text-[#9a7e38]'
+                    : 'text-[#8a7f70] hover:text-[#c8a84b]'
+                }`}
+              >
+                <Star className={`w-3.5 h-3.5 ${featured ? 'fill-current' : ''}`} />
+                <span>{featuring ? '…' : featured ? 'Unfeature' : 'Feature'}</span>
+              </button>
+            )}
             {isOwn && (
               <button
                 type="button"
