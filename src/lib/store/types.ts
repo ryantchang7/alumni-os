@@ -610,6 +610,21 @@ export interface ChatMessage {
   readByAccountIds: string[]
 }
 
+/**
+ * An idea submitted via the public /suggest form. Stored regardless of
+ * sign-in status. Capped to the newest 200 rows. Founder gets an email +
+ * in-app notification on each submission.
+ */
+export interface IdeaSubmission {
+  id: string
+  /** Present when the submitter was signed in. */
+  accountId?: string
+  name: string
+  email?: string
+  message: string
+  createdAt: string
+}
+
 export interface Store {
   teams: Team[]
   scrapeRuns: ScrapeRun[]
@@ -647,4 +662,6 @@ export interface Store {
    * site. Keys come from src/lib/site-content/slots.ts; values are either
    * plain strings (text slots) or URLs (image slots). */
   siteContent: Record<string, string>
+  /** Ideas submitted via /suggest. Capped to newest 200. */
+  ideaSubmissions: IdeaSubmission[]
 }

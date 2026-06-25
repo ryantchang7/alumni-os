@@ -40,6 +40,7 @@ import type {
   Donation,
   AppNotification,
   PushSubscriptionRecord,
+  IdeaSubmission,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -100,6 +101,7 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.notifications) parsed.notifications = []
   if (!parsed.pushSubscriptions) parsed.pushSubscriptions = []
   if (!parsed.siteContent) parsed.siteContent = {}
+  if (!parsed.ideaSubmissions) parsed.ideaSubmissions = []
   return parsed
 }
 
@@ -144,6 +146,7 @@ const EMPTY_STORE: Store = {
   notifications: [],
   pushSubscriptions: [],
   siteContent: {},
+  ideaSubmissions: [],
 }
 
 function normalizeName(name: string): string {
@@ -2340,6 +2343,39 @@ export async function prunePushSubscriptionsByEndpoints(
     const before = store.pushSubscriptions.length
     store.pushSubscriptions = store.pushSubscriptions.filter(s => !dead.has(s.endpoint))
     return before - store.pushSubscriptions.length
+  })
+}
+
+// ── Idea Submissions ──────────────────────────────────────────────────────────
+
+const IDEA_SUBMISSIONS_CAP = 200
+
+/**
+ * Record an idea submitted via /suggest. Capped to the newest 200 rows
+ * (oldest are dropped on write to keep the single JSON blob bounded).
+ * Uses mutateStore for safe concurrent writes.
+ */
+export async function addIdeaSubmission(input: {
+  accountId?: string
+  name: string
+  email?: string
+  message: string
+}): Promise<IdeaSubmission> {
+  const now = new Date().toISOString()
+  const submission: IdeaSubmission = {
+    id: `idea_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    accountId: input.accountId,
+    name: input.name.trim(),
+    email: input.email?.trim() || undefined,
+    message: input.message.trim(),
+    createdAt: now,
+  }
+  return mutateStore(store => {
+    store.ideaSubmissions.unshift(submission)
+    if (store.ideaSubmissions.length > IDEA_SUBMISSIONS_CAP) {
+      store.ideaSubmissions = store.ideaSubmissions.slice(0, IDEA_SUBMISSIONS_CAP)
+    }
+    return submission
   })
 }
 

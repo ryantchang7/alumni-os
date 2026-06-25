@@ -45,6 +45,10 @@ export default function ClubhouseFooter() {
           <Link href="/terms" className="hover:text-[#0a1628] hover:underline transition-colors">
             Terms
           </Link>
+          <span className="text-[#d9c8a8]">·</span>
+          <Link href="/suggest" className="hover:text-[#0a1628] hover:underline transition-colors">
+            Suggest an idea
+          </Link>
         </p>
       </div>
     </footer>

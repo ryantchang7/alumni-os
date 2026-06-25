@@ -316,6 +316,36 @@ export function renderHostRsvpNotification(input: {
   return { subject, html: shell(inner, input.clubhouseUrl) }
 }
 
+// ── Idea submission notification (to the founder) ────────────────────────────
+
+export function renderIdeaSubmissionEmail(input: {
+  submitterName: string
+  submitterEmail?: string
+  message: string
+  internalUrl: string
+}): { subject: string; html: string } {
+  const subject = `New Clubhouse idea from ${input.submitterName}`
+  const emailLine = input.submitterEmail
+    ? `<p style="margin:0 0 14px 0;font-size:13px;color:${MUTED};">
+        Reply to: <a href="mailto:${escapeHtml(input.submitterEmail)}" style="color:${NAVY};text-decoration:underline;">${escapeHtml(input.submitterEmail)}</a>
+      </p>`
+    : ''
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      New idea for the Clubhouse
+    </h1>
+    <p style="margin:0 0 6px 0;font-size:14px;line-height:1.55;color:#3d4a5c;">
+      From: <strong>${escapeHtml(input.submitterName)}</strong>
+    </p>
+    ${emailLine}
+    <div style="margin:14px 0 24px 0;padding:14px 16px;background:${CREAM};border-left:3px solid ${GOLD};font-size:14px;line-height:1.65;color:#3d4a5c;white-space:pre-wrap;">
+      ${escapeHtml(input.message)}
+    </div>
+    <p style="margin:0;">${btn(input.internalUrl, 'Open /internal')}</p>
+  `
+  return { subject, html: shell(inner, input.internalUrl) }
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
