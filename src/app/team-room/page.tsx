@@ -5,7 +5,7 @@ import FoundersWall from '@/components/FoundersWall'
 import CaptainsLineup from '@/components/CaptainsLineup'
 import MemberAvatar from '@/components/MemberAvatar'
 import MemberBadges from '@/components/MemberBadges'
-import { badgesForPerson } from '@/lib/badges'
+import { badgesForPerson, getBadgesForAccount } from '@/lib/badges'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import HeroCrest from '@/components/HeroCrest'
 import LinkPreviewImage from '@/components/LinkPreviewImage'
@@ -129,15 +129,33 @@ export default async function TeamRoomPage() {
     )
   }
 
-  // Everyone rendered in the roster / alumni / staff sections — by personId
-  // AND by normalized name — so a captain who already appears in one of those
-  // sections is skipped in CaptainsLineup (each person shows exactly once).
-  const renderedPersonIds: string[] = []
-  const renderedNames: string[] = []
-  for (const { person } of [...currentPlayers, ...recentAlumni, ...coaches]) {
-    renderedPersonIds.push(person.id)
-    renderedNames.push(person.canonicalName.toLowerCase().trim())
+  // Compute the set of captain identities so we can EXCLUDE them from the
+  // roster / alumni / staff sections. Captains appear only in CaptainsLineup.
+  const captainPersonIdSet = new Set<string>()
+  const captainNameSet = new Set<string>()
+  if (team) {
+    for (const account of store.accounts) {
+      if (account.teamId !== team.id) continue
+      const badges = getBadgesForAccount(account)
+      if (!badges.includes('founder') && !badges.includes('captain')) continue
+      if (account.linkedPersonId) captainPersonIdSet.add(account.linkedPersonId)
+      const person = account.linkedPersonId
+        ? store.people.find(p => p.id === account.linkedPersonId)
+        : null
+      const name = (person?.canonicalName ?? account.name ?? '').toLowerCase().trim()
+      if (name) captainNameSet.add(name)
+    }
   }
+
+  // Filter captains out of the other sections so they only appear in the
+  // Captains section at the top.
+  const isCaptainEntry = ({ person }: { person: Person }) =>
+    captainPersonIdSet.has(person.id) ||
+    captainNameSet.has(person.canonicalName.toLowerCase().trim())
+
+  currentPlayers = currentPlayers.filter(e => !isCaptainEntry(e))
+  recentAlumni = recentAlumni.filter(e => !isCaptainEntry(e))
+  coaches = coaches.filter(e => !isCaptainEntry(e))
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -166,6 +184,11 @@ export default async function TeamRoomPage() {
         {/* Latest from Penn Athletics — sits at the top of the Team Room
             since it's the most "current team" thing here */}
         {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
+
+        {/* Clubhouse Captains — first content section so captains are front
+            and center. Anyone who is a captain is filtered OUT of the roster /
+            alumni / staff sections below, so they appear exactly once here. */}
+        {team && <CaptainsLineup store={store} teamId={team.id} />}
 
         {/* Current season roster */}
         <section>
@@ -402,18 +425,6 @@ export default async function TeamRoomPage() {
               })}
             </div>
           </section>
-        )}
-
-        {/* Captains Lineup — who runs this Clubhouse. Exclude anyone already
-            shown above (roster / alumni / staff) so a captain who's also on
-            the roster appears exactly once, on their roster card. */}
-        {team && (
-          <CaptainsLineup
-            store={store}
-            teamId={team.id}
-            excludePersonIds={renderedPersonIds}
-            excludeNames={renderedNames}
-          />
         )}
 
         {/* Support the Program — three ways */}

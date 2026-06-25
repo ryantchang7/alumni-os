@@ -16,35 +16,17 @@ import MemberBadges from '@/components/MemberBadges'
 interface Props {
   store: Store
   teamId: string
-  /** Person IDs already shown elsewhere on the page (roster, alumni, staff). */
-  excludePersonIds?: string[]
-  /** Normalized (lowercased/trimmed) names already shown elsewhere. */
-  excludeNames?: string[]
 }
 
 export default function CaptainsLineup({
   store,
   teamId,
-  excludePersonIds = [],
-  excludeNames = [],
 }: Props) {
-  const excludeIdSet = new Set(excludePersonIds)
-  const excludeNameSet = new Set(excludeNames.map(n => n.toLowerCase().trim()))
-
-  // Collect accounts that are founder or captain for this team, skipping
-  // anyone already rendered in the roster / alumni / staff sections so a
-  // person who is both a captain and on the roster appears exactly once.
+  // Collect all accounts that are founder or captain for this team.
   const captainAccounts = store.accounts.filter(a => {
     if (a.teamId !== teamId) return false
     const badges = getBadgesForAccount(a)
-    if (!badges.includes('founder') && !badges.includes('captain')) return false
-    if (a.linkedPersonId && excludeIdSet.has(a.linkedPersonId)) return false
-    const person = a.linkedPersonId
-      ? store.people.find(p => p.id === a.linkedPersonId)
-      : null
-    const name = (person?.canonicalName ?? a.name ?? '').toLowerCase().trim()
-    if (name && excludeNameSet.has(name)) return false
-    return true
+    return badges.includes('founder') || badges.includes('captain')
   })
 
   if (captainAccounts.length === 0) return null
@@ -76,7 +58,7 @@ export default function CaptainsLineup({
         Clubhouse Captains
       </h2>
       <p className="text-sm text-[#8a7f70] mb-5">
-        The members who founded and lead the Clubhouse.
+        The members who built and look after the Clubhouse — your point people for the Penn Golf family.
       </p>
       <div className="flex flex-wrap gap-4">
         {captains.map(({ account, displayName, photoUrl, badges }) => (
