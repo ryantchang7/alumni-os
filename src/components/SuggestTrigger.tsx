@@ -75,9 +75,9 @@ export default function SuggestTrigger() {
               onClick={() => setOpen(false)}
             />
 
-            {/* Panel */}
+            {/* Panel — fade + scale-in entrance */}
             <div
-              className="relative z-10 w-full max-w-lg bg-[#f8f5f0] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden"
+              className="relative z-10 w-full max-w-lg bg-[#f8f5f0] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden animate-suggest-panel"
               style={{ boxShadow: '0 8px 32px rgba(10,22,40,0.22), 0 2px 8px rgba(10,22,40,0.12)' }}
             >
               {/* Header */}

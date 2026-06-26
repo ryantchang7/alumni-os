@@ -32,7 +32,7 @@ export default function CaptainsLineup({
   if (captainAccounts.length === 0) return null
 
   // For each captain account, resolve their linked person + enrichment photo.
-  const captains = captainAccounts.map(account => {
+  const captainsRaw = captainAccounts.map(account => {
     const person = account.linkedPersonId
       ? store.people.find(p => p.id === account.linkedPersonId)
       : null
@@ -48,6 +48,21 @@ export default function CaptainsLineup({
     const topBadge = badges.find(b => b === 'founder' || b === 'captain')
     return { account, displayName, photoUrl, badges: topBadge ? [topBadge] : badges }
   })
+
+  // Dedupe by normalized displayName — when two entries share a name, keep
+  // the one with a photo; drop the photo-less duplicate.
+  const seen = new Map<string, typeof captainsRaw[number]>()
+  for (const entry of captainsRaw) {
+    const key = entry.displayName.toLowerCase().trim()
+    const existing = seen.get(key)
+    if (!existing) {
+      seen.set(key, entry)
+    } else if (!existing.photoUrl && entry.photoUrl) {
+      // Replace the photo-less entry with this one that has a photo.
+      seen.set(key, entry)
+    }
+  }
+  const captains = Array.from(seen.values())
 
   return (
     <section>

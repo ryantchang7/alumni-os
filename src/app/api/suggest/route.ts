@@ -59,10 +59,13 @@ export async function POST(request: Request) {
   let accountId: string | undefined
 
   if (session?.accountId) {
-    // Signed in — pull fresh name/email from the account record.
+    // Signed in — keep accountId for attribution, but honor the name/email the
+    // user typed in the form (they're editable); fall back to the account record.
     const account = await getAccountById(session.accountId)
-    name = account?.name ?? session.user?.name ?? ''
-    email = account?.email ?? session.user?.email ?? undefined
+    const typedName = typeof body.name === 'string' ? body.name.trim() : ''
+    const typedEmail = typeof body.email === 'string' ? body.email.trim() : ''
+    name = (typedName || account?.name || session.user?.name || '').slice(0, 120)
+    email = typedEmail || account?.email || session.user?.email || undefined
     accountId = session.accountId
     if (!name) {
       return NextResponse.json({ error: 'Could not resolve your account name.' }, { status: 400 })

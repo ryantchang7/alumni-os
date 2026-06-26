@@ -213,4 +213,14 @@
     from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* Suggest-idea modal panel entrance */
+  .animate-suggest-panel {
+    animation: suggestPanelIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes suggestPanelIn {
+    from { opacity: 0; transform: scale(0.96) translateY(6px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+  }
 }

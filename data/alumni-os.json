@@ -1196,7 +1196,7 @@
       "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
       "rosterStartYear": 2022,
       "rosterEndYear": 2026,
-      "classLabel": "Sr.",
+      "classLabel": "C'26",
       "hometown": "Bedford Hills, N.Y.",
       "highSchool": "Brunswick School",
       "bioUrls": [],
@@ -1207,10 +1207,13 @@
         "https://pennathletics.com/sports/mens-golf/roster/2025-26"
       ],
       "confidence": 0.95,
-      "publishedToNetwork": false,
-      "updatedAt": "2026-05-14T01:01:16.994Z",
+      "publishedToNetwork": true,
+      "updatedAt": "2026-06-24T02:15:07.177Z",
       "createdAt": "2026-05-14T01:01:16.994Z",
-      "memberRole": "alumni"
+      "memberRole": "alumni",
+      "memberStatus": "verified",
+      "publishedAt": "2026-06-24T02:15:07.177Z",
+      "publishedByRole": "captain"
     },
     {
       "id": "968383ee-eebb-4d6e-8895-0b8871e444be",
@@ -2972,6 +2975,17 @@
       "sourceUrls": [],
       "createdAt": "2026-05-14T16:01:17.923565Z",
       "updatedAt": "2026-05-14T16:01:17.923565Z"
+    },
+    {
+      "id": "095da939-ab85-45df-b11a-cbf57c113812",
+      "personId": "7cbbd250-3e04-4b40-bb9d-12ee76b2337a",
+      "teamId": "4ba58630-e98d-43db-b7a9-6012ef4e4da4",
+      "visibleToPlayers": true,
+      "contactPreference": "team_intro",
+      "verificationStatus": "unverified",
+      "sourceUrls": [],
+      "createdAt": "2026-06-24T02:15:07.177Z",
+      "updatedAt": "2026-06-24T02:15:07.177Z"
     }
   ],
   "enrichmentSources": [],
@@ -3078,5 +3092,18 @@
   ],
   "clubhouseGatheringRequests": [],
   "profileClaimRequests": [],
-  "accounts": []
+  "accounts": [],
+  "moments": [],
+  "momentComments": [],
+  "momentReactions": [],
+  "openRequests": [],
+  "careerPosts": [],
+  "teamNewsItems": [],
+  "seasonUpdates": [],
+  "chatConversations": [],
+  "chatMessages": [],
+  "donations": [],
+  "notifications": [],
+  "pushSubscriptions": [],
+  "siteContent": {}
 }
