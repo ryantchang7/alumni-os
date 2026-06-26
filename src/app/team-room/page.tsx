@@ -5,7 +5,7 @@ import FoundersWall from '@/components/FoundersWall'
 import CaptainsLineup from '@/components/CaptainsLineup'
 import MemberAvatar from '@/components/MemberAvatar'
 import MemberBadges from '@/components/MemberBadges'
-import { badgesForPerson, getBadgesForAccount } from '@/lib/badges'
+import { badgesForPerson } from '@/lib/badges'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import HeroCrest from '@/components/HeroCrest'
 import LinkPreviewImage from '@/components/LinkPreviewImage'
@@ -129,33 +129,29 @@ export default async function TeamRoomPage() {
     )
   }
 
-  // Compute the set of captain identities so we can EXCLUDE them from the
-  // roster / alumni / staff sections. Captains appear only in CaptainsLineup.
-  const captainPersonIdSet = new Set<string>()
-  const captainNameSet = new Set<string>()
-  if (team) {
-    for (const account of store.accounts) {
-      if (account.teamId !== team.id) continue
-      const badges = getBadgesForAccount(account)
-      if (!badges.includes('founder') && !badges.includes('captain')) continue
-      if (account.linkedPersonId) captainPersonIdSet.add(account.linkedPersonId)
-      const person = account.linkedPersonId
-        ? store.people.find(p => p.id === account.linkedPersonId)
-        : null
-      const name = (person?.canonicalName ?? account.name ?? '').toLowerCase().trim()
-      if (name) captainNameSet.add(name)
+  // Dedupe within a list by canonicalName (case-insensitive). When two entries
+  // share the same name, keep the one that has a photo (the account-linked
+  // record). Preserves the existing sort order.
+  const dedupeByName = (entries: PlayerEntry[]): PlayerEntry[] => {
+    const seen = new Map<string, PlayerEntry>()
+    for (const entry of entries) {
+      const key = entry.person.canonicalName.toLowerCase().trim()
+      const existing = seen.get(key)
+      if (!existing) {
+        seen.set(key, entry)
+      } else {
+        // Prefer the entry that has a photo; if tie, keep the first (already there).
+        if (!photoFor(existing.person.id) && photoFor(entry.person.id)) {
+          seen.set(key, entry)
+        }
+      }
     }
+    return entries.filter(e => seen.get(e.person.canonicalName.toLowerCase().trim()) === e)
   }
 
-  // Filter captains out of the other sections so they only appear in the
-  // Captains section at the top.
-  const isCaptainEntry = ({ person }: { person: Person }) =>
-    captainPersonIdSet.has(person.id) ||
-    captainNameSet.has(person.canonicalName.toLowerCase().trim())
-
-  currentPlayers = currentPlayers.filter(e => !isCaptainEntry(e))
-  recentAlumni = recentAlumni.filter(e => !isCaptainEntry(e))
-  coaches = coaches.filter(e => !isCaptainEntry(e))
+  currentPlayers = dedupeByName(currentPlayers)
+  recentAlumni = dedupeByName(recentAlumni)
+  coaches = dedupeByName(coaches)
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -186,8 +182,8 @@ export default async function TeamRoomPage() {
         {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
 
         {/* Clubhouse Captains — first content section so captains are front
-            and center. Anyone who is a captain is filtered OUT of the roster /
-            alumni / staff sections below, so they appear exactly once here. */}
+            and center. Captains ALSO appear in the roster/alumni sections
+            below — the double is intentional (captain = recognition role). */}
         {team && <CaptainsLineup store={store} teamId={team.id} />}
 
         {/* Current season roster */}

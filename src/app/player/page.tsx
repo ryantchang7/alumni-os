@@ -503,23 +503,6 @@ function ClubhouseInner() {
           </div>
         </div>
 
-        {/* Suggest an idea — small, tasteful nudge just below the room cards */}
-        <div className="pb-6 -mt-6">
-          <Link
-            href="/suggest"
-            className="flex items-center justify-between bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-3.5 hover:border-[#0a1628]/25 hover:shadow-sm transition-all group"
-            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
-          >
-            <p className="text-sm text-[#3d4a5c]">
-              Have an idea for the Clubhouse?{' '}
-              <span className="font-semibold text-[#0a1628]">Suggest it.</span>
-            </p>
-            <span className="text-xs font-semibold text-[#990000] group-hover:underline whitespace-nowrap ml-4">
-              Share an idea &rarr;
-            </span>
-          </Link>
-        </div>
-
         {/* This Week in the Clubhouse — moved up so what's HAPPENING this
             week sits near the top of the page, not at the bottom. */}
         <ThisWeekPanel teamSlug={teamSlug} approved={!!onboarding?.linked} />

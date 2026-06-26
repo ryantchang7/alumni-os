@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import NotificationBell from '@/components/NotificationBell'
+import SuggestTrigger from '@/components/SuggestTrigger'
 
 // Hall of Fame is intentionally not a top-level tab — lives under Clubhouse.
 // Chat is intentionally not a top-level tab — you start a chat from a
@@ -186,6 +187,7 @@ export default function NavBar() {
 
         {/* Right side */}
         <div className="hidden md:flex items-center gap-3">
+          <SuggestTrigger />
           <NotificationBell />
           <AccountAffordance />
           {isFounder && (
@@ -236,15 +238,18 @@ export default function NavBar() {
               ))}
               <div className="pt-3 flex items-center justify-between">
                 <AccountAffordance />
-                {isFounder && (
-                  <Link
-                    href="/internal"
-                    className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Internal
-                  </Link>
-                )}
+                <div className="flex items-center gap-3">
+                  <SuggestTrigger />
+                  {isFounder && (
+                    <Link
+                      href="/internal"
+                      className="text-[11px] text-gray-600 hover:text-gray-400 transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Internal
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>
