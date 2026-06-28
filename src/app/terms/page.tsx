@@ -17,65 +17,86 @@ export default function TermsPage() {
         >
           Terms
         </h1>
-        <p className="text-[12.5px] text-[#8a7f70] mb-8">Last updated 2026-05-31</p>
+        <p className="text-[12.5px] text-[#8a7f70] mb-8">Last updated 2026-06-27</p>
 
         <section className="space-y-5 text-[14.5px] text-[#0a1628] leading-relaxed">
           <p>
-            Welcome in. The Clubhouse is a private space for the Penn Men&rsquo;s Golf family. Like a real clubhouse, it runs on trust. These terms are short on purpose &mdash; the spirit of them is more important than any single line.
+            These Terms govern use of the Penn Golf Clubhouse (&ldquo;the Clubhouse&rdquo;), a private, approval-based community for the Penn Men&rsquo;s Golf family. By creating an account or using the Clubhouse you agree to these Terms.
           </p>
 
           <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
-            Who this is for
+            Eligibility &amp; membership
           </h2>
           <p>
-            Current players, alumni, coaches, and friends and family of Penn Men&rsquo;s Golf. Membership is approval-based. The captain decides who&rsquo;s in.
+            The Clubhouse is open to current players, alumni, coaches, and family &amp; friends of Penn Men&rsquo;s Golf. Membership is approval-based. A captain or the founder reviews and approves profile claims, and may decline or revoke access.
           </p>
 
           <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
-            What we ask of you
+            Your account
+          </h2>
+          <p>
+            You sign in with Google. You are responsible for all activity that occurs on your account. You may hold only one account, and you may only claim a profile that is yours.
+          </p>
+
+          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+            Acceptable use
           </h2>
           <ul className="list-disc pl-6 space-y-2">
             <li>Be honest about who you are. Don&rsquo;t claim a card that isn&rsquo;t yours.</li>
             <li>Be respectful to every member. The Penn Golf family includes generations who never overlapped on a roster.</li>
             <li>Don&rsquo;t scrape, export, or copy other members&rsquo; information for outside use.</li>
             <li>Don&rsquo;t use the Clubhouse to spam, harass, or pitch unsolicited products.</li>
-            <li>Don&rsquo;t use the Member Book or Member Map to build a contact list for anything outside the Penn Golf community.</li>
-            <li>Don&rsquo;t upload photos of other people without their okay.</li>
+            <li>Don&rsquo;t use the Member Book or Member Map to build contact lists for anything outside the Penn Golf community.</li>
+            <li>Don&rsquo;t upload photos of other people without their consent.</li>
           </ul>
 
           <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
             Your content
           </h2>
           <p>
-            You control your member card, your posts, your Moments, and your messages. You can edit or remove anything you posted. You grant the Clubhouse permission to display what you post inside the approved-members-only surfaces of the site.
+            You own the content you post. You grant the Clubhouse a limited license to display it within approved-members-only areas of the site. You can edit or remove your content at any time. Deleting your account removes it.
           </p>
 
           <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
-            Captain and founder authority
+            Moderation &amp; enforcement
           </h2>
           <p>
-            A captain can decline a claim, remove content that breaks the spirit of the Clubhouse, or pause an account that&rsquo;s causing harm. We&rsquo;ll always tell you why if it&rsquo;s your account. The founder can step in for the same reasons. We don&rsquo;t do this lightly.
+            Captains and the founder may decline a claim, remove content that violates these Terms, or suspend an account causing harm. If it&rsquo;s your account, we&rsquo;ll tell you why.
           </p>
 
           <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
-            Optional support
+            No paywall &mdash; optional support
           </h2>
           <p>
-            Joining is approval-based, not paywalled. Optional support tiers help fund Penn Men&rsquo;s Golf (70% of every dollar) and keep the Clubhouse running (30%). Becoming a Founding Member or Member is a way to back the program. It is not how you get in. You can cancel any time.
+            Access to the Clubhouse is free and approval-based. Membership and access are never gated by payment. Optional support contributions (processed by Stripe) help fund Penn Men&rsquo;s Golf (70% of every dollar) and Clubhouse operating costs (30%). Support is voluntary, does not affect your access or standing beyond an optional supporter badge, and can be canceled any time.
           </p>
 
           <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
-            What we are and aren&rsquo;t
+            Disclaimers
           </h2>
           <p>
-            The Clubhouse is built and run by Ryan Chang, Penn Men&rsquo;s Golf &lsquo;27. It is not an official Penn Athletics system unless and until Penn Athletics says so. It is not a replacement for any tool Penn provides to current players. Use common sense and keep the Clubhouse respectful.
+            The Clubhouse is provided on an &ldquo;as is&rdquo; and &ldquo;as available&rdquo; basis. It is an independent project built and run by Ryan Chang and is not an official Penn Athletics system unless and until Penn Athletics says so. It is not a substitute for official Penn tools.
+          </p>
+
+          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+            Limitation of liability
+          </h2>
+          <p>
+            To the maximum extent permitted by law, the Clubhouse and its operator are not liable for indirect, incidental, or consequential damages arising from your use of the Clubhouse.
+          </p>
+
+          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+            Changes to these Terms
+          </h2>
+          <p>
+            We may update these Terms from time to time. We&rsquo;ll note material changes on the site or by email. Continued use of the Clubhouse after an update means you accept the revised Terms.
           </p>
 
           <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
             Contact
           </h2>
           <p>
-            Questions? Email <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a>.
+            Questions about these Terms: email <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a>.
           </p>
         </section>
 
