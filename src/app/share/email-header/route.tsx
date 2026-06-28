@@ -8,7 +8,7 @@ import { join } from 'node:path'
 export async function GET() {
   let crestSrc: string | null = null
   try {
-    const data = await readFile(join(process.cwd(), 'public/locker-room-crest.png'))
+    const data = await readFile(join(process.cwd(), 'public/penn-golf-shield.png'))
     crestSrc = `data:image/png;base64,${data.toString('base64')}`
   } catch {
     // No crest — purely typographic fallback
