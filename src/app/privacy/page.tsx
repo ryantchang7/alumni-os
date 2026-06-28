@@ -130,6 +130,25 @@ export default function PrivacyPage() {
           </ul>
 
           <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+            Categories of personal information (California)
+          </h2>
+          <p>
+            Under the California Consumer Privacy Act as amended by the California Privacy Rights Act (CCPA/CPRA), we are required to disclose the categories of personal information we collect. The following categories apply to the Clubhouse, with examples mapped to what we actually collect:
+          </p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li><strong>Identifiers.</strong> Name, email address, Google account ID (from Google OAuth sign-in).</li>
+            <li><strong>Customer records.</strong> Profile and member-card fields you fill in: class year, city and state, hometown, home course, handicap, contact preferences, and how you want to help.</li>
+            <li><strong>Internet or other electronic network activity.</strong> IP address, request logs (browser type, referring URL, timestamps) collected automatically for security and abuse prevention.</li>
+            <li><strong>Geolocation &mdash; approximate only.</strong> City, state, and hometown as entered on your member card. We do not collect or use precise GPS location.</li>
+            <li><strong>Visual information.</strong> Photos and videos you upload to your profile or to Moments.</li>
+            <li><strong>Commercial information.</strong> Optional subscription tier and status (e.g., Supporting Member), if you choose to support the Clubhouse.</li>
+            <li><strong>Professional or biographical information.</strong> Bio, class year, role (current player, alum, coach, family &amp; affiliate), and how you want to be involved with the community.</li>
+          </ul>
+          <p>
+            We collect these categories for the purpose of operating the private community, authenticating members, and maintaining security. We do <strong>not</strong> sell or share these categories of personal information as those terms are defined under the CCPA/CPRA. Retention periods are described in the Data Retention section below.
+          </p>
+
+          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
             Data retention
           </h2>
           <p>

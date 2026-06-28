@@ -484,6 +484,11 @@ export default function SupportClient({ status }: Props) {
             </Link>
             .
           </p>
+          <p className="text-[11px] text-[#8a7f70] mt-2">
+            <Link href="/subscription-terms" className="hover:text-[#0a1628] hover:underline">
+              Subscription &amp; Billing Terms
+            </Link>
+          </p>
         </div>
       </div>
     </div>
