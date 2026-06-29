@@ -243,9 +243,15 @@ export default async function TeamRoomPage() {
             Live from the Course
           </p>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Season Tracker</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">
+          <p className="text-sm text-[#8a7f70] mb-4">
             Qualifying, tournament results, and stats as the season unfolds.
           </p>
+          <Link
+            href="/team/updates"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#990000] hover:underline mb-6"
+          >
+            Follow the team &rarr;
+          </Link>
           {seasonUpdates.length > 0 ? (
             <ol className="relative border-l border-[rgba(180,168,150,0.45)] pl-6 space-y-5">
               {seasonUpdates.map(u => (

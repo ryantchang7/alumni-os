@@ -23,6 +23,7 @@ const navLinks = [
   { label: 'Moments', href: '/moments' },
   { label: 'Career Room', href: '/career-room' },
   { label: 'Team Room', href: '/team-room' },
+  { label: 'Team Updates', href: '/team/updates' },
   { label: 'Meet the Team', href: '/meet-the-team' },
   { label: 'Support', href: '/support' },
 ]

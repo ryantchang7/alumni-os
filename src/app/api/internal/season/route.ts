@@ -6,9 +6,11 @@ import {
   createSeasonUpdate,
   updateSeasonUpdate,
   deleteSeasonUpdate,
+  readStore,
 } from '@/lib/store/local-store'
 import { detectStoreBackend } from '@/lib/launch/persistence-check'
 import { fetchLinkPreview } from '@/lib/link-preview/fetch-link-preview'
+import { notifyMany } from '@/lib/notifications/notify'
 import type { SeasonUpdate } from '@/lib/store/types'
 
 const VALID_KINDS = new Set<SeasonUpdate['kind']>(['qualifying', 'tournament', 'stat', 'note'])
@@ -92,6 +94,24 @@ export async function POST(request: Request) {
     linkLabel: typeof body.linkLabel === 'string' && body.linkLabel.trim() ? body.linkLabel.trim() : undefined,
     ...preview,
   })
+
+  // Notify everyone following the team (approved members who haven't unfollowed).
+  try {
+    const store = await readStore()
+    const followerIds = store.accounts
+      .filter(a => a.linkedPersonId && a.followsTeam !== false)
+      .map(a => a.id)
+    if (followerIds.length > 0) {
+      await notifyMany(followerIds, {
+        type: 'team_update',
+        title: `Team update: ${title}`,
+        body: update.body ? `${dateText} — ${update.body.slice(0, 80)}${update.body.length > 80 ? '…' : ''}` : dateText,
+        href: '/team/updates',
+      })
+    }
+  } catch (err) {
+    console.warn('[season] follower notify failed (non-fatal):', err)
+  }
 
   return NextResponse.json({ update }, { status: 201 })
 }

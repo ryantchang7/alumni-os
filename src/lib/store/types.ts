@@ -340,6 +340,9 @@ export interface Account {
   /** Current players can opt out of the "Answer the team's questions" queue.
    *  Undefined or true means opted IN; false means opted OUT. */
   answersTeamQuestions?: boolean
+  /** Whether the member follows the current team (gets notified on new season
+   *  updates/results). Undefined or true means FOLLOWING; false means unfollowed. */
+  followsTeam?: boolean
 }
 
 /**
@@ -353,7 +356,7 @@ export interface AppNotification {
   id: string
   /** Recipient account id — the only account that may read this row. */
   accountId: string
-  type: 'request' | 'approved' | 'new_member' | 'new_moment' | 'new_question' | 'question_answered'
+  type: 'request' | 'approved' | 'new_member' | 'new_moment' | 'new_question' | 'question_answered' | 'team_update'
   title: string
   body: string
   /** Where clicking the notification takes the member (e.g. '/player'). */

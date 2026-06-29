@@ -2469,6 +2469,26 @@ export async function setAnswersTeamQuestions(
   })
 }
 
+/**
+ * Set whether an account follows the current team (new season updates notify
+ * followers). undefined and true both mean following; false means unfollowed.
+ */
+export async function setFollowsTeam(
+  accountId: string,
+  value: boolean,
+): Promise<Account | null> {
+  return mutateStore(store => {
+    const idx = store.accounts.findIndex(a => a.id === accountId)
+    if (idx === -1) return null
+    const next: Account = { ...store.accounts[idx] }
+    if (value) delete next.followsTeam
+    else next.followsTeam = false
+    next.updatedAt = new Date().toISOString()
+    store.accounts[idx] = next
+    return next
+  })
+}
+
 /** Flip the community-updates mute on an account. Returns the patched row. */
 export async function setMutedCommunityNotifications(
   accountId: string,
