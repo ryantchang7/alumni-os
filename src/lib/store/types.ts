@@ -356,7 +356,7 @@ export interface AppNotification {
   id: string
   /** Recipient account id — the only account that may read this row. */
   accountId: string
-  type: 'request' | 'approved' | 'new_member' | 'new_moment' | 'new_question' | 'question_answered' | 'team_update'
+  type: 'request' | 'approved' | 'new_member' | 'new_moment' | 'new_question' | 'question_answered' | 'team_update' | 'spotlight'
   title: string
   body: string
   /** Where clicking the notification takes the member (e.g. '/player'). */
@@ -639,6 +639,29 @@ export interface TeamQuestion {
   answers: TeamQuestionAnswer[]
 }
 
+/** A featured-alumni spotlight, curated by a captain or the founder. */
+export interface AlumniSpotlight {
+  id: string
+  personId: string
+  /** Name snapshot at feature time (resilient to later edits). */
+  name: string
+  headline?: string
+  blurb: string
+  featuredByAccountId: string
+  featuredAt: string
+}
+
+/** A member's nomination for who to spotlight next. */
+export interface SpotlightNomination {
+  id: string
+  /** Free-text name of the person being nominated. */
+  nomineeName: string
+  reason?: string
+  byAccountId: string
+  byName: string
+  createdAt: string
+}
+
 /**
  * An idea submitted via the public /suggest form. Stored regardless of
  * sign-in status. Capped to the newest 200 rows. Founder gets an email +
@@ -684,6 +707,10 @@ export interface Store {
   donations: Donation[]
   /** Questions from alumni to the current team. Capped to newest 500. */
   teamQuestions: TeamQuestion[]
+  /** Featured-alumni spotlights, newest first. */
+  alumniSpotlights: AlumniSpotlight[]
+  /** Member nominations for who to spotlight next. */
+  spotlightNominations: SpotlightNomination[]
   /** In-app notifications, one row per (recipient, event). Capped per
    * account in the store helpers to protect the single blob. */
   notifications: AppNotification[]

@@ -29,7 +29,7 @@ export interface NotifyPayload {
 
 /** True for community broadcasts that the community-mute toggle suppresses. */
 function isCommunityType(type: AppNotification['type']): boolean {
-  return type === 'new_member' || type === 'new_moment'
+  return type === 'new_member' || type === 'new_moment' || type === 'spotlight'
 }
 
 /**

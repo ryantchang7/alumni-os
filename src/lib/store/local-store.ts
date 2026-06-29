@@ -43,6 +43,8 @@ import type {
   IdeaSubmission,
   TeamQuestion,
   TeamQuestionAnswer,
+  AlumniSpotlight,
+  SpotlightNomination,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -105,6 +107,8 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.siteContent) parsed.siteContent = {}
   if (!parsed.ideaSubmissions) parsed.ideaSubmissions = []
   if (!parsed.teamQuestions) parsed.teamQuestions = []
+  if (!parsed.alumniSpotlights) parsed.alumniSpotlights = []
+  if (!parsed.spotlightNominations) parsed.spotlightNominations = []
   return parsed
 }
 
@@ -151,6 +155,8 @@ const EMPTY_STORE: Store = {
   siteContent: {},
   ideaSubmissions: [],
   teamQuestions: [],
+  alumniSpotlights: [],
+  spotlightNominations: [],
 }
 
 function normalizeName(name: string): string {
@@ -2486,6 +2492,65 @@ export async function setFollowsTeam(
     next.updatedAt = new Date().toISOString()
     store.accounts[idx] = next
     return next
+  })
+}
+
+const ALUMNI_SPOTLIGHTS_CAP = 200
+const SPOTLIGHT_NOMINATIONS_CAP = 200
+
+/** Feature an alum as the spotlight. Newest first, capped. */
+export async function createSpotlight(input: {
+  personId: string
+  name: string
+  headline?: string
+  blurb: string
+  featuredByAccountId: string
+}): Promise<AlumniSpotlight> {
+  const s: AlumniSpotlight = {
+    id: `spot_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    personId: input.personId,
+    name: input.name.trim(),
+    headline: input.headline?.trim() || undefined,
+    blurb: input.blurb.trim(),
+    featuredByAccountId: input.featuredByAccountId,
+    featuredAt: new Date().toISOString(),
+  }
+  return mutateStore(store => {
+    store.alumniSpotlights.unshift(s)
+    if (store.alumniSpotlights.length > ALUMNI_SPOTLIGHTS_CAP) {
+      store.alumniSpotlights = store.alumniSpotlights.slice(0, ALUMNI_SPOTLIGHTS_CAP)
+    }
+    return s
+  })
+}
+
+/** All spotlights, newest first. */
+export async function getSpotlights(): Promise<AlumniSpotlight[]> {
+  const store = await readStore()
+  return [...store.alumniSpotlights].sort((a, b) => b.featuredAt.localeCompare(a.featuredAt))
+}
+
+/** Record a member's nomination for who to spotlight next. Newest first, capped. */
+export async function addSpotlightNomination(input: {
+  nomineeName: string
+  reason?: string
+  byAccountId: string
+  byName: string
+}): Promise<SpotlightNomination> {
+  const n: SpotlightNomination = {
+    id: `snom_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    nomineeName: input.nomineeName.trim(),
+    reason: input.reason?.trim() || undefined,
+    byAccountId: input.byAccountId,
+    byName: input.byName.trim(),
+    createdAt: new Date().toISOString(),
+  }
+  return mutateStore(store => {
+    store.spotlightNominations.unshift(n)
+    if (store.spotlightNominations.length > SPOTLIGHT_NOMINATIONS_CAP) {
+      store.spotlightNominations = store.spotlightNominations.slice(0, SPOTLIGHT_NOMINATIONS_CAP)
+    }
+    return n
   })
 }
 

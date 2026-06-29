@@ -16,7 +16,7 @@ import MemberOnlyTease from '@/components/MemberOnlyTease'
 import MemberBadges from '@/components/MemberBadges'
 import HeroCrest from '@/components/HeroCrest'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
-import type { TeamNewsItem } from '@/lib/store/types'
+import type { AlumniSpotlight, TeamNewsItem } from '@/lib/store/types'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
 
@@ -156,6 +156,62 @@ interface PlayerProfile {
 }
 
 const spring = { type: 'spring' as const, stiffness: 120, damping: 22, mass: 0.8 }
+
+function SpotlightCard({ spotlight }: { spotlight: AlumniSpotlight }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...spring, delay: 0.48 }}
+      className="pb-8"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-base font-semibold text-[#0a1628]">This Week&rsquo;s Spotlight</h2>
+        <Link
+          href="/spotlight"
+          className="text-xs font-semibold text-[#990000] hover:underline whitespace-nowrap"
+        >
+          All spotlights &rarr;
+        </Link>
+      </div>
+      <Link
+        href="/spotlight"
+        className="group block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 hover:shadow-md transition-shadow"
+        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+      >
+        <div className="flex items-start gap-4">
+          <div
+            className="flex-shrink-0 w-12 h-12 rounded-full bg-[#0a1628] flex items-center justify-center text-white text-lg font-semibold"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+            aria-hidden="true"
+          >
+            {spotlight.name.charAt(0).toUpperCase()}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-start justify-between gap-2 flex-wrap">
+              <p
+                className="font-semibold text-[#0a1628] text-sm leading-tight"
+                style={{ fontFamily: 'var(--font-playfair)' }}
+              >
+                {spotlight.name}
+              </p>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#c8a84b] bg-[#c8a84b]/10 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+                Spotlight
+              </span>
+            </div>
+            {spotlight.headline && (
+              <p className="text-xs text-[#c8a84b] mt-0.5 leading-snug">{spotlight.headline}</p>
+            )}
+            <p className="text-xs text-[#4a5568] mt-1.5 leading-relaxed line-clamp-2">{spotlight.blurb}</p>
+            <span className="text-xs font-semibold text-[#990000] group-hover:underline mt-2 inline-block">
+              Read the spotlight &rarr;
+            </span>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  )
+}
 
 function TraditionSection() {
   return (
@@ -345,6 +401,7 @@ function ClubhouseInner() {
     subscribed: boolean
     configured: boolean
   } | null>(null)
+  const [currentSpotlight, setCurrentSpotlight] = useState<AlumniSpotlight | null>(null)
 
   useEffect(() => {
     fetch(`/api/player/profiles?teamSlug=${teamSlug}`)
@@ -375,6 +432,11 @@ function ClubhouseInner() {
           configured: !!d.configured,
         })
       })
+      .catch(() => {})
+
+    fetch('/api/spotlights')
+      .then(r => (r.ok ? r.json() : { spotlight: null }))
+      .then(d => setCurrentSpotlight(d.spotlight ?? null))
       .catch(() => {})
   }, [teamSlug])
 
@@ -502,6 +564,9 @@ function ClubhouseInner() {
             })}
           </div>
         </div>
+
+        {/* Alumni Spotlight compact card — only when one exists */}
+        {currentSpotlight && <SpotlightCard spotlight={currentSpotlight} />}
 
         {/* This Week in the Clubhouse — moved up so what's HAPPENING this
             week sits near the top of the page, not at the bottom. */}
