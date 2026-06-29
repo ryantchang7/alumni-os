@@ -356,7 +356,7 @@ export interface AppNotification {
   id: string
   /** Recipient account id — the only account that may read this row. */
   accountId: string
-  type: 'request' | 'approved' | 'new_member' | 'new_moment' | 'new_question' | 'question_answered' | 'team_update' | 'spotlight'
+  type: 'request' | 'approved' | 'new_member' | 'new_moment' | 'new_question' | 'question_answered' | 'team_update' | 'spotlight' | 'host_offer'
   title: string
   body: string
   /** Where clicking the notification takes the member (e.g. '/player'). */
@@ -662,6 +662,29 @@ export interface SpotlightNomination {
   createdAt: string
 }
 
+/** A scheduled team trip/tournament alumni can offer to host around. */
+export interface TeamTravelStop {
+  id: string
+  teamId: string
+  eventName: string
+  locationText: string
+  startDate: string
+  endDate?: string
+  note?: string
+  createdAt: string
+}
+
+/** An alum's offer to host the team at a travel stop. */
+export interface TravelHostOffer {
+  id: string
+  travelStopId: string
+  byAccountId: string
+  byName: string
+  byLocation?: string
+  message?: string
+  createdAt: string
+}
+
 /**
  * An idea submitted via the public /suggest form. Stored regardless of
  * sign-in status. Capped to the newest 200 rows. Founder gets an email +
@@ -711,6 +734,10 @@ export interface Store {
   alumniSpotlights: AlumniSpotlight[]
   /** Member nominations for who to spotlight next. */
   spotlightNominations: SpotlightNomination[]
+  /** The current team's travel/tournament schedule (founder-posted). */
+  teamTravelStops: TeamTravelStop[]
+  /** Alumni offers to host the team at a travel stop. */
+  travelHostOffers: TravelHostOffer[]
   /** In-app notifications, one row per (recipient, event). Capped per
    * account in the store helpers to protect the single blob. */
   notifications: AppNotification[]

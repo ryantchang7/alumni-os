@@ -1,0 +1,61 @@
+/**
+ * /api/team-travel
+ *
+ * POST   — founder posts a team travel/tournament stop.
+ * DELETE — founder removes a stop (?id=).
+ *
+ * POST body: { eventName, locationText, startDate, endDate?, note? }.
+ */
+
+import { NextResponse } from 'next/server'
+import { requireFounder } from '@/lib/auth/guards'
+import { createTravelStop, deleteTravelStop, getTeamBySlug } from '@/lib/store/local-store'
+
+const TEAM_SLUG = 'penn-mens-golf'
+
+export async function POST(request: Request) {
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
+  let body: Record<string, unknown>
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  const eventName = typeof body.eventName === 'string' ? body.eventName.trim() : ''
+  const locationText = typeof body.locationText === 'string' ? body.locationText.trim() : ''
+  const startDate = typeof body.startDate === 'string' ? body.startDate.trim() : ''
+  if (!eventName) return NextResponse.json({ error: 'eventName is required.' }, { status: 400 })
+  if (!locationText) return NextResponse.json({ error: 'locationText is required.' }, { status: 400 })
+  if (!startDate) return NextResponse.json({ error: 'startDate is required.' }, { status: 400 })
+
+  const team = await getTeamBySlug(TEAM_SLUG)
+  if (!team) return NextResponse.json({ error: 'Team not found.' }, { status: 404 })
+
+  const stop = await createTravelStop({
+    teamId: team.id,
+    eventName,
+    locationText,
+    startDate,
+    endDate: typeof body.endDate === 'string' && body.endDate.trim() ? body.endDate.trim() : undefined,
+    note: typeof body.note === 'string' && body.note.trim() ? body.note.trim() : undefined,
+  })
+
+  return NextResponse.json({ ok: true, stop }, { status: 201 })
+}
+
+export async function DELETE(request: Request) {
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+  if (!id) return NextResponse.json({ error: 'id is required.' }, { status: 400 })
+
+  const ok = await deleteTravelStop(id)
+  if (!ok) return NextResponse.json({ error: 'Stop not found.' }, { status: 404 })
+
+  return NextResponse.json({ ok: true })
+}

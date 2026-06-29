@@ -486,6 +486,25 @@ export default async function TeamRoomPage() {
           </Link>
         </div>
 
+        {/* Team Travel card */}
+        <div
+          className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+        >
+          <div>
+            <p className="font-semibold text-[#0a1628] text-sm">Team Travel</p>
+            <p className="text-xs text-[#8a7f70] mt-0.5">
+              Where the team is headed &mdash; offer to host them when they&rsquo;re near you.
+            </p>
+          </div>
+          <Link
+            href="/team/travel"
+            className="text-sm font-semibold text-[#990000] hover:underline whitespace-nowrap flex-shrink-0"
+          >
+            See the schedule &rarr;
+          </Link>
+        </div>
+
         {/* Bottom CTA */}
         <div
           className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"

@@ -25,6 +25,7 @@ const navLinks = [
   { label: 'Team Room', href: '/team-room' },
   { label: 'Team Updates', href: '/team/updates' },
   { label: 'Meet the Team', href: '/meet-the-team' },
+  { label: 'Team Travel', href: '/team/travel' },
   { label: 'Spotlight', href: '/spotlight' },
   { label: 'Support', href: '/support' },
 ]

@@ -45,6 +45,8 @@ import type {
   TeamQuestionAnswer,
   AlumniSpotlight,
   SpotlightNomination,
+  TeamTravelStop,
+  TravelHostOffer,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -109,6 +111,8 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.teamQuestions) parsed.teamQuestions = []
   if (!parsed.alumniSpotlights) parsed.alumniSpotlights = []
   if (!parsed.spotlightNominations) parsed.spotlightNominations = []
+  if (!parsed.teamTravelStops) parsed.teamTravelStops = []
+  if (!parsed.travelHostOffers) parsed.travelHostOffers = []
   return parsed
 }
 
@@ -157,6 +161,8 @@ const EMPTY_STORE: Store = {
   teamQuestions: [],
   alumniSpotlights: [],
   spotlightNominations: [],
+  teamTravelStops: [],
+  travelHostOffers: [],
 }
 
 function normalizeName(name: string): string {
@@ -2552,6 +2558,86 @@ export async function addSpotlightNomination(input: {
     }
     return n
   })
+}
+
+const TRAVEL_STOPS_CAP = 100
+const HOST_OFFERS_CAP = 500
+
+/** Founder posts a team travel stop. Newest-created first, capped. */
+export async function createTravelStop(input: {
+  teamId: string
+  eventName: string
+  locationText: string
+  startDate: string
+  endDate?: string
+  note?: string
+}): Promise<TeamTravelStop> {
+  const stop: TeamTravelStop = {
+    id: `trip_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    teamId: input.teamId,
+    eventName: input.eventName.trim(),
+    locationText: input.locationText.trim(),
+    startDate: input.startDate.trim(),
+    endDate: input.endDate?.trim() || undefined,
+    note: input.note?.trim() || undefined,
+    createdAt: new Date().toISOString(),
+  }
+  return mutateStore(store => {
+    store.teamTravelStops.unshift(stop)
+    if (store.teamTravelStops.length > TRAVEL_STOPS_CAP) {
+      store.teamTravelStops = store.teamTravelStops.slice(0, TRAVEL_STOPS_CAP)
+    }
+    return stop
+  })
+}
+
+/** All travel stops for a team (newest-created first). */
+export async function getTravelStops(teamId: string): Promise<TeamTravelStop[]> {
+  const store = await readStore()
+  return store.teamTravelStops.filter(s => s.teamId === teamId)
+}
+
+/** Delete a travel stop and any host offers attached to it. */
+export async function deleteTravelStop(id: string): Promise<boolean> {
+  return mutateStore(store => {
+    const before = store.teamTravelStops.length
+    store.teamTravelStops = store.teamTravelStops.filter(s => s.id !== id)
+    store.travelHostOffers = store.travelHostOffers.filter(o => o.travelStopId !== id)
+    return store.teamTravelStops.length < before
+  })
+}
+
+/** An alum offers to host the team at a stop. Returns null if the stop is gone. */
+export async function addTravelHostOffer(input: {
+  travelStopId: string
+  byAccountId: string
+  byName: string
+  byLocation?: string
+  message?: string
+}): Promise<TravelHostOffer | null> {
+  const offer: TravelHostOffer = {
+    id: `host_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    travelStopId: input.travelStopId,
+    byAccountId: input.byAccountId,
+    byName: input.byName.trim(),
+    byLocation: input.byLocation?.trim() || undefined,
+    message: input.message?.trim() || undefined,
+    createdAt: new Date().toISOString(),
+  }
+  return mutateStore(store => {
+    if (!store.teamTravelStops.some(s => s.id === input.travelStopId)) return null
+    store.travelHostOffers.unshift(offer)
+    if (store.travelHostOffers.length > HOST_OFFERS_CAP) {
+      store.travelHostOffers = store.travelHostOffers.slice(0, HOST_OFFERS_CAP)
+    }
+    return offer
+  })
+}
+
+/** Host offers for a given travel stop (newest first). */
+export async function getHostOffersForStop(travelStopId: string): Promise<TravelHostOffer[]> {
+  const store = await readStore()
+  return store.travelHostOffers.filter(o => o.travelStopId === travelStopId)
 }
 
 /** Flip the community-updates mute on an account. Returns the patched row. */
