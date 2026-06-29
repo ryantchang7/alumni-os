@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { FOUNDER_EMAILS } from '@/lib/badges'
@@ -14,7 +14,7 @@ import SuggestTrigger from '@/components/SuggestTrigger'
 // Chat is intentionally not a top-level tab — you start a chat from a
 // member's profile in the Member Book ("Message" button). The /chat list
 // and /chat/[id] thread pages still work for ongoing conversations.
-const navLinks = [
+const primaryLinks = [
   { label: 'Clubhouse', href: '/player' },
   { label: 'Invite', href: '/invite' },
   { label: 'Member Book', href: '/member-book' },
@@ -23,13 +23,66 @@ const navLinks = [
   { label: '19th Hole', href: '/19th-hole' },
   { label: 'Moments', href: '/moments' },
   { label: 'Career Room', href: '/career-room' },
+]
+
+// Team + program surfaces, grouped under the "Team" dropdown to keep the
+// top nav lean.
+const teamLinks = [
   { label: 'Team Room', href: '/team-room' },
-  { label: 'Team Updates', href: '/team/updates' },
   { label: 'Meet the Team', href: '/meet-the-team' },
+  { label: 'Team Updates', href: '/team/updates' },
   { label: 'Team Travel', href: '/team/travel' },
   { label: 'Spotlight', href: '/spotlight' },
-  { label: 'Support', href: '/support' },
 ]
+
+const supportLink = { label: 'Support', href: '/support' }
+
+const navItemClass = (active: boolean) =>
+  `text-[13px] transition-colors px-3 py-2 rounded ${
+    active ? 'text-white bg-white/[0.08]' : 'text-gray-300 hover:text-white hover:bg-white/[0.06]'
+  }`
+
+function isActive(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(href + '/')
+}
+
+/** Desktop "Team" dropdown grouping the team/program surfaces. */
+function TeamMenu({ pathname }: { pathname: string }) {
+  const [open, setOpen] = useState(false)
+  const active = teamLinks.some(l => isActive(pathname, l.href))
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        onBlur={() => setTimeout(() => setOpen(false), 120)}
+        aria-expanded={open}
+        className={`flex items-center gap-1 ${navItemClass(active)}`}
+      >
+        Team
+        <ChevronDown size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div
+          className="absolute left-0 mt-1 w-44 bg-white border border-[rgba(180,168,150,0.4)] rounded-lg shadow-lg overflow-hidden text-[#0a1628] z-50"
+          onMouseDown={e => e.preventDefault()}
+        >
+          {teamLinks.map(l => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className={`block px-4 py-2 text-[13px] hover:bg-[#faf7f2] ${
+                isActive(pathname, l.href) ? 'bg-[#faf7f2] font-medium' : ''
+              }`}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 function AccountAffordance() {
   const { data: session, status } = useSession()
@@ -155,10 +208,8 @@ export default function NavBar() {
   const email = (session?.user?.email ?? '').toLowerCase().trim()
   const isFounder = FOUNDER_EMAILS.has(email)
 
-  // Locker Room is no longer a top-level nav entry — it lives as a
-  // subtab of /moments now (and /locker-room is still a real page for
-  // direct linking). Keep the top nav lean.
-  const visibleLinks = navLinks
+  const mobileLinkClass =
+    'text-[13px] text-gray-300 hover:text-white transition-colors py-3 border-b border-white/[0.06]'
 
   return (
     <header className="bg-[#0a1628] border-b border-white/[0.08] sticky top-0 z-50">
@@ -172,22 +223,15 @@ export default function NavBar() {
 
         {/* Center nav (desktop) */}
         <nav className="hidden md:flex items-center gap-1">
-          {visibleLinks.map(link => {
-            const active = pathname === link.href || pathname.startsWith(link.href + '/')
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-[13px] transition-colors px-3 py-2 rounded ${
-                  active
-                    ? 'text-white bg-white/[0.08]'
-                    : 'text-gray-300 hover:text-white hover:bg-white/[0.06]'
-                }`}
-              >
-                {link.label}
-              </Link>
-            )
-          })}
+          {primaryLinks.map(link => (
+            <Link key={link.href} href={link.href} className={navItemClass(isActive(pathname, link.href))}>
+              {link.label}
+            </Link>
+          ))}
+          <TeamMenu pathname={pathname} />
+          <Link href={supportLink.href} className={navItemClass(isActive(pathname, supportLink.href))}>
+            {supportLink.label}
+          </Link>
         </nav>
 
         {/* Right side */}
@@ -231,16 +275,40 @@ export default function NavBar() {
             className="md:hidden bg-[#0a1628] border-t border-white/[0.08] px-6 pb-4"
           >
             <div className="flex flex-col gap-1 pt-3">
-              {visibleLinks.map(link => (
+              {primaryLinks.map(link => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-[13px] text-gray-300 hover:text-white transition-colors py-3 border-b border-white/[0.06] last:border-0"
+                  className={mobileLinkClass}
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
                 </Link>
               ))}
+
+              {/* Team group */}
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 pt-4 pb-1">
+                Team
+              </p>
+              {teamLinks.map(link => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`${mobileLinkClass} pl-3`}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+
+              <Link
+                href={supportLink.href}
+                className={mobileLinkClass}
+                onClick={() => setMobileOpen(false)}
+              >
+                {supportLink.label}
+              </Link>
+
               <div className="pt-3 flex items-center justify-between">
                 <AccountAffordance />
                 <div className="flex items-center gap-3">
