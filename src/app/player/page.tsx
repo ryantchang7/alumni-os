@@ -679,6 +679,30 @@ function ClubhouseInner() {
             </Link>
           </div>
         </div>
+
+        {/* Invite teammates */}
+        <div className="pb-10">
+          <div
+            className="bg-[#0a1628] border border-[#c8a84b]/20 rounded-xl px-5 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+            style={{ boxShadow: '0 4px 16px rgba(10,22,40,0.12)' }}
+          >
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#c8a84b] mb-1">
+                Grow the network
+              </p>
+              <p className="text-sm font-semibold text-white">Invite your teammates</p>
+              <p className="text-xs text-white/50 mt-0.5">
+                The Clubhouse is better at full density. Pull in the guys who aren&rsquo;t here yet.
+              </p>
+            </div>
+            <Link
+              href="/invite"
+              className="flex-shrink-0 inline-flex items-center gap-1.5 bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628] text-[12px] font-semibold px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+            >
+              Invite teammates &rarr;
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   )

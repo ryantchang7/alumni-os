@@ -16,6 +16,7 @@ import SuggestTrigger from '@/components/SuggestTrigger'
 // and /chat/[id] thread pages still work for ongoing conversations.
 const navLinks = [
   { label: 'Clubhouse', href: '/player' },
+  { label: 'Invite', href: '/invite' },
   { label: 'Member Book', href: '/member-book' },
   { label: 'Member Map', href: '/member-map' },
   { label: 'The Course', href: '/the-course' },

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Clock } from 'lucide-react'
+import { Clock, Users } from 'lucide-react'
 
 export default function ClaimPendingPage() {
   return (
@@ -38,6 +38,22 @@ export default function ClaimPendingPage() {
             className="text-[12px] text-[#8a7f70] hover:text-[#0a1628] py-2"
           >
             Browse the Member Book
+          </Link>
+        </div>
+
+        {/* Invite nudge */}
+        <div className="mt-6 pt-6 border-t border-[rgba(180,168,150,0.3)]">
+          <Link
+            href="/invite"
+            className="flex items-center gap-2.5 text-left group"
+          >
+            <Users className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
+            <span className="text-[12.5px] text-[#3d4a5c] group-hover:text-[#0a1628] transition-colors">
+              Who else should be here?{' '}
+              <span className="font-semibold text-[#0a1628] group-hover:underline">
+                Invite your teammates &rarr;
+              </span>
+            </span>
           </Link>
         </div>
       </div>
