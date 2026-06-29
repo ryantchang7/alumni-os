@@ -62,6 +62,45 @@ export async function requireCaptain(): Promise<GateResult> {
   return { ok: true, session: session!, email }
 }
 
+/**
+ * Passes if the signed-in account is a current player on the team
+ * (memberRole === 'current_player') AND has not opted out of answering
+ * questions (answersTeamQuestions !== false). Founders also pass.
+ */
+export async function requireCurrentPlayer(): Promise<GateResult> {
+  const session = await auth()
+  const email = (session?.user?.email ?? '').toLowerCase().trim()
+  if (!email || !session?.accountId) {
+    return { ok: false, response: NextResponse.json({ error: 'Sign in required' }, { status: 401 }) }
+  }
+  // Founders always pass.
+  if (FOUNDER_EMAILS.has(email)) {
+    return { ok: true, session: session!, email }
+  }
+  const store = await readStore()
+  const account = store.accounts.find(a => a.id === session.accountId)
+  if (!account) {
+    return { ok: false, response: NextResponse.json({ error: 'Account not found' }, { status: 403 }) }
+  }
+  if (account.answersTeamQuestions === false) {
+    return { ok: false, response: NextResponse.json({ error: 'You have opted out of answering questions' }, { status: 403 }) }
+  }
+  if (!account.linkedPersonId) {
+    return { ok: false, response: NextResponse.json({ error: 'Current players only' }, { status: 403 }) }
+  }
+  const team = store.teams.find(t => t.slug === TEAM_SLUG)
+  if (!team) {
+    return { ok: false, response: NextResponse.json({ error: 'Team not found' }, { status: 403 }) }
+  }
+  const membership = store.teamMemberships.find(
+    m => m.personId === account.linkedPersonId && m.teamId === team.id && m.memberRole === 'current_player',
+  )
+  if (!membership) {
+    return { ok: false, response: NextResponse.json({ error: 'Current players only' }, { status: 403 }) }
+  }
+  return { ok: true, session: session!, email }
+}
+
 export async function requireFounder(): Promise<GateResult> {
   const session = await auth()
   const email = (session?.user?.email ?? '').toLowerCase().trim()

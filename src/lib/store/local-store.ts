@@ -41,6 +41,8 @@ import type {
   AppNotification,
   PushSubscriptionRecord,
   IdeaSubmission,
+  TeamQuestion,
+  TeamQuestionAnswer,
 } from './types'
 
 // On Vercel (production) the /var/task filesystem is read-only.
@@ -102,6 +104,7 @@ function normalizeStore(parsed: Store): Store {
   if (!parsed.pushSubscriptions) parsed.pushSubscriptions = []
   if (!parsed.siteContent) parsed.siteContent = {}
   if (!parsed.ideaSubmissions) parsed.ideaSubmissions = []
+  if (!parsed.teamQuestions) parsed.teamQuestions = []
   return parsed
 }
 
@@ -147,6 +150,7 @@ const EMPTY_STORE: Store = {
   pushSubscriptions: [],
   siteContent: {},
   ideaSubmissions: [],
+  teamQuestions: [],
 }
 
 function normalizeName(name: string): string {
@@ -2376,6 +2380,92 @@ export async function addIdeaSubmission(input: {
       store.ideaSubmissions = store.ideaSubmissions.slice(0, IDEA_SUBMISSIONS_CAP)
     }
     return submission
+  })
+}
+
+// ── Team Questions ─────────────────────────────────────────────────────────────
+
+const TEAM_QUESTIONS_CAP = 500
+
+/**
+ * Record a question from an approved member to the current team.
+ * Capped to the newest 500 rows. Uses mutateStore.
+ */
+export async function addTeamQuestion(input: {
+  askerAccountId: string
+  askerName: string
+  askerGradYear?: string
+  question: string
+}): Promise<TeamQuestion> {
+  const now = new Date().toISOString()
+  const q: TeamQuestion = {
+    id: `tq_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    askerAccountId: input.askerAccountId,
+    askerName: input.askerName.trim(),
+    askerGradYear: input.askerGradYear?.trim() || undefined,
+    question: input.question.trim(),
+    createdAt: now,
+    status: 'open',
+    answers: [],
+  }
+  return mutateStore(store => {
+    store.teamQuestions.unshift(q)
+    if (store.teamQuestions.length > TEAM_QUESTIONS_CAP) {
+      store.teamQuestions = store.teamQuestions.slice(0, TEAM_QUESTIONS_CAP)
+    }
+    return q
+  })
+}
+
+/**
+ * Append an answer to an existing question and mark it answered.
+ * Returns null if the question is not found.
+ */
+export async function addTeamQuestionAnswer(
+  questionId: string,
+  input: {
+    responderAccountId: string
+    responderName: string
+    body: string
+  },
+): Promise<TeamQuestion | null> {
+  const now = new Date().toISOString()
+  const answer: TeamQuestionAnswer = {
+    id: `tqa_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    responderAccountId: input.responderAccountId,
+    responderName: input.responderName.trim(),
+    body: input.body.trim(),
+    createdAt: now,
+  }
+  return mutateStore(store => {
+    const idx = store.teamQuestions.findIndex(q => q.id === questionId)
+    if (idx === -1) return null
+    store.teamQuestions[idx] = {
+      ...store.teamQuestions[idx],
+      status: 'answered',
+      answers: [...store.teamQuestions[idx].answers, answer],
+    }
+    return store.teamQuestions[idx]
+  })
+}
+
+/**
+ * Set the answersTeamQuestions opt-in/out flag on an account.
+ * undefined and true both mean opted-in; false means opted-out.
+ */
+export async function setAnswersTeamQuestions(
+  accountId: string,
+  value: boolean,
+): Promise<Account | null> {
+  return mutateStore(store => {
+    const idx = store.accounts.findIndex(a => a.id === accountId)
+    if (idx === -1) return null
+    const next: Account = { ...store.accounts[idx] }
+    if (value) delete next.answersTeamQuestions
+    else next.answersTeamQuestions = false
+    next.updatedAt = new Date().toISOString()
+    store.accounts[idx] = next
+    return next
   })
 }
 

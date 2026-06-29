@@ -337,6 +337,9 @@ export interface Account {
    *  (a request addressed to them, their claim being approved) ignore this
    *  flag and always send. Defaults to ON (undefined === not muted). */
   mutedCommunityNotifications?: boolean
+  /** Current players can opt out of the "Answer the team's questions" queue.
+   *  Undefined or true means opted IN; false means opted OUT. */
+  answersTeamQuestions?: boolean
 }
 
 /**
@@ -350,7 +353,7 @@ export interface AppNotification {
   id: string
   /** Recipient account id — the only account that may read this row. */
   accountId: string
-  type: 'request' | 'approved' | 'new_member' | 'new_moment'
+  type: 'request' | 'approved' | 'new_member' | 'new_moment' | 'new_question' | 'question_answered'
   title: string
   body: string
   /** Where clicking the notification takes the member (e.g. '/player'). */
@@ -611,6 +614,29 @@ export interface ChatMessage {
 }
 
 /**
+ * A question an approved member asks the current team. Players (and founders)
+ * can answer; answered questions are visible to the asker. Capped to newest 500.
+ */
+export interface TeamQuestionAnswer {
+  id: string
+  responderAccountId: string
+  responderName: string
+  body: string
+  createdAt: string
+}
+
+export interface TeamQuestion {
+  id: string
+  askerAccountId: string
+  askerName: string
+  askerGradYear?: string
+  question: string
+  createdAt: string
+  status: 'open' | 'answered'
+  answers: TeamQuestionAnswer[]
+}
+
+/**
  * An idea submitted via the public /suggest form. Stored regardless of
  * sign-in status. Capped to the newest 200 rows. Founder gets an email +
  * in-app notification on each submission.
@@ -653,6 +679,8 @@ export interface Store {
   chatConversations: ChatConversation[]
   chatMessages: ChatMessage[]
   donations: Donation[]
+  /** Questions from alumni to the current team. Capped to newest 500. */
+  teamQuestions: TeamQuestion[]
   /** In-app notifications, one row per (recipient, event). Capped per
    * account in the store helpers to protect the single blob. */
   notifications: AppNotification[]
