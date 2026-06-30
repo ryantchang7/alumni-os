@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X, ChevronDown } from 'lucide-react'
@@ -14,31 +14,41 @@ import SuggestTrigger from '@/components/SuggestTrigger'
 // Chat is intentionally not a top-level tab — you start a chat from a
 // member's profile in the Member Book ("Message" button). The /chat list
 // and /chat/[id] thread pages still work for ongoing conversations.
-const primaryLinks = [
-  { label: 'Clubhouse', href: '/player' },
-  { label: 'Invite', href: '/invite' },
+type NavLink = { label: string; href: string }
+type NavEntry =
+  | ({ type: 'link' } & NavLink)
+  | { type: 'menu'; label: string; links: NavLink[] }
+
+// People/directory surfaces, grouped under the "Member Book" dropdown. Spotlight
+// features a member, so it sits here — not under "Team" (the current squad).
+const memberBookLinks: NavLink[] = [
   { label: 'Member Book', href: '/member-book' },
   { label: 'Member Map', href: '/member-map' },
-  { label: 'The Course', href: '/the-course' },
-  { label: '19th Hole', href: '/19th-hole' },
-  { label: 'Moments', href: '/moments' },
-  // Spotlight features an *alum*, not the current squad — so it's a top-level
-  // community surface, not a "Team" item.
   { label: 'Spotlight', href: '/spotlight' },
-  { label: 'Career Room', href: '/career-room' },
 ]
 
-// Current-squad surfaces, grouped under the "Team" dropdown to keep the top
-// nav lean. "Ask the Team" points at /meet-the-team — the roster page that
-// carries the ask-a-question flow (the verb people actually want here).
-const teamLinks = [
+// Current-squad surfaces. "Ask the Team" points at /meet-the-team — the roster
+// page that carries the ask-a-question flow (the verb people actually want).
+const teamLinks: NavLink[] = [
   { label: 'Team Room', href: '/team-room' },
   { label: 'Ask the Team', href: '/meet-the-team' },
   { label: 'Team Updates', href: '/team/updates' },
   { label: 'Team Travel', href: '/team/travel' },
 ]
 
-const supportLink = { label: 'Support', href: '/support' }
+// The top nav, in order. 'link' = direct destination; 'menu' = a dropdown
+// (desktop) / labeled section (mobile) that keeps the bar from getting crowded.
+const navEntries: NavEntry[] = [
+  { type: 'link', label: 'Clubhouse', href: '/player' },
+  { type: 'link', label: 'Invite', href: '/invite' },
+  { type: 'menu', label: 'Member Book', links: memberBookLinks },
+  { type: 'link', label: 'The Course', href: '/the-course' },
+  { type: 'link', label: '19th Hole', href: '/19th-hole' },
+  { type: 'link', label: 'Moments', href: '/moments' },
+  { type: 'link', label: 'Career Room', href: '/career-room' },
+  { type: 'menu', label: 'Team', links: teamLinks },
+  { type: 'link', label: 'Support', href: '/support' },
+]
 
 const navItemClass = (active: boolean) =>
   `text-[13px] transition-colors px-3 py-2 rounded ${
@@ -49,10 +59,18 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + '/')
 }
 
-/** Desktop "Team" dropdown grouping the team/program surfaces. */
-function TeamMenu({ pathname }: { pathname: string }) {
+/** Desktop dropdown grouping a set of related nav links under one label. */
+function NavMenu({
+  label,
+  links,
+  pathname,
+}: {
+  label: string
+  links: NavLink[]
+  pathname: string
+}) {
   const [open, setOpen] = useState(false)
-  const active = teamLinks.some(l => isActive(pathname, l.href))
+  const active = links.some(l => isActive(pathname, l.href))
   return (
     <div className="relative">
       <button
@@ -62,7 +80,7 @@ function TeamMenu({ pathname }: { pathname: string }) {
         aria-expanded={open}
         className={`flex items-center gap-1 ${navItemClass(active)}`}
       >
-        Team
+        {label}
         <ChevronDown size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
@@ -70,7 +88,7 @@ function TeamMenu({ pathname }: { pathname: string }) {
           className="absolute left-0 mt-1 w-44 bg-white border border-[rgba(180,168,150,0.4)] rounded-lg shadow-lg overflow-hidden text-[#0a1628] z-50"
           onMouseDown={e => e.preventDefault()}
         >
-          {teamLinks.map(l => (
+          {links.map(l => (
             <Link
               key={l.href}
               href={l.href}
@@ -226,15 +244,19 @@ export default function NavBar() {
 
         {/* Center nav (desktop) */}
         <nav className="hidden md:flex items-center gap-1">
-          {primaryLinks.map(link => (
-            <Link key={link.href} href={link.href} className={navItemClass(isActive(pathname, link.href))}>
-              {link.label}
-            </Link>
-          ))}
-          <TeamMenu pathname={pathname} />
-          <Link href={supportLink.href} className={navItemClass(isActive(pathname, supportLink.href))}>
-            {supportLink.label}
-          </Link>
+          {navEntries.map(entry =>
+            entry.type === 'menu' ? (
+              <NavMenu key={entry.label} label={entry.label} links={entry.links} pathname={pathname} />
+            ) : (
+              <Link
+                key={entry.href}
+                href={entry.href}
+                className={navItemClass(isActive(pathname, entry.href))}
+              >
+                {entry.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         {/* Right side */}
@@ -278,39 +300,34 @@ export default function NavBar() {
             className="md:hidden bg-[#0a1628] border-t border-white/[0.08] px-6 pb-4"
           >
             <div className="flex flex-col gap-1 pt-3">
-              {primaryLinks.map(link => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={mobileLinkClass}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              {/* Team group */}
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 pt-4 pb-1">
-                Team
-              </p>
-              {teamLinks.map(link => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`${mobileLinkClass} pl-3`}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              <Link
-                href={supportLink.href}
-                className={mobileLinkClass}
-                onClick={() => setMobileOpen(false)}
-              >
-                {supportLink.label}
-              </Link>
+              {navEntries.map(entry =>
+                entry.type === 'menu' ? (
+                  <Fragment key={entry.label}>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 pt-4 pb-1">
+                      {entry.label}
+                    </p>
+                    {entry.links.map(l => (
+                      <Link
+                        key={l.href}
+                        href={l.href}
+                        className={`${mobileLinkClass} pl-3`}
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {l.label}
+                      </Link>
+                    ))}
+                  </Fragment>
+                ) : (
+                  <Link
+                    key={entry.href}
+                    href={entry.href}
+                    className={mobileLinkClass}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {entry.label}
+                  </Link>
+                ),
+              )}
 
               <div className="pt-3 flex items-center justify-between">
                 <AccountAffordance />
