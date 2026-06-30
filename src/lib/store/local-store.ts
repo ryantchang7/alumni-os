@@ -2408,6 +2408,7 @@ export async function addTeamQuestion(input: {
   askerName: string
   askerGradYear?: string
   question: string
+  targets?: { personId: string; name: string }[]
 }): Promise<TeamQuestion> {
   const now = new Date().toISOString()
   const q: TeamQuestion = {
@@ -2416,6 +2417,7 @@ export async function addTeamQuestion(input: {
     askerName: input.askerName.trim(),
     askerGradYear: input.askerGradYear?.trim() || undefined,
     question: input.question.trim(),
+    targets: input.targets && input.targets.length > 0 ? input.targets : undefined,
     createdAt: now,
     status: 'open',
     answers: [],

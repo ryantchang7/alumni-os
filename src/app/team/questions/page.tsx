@@ -28,6 +28,34 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
+/** Small "To:" row showing who a question is aimed at */
+function TargetLine({ q }: { q: TeamQuestion }) {
+  if (q.targets && q.targets.length > 0) {
+    const names = q.targets.map(t => t.name.split(' ')[0]).join(', ')
+    return (
+      <div className="flex items-center gap-1.5 mb-2">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a7f70]">To</span>
+        <span className="inline-flex flex-wrap gap-1">
+          {q.targets.map(t => (
+            <span
+              key={t.personId}
+              className="text-[10px] font-medium text-[#7a5f1a] bg-[#c8a84b]/12 border border-[#c8a84b]/25 px-2 py-0.5 rounded-full"
+            >
+              {t.name.split(' ')[0]}
+            </span>
+          ))}
+        </span>
+        <span className="sr-only">{names}</span>
+      </div>
+    )
+  }
+  return (
+    <div className="mb-2">
+      <span className="text-[10px] font-medium text-[#b0a898]">To the whole team</span>
+    </div>
+  )
+}
+
 // ---- Card used in the player's "open" list ----
 function OpenQuestionCard({
   q,
@@ -81,6 +109,7 @@ function OpenQuestionCard({
       className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
     >
+      <TargetLine q={q} />
       <div className="flex items-center gap-2 flex-wrap mb-2">
         <span className="font-semibold text-[#0a1628] text-sm">{q.askerName}</span>
         {q.askerGradYear && (
@@ -123,6 +152,7 @@ function AnsweredCard({ q }: { q: TeamQuestion }) {
       className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
     >
+      <TargetLine q={q} />
       <div className="flex items-center gap-2 flex-wrap mb-1.5">
         <span className="font-semibold text-[#0a1628] text-sm">{q.askerName}</span>
         {q.askerGradYear && (
@@ -161,6 +191,7 @@ function MemberQuestionCard({ q }: { q: TeamQuestion }) {
         </span>
         <span className="text-xs text-[#b0a898] ml-auto">{relativeTime(q.createdAt)}</span>
       </div>
+      <TargetLine q={q} />
       <p className="text-sm font-medium text-[#0a1628] leading-relaxed">{q.question}</p>
 
       {q.answers.length > 0 && (

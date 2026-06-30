@@ -1,31 +1,60 @@
 'use client'
 
 /**
- * AskTheTeam — "Ask the Team" trigger button + portal modal.
- * Mirrors SuggestTrigger's modal pattern: navy header in Playfair,
- * cream body, Escape-to-close, backdrop.
+ * AskTheTeam — trigger button + portal modal with player picker.
  *
- * Approved members only (the API returns 401/403 for everyone else).
+ * Multiple instances can live on one page (hero + nudge + per-card).
+ * Self-contained — no context/provider needed.
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
-import { X } from 'lucide-react'
+import { X, MessageCircle, Check, Users } from 'lucide-react'
 import TurnstileWidget from '@/components/TurnstileWidget'
+import MemberAvatar from '@/components/MemberAvatar'
 
 const QUESTION_MAX = 1000
 
-interface Props {
-  /** Variant for when this button appears inline on a page vs. compact elsewhere. */
-  variant?: 'primary' | 'compact'
+export interface AskTarget {
+  personId: string
+  name: string
+  photoUrl: string | null
+  classShort?: string
 }
 
-export default function AskTheTeam({ variant = 'primary' }: Props) {
+interface Props {
+  players: AskTarget[]
+  variant?: 'primary' | 'card'
+  label?: string
+  initialTargetPersonIds?: string[]
+}
+
+/** First name only */
+function firstName(name: string): string {
+  return name.split(' ')[0] ?? name
+}
+
+/** Join names for display: "Jimmy", "Jimmy & Bob", "Jimmy, Bob & Alex" */
+function joinNames(names: string[]): string {
+  if (names.length === 0) return ''
+  if (names.length === 1) return names[0]
+  if (names.length === 2) return names[0] + ' & ' + names[1]
+  return names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1]
+}
+
+export default function AskTheTeam({
+  players,
+  variant = 'primary',
+  label,
+  initialTargetPersonIds,
+}: Props) {
   const [open, setOpen] = useState(false)
   const [question, setQuestion] = useState('')
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [filter, setFilter] = useState('')
 
   const handleTurnstile = useCallback((token: string | null) => {
     setTurnstileToken(token)
@@ -50,9 +79,21 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
     }
   }, [open, handleKeyDown])
 
+  function handleOpen() {
+    // Seed selection from initialTargetPersonIds intersected with valid player ids
+    const validIds = new Set(players.map(p => p.personId))
+    const seeded = (initialTargetPersonIds ?? []).filter(id => validIds.has(id))
+    setSelectedIds(new Set(seeded))
+    setOpen(true)
+    setStatus('idle')
+    setQuestion('')
+    setErrorMsg('')
+    setTurnstileToken(null)
+    setFilter('')
+  }
+
   function handleClose() {
     setOpen(false)
-    // Reset form if not in success state (let success state persist briefly)
     if (status !== 'success') {
       setQuestion('')
       setErrorMsg('')
@@ -60,12 +101,20 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
     }
   }
 
-  function handleOpen() {
-    setOpen(true)
-    setStatus('idle')
-    setQuestion('')
-    setErrorMsg('')
-    setTurnstileToken(null)
+  function togglePlayer(id: string) {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  function clearSelection() {
+    setSelectedIds(new Set())
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -74,8 +123,13 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
     setStatus('submitting')
     setErrorMsg('')
 
-    const payload: Record<string, string> = { question: question.trim() }
+    const payload: {
+      question: string
+      turnstileToken?: string
+      targetPersonIds?: string[]
+    } = { question: question.trim() }
     if (turnstileToken) payload.turnstileToken = turnstileToken
+    if (selectedIds.size > 0) payload.targetPersonIds = [...selectedIds]
 
     try {
       const res = await fetch('/api/team-questions', {
@@ -105,6 +159,32 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
     }
   }
 
+  // Filtered player list for the picker
+  const filteredPlayers = useMemo(() => {
+    if (!filter.trim()) return players
+    const q = filter.trim().toLowerCase()
+    return players.filter(p => p.name.toLowerCase().includes(q))
+  }, [players, filter])
+
+  // Selected player objects (in roster order)
+  const selectedPlayers = players.filter(p => selectedIds.has(p.personId))
+  const selectedFirstNames = selectedPlayers.map(p => firstName(p.name))
+
+  // Status line copy
+  const pickerStatus =
+    selectedIds.size === 0
+      ? null
+      : joinNames(selectedFirstNames)
+
+  // Success headline
+  const successHeadline =
+    selectedIds.size === 0
+      ? 'Sent — one of the guys will get back to you'
+      : 'Sent to ' + joinNames(selectedFirstNames) + ' — they’ll get back to you'
+
+  // Trigger button
+  const triggerLabel = variant === 'primary' ? (label ?? 'Ask the Team') : (label ?? 'Ask')
+
   const triggerBtn =
     variant === 'primary' ? (
       <button
@@ -112,15 +192,16 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
         onClick={handleOpen}
         className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628] text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors"
       >
-        Ask the Team
+        {triggerLabel}
       </button>
     ) : (
       <button
         type="button"
         onClick={handleOpen}
-        className="text-[13px] font-medium text-gray-300 hover:text-white transition-colors px-3 py-2 rounded hover:bg-white/[0.06]"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-[#f8f5f0] hover:bg-white hover:border-[#0a1628]/30 px-3 py-2 rounded-lg transition-colors"
       >
-        Ask the Team
+        <MessageCircle size={13} className="flex-shrink-0" />
+        {triggerLabel}
       </button>
     )
 
@@ -141,11 +222,11 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
 
             {/* Panel */}
             <div
-              className="relative z-10 w-full max-w-lg bg-[#f8f5f0] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden animate-suggest-panel"
+              className="relative z-10 w-full max-w-lg bg-[#f8f5f0] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden animate-suggest-panel flex flex-col max-h-[90vh]"
               style={{ boxShadow: '0 8px 32px rgba(10,22,40,0.22), 0 2px 8px rgba(10,22,40,0.12)' }}
             >
               {/* Header */}
-              <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4">
+              <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4 flex-shrink-0">
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-1">
                     Penn Men&rsquo;s Golf
@@ -168,10 +249,10 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
               </div>
 
               {/* Gold accent line */}
-              <div className="h-[2px] bg-gradient-to-r from-[#c8a84b] via-[#d4b75a] to-[#c8a84b]" />
+              <div className="h-[2px] bg-gradient-to-r from-[#c8a84b] via-[#d4b75a] to-[#c8a84b] flex-shrink-0" />
 
-              {/* Body */}
-              <div className="px-6 py-6">
+              {/* Scrollable body */}
+              <div className="px-6 py-6 overflow-y-auto">
                 {status === 'success' ? (
                   <div className="rounded-xl border border-[#d9c8a8] bg-[#faf7f2] px-8 py-10 text-center">
                     <div className="flex items-center justify-center mb-4">
@@ -191,10 +272,10 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
                       </span>
                     </div>
                     <p
-                      className="text-2xl text-[#0a1628]"
+                      className="text-[1.15rem] leading-snug text-[#0a1628]"
                       style={{ fontFamily: 'var(--font-playfair)' }}
                     >
-                      Sent &mdash; one of the guys will get back to you
+                      {successHeadline}
                     </p>
                     <p className="mt-3 text-sm text-[#8a7f70]">
                       Usually within a couple days. Thanks for asking.
@@ -206,6 +287,95 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
                       Got a question for the guys on the team? Ask away &mdash; current players answer when they can.
                     </p>
 
+                    {/* ---- Player picker ---- */}
+                    {players.length > 0 && (
+                      <div className="space-y-3">
+                        <div className="flex items-baseline justify-between">
+                          <label className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70]">
+                            Who are you asking?
+                          </label>
+                          {selectedIds.size > 0 && (
+                            <button
+                              type="button"
+                              onClick={clearSelection}
+                              className="inline-flex items-center gap-1 text-[10px] font-medium text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+                            >
+                              <Users size={11} />
+                              Whole team
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Status line */}
+                        <div className="flex items-center gap-2 min-h-[1.5rem]">
+                          {selectedIds.size === 0 ? (
+                            <span className="text-xs text-[#5a5347]">
+                              Asking the whole team
+                              <span className="text-[#b0a898] ml-1.5">Everyone on the roster gets it.</span>
+                            </span>
+                          ) : (
+                            <span className="text-xs text-[#0a1628] font-medium">
+                              Asking{' '}
+                              <span className="text-[#c8a84b]">{pickerStatus}</span>
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Name filter for large rosters */}
+                        {players.length > 12 && (
+                          <input
+                            type="text"
+                            value={filter}
+                            onChange={e => setFilter(e.target.value)}
+                            placeholder="Filter by name…"
+                            className="w-full rounded-lg border border-[#d9c8a8] bg-white px-3 py-1.5 text-xs text-[#0a1628] placeholder:text-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b]"
+                          />
+                        )}
+
+                        {/* Chips */}
+                        <div className="max-h-44 overflow-y-auto -mx-1 px-1 pb-1">
+                          <div className="flex flex-wrap gap-2">
+                            {filteredPlayers.map(p => {
+                              const isSelected = selectedIds.has(p.personId)
+                              return (
+                                <button
+                                  key={p.personId}
+                                  type="button"
+                                  aria-pressed={isSelected}
+                                  onClick={() => togglePlayer(p.personId)}
+                                  className={[
+                                    'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c8a84b]/40',
+                                    isSelected
+                                      ? 'bg-[#c8a84b] text-[#0a1628] border-[#c8a84b]'
+                                      : 'bg-white text-[#0a1628] border-[#d9c8a8] hover:border-[#c8a84b]/60',
+                                  ].join(' ')}
+                                >
+                                  <MemberAvatar
+                                    photoUrl={p.photoUrl}
+                                    name={p.name}
+                                    size={20}
+                                    tone={isSelected ? 'onDark' : 'navy'}
+                                  />
+                                  <span>{firstName(p.name)}</span>
+                                  {p.classShort && (
+                                    <span
+                                      className={
+                                        isSelected ? 'opacity-60' : 'text-[#b0a898]'
+                                      }
+                                    >
+                                      {p.classShort}
+                                    </span>
+                                  )}
+                                  {isSelected && <Check size={11} className="flex-shrink-0" />}
+                                </button>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* ---- Question textarea ---- */}
                     <div>
                       <div className="flex items-baseline justify-between mb-1.5">
                         <label
@@ -214,10 +384,12 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
                         >
                           Your question
                         </label>
-                        <span className={[
-                          'text-xs tabular-nums transition-colors',
-                          question.length >= QUESTION_MAX * 0.9 ? 'text-[#990000]' : 'text-[#b0a898]',
-                        ].join(' ')}>
+                        <span
+                          className={[
+                            'text-xs tabular-nums transition-colors',
+                            question.length >= QUESTION_MAX * 0.9 ? 'text-[#990000]' : 'text-[#b0a898]',
+                          ].join(' ')}
+                        >
                           {question.length} / {QUESTION_MAX}
                         </span>
                       </div>
@@ -226,7 +398,7 @@ export default function AskTheTeam({ variant = 'primary' }: Props) {
                         value={question}
                         onChange={e => setQuestion(e.target.value.slice(0, QUESTION_MAX))}
                         required
-                        rows={5}
+                        rows={4}
                         maxLength={QUESTION_MAX}
                         placeholder="Ask the guys anything…"
                         className="w-full rounded-lg border border-[#d9c8a8] bg-white px-4 py-3 text-sm text-[#0a1628] placeholder:text-[#b0a898] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b]"

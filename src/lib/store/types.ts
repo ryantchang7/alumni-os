@@ -634,6 +634,9 @@ export interface TeamQuestion {
   askerName: string
   askerGradYear?: string
   question: string
+  /** Players this question is directed at (name snapshot for resilience).
+   *  Empty/undefined means it's addressed to the whole team. */
+  targets?: { personId: string; name: string }[]
   createdAt: string
   status: 'open' | 'answered'
   answers: TeamQuestionAnswer[]

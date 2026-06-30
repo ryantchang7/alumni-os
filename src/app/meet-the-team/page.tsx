@@ -2,7 +2,7 @@ import type { Person, TeamMembership } from '@/lib/store/types'
 import MemberAvatar from '@/components/MemberAvatar'
 import MemberBadges from '@/components/MemberBadges'
 import { badgesForPerson } from '@/lib/badges'
-import AskTheTeam from '@/components/AskTheTeam'
+import AskTheTeam, { type AskTarget } from '@/components/AskTheTeam'
 import Link from 'next/link'
 
 interface PlayerEntry {
@@ -63,6 +63,14 @@ export default async function MeetTheTeamPage() {
     currentPlayers = dedupeByName(currentPlayers)
   }
 
+  // Build AskTarget array for the picker
+  const askTargets: AskTarget[] = currentPlayers.map(({ person, membership }) => ({
+    personId: person.id,
+    name: person.canonicalName,
+    photoUrl: photoFor(person.id),
+    classShort: membership.classYearEstimate?.split(' / ')[0],
+  }))
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       {/* Hero */}
@@ -82,7 +90,7 @@ export default async function MeetTheTeamPage() {
             Get a real answer from one of the guys on the team.
           </p>
           <div className="mt-8">
-            <AskTheTeam variant="primary" />
+            <AskTheTeam players={askTargets} variant="primary" />
           </div>
         </div>
       </div>
@@ -118,6 +126,7 @@ export default async function MeetTheTeamPage() {
               const enrichment = team
                 ? store.personEnrichments.find(e => e.personId === person.id && e.teamId === team.id)
                 : null
+              const first = person.canonicalName.split(' ')[0]
 
               return (
                 <div
@@ -175,7 +184,7 @@ export default async function MeetTheTeamPage() {
                   )}
 
                   {/* Actions */}
-                  <div className="flex items-center gap-2 mt-auto pt-1">
+                  <div className="flex flex-wrap items-center gap-2 mt-auto pt-1">
                     {account ? (
                       <Link
                         href={`/member-book/${account.id}`}
@@ -191,6 +200,12 @@ export default async function MeetTheTeamPage() {
                         View Profile
                       </Link>
                     )}
+                    <AskTheTeam
+                      players={askTargets}
+                      variant="card"
+                      label={`Ask ${first}`}
+                      initialTargetPersonIds={[person.id]}
+                    />
                   </div>
                 </div>
               )
@@ -211,7 +226,7 @@ export default async function MeetTheTeamPage() {
               </p>
             </div>
             <div className="flex-shrink-0">
-              <AskTheTeam variant="primary" />
+              <AskTheTeam players={askTargets} variant="primary" />
             </div>
           </div>
         )}

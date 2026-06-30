@@ -79,22 +79,41 @@ export async function POST(request: Request) {
         )?.classYearEstimate
       : undefined
 
+  // Resolve who the question is aimed at (if anyone). Only current players are
+  // valid targets; unknown / non-player ids are silently dropped. Cap at 10.
+  const playerPersonIds = currentPlayerPersonIds(store)
+  const requestedTargetIds = Array.isArray(body.targetPersonIds)
+    ? (body.targetPersonIds as unknown[])
+        .filter((x): x is string => typeof x === 'string')
+        .slice(0, 10)
+    : []
+  const targets = Array.from(new Set(requestedTargetIds))
+    .filter(id => playerPersonIds.has(id))
+    .map(id => {
+      const person = store.people.find(p => p.id === id)
+      return person ? { personId: id, name: person.canonicalName } : null
+    })
+    .filter((t): t is { personId: string; name: string } => t !== null)
+
   const created = await addTeamQuestion({
     askerAccountId: account.id,
     askerName,
     askerGradYear,
     question,
+    targets,
   })
 
-  // Notify current players who haven't opted out.
+  // Notify the targeted players — or every current player for a whole-team
+  // question — skipping anyone who opted out and the asker themselves.
   try {
-    const playerPersonIds = currentPlayerPersonIds(store)
+    const targetIdSet = new Set(targets.map(t => t.personId))
     const recipientIds = store.accounts
       .filter(
         a =>
           a.linkedPersonId &&
           playerPersonIds.has(a.linkedPersonId) &&
-          a.answersTeamQuestions !== false,
+          a.answersTeamQuestions !== false &&
+          (targetIdSet.size === 0 || targetIdSet.has(a.linkedPersonId)),
       )
       .map(a => a.id)
     if (recipientIds.length > 0) {
@@ -102,8 +121,8 @@ export async function POST(request: Request) {
         recipientIds,
         {
           type: 'new_question',
-          title: 'New question for the team',
-          body: `${askerName}: ${question.slice(0, 80)}${question.length > 80 ? '…' : ''}`,
+          title: targets.length > 0 ? `${askerName} asked you a question` : 'New question for the team',
+          body: `${question.slice(0, 90)}${question.length > 90 ? '…' : ''}`,
           href: '/team/questions',
         },
         { excludeAccountId: account.id },
@@ -127,7 +146,14 @@ export async function GET() {
   const isCurrentPlayer = !!(account?.linkedPersonId && playerPersonIds.has(account.linkedPersonId))
 
   if (isCurrentPlayer || isFounder) {
-    const open = store.teamQuestions.filter(q => q.status === 'open')
+    const myPersonId = account?.linkedPersonId
+    const open = store.teamQuestions.filter(q => {
+      if (q.status !== 'open') return false
+      // Founders see all; a player sees whole-team questions + ones aimed at them.
+      if (isFounder) return true
+      if (!q.targets || q.targets.length === 0) return true
+      return !!myPersonId && q.targets.some(t => t.personId === myPersonId)
+    })
     const answered = store.teamQuestions.filter(q => q.status === 'answered').slice(0, 50)
     return NextResponse.json({ role: 'player', open, answered })
   }
