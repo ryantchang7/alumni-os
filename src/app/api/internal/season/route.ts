@@ -102,12 +102,18 @@ export async function POST(request: Request) {
       .filter(a => a.linkedPersonId && a.followsTeam !== false)
       .map(a => a.id)
     if (followerIds.length > 0) {
-      await notifyMany(followerIds, {
-        type: 'team_update',
-        title: `Team update: ${title}`,
-        body: update.body ? `${dateText} — ${update.body.slice(0, 80)}${update.body.length > 80 ? '…' : ''}` : dateText,
-        href: '/team/updates',
-      })
+      await notifyMany(
+        followerIds,
+        {
+          type: 'team_update',
+          title: `Team update: ${title}`,
+          body: update.body ? `${dateText} — ${update.body.slice(0, 80)}${update.body.length > 80 ? '…' : ''}` : dateText,
+          href: '/team/updates',
+        },
+        // Don't notify the founder for their own post (consistent with the
+        // other fan-outs). Safe if accountId is undefined — exclusion no-ops.
+        { excludeAccountId: gate.session.accountId ?? undefined },
+      )
     }
   } catch (err) {
     console.warn('[season] follower notify failed (non-fatal):', err)
