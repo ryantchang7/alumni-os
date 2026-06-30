@@ -78,57 +78,75 @@ export default async function SpotlightPage() {
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10">
         {/* Current spotlight */}
         <section className="mb-14">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-5">
-            This week&rsquo;s spotlight
-          </p>
-
           {current ? (
             <div
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-2xl overflow-hidden"
               style={{ boxShadow: '0 2px 8px rgba(10,22,40,0.08), 0 16px 40px rgba(10,22,40,0.06)' }}
             >
-              {/* Featured card header strip */}
-              <div className="bg-[#0a1628] px-6 sm:px-8 py-5 flex items-center gap-4">
-                <MemberAvatar
-                  photoUrl={photoFor(current.personId)}
-                  name={current.name}
-                  size={96}
-                  tone="onDark"
-                />
-                <div className="min-w-0">
-                  <p
-                    className="text-white text-2xl sm:text-3xl font-medium leading-tight"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
-                  >
-                    {current.name}
-                  </p>
-                  {current.headline && (
-                    <p className="text-[#c8a84b] text-sm mt-1.5 leading-snug">{current.headline}</p>
-                  )}
-                  <p className="text-white/35 text-xs mt-2">
-                    Featured {formatDate(current.featuredAt)}
-                  </p>
+              {/* Featured card header strip — marquee layout */}
+              <div className="bg-[#0a1628] px-6 sm:px-10 py-8 sm:py-10">
+                <div className="flex flex-col sm:flex-row sm:items-end gap-6">
+                  {/* Avatar — large for editorial weight */}
+                  <div className="flex-shrink-0">
+                    <MemberAvatar
+                      photoUrl={photoFor(current.personId)}
+                      name={current.name}
+                      size={120}
+                      tone="onDark"
+                    />
+                  </div>
+                  <div className="min-w-0 pb-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-2">
+                      This week&rsquo;s spotlight
+                    </p>
+                    <h2
+                      className="text-white text-3xl sm:text-4xl lg:text-5xl font-medium leading-tight tracking-tight"
+                      style={{ fontFamily: 'var(--font-playfair)' }}
+                    >
+                      {current.name}
+                    </h2>
+                    {current.headline && (
+                      <p className="text-[#c8a84b] text-base mt-2 leading-snug">{current.headline}</p>
+                    )}
+                    <p className="text-white/30 text-xs mt-3 font-medium tracking-wide">
+                      Featured {formatDate(current.featuredAt)}
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Penn red ribbon */}
-              <div className="h-[3px] bg-gradient-to-r from-[#990000] via-[#bb0000] to-[#990000]" />
+              {/* Gold ribbon — matches site brand */}
+              <div className="h-[3px] bg-gradient-to-r from-[#c8a84b] via-[#d4b75a] to-[#c8a84b]" />
 
-              {/* Blurb */}
-              <div className="px-6 sm:px-8 py-7">
-                <p className="text-[#3d4a5c] text-base leading-relaxed">{current.blurb}</p>
+              {/* Blurb — generous padding */}
+              <div className="px-6 sm:px-10 py-8">
+                <p className="text-[#3d4a5c] text-base sm:text-lg leading-relaxed max-w-3xl">
+                  {current.blurb}
+                </p>
               </div>
             </div>
           ) : (
             <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-2xl px-6 py-16 text-center"
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-2xl overflow-hidden"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
-              <p className="text-sm font-semibold text-[#0a1628]">No spotlight yet</p>
-              <p className="text-xs text-[#8a7f70] mt-2 max-w-sm mx-auto">
-                Nominate someone below &mdash; we&rsquo;ll pick from submissions.
-              </p>
-              <div className="mt-6">
+              <div className="bg-[#0a1628] px-6 sm:px-10 py-10 text-center">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-3">
+                  This week&rsquo;s spotlight
+                </p>
+                <p
+                  className="text-white/60 text-2xl font-medium"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Coming soon
+                </p>
+              </div>
+              <div className="h-[3px] bg-gradient-to-r from-[#c8a84b] via-[#d4b75a] to-[#c8a84b]" />
+              <div className="px-6 sm:px-10 py-8 text-center">
+                <p className="text-sm text-[#4a5568] leading-relaxed mb-6">
+                  Know someone from the Penn Golf family who deserves a moment in the spotlight?
+                  Nominate them &mdash; we pick from submissions each week.
+                </p>
                 <SpotlightNominate />
               </div>
             </div>

@@ -67,6 +67,9 @@ export default async function TeamUpdatesPage() {
         </div>
       </div>
 
+      {/* Gold accent line */}
+      <div className="h-[3px] bg-gradient-to-r from-[#c8a84b] via-[#d4b75a] to-[#c8a84b]" />
+
       {/* Feed */}
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10">
         {updates.length > 0 ? (

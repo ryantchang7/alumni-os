@@ -70,16 +70,12 @@ export default async function TeamTravelPage() {
         </div>
       </div>
 
-      {/* Gold accent */}
+      {/* Gold accent line */}
       <div className="h-[3px] bg-gradient-to-r from-[#c8a84b] via-[#d4b75a] to-[#c8a84b]" />
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-6">
         {/* Founder composer */}
-        {isFounder && (
-          <div>
-            <AddTravelStop />
-          </div>
-        )}
+        {isFounder && <AddTravelStop />}
 
         {/* Stops list */}
         {stops.length === 0 ? (
@@ -88,7 +84,7 @@ export default async function TeamTravelPage() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-sm font-semibold text-[#0a1628]">
-              {isFounder ? 'Add the first stop above.' : 'No trips posted yet.'}
+              {isFounder ? 'No stops yet — add the first one.' : 'No trips posted yet.'}
             </p>
             <p className="text-xs text-[#8a7f70] mt-2 max-w-sm mx-auto">
               {isFounder
@@ -97,7 +93,7 @@ export default async function TeamTravelPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {stops.map(stop => {
               const offers = offersByStop[stop.id] ?? []
               return (
@@ -106,32 +102,30 @@ export default async function TeamTravelPage() {
                   className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
                 >
-                  {/* Stop header */}
-                  <div className="p-5">
+                  {/* Stop header — itinerary layout */}
+                  <div className="p-5 sm:p-6">
                     <div className="flex items-start justify-between gap-4 flex-wrap">
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
+                        {/* Date badge */}
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-1.5">
+                          {formatDate(stop.startDate)}
+                          {stop.endDate ? ` – ${formatDate(stop.endDate)}` : ''}
+                        </p>
                         <h2
-                          className="text-[#0a1628] text-lg font-medium leading-snug"
+                          className="text-[#0a1628] text-xl font-medium leading-snug"
                           style={{ fontFamily: 'var(--font-playfair)' }}
                         >
                           {stop.eventName}
                         </h2>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
-                          <span className="text-sm text-[#4a5568]">{stop.locationText}</span>
-                          <span className="text-[10px] text-[#b0a898]">&bull;</span>
-                          <span className="text-sm text-[#8a7f70]">
-                            {formatDate(stop.startDate)}
-                            {stop.endDate ? ` – ${formatDate(stop.endDate)}` : ''}
-                          </span>
-                        </div>
+                        <p className="text-sm text-[#4a5568] mt-1">{stop.locationText}</p>
                         {stop.note && (
-                          <p className="text-xs text-[#8a7f70] mt-2 leading-relaxed max-w-xl">
+                          <p className="text-xs text-[#8a7f70] mt-2.5 leading-relaxed max-w-xl border-l-2 border-[rgba(180,168,150,0.5)] pl-3">
                             {stop.note}
                           </p>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
                         <TravelHostOfferButton
                           stopId={stop.id}
                           eventName={stop.eventName}
@@ -144,7 +138,7 @@ export default async function TeamTravelPage() {
 
                   {/* Host offers (founder-only) */}
                   {isFounder && (
-                    <div className="border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2] px-5 py-4">
+                    <div className="border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2] px-5 sm:px-6 py-4">
                       <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mb-3">
                         Host offers ({offers.length})
                       </p>
@@ -192,15 +186,13 @@ export default async function TeamTravelPage() {
         {/* Contextual nudge for members */}
         {!isFounder && stops.length > 0 && (
           <div
-            className="bg-[#0a1628] rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-            style={{ boxShadow: '0 4px 16px rgba(10,22,40,0.18)' }}
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <div>
-              <p className="font-semibold text-white text-sm">
-                Near one of these stops?
-              </p>
-              <p className="text-xs text-white/55 mt-0.5">
-                The Pat Cooper model &mdash; alumni hosting the team is what makes Penn Golf, Penn Golf.
+              <p className="font-semibold text-[#0a1628] text-sm">Near one of these stops?</p>
+              <p className="text-xs text-[#8a7f70] mt-0.5 max-w-md leading-relaxed">
+                Alumni hosting the team is what makes Penn Golf, Penn Golf. Tap any stop above to offer.
               </p>
             </div>
           </div>

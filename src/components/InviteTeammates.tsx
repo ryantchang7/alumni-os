@@ -94,33 +94,40 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
         </div>
       )}
 
-      {/* Share button */}
-      <div className="mb-8">
+      {/* Share primary CTA */}
+      <div
+        className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8"
+        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+      >
+        <div>
+          <p className="font-semibold text-[#0a1628] text-sm">Share the Clubhouse</p>
+          <p className="text-xs text-[#8a7f70] mt-0.5">
+            Sends a link via your phone&rsquo;s share sheet, or copies it on desktop.
+          </p>
+        </div>
         <button
           type="button"
           onClick={handleShareClubhouse}
-          className="inline-flex items-center gap-2.5 bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628] text-[13px] font-semibold px-5 py-3 rounded-lg transition-colors shadow-sm"
+          className="flex-shrink-0 inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628] text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors"
+          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.1)' }}
         >
           <Share2 className="w-4 h-4" />
-          Share the Clubhouse
+          Share
         </button>
-        <p className="text-xs text-white/45 mt-2.5">
-          Sends a link via your phone&rsquo;s share sheet, or copies it on desktop.
-        </p>
       </div>
 
       {/* Search */}
       <div className="mb-5">
         <div className="relative">
           <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
-            <Search className="w-4 h-4 text-white/30" />
+            <Search className="w-4 h-4 text-[#b0a898]" />
           </div>
           <input
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search teammates by name..."
-            className="w-full bg-white/10 border border-white/15 text-white placeholder-white/35 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/50 focus:border-[#c8a84b]/50 transition-colors"
+            className="w-full bg-white border border-[rgba(180,168,150,0.5)] text-[#0a1628] placeholder-[#b0a898] rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b] transition-colors"
           />
         </div>
       </div>
@@ -128,16 +135,17 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
       {/* Not-joined list */}
       {notJoined.length > 0 && (
         <div className="mb-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40 mb-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-3">
             Not on the Clubhouse yet
           </p>
           <div className="space-y-2">
             {notJoined.map(t => (
               <div
                 key={t.name}
-                className="flex items-center justify-between gap-3 bg-white/8 border border-white/10 rounded-xl px-4 py-3"
+                className="flex items-center justify-between gap-3 bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-4 py-3 hover:border-[rgba(180,168,150,0.6)] transition-colors"
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
               >
-                <span className="text-sm font-medium text-white">{t.name}</span>
+                <span className="text-sm font-medium text-[#0a1628]">{t.name}</span>
                 <button
                   type="button"
                   onClick={() => handleInvite(t.name)}
@@ -154,17 +162,17 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
       {/* Joined list */}
       {joined.length > 0 && (
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40 mb-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-3">
             Already on the Clubhouse
           </p>
           <div className="space-y-2">
             {joined.map(t => (
               <div
                 key={t.name}
-                className="flex items-center justify-between gap-3 bg-white/4 border border-white/8 rounded-xl px-4 py-3 opacity-70"
+                className="flex items-center justify-between gap-3 bg-[#faf7f2] border border-[rgba(180,168,150,0.25)] rounded-xl px-4 py-3"
               >
-                <span className="text-sm text-white/75">{t.name}</span>
-                <span className="flex items-center gap-1 text-[11px] text-[#c8a84b] font-medium">
+                <span className="text-sm text-[#8a7f70]">{t.name}</span>
+                <span className="flex items-center gap-1.5 text-[11px] text-[#2d6a4f] font-semibold">
                   <Check className="w-3.5 h-3.5" />
                   On the Clubhouse
                 </span>
@@ -175,11 +183,16 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
       )}
 
       {filtered.length === 0 && (
-        <p className="text-sm text-white/45 text-center py-8">No teammates match that search.</p>
+        <div
+          className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-12 text-center"
+          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+        >
+          <p className="text-sm text-[#8a7f70]">No teammates match that search.</p>
+        </div>
       )}
 
       {/* Copy-link fallback for desktop */}
-      <div className="mt-8 pt-6 border-t border-white/10">
+      <div className="mt-8 pt-6 border-t border-[rgba(180,168,150,0.35)]">
         <button
           type="button"
           onClick={async () => {
@@ -191,7 +204,7 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
               showToast('Link: ' + url)
             }
           }}
-          className="inline-flex items-center gap-2 text-xs text-white/45 hover:text-white/70 transition-colors"
+          className="inline-flex items-center gap-2 text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
         >
           <Copy className="w-3.5 h-3.5" />
           Copy invite link

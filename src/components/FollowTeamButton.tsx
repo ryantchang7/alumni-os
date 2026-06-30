@@ -42,23 +42,23 @@ export default function FollowTeamButton({ initialFollowing, signedIn }: Props) 
   }
 
   return (
-    <div className="flex flex-col items-start gap-1.5">
+    <div className="flex flex-col items-start gap-2">
       <button
         type="button"
         onClick={handleToggle}
         disabled={loading}
-        className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c8a84b]/60 disabled:opacity-60 ${
+        className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c8a84b]/60 disabled:opacity-60 ${
           following
-            ? 'bg-[#c8a84b] text-[#0a1628] hover:bg-[#b8973b]'
-            : 'border-2 border-[#c8a84b] text-[#c8a84b] hover:bg-[#c8a84b]/10'
+            ? 'bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628]'
+            : 'bg-white/10 border border-white/25 text-white hover:bg-white/15'
         }`}
       >
         {following ? (
           <>
             <svg
               aria-hidden="true"
-              width="14"
-              height="14"
+              width="13"
+              height="13"
               viewBox="0 0 14 14"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +67,7 @@ export default function FollowTeamButton({ initialFollowing, signedIn }: Props) 
               <path
                 d="M2 7.5L5.5 11L12 4"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
@@ -75,11 +75,31 @@ export default function FollowTeamButton({ initialFollowing, signedIn }: Props) 
             Following
           </>
         ) : (
-          'Follow the team'
+          <>
+            <svg
+              aria-hidden="true"
+              width="13"
+              height="13"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="flex-shrink-0"
+            >
+              <path
+                d="M7 2v10M2 7h10"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+            Follow the team
+          </>
         )}
       </button>
-      <p className="text-xs text-white/45">
-        Get notified when the team posts results.
+      <p className="text-xs text-white/40">
+        {following
+          ? "You'll get notified when new results are posted."
+          : 'Get notified when the team posts results.'}
       </p>
     </div>
   )

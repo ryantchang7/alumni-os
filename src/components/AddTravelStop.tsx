@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
-import { Trash2 } from 'lucide-react'
+import { Trash2, X } from 'lucide-react'
 
 export function DeleteTravelStop({ stopId }: { stopId: string }) {
   const [confirming, setConfirming] = useState(false)
@@ -42,6 +43,10 @@ export function DeleteTravelStop({ stopId }: { stopId: string }) {
   )
 }
 
+const labelClass = 'block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5'
+const inputClass =
+  'w-full rounded-lg border border-[#d9c8a8] bg-white px-4 py-2.5 text-sm text-[#0a1628] placeholder:text-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b] transition-colors'
+
 export default function AddTravelStop() {
   const [open, setOpen] = useState(false)
   const [eventName, setEventName] = useState('')
@@ -52,6 +57,24 @@ export default function AddTravelStop() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const router = useRouter()
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') setOpen(false)
+  }, [])
+
+  useEffect(() => {
+    if (open) {
+      document.addEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [open, handleKeyDown])
 
   function reset() {
     setEventName('')
@@ -95,118 +118,165 @@ export default function AddTravelStop() {
     }
   }
 
-  if (!open) {
-    return (
+  const modal =
+    open && typeof window !== 'undefined'
+      ? createPortal(
+          <div
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Add a travel stop"
+          >
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-[#0a1628]/60 backdrop-blur-sm"
+              onClick={reset}
+            />
+
+            {/* Panel */}
+            <div
+              className="relative z-10 w-full max-w-lg bg-[#f8f5f0] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden flex flex-col max-h-[90vh]"
+              style={{ boxShadow: '0 8px 32px rgba(10,22,40,0.22), 0 2px 8px rgba(10,22,40,0.12)' }}
+            >
+              {/* Header */}
+              <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4 flex-shrink-0">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-1">
+                    Penn Men&rsquo;s Golf &mdash; Founders only
+                  </p>
+                  <h2
+                    className="text-white text-xl font-medium leading-snug"
+                    style={{ fontFamily: 'var(--font-playfair)' }}
+                  >
+                    Add a travel stop
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="text-white/50 hover:text-white transition-colors mt-0.5 flex-shrink-0"
+                  aria-label="Close"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Gold accent line */}
+              <div className="h-[2px] bg-gradient-to-r from-[#c8a84b] via-[#d4b75a] to-[#c8a84b] flex-shrink-0" />
+
+              {/* Body */}
+              <div className="px-6 py-6 overflow-y-auto">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className={labelClass}>Event name</label>
+                      <input
+                        type="text"
+                        required
+                        value={eventName}
+                        onChange={e => setEventName(e.target.value.slice(0, 120))}
+                        placeholder="e.g. Ivy Championship"
+                        className={inputClass}
+                        disabled={status === 'submitting'}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Location</label>
+                      <input
+                        type="text"
+                        required
+                        value={locationText}
+                        onChange={e => setLocationText(e.target.value.slice(0, 200))}
+                        placeholder="e.g. Princeton, NJ"
+                        className={inputClass}
+                        disabled={status === 'submitting'}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className={labelClass}>Start date</label>
+                      <input
+                        type="date"
+                        required
+                        value={startDate}
+                        onChange={e => setStartDate(e.target.value)}
+                        className={inputClass}
+                        disabled={status === 'submitting'}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>
+                        End date{' '}
+                        <span className="normal-case font-normal tracking-normal">(optional)</span>
+                      </label>
+                      <input
+                        type="date"
+                        value={endDate}
+                        onChange={e => setEndDate(e.target.value)}
+                        className={inputClass}
+                        disabled={status === 'submitting'}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>
+                      Note{' '}
+                      <span className="normal-case font-normal tracking-normal">(optional)</span>
+                    </label>
+                    <textarea
+                      value={note}
+                      onChange={e => setNote(e.target.value.slice(0, 400))}
+                      rows={3}
+                      placeholder="Any context for alumni near this stop..."
+                      className={`${inputClass} resize-none`}
+                      disabled={status === 'submitting'}
+                    />
+                  </div>
+
+                  {status === 'error' && (
+                    <p className="text-xs text-[#990000] bg-[#990000]/8 border border-[#990000]/20 rounded-lg px-4 py-2.5">
+                      {errorMsg}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-end gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={reset}
+                      className="text-sm text-[#8a7f70] hover:text-[#0a1628] transition-colors px-4 py-2"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={status === 'submitting'}
+                      className="bg-[#0a1628] text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-[#152238] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {status === 'submitting' ? 'Adding...' : 'Add stop'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )
+      : null
+
+  return (
+    <>
       <button
         type="button"
         onClick={() => setOpen(true)}
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] bg-white hover:bg-[#f8f5f0] px-4 py-2.5 rounded-lg transition-colors"
+        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
       >
         <span aria-hidden="true">+</span> Add a travel stop
       </button>
-    )
-  }
-
-  return (
-    <div
-      className="bg-white border border-[#c8a84b]/40 rounded-xl p-5"
-      style={{ boxShadow: '0 2px 8px rgba(200,168,75,0.12), 0 1px 3px rgba(10,22,40,0.06)' }}
-    >
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#c8a84b] mb-3">
-        New travel stop
-      </p>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5">
-              Event name
-            </label>
-            <input
-              type="text"
-              required
-              value={eventName}
-              onChange={e => setEventName(e.target.value.slice(0, 120))}
-              placeholder="e.g. Ivy Championship"
-              className="w-full rounded-lg border border-[#d9c8a8] bg-[#faf7f2] px-3 py-2 text-sm text-[#0a1628] placeholder:text-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b]"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5">
-              Location
-            </label>
-            <input
-              type="text"
-              required
-              value={locationText}
-              onChange={e => setLocationText(e.target.value.slice(0, 200))}
-              placeholder="e.g. Princeton, NJ"
-              className="w-full rounded-lg border border-[#d9c8a8] bg-[#faf7f2] px-3 py-2 text-sm text-[#0a1628] placeholder:text-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b]"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5">
-              Start date
-            </label>
-            <input
-              type="date"
-              required
-              value={startDate}
-              onChange={e => setStartDate(e.target.value)}
-              className="w-full rounded-lg border border-[#d9c8a8] bg-[#faf7f2] px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b]"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5">
-              End date <span className="normal-case font-normal tracking-normal">(optional)</span>
-            </label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={e => setEndDate(e.target.value)}
-              className="w-full rounded-lg border border-[#d9c8a8] bg-[#faf7f2] px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b]"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5">
-            Note <span className="normal-case font-normal tracking-normal">(optional)</span>
-          </label>
-          <textarea
-            value={note}
-            onChange={e => setNote(e.target.value.slice(0, 400))}
-            rows={2}
-            placeholder="Any context for alumni near this stop..."
-            className="w-full rounded-lg border border-[#d9c8a8] bg-[#faf7f2] px-3 py-2.5 text-sm text-[#0a1628] placeholder:text-[#b0a898] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b]"
-          />
-        </div>
-
-        {status === 'error' && (
-          <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-            {errorMsg}
-          </p>
-        )}
-
-        <div className="flex items-center gap-3">
-          <button
-            type="submit"
-            disabled={status === 'submitting'}
-            className="inline-flex items-center px-5 py-2.5 bg-[#0a1628] text-white text-xs font-semibold rounded-lg hover:bg-[#0f1f3d] disabled:opacity-50 transition-colors"
-          >
-            {status === 'submitting' ? 'Adding...' : 'Add stop'}
-          </button>
-          <button
-            type="button"
-            onClick={reset}
-            className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+      {modal}
+    </>
   )
 }
