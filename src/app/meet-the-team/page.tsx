@@ -75,10 +75,11 @@ export default async function MeetTheTeamPage() {
             className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
-            Meet the Team
+            Ask the Team
           </h1>
           <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-            Got a question? Get a real answer from one of the guys on the team.
+            Meet this year&rsquo;s squad below &mdash; and ask any of them anything.
+            Get a real answer from one of the guys on the team.
           </p>
           <div className="mt-8">
             <AskTheTeam variant="primary" />

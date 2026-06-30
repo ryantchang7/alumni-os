@@ -356,14 +356,14 @@ export default function TeamQuestionsPage() {
               >
                 <p className="text-sm font-semibold text-[#0a1628]">No questions yet</p>
                 <p className="text-xs text-[#8a7f70] mt-2 max-w-sm mx-auto">
-                  Head over to Meet the Team and ask the guys anything.
+                  Head over to Ask the Team and ask the guys anything.
                 </p>
                 <div className="mt-5">
                   <Link
                     href="/meet-the-team"
                     className="inline-flex items-center px-4 py-2.5 bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628] text-xs font-semibold rounded-lg transition-colors"
                   >
-                    Meet the Team &rarr;
+                    Ask the Team &rarr;
                   </Link>
                 </div>
               </div>

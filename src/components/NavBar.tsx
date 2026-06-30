@@ -22,17 +22,20 @@ const primaryLinks = [
   { label: 'The Course', href: '/the-course' },
   { label: '19th Hole', href: '/19th-hole' },
   { label: 'Moments', href: '/moments' },
+  // Spotlight features an *alum*, not the current squad — so it's a top-level
+  // community surface, not a "Team" item.
+  { label: 'Spotlight', href: '/spotlight' },
   { label: 'Career Room', href: '/career-room' },
 ]
 
-// Team + program surfaces, grouped under the "Team" dropdown to keep the
-// top nav lean.
+// Current-squad surfaces, grouped under the "Team" dropdown to keep the top
+// nav lean. "Ask the Team" points at /meet-the-team — the roster page that
+// carries the ask-a-question flow (the verb people actually want here).
 const teamLinks = [
   { label: 'Team Room', href: '/team-room' },
-  { label: 'Meet the Team', href: '/meet-the-team' },
+  { label: 'Ask the Team', href: '/meet-the-team' },
   { label: 'Team Updates', href: '/team/updates' },
   { label: 'Team Travel', href: '/team/travel' },
-  { label: 'Spotlight', href: '/spotlight' },
 ]
 
 const supportLink = { label: 'Support', href: '/support' }

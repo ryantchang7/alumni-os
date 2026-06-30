@@ -467,13 +467,13 @@ export default async function TeamRoomPage() {
           </section>
         )}
 
-        {/* Meet the Team CTA */}
+        {/* Ask the Team CTA */}
         <div
           className="bg-[#0a1628] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           style={{ boxShadow: '0 4px 16px rgba(10,22,40,0.18)' }}
         >
           <div>
-            <p className="font-semibold text-white text-sm">Meet the Team &mdash; and ask them anything</p>
+            <p className="font-semibold text-white text-sm">Ask the Team &mdash; and meet this year&rsquo;s squad</p>
             <p className="text-xs text-white/55 mt-0.5">
               Get a real answer from a current player, usually within a couple days.
             </p>
@@ -482,7 +482,7 @@ export default async function TeamRoomPage() {
             href="/meet-the-team"
             className="flex-shrink-0 inline-flex items-center px-4 py-2.5 bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628] text-xs font-semibold rounded-lg transition-colors whitespace-nowrap"
           >
-            Meet the Team &rarr;
+            Ask the Team &rarr;
           </Link>
         </div>
 
