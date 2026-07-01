@@ -18,10 +18,27 @@ import {
   getAccountById,
   getOpenRequestsForTeam,
   getTeamBySlug,
+  readStore,
 } from '@/lib/store/local-store'
+import { notifyMany } from '@/lib/notifications/notify'
+import { enrichmentStateToCode, CODE_TO_NAME } from '@/lib/map/state-lookup'
 import type { OpenRequestIntent } from '@/lib/store/types'
 
 const TEAM_SLUG = 'penn-mens-golf'
+
+const INTENT_LABEL: Record<OpenRequestIntent, string> = {
+  round: 'a round',
+  drinks: 'drinks',
+  coffee: 'coffee',
+  dinner: 'dinner',
+}
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+/** yyyy-mm-dd → "Aug 3" (no Date() so no timezone drift). */
+function fmtDate(iso: string): string {
+  const [, m, d] = iso.split('-')
+  const mi = Number(m) - 1
+  return mi >= 0 && mi < 12 ? `${MONTHS[mi]} ${Number(d)}` : iso
+}
 
 const VALID_INTENTS: OpenRequestIntent[] = ['round', 'drinks', 'coffee', 'dinner']
 function parseIntents(raw: string | null): OpenRequestIntent[] | undefined {
@@ -114,6 +131,78 @@ export async function POST(request: Request) {
     note,
     guestFeesOffered,
   })
+
+  // The active loop: ping Penn Golf alumni in the same area so a post actually
+  // reaches someone. Matches on home state (reliable) or, failing that, city
+  // text. In-app bell + web push + email (email no-ops until Resend is set).
+  try {
+    const store = await readStore()
+    const enrichByPerson = new Map(
+      store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
+    )
+    const posterHomeCourse =
+      (account.linkedPersonId && enrichByPerson.get(account.linkedPersonId)?.homeCourse) || null
+    const reqCityLc = city?.toLowerCase()
+
+    const recipientAccounts = store.accounts.filter(a => {
+      if (!a.linkedPersonId || a.id === account.id) return false
+      const e = enrichByPerson.get(a.linkedPersonId)
+      if (!e) return false
+      if (state) return enrichmentStateToCode(e.state) === state
+      if (reqCityLc) return (e.city ?? '').toLowerCase().trim() === reqCityLc
+      return false
+    })
+
+    if (recipientAccounts.length > 0) {
+      const intentLabel = INTENT_LABEL[intent as OpenRequestIntent]
+      const placeText = city
+        ? state
+          ? `${city}, ${state}`
+          : city
+        : state
+          ? CODE_TO_NAME[state] ?? state
+          : 'the area'
+      const whenText = startDate
+        ? endDate && endDate !== startDate
+          ? `${fmtDate(startDate)}–${fmtDate(endDate)}`
+          : fmtDate(startDate)
+        : undefined
+      const href = intent === 'round' ? '/the-course' : '/19th-hole'
+
+      await notifyMany(recipientAccounts.map(a => a.id), {
+        type: 'nearby_request',
+        title: `${req.fromName} is around ${placeText}`,
+        body: `Up for ${intentLabel}${whenText ? ` (${whenText})` : ''}${guestFeesOffered ? ' · covering guest fees' : ''}`,
+        href,
+      })
+
+      const withEmail = recipientAccounts.filter(a => a.email)
+      if (withEmail.length > 0) {
+        const { sendEmail } = await import('@/lib/email/send')
+        const { renderNearbyRequestEmail } = await import('@/lib/email/templates')
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
+        const url = `${baseUrl}${href}`
+        await Promise.all(
+          withEmail.map(a => {
+            const { subject, html } = renderNearbyRequestEmail({
+              recipientFirstName: a.name?.split(' ')[0] ?? null,
+              fromName: req.fromName,
+              intentLabel,
+              placeText,
+              whenText,
+              note,
+              fromHomeCourse: posterHomeCourse,
+              guestFeesOffered,
+              url,
+            })
+            return sendEmail({ to: a.email, subject, html })
+          }),
+        )
+      }
+    }
+  } catch (err) {
+    console.warn('[open-requests] nearby notify failed (non-fatal):', err)
+  }
 
   return NextResponse.json({ request: req }, { status: 201 })
 }

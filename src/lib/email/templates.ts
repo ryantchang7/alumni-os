@@ -203,6 +203,49 @@ export function renderTeamAnswerEmail(input: {
   return { subject, html: shell(inner, input.url) }
 }
 
+// ── Open Request: a Penn Golf alum is in your area ───────────────────────────
+
+export function renderNearbyRequestEmail(input: {
+  recipientFirstName?: string | null
+  fromName: string
+  /** "a round" | "coffee" | "drinks" | "dinner" */
+  intentLabel: string
+  placeText: string
+  whenText?: string
+  note: string
+  fromHomeCourse?: string | null
+  guestFeesOffered?: boolean
+  url: string
+}): { subject: string; html: string } {
+  const greeting = input.recipientFirstName ? `Hi ${escapeHtml(input.recipientFirstName)},` : 'Hi,'
+  const subject = `${input.fromName} is around ${input.placeText} — up for ${input.intentLabel}`
+  const meta = [
+    input.whenText ? escapeHtml(input.whenText) : '',
+    input.fromHomeCourse ? `member at ${escapeHtml(input.fromHomeCourse)}` : '',
+    input.guestFeesOffered ? 'covering guest fees' : '',
+  ]
+    .filter(Boolean)
+    .join(' &middot; ')
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      A brother&rsquo;s in your area
+    </h1>
+    <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${greeting} <strong>${escapeHtml(input.fromName)}</strong> is around
+      <strong>${escapeHtml(input.placeText)}</strong> and is up for ${escapeHtml(input.intentLabel)}.
+    </p>
+    <blockquote style="margin:0 0 14px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:${CREAM};font-size:15px;line-height:1.5;color:${NAVY};">
+      ${escapeHtml(input.note)}
+    </blockquote>
+    ${meta ? `<p style="margin:0 0 18px 0;font-size:13px;color:${MUTED};">${meta}</p>` : ''}
+    <p style="margin:0;">${btn(input.url, 'See it on the Clubhouse')}</p>
+    <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
+      This is the whole point &mdash; a game (or a coffee) wherever the road takes you.
+    </p>
+  `
+  return { subject, html: shell(inner, input.url) }
+}
+
 // ── Weekly Digest ────────────────────────────────────────────────────────────
 
 interface DigestMember { name: string; classLabel?: string }
