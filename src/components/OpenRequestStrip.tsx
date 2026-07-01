@@ -63,6 +63,12 @@ interface Props {
   accent?: string
   /** Cap on how many rows to render. Default 6. */
   limit?: number
+  /**
+   * Optional map of personId → homeCourse.
+   * When provided, cards whose poster has a home course show a subtle
+   * "member at {course}" pill — answers "who can host me?" at a glance.
+   */
+  homeCourseByPersonId?: Map<string, string>
 }
 
 export default function OpenRequestStrip({
@@ -72,6 +78,7 @@ export default function OpenRequestStrip({
   subtitle = 'Penn Golf members visiting somewhere — ping them if you can play host.',
   accent = '#0a1628',
   limit = 6,
+  homeCourseByPersonId,
 }: Props) {
   if (requests.length === 0) {
     return (
@@ -154,6 +161,9 @@ export default function OpenRequestStrip({
           // sessionStorage so a future chat-thread enhancement can pull
           // it back as a pre-filled message.
           const kickoff = `Hey ${firstName}, saw your open ${INTENT_LABEL[req.intent].toLowerCase()} request${location ? ` in ${location}` : ''} — `
+          const homeCourse = req.fromPersonId && homeCourseByPersonId
+            ? homeCourseByPersonId.get(req.fromPersonId)
+            : undefined
           return (
             <div
               key={req.id}
@@ -209,6 +219,11 @@ export default function OpenRequestStrip({
               <p className="text-[12.5px] text-[#3d4a5c] mt-2 leading-relaxed line-clamp-3 whitespace-pre-line">
                 {req.note}
               </p>
+              {homeCourse && (
+                <span className="mt-2 self-start inline-flex items-center text-[10px] font-semibold uppercase tracking-[0.13em] px-2 py-0.5 rounded-full bg-[#c8a84b]/12 border border-[#c8a84b]/25 text-[#7a5f1a]">
+                  member at {homeCourse}
+                </span>
+              )}
               <div className="mt-3">
                 <RespondButton
                   targetAccountId={req.fromAccountId}

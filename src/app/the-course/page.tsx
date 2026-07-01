@@ -253,6 +253,24 @@ export default async function TheCoursePage() {
       : allRoundRequests
   }
 
+  // Build homeCourse lookup for the Open Requests strip.
+  // Join: request.fromPersonId → personEnrichments (same teamId) → homeCourse.
+  // OpenRequest does NOT carry homeCourse itself — we resolve it here on
+  // the server and pass a plain Map so the component stays presentational.
+  const homeCourseByPersonId = new Map<string, string>()
+  if (team) {
+    const enrichForTeam = new Map(
+      store.personEnrichments
+        .filter(e => e.teamId === team.id && !!e.homeCourse)
+        .map(e => [e.personId, e.homeCourse as string]),
+    )
+    for (const req of openRoundRequests) {
+      if (!req.fromPersonId) continue
+      const course = enrichForTeam.get(req.fromPersonId)
+      if (course) homeCourseByPersonId.set(req.fromPersonId, course)
+    }
+  }
+
   const sortedCourses = Array.from(courseRoll.entries())
     .sort((a, b) => {
       if (b[1] !== a[1]) return b[1] - a[1]
@@ -433,6 +451,7 @@ export default async function TheCoursePage() {
             subtitle="Penn Golf members visiting somewhere — ping them if you can play host."
             accent="#2d6a4f"
             limit={6}
+            homeCourseByPersonId={homeCourseByPersonId}
           />
         </div>
 

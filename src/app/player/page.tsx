@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { MessageSquare, Users, Flag, CalendarDays, MapPin, Calendar } from 'lucide-react'
+import { MessageSquare, Users, Flag, CalendarDays, MapPin, Calendar, BookOpen } from 'lucide-react'
 import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
 import { memberBookEntries } from '@/lib/member-book/data'
 import { getPublicMembers } from '@/lib/member-book/helpers'
@@ -402,6 +402,7 @@ function ClubhouseInner() {
     configured: boolean
   } | null>(null)
   const [currentSpotlight, setCurrentSpotlight] = useState<AlumniSpotlight | null>(null)
+  const [membersOn, setMembersOn] = useState<number | null>(null)
 
   useEffect(() => {
     fetch(`/api/player/profiles?teamSlug=${teamSlug}`)
@@ -437,6 +438,15 @@ function ClubhouseInner() {
     fetch('/api/spotlights')
       .then(r => (r.ok ? r.json() : { spotlight: null }))
       .then(d => setCurrentSpotlight(d.spotlight ?? null))
+      .catch(() => {})
+
+    fetch('/api/clubhouse/activity')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (d?.totals?.membersClaimed != null) {
+          setMembersOn(d.totals.membersClaimed as number)
+        }
+      })
       .catch(() => {})
   }, [teamSlug])
 
@@ -525,6 +535,95 @@ function ClubhouseInner() {
               </Link>
             </div>
           )}
+
+        {/* Activation panel — shown to linked members; points them at
+            the three highest-value next steps and signals the network is alive. */}
+        {onboarding?.linked && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...spring, delay: 0.3 }}
+            className="mb-8"
+          >
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+            >
+              <div className="px-5 pt-5 pb-4 border-b border-[rgba(180,168,150,0.25)]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#2d6a4f] mb-1">
+                  You&rsquo;re in
+                </p>
+                <p
+                  className="text-[#0a1628] text-base font-medium leading-snug"
+                  style={{ fontFamily: 'var(--font-playfair)' }}
+                >
+                  Three places to start.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[rgba(180,168,150,0.25)]">
+                <Link
+                  href="/member-book"
+                  className="group px-5 py-4 flex items-start gap-3 hover:bg-[#f8f5f0] transition-colors"
+                >
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#0a1628]/8 flex items-center justify-center mt-0.5">
+                    <BookOpen className="w-3.5 h-3.5 text-[#0a1628]" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-semibold text-[#0a1628] leading-snug mb-0.5">Your class</p>
+                    <p className="text-[11.5px] text-[#8a7f70] leading-snug">Find teammates from your years in the Member Book.</p>
+                    <span className="text-[10.5px] font-semibold text-[#990000] group-hover:underline mt-1.5 inline-block">Browse &rarr;</span>
+                  </div>
+                </Link>
+                <Link
+                  href="/member-map"
+                  className="group px-5 py-4 flex items-start gap-3 hover:bg-[#f8f5f0] transition-colors"
+                >
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#0a1628]/8 flex items-center justify-center mt-0.5">
+                    <MapPin className="w-3.5 h-3.5 text-[#0a1628]" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-semibold text-[#0a1628] leading-snug mb-0.5">Who&rsquo;s near you</p>
+                    <p className="text-[11.5px] text-[#8a7f70] leading-snug">See where Penn Golf members are living and playing now.</p>
+                    <span className="text-[10.5px] font-semibold text-[#990000] group-hover:underline mt-1.5 inline-block">Open the map &rarr;</span>
+                  </div>
+                </Link>
+                <Link
+                  href="/meet-the-team"
+                  className="group px-5 py-4 flex items-start gap-3 hover:bg-[#f8f5f0] transition-colors"
+                >
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#0a1628]/8 flex items-center justify-center mt-0.5">
+                    <Users className="w-3.5 h-3.5 text-[#0a1628]" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-semibold text-[#0a1628] leading-snug mb-0.5">The current team</p>
+                    <p className="text-[11.5px] text-[#8a7f70] leading-snug">The guys playing now. They know who you are.</p>
+                    <span className="text-[10.5px] font-semibold text-[#990000] group-hover:underline mt-1.5 inline-block">Meet the team &rarr;</span>
+                  </div>
+                </Link>
+              </div>
+              {membersOn != null && (
+                <div className="px-5 py-3 border-t border-[rgba(180,168,150,0.25)] flex items-center justify-between gap-3 flex-wrap">
+                  <p className="text-[11.5px] text-[#8a7f70]">
+                    <span className="font-semibold text-[#0a1628]">{membersOn}</span>
+                    {' '}
+                    {membersOn === 1 ? 'alum' : 'alumni'} in the Clubhouse
+                    {membersOn < 50 && (
+                      <> &mdash; help us reach the first 50</>
+                    )}
+                  </p>
+                  {membersOn < 50 && (
+                    <Link
+                      href="/invite"
+                      className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] hover:underline whitespace-nowrap"
+                    >
+                      Invite teammates &rarr;
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
 
         {/* From the box — Penn Athletics news */}
         {newsItems.length > 0 && (
