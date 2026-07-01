@@ -9,6 +9,8 @@ interface Props {
   placeholder?: string
   required?: boolean
   disabled?: boolean
+  /** Allow several clubs, comma-separated (autocomplete the last one typed). */
+  multiple?: boolean
 }
 
 /**
@@ -23,16 +25,21 @@ export default function CourseAutocomplete({
   placeholder = 'e.g. Winged Foot Golf Club',
   required = false,
   disabled = false,
+  multiple = false,
 }: Props) {
   const [suggestions, setSuggestions] = useState<GolfCourse[]>([])
   const [open, setOpen] = useState(false)
   const [highlightIdx, setHighlightIdx] = useState(0)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
+  // With multiple clubs allowed, autocomplete only the LAST comma segment so
+  // "Belmont Country Club, Int" suggests against "Int".
+  const activeQuery = multiple ? (value.split(',').pop() ?? '').trim() : value
+
   useEffect(() => {
-    setSuggestions(searchCourses(value, 8))
+    setSuggestions(searchCourses(activeQuery, 8))
     setHighlightIdx(0)
-  }, [value])
+  }, [activeQuery])
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -43,7 +50,14 @@ export default function CourseAutocomplete({
   }, [])
 
   function select(s: GolfCourse) {
-    onChange(s.name)
+    if (multiple) {
+      // Replace the club currently being typed; keep the earlier ones.
+      const parts = value.split(',')
+      parts[parts.length - 1] = s.name
+      onChange(parts.map(p => p.trim()).filter(Boolean).join(', '))
+    } else {
+      onChange(s.name)
+    }
     setOpen(false)
   }
 

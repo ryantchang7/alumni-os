@@ -663,7 +663,7 @@ function AlumniProfileInner() {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                  Home course
+                  Home club(s)
                   {!isParent && !noHomeCourse && (
                     <span className="text-[#990000]"> *</span>
                   )}
@@ -671,10 +671,17 @@ function AlumniProfileInner() {
                 <CourseAutocomplete
                   value={homeCourse}
                   onChange={setHomeCourse}
-                  placeholder="e.g. Winged Foot Golf Club"
+                  placeholder="e.g. Belmont Country Club, The International"
                   disabled={noHomeCourse}
                   required={!isParent && !noHomeCourse}
+                  multiple
                 />
+                {!noHomeCourse && (
+                  <p className="text-[11px] text-[#8a7f70] mt-1">
+                    Member at more than one? Add them all, separated by a comma
+                    &mdash; each shows on The Course, and you appear under both.
+                  </p>
+                )}
                 <label className="flex items-center gap-2 mt-2 cursor-pointer">
                   <input
                     type="checkbox"
