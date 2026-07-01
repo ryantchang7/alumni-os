@@ -197,18 +197,20 @@ export default async function TheCoursePage() {
     // entries. Each member counts at most once per course; home course gets
     // ranked first when equal counts.
     for (const v of visible) {
-      const candidates: string[] = []
-      if (v.enrichment.homeCourse) candidates.push(v.enrichment.homeCourse)
+      // Split home + favorite fields the same way, so "Belmont and International"
+      // (in either field) becomes two courses that each combine with anyone at
+      // Belmont or International.
+      const splitCourses = (s: string): string[] =>
+        s
+          .split(/,| and /i)
+          .map((c) => c.trim())
+          .filter((c) => c.length > 2 && c.length < 60)
+      const homeParts = v.enrichment.homeCourse ? splitCourses(v.enrichment.homeCourse) : []
+      const homeKeys = new Set(homeParts.map(normalizeCourseName).filter(Boolean))
+      const candidates: string[] = [...homeParts]
       if (v.enrichment.favoriteCourses) {
-        // Split by comma or ' and ' so "Pine Valley, Merion" yields two.
-        candidates.push(
-          ...v.enrichment.favoriteCourses
-            .split(/,| and /i)
-            .map((c) => c.trim())
-            .filter((c) => c.length > 2 && c.length < 60),
-        )
+        candidates.push(...splitCourses(v.enrichment.favoriteCourses))
       }
-      const homeNorm = normalizeCourseName(v.enrichment.homeCourse ?? '')
       const seenForMember = new Set<string>()
       for (const c of candidates) {
         const display = c.trim()
@@ -217,7 +219,7 @@ export default async function TheCoursePage() {
         seenForMember.add(key)
         if (!courseDisplay.has(key)) courseDisplay.set(key, display)
         courseRoll.set(key, (courseRoll.get(key) ?? 0) + 1)
-        const isHome = !!homeNorm && homeNorm === key
+        const isHome = homeKeys.has(key)
         if (isHome) homeCourseSet.add(key)
         const list = courseMembers.get(key) ?? []
         list.push({

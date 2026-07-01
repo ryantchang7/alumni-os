@@ -13,10 +13,9 @@
  */
 export function normalizeCourseName(raw: string): string {
   return raw
-    .trim()
     .toLowerCase()
-    .replace(/^the\s+/, '')
+    .replace(/\bthe\b/g, ' ') // drop "the" ANYWHERE (leading, or before a 2nd course)
+    .replace(/[.,;:&]+/g, ' ') // punctuation / ampersands
     .replace(/\s+/g, ' ')
-    .replace(/[.,;:]+$/, '')
     .trim()
 }
