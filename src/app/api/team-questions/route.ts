@@ -103,33 +103,57 @@ export async function POST(request: Request) {
     targets,
   })
 
-  // Notify the targeted players — or every current player for a whole-team
-  // question — skipping anyone who opted out and the asker themselves.
+  // Recipients: the targeted players — or every current player for a whole-team
+  // question — minus anyone who opted out and the asker themselves.
+  const targetIdSet = new Set(targets.map(t => t.personId))
+  const recipientAccounts = store.accounts.filter(
+    a =>
+      a.linkedPersonId &&
+      playerPersonIds.has(a.linkedPersonId) &&
+      a.answersTeamQuestions !== false &&
+      a.id !== account.id &&
+      (targetIdSet.size === 0 || targetIdSet.has(a.linkedPersonId)),
+  )
+  const targeted = targets.length > 0
+
+  // In-app bell + web push.
   try {
-    const targetIdSet = new Set(targets.map(t => t.personId))
-    const recipientIds = store.accounts
-      .filter(
-        a =>
-          a.linkedPersonId &&
-          playerPersonIds.has(a.linkedPersonId) &&
-          a.answersTeamQuestions !== false &&
-          (targetIdSet.size === 0 || targetIdSet.has(a.linkedPersonId)),
-      )
-      .map(a => a.id)
-    if (recipientIds.length > 0) {
-      await notifyMany(
-        recipientIds,
-        {
-          type: 'new_question',
-          title: targets.length > 0 ? `${askerName} asked you a question` : 'New question for the team',
-          body: `${question.slice(0, 90)}${question.length > 90 ? '…' : ''}`,
-          href: '/team/questions',
-        },
-        { excludeAccountId: account.id },
-      )
+    if (recipientAccounts.length > 0) {
+      await notifyMany(recipientAccounts.map(a => a.id), {
+        type: 'new_question',
+        title: targeted ? `${askerName} asked you a question` : 'New question for the team',
+        body: `${question.slice(0, 90)}${question.length > 90 ? '…' : ''}`,
+        href: '/team/questions',
+      })
     }
   } catch (err) {
     console.warn('[team-questions] notify failed (non-fatal):', err)
+  }
+
+  // Email each recipient individually — personalized, and one-per-send so the
+  // recipient list stays private. No-ops if RESEND_API_KEY / EMAIL_FROM unset.
+  try {
+    const withEmail = recipientAccounts.filter(a => a.email)
+    if (withEmail.length > 0) {
+      const { sendEmail } = await import('@/lib/email/send')
+      const { renderTeamQuestionEmail } = await import('@/lib/email/templates')
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
+      const answerUrl = `${baseUrl}/team/questions`
+      await Promise.all(
+        withEmail.map(a => {
+          const { subject, html } = renderTeamQuestionEmail({
+            playerFirstName: a.name?.split(' ')[0] ?? null,
+            askerName,
+            question,
+            targeted,
+            answerUrl,
+          })
+          return sendEmail({ to: a.email, subject, html })
+        }),
+      )
+    }
+  } catch (err) {
+    console.warn('[team-questions] email failed (non-fatal):', err)
   }
 
   return NextResponse.json({ ok: true, question: created })

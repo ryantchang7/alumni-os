@@ -137,6 +137,72 @@ export function renderClaimDeclined(input: {
   return { subject, html: shell(inner) }
 }
 
+// ── Team Q&A: a member asked the team a question ─────────────────────────────
+
+export function renderTeamQuestionEmail(input: {
+  playerFirstName?: string | null
+  askerName: string
+  question: string
+  /** True when the question was aimed specifically at this player. */
+  targeted: boolean
+  answerUrl: string
+}): { subject: string; html: string } {
+  const greeting = input.playerFirstName ? `Hi ${escapeHtml(input.playerFirstName)},` : 'Hi,'
+  const subject = input.targeted
+    ? `${input.askerName} asked you a question`
+    : `New question for the team from ${input.askerName}`
+  const lead = input.targeted
+    ? `<strong>${escapeHtml(input.askerName)}</strong> asked you a question on the Clubhouse:`
+    : `<strong>${escapeHtml(input.askerName)}</strong> asked the team a question:`
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      ${input.targeted ? 'Someone wants your take' : 'A question for the team'}
+    </h1>
+    <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${greeting} ${lead}
+    </p>
+    <blockquote style="margin:0 0 20px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:${CREAM};font-size:15px;line-height:1.5;color:${NAVY};">
+      ${escapeHtml(input.question)}
+    </blockquote>
+    <p style="margin:0;">${btn(input.answerUrl, 'Answer on the Clubhouse')}</p>
+    <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
+      A quick reply means a lot &mdash; it&rsquo;s how alumni stay close to the team.
+    </p>
+  `
+  return { subject, html: shell(inner, input.answerUrl) }
+}
+
+// ── Team Q&A: a player answered your question ────────────────────────────────
+
+export function renderTeamAnswerEmail(input: {
+  askerFirstName?: string | null
+  responderName: string
+  question: string
+  answer: string
+  url: string
+}): { subject: string; html: string } {
+  const greeting = input.askerFirstName ? `Hi ${escapeHtml(input.askerFirstName)},` : 'Hi,'
+  const subject = `${input.responderName} answered your question`
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      You got an answer
+    </h1>
+    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${greeting} <strong>${escapeHtml(input.responderName)}</strong> replied to your question.
+    </p>
+    <p style="margin:0 0 5px 0;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:${MUTED};">You asked</p>
+    <blockquote style="margin:0 0 16px 0;padding:10px 16px;border-left:3px solid #e8dec9;background:${CREAM};font-size:14px;line-height:1.5;color:${MUTED};">
+      ${escapeHtml(input.question)}
+    </blockquote>
+    <p style="margin:0 0 5px 0;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:${MUTED};">${escapeHtml(input.responderName)} said</p>
+    <blockquote style="margin:0 0 20px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:${CREAM};font-size:15px;line-height:1.5;color:${NAVY};">
+      ${escapeHtml(input.answer)}
+    </blockquote>
+    <p style="margin:0;">${btn(input.url, 'See it on the Clubhouse')}</p>
+  `
+  return { subject, html: shell(inner, input.url) }
+}
+
 // ── Weekly Digest ────────────────────────────────────────────────────────────
 
 interface DigestMember { name: string; classLabel?: string }

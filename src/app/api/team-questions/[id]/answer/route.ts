@@ -46,6 +46,7 @@ export async function POST(
     return NextResponse.json({ error: 'Question not found.' }, { status: 404 })
   }
 
+  // In-app bell + web push to the asker.
   try {
     await notify(updated.askerAccountId, {
       type: 'question_answered',
@@ -55,6 +56,26 @@ export async function POST(
     })
   } catch (err) {
     console.warn('[team-questions] answer notify failed (non-fatal):', err)
+  }
+
+  // Email the asker their answer (no-op if RESEND_API_KEY / EMAIL_FROM unset).
+  try {
+    const asker = await getAccountById(updated.askerAccountId)
+    if (asker?.email) {
+      const { sendEmail } = await import('@/lib/email/send')
+      const { renderTeamAnswerEmail } = await import('@/lib/email/templates')
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
+      const { subject, html } = renderTeamAnswerEmail({
+        askerFirstName: asker.name?.split(' ')[0] ?? null,
+        responderName,
+        question: updated.question,
+        answer,
+        url: `${baseUrl}/team/questions`,
+      })
+      await sendEmail({ to: asker.email, subject, html })
+    }
+  } catch (err) {
+    console.warn('[team-questions] answer email failed (non-fatal):', err)
   }
 
   return NextResponse.json({ ok: true, question: updated })
