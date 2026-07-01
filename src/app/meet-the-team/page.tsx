@@ -86,8 +86,9 @@ export default async function MeetTheTeamPage() {
             Ask the Team
           </h1>
           <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-            Meet this year&rsquo;s squad below &mdash; and ask any of them anything.
-            Get a real answer from one of the guys on the team.
+            Meet this year&rsquo;s squad below. Ask the whole team &mdash; or tap
+            a guy to ask him directly. You&rsquo;ll get a real answer from one of
+            the guys on the team.
           </p>
           <div className="mt-8">
             <AskTheTeam players={askTargets} variant="primary" />

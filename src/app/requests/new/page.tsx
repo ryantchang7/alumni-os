@@ -178,7 +178,8 @@ export default function NewOpenRequestPage() {
             </h1>
             <p className="text-[13px] text-[#3d4a5c]/80 mt-3 max-w-lg">
               Visiting somewhere and want to play, grab coffee, or pull a
-              dinner together? Drop a note. Members in that city will see it.
+              dinner together? Drop a note &mdash; Penn Golf alumni near that
+              city get a heads-up (bell + email), so someone can play or host you.
             </p>
           </div>
 

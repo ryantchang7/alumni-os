@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Flag, MapPin, Users, ArrowRight } from 'lucide-react'
+import { normalizeCourseName } from '@/lib/courses'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
 import { getApprovalState } from '@/lib/access/approval'
@@ -111,6 +112,9 @@ export default async function TheCoursePage() {
   const interestedByGathering = new Map<string, number>()
   const courseRoll = new Map<string, number>()
   const homeCourseSet = new Set<string>()
+  // normalized course key → first-seen human spelling, so "The International"
+  // and "International" combine but still display a real name.
+  const courseDisplay = new Map<string, string>()
 
   if (team) {
     // Any role can opt into "Open to a Round" — players, alumni, coach,
@@ -204,13 +208,16 @@ export default async function TheCoursePage() {
             .filter((c) => c.length > 2 && c.length < 60),
         )
       }
+      const homeNorm = normalizeCourseName(v.enrichment.homeCourse ?? '')
       const seenForMember = new Set<string>()
       for (const c of candidates) {
-        const key = c.trim()
+        const display = c.trim()
+        const key = normalizeCourseName(c)
         if (!key || seenForMember.has(key)) continue
         seenForMember.add(key)
+        if (!courseDisplay.has(key)) courseDisplay.set(key, display)
         courseRoll.set(key, (courseRoll.get(key) ?? 0) + 1)
-        const isHome = v.enrichment.homeCourse === key
+        const isHome = !!homeNorm && homeNorm === key
         if (isHome) homeCourseSet.add(key)
         const list = courseMembers.get(key) ?? []
         list.push({
@@ -298,7 +305,7 @@ export default async function TheCoursePage() {
         return true
       })
       return {
-        course,
+        course: courseDisplay.get(course) ?? course,
         members: deduped,
         isHomeForAnyone: homeCourseSet.has(course),
       }
