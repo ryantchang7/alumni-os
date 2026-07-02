@@ -23,6 +23,11 @@ const tools = [
     href: '/internal/master-list',
   },
   {
+    label: 'Member Home Clubs',
+    description: "Set any member's home club(s) — current players and alumni.",
+    href: '/internal/member-clubs',
+  },
+  {
     label: 'Gatherings',
     description: 'Manage rounds, coffees, drinks, dinners, and events.',
     href: '/internal/gatherings',

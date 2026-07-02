@@ -902,6 +902,50 @@ export async function upsertPersonEnrichment(input: {
   return enrichment
 }
 
+/**
+ * Founder admin: set a member's home club(s) + the "not a member" flag.
+ * Creates the enrichment row if missing. CAS-safe (mutateStore). Returns null
+ * if the person doesn't exist.
+ */
+export async function setMemberHomeCourse(input: {
+  personId: string
+  teamId: string
+  homeCourse?: string
+  noHomeCourse?: boolean
+}): Promise<PersonEnrichment | null> {
+  return mutateStore(store => {
+    if (!store.people.some(p => p.id === input.personId)) return null
+    const now = new Date().toISOString()
+    const idx = store.personEnrichments.findIndex(
+      e => e.personId === input.personId && e.teamId === input.teamId,
+    )
+    if (idx === -1) {
+      const enrichment: PersonEnrichment = {
+        id: crypto.randomUUID(),
+        personId: input.personId,
+        teamId: input.teamId,
+        relationshipStatus: 'not_started',
+        verificationStatus: 'unverified',
+        sourceUrls: [],
+        createdAt: now,
+        updatedAt: now,
+        homeCourse:
+          input.noHomeCourse ? undefined : input.homeCourse?.trim() || undefined,
+        noHomeCourse: input.noHomeCourse || undefined,
+      }
+      store.personEnrichments.push(enrichment)
+      return enrichment
+    }
+    const next: PersonEnrichment = { ...store.personEnrichments[idx] }
+    if (input.noHomeCourse !== undefined) next.noHomeCourse = input.noHomeCourse || undefined
+    if (input.homeCourse !== undefined) next.homeCourse = input.homeCourse.trim() || undefined
+    if (next.noHomeCourse) next.homeCourse = undefined
+    next.updatedAt = now
+    store.personEnrichments[idx] = next
+    return next
+  })
+}
+
 export async function getEnrichmentSourcesForPerson(
   personId: string,
   teamId: string,
