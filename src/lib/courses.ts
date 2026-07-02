@@ -11,11 +11,28 @@
  *
  * Group by the key; display a real human-typed variant (see the-course page).
  */
+// Common golf-club abbreviations → their full form, so "Belmont CC" matches
+// "Belmont Country Club" (but "Belmont GC" / Golf Club stays distinct). Order
+// matters: the multi-word combos run before the single-token ones.
+const COURSE_ABBREVIATIONS: Array<[RegExp, string]> = [
+  [/\bg\s+and\s+cc\b/g, 'golf and country club'], // G&CC
+  [/\bcc\b/g, 'country club'],
+  [/\bg\s?c\b/g, 'golf club'], // GC / G C
+  [/\bg\s+and\s+c\b/g, 'golf and country'],
+  [/\bnatl\b/g, 'national'],
+  [/\bintl\b/g, 'international'],
+  [/\bmt\b/g, 'mount'],
+]
+
 export function normalizeCourseName(raw: string): string {
-  return raw
+  let s = raw
     .toLowerCase()
+    .replace(/&/g, ' and ') // G&CC → "g and cc" before abbreviation expansion
     .replace(/\bthe\b/g, ' ') // drop "the" ANYWHERE (leading, or before a 2nd course)
-    .replace(/[.,;:&]+/g, ' ') // punctuation / ampersands
+    .replace(/['’.]/g, '') // apostrophes + periods: "int'l" → "intl", "G.C." → "gc"
+    .replace(/[,;:]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
+  for (const [re, full] of COURSE_ABBREVIATIONS) s = s.replace(re, full)
+  return s.replace(/\s+/g, ' ').trim()
 }
