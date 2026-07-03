@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
+import { requireFounder } from '@/lib/auth/guards'
 
 export async function GET(request: Request) {
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')
 

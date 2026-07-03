@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server'
 import { getTeamBySlug, readStore } from '@/lib/store/local-store'
+import { requireApprovedMember } from '@/lib/auth/guards'
 
 export async function GET(request: Request) {
+  const gate = await requireApprovedMember()
+  if (!gate.ok) return gate.response
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
 

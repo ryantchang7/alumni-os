@@ -200,9 +200,13 @@ export default async function TheCoursePage() {
       // Split home + favorite fields the same way, so "Belmont and International"
       // (in either field) becomes two courses that each combine with anyone at
       // Belmont or International.
+      // Split only on comma/semicolon (the documented multi-club separator) —
+      // NOT " and ", which would mangle a single club named "X Golf and Country
+      // Club". normalizeCourseName then merges "Belmont G&CC" with the spelled-out
+      // "Belmont Golf and Country Club".
       const splitCourses = (s: string): string[] =>
         s
-          .split(/,| and /i)
+          .split(/[,;]+/)
           .map((c) => c.trim())
           .filter((c) => c.length > 2 && c.length < 60)
       const homeParts = v.enrichment.homeCourse ? splitCourses(v.enrichment.homeCourse) : []
