@@ -82,23 +82,73 @@ export async function POST(request: Request, { params }: RouteParams) {
         href: '/player',
       })
     }
-    // 2) Community: tell the rest of the members someone just joined.
+    // 2) Tell the members someone just joined. Era teammates — anyone whose
+    //    roster years overlapped the new member's — get a PERSONAL ping with
+    //    the years they shared ('era_teammate', not community-muted);
+    //    everyone else gets the community broadcast.
     try {
       const fresh = await readStore()
       const newMemberName = claim.requesterName.split(/\s+/)[0] || claim.requesterName
-      const recipients = fresh.accounts
-        .filter(a => a.teamId === claim.teamId && a.linkedPersonId)
-        .map(a => a.id)
-      await notifyMany(
-        recipients,
-        {
-          type: 'new_member',
-          title: `${newMemberName} just joined the Clubhouse`,
-          body: 'Say hello in the Member Book.',
-          href: '/member-book',
-        },
-        { excludeAccountId: claim.requesterAccountId },
+
+      const newMembership = claim.personId
+        ? fresh.teamMemberships.find(
+            m =>
+              m.teamId === claim.teamId &&
+              m.personId === claim.personId &&
+              (m.memberRole === 'current_player' || m.memberRole === 'alumni'),
+          )
+        : undefined
+      const newStart = newMembership?.rosterStartYear ?? newMembership?.rosterEndYear
+      const newEnd = newMembership?.rosterEndYear ?? newMembership?.rosterStartYear
+
+      const membershipByPerson = new Map(
+        fresh.teamMemberships
+          .filter(
+            m =>
+              m.teamId === claim.teamId &&
+              (m.memberRole === 'current_player' || m.memberRole === 'alumni'),
+          )
+          .map(m => [m.personId, m]),
       )
+
+      const eraPings: { accountId: string; overlapStart: number; overlapEnd: number }[] = []
+      const broadcastIds: string[] = []
+      for (const a of fresh.accounts) {
+        if (a.teamId !== claim.teamId || !a.linkedPersonId) continue
+        if (a.id === claim.requesterAccountId) continue
+        const m = newStart && newEnd ? membershipByPerson.get(a.linkedPersonId) : undefined
+        const start = m?.rosterStartYear ?? m?.rosterEndYear
+        const end = m?.rosterEndYear ?? m?.rosterStartYear
+        if (newStart && newEnd && start && end) {
+          const overlapStart = Math.max(start, newStart)
+          const overlapEnd = Math.min(end, newEnd)
+          if (overlapStart <= overlapEnd) {
+            eraPings.push({ accountId: a.id, overlapStart, overlapEnd })
+            continue
+          }
+        }
+        broadcastIds.push(a.id)
+      }
+
+      await Promise.all(
+        eraPings.map(p =>
+          notify(p.accountId, {
+            type: 'era_teammate',
+            title: `${newMemberName} from your era just walked in`,
+            body:
+              p.overlapStart === p.overlapEnd
+                ? `You were on the roster together in ${p.overlapStart} — say hello.`
+                : `You played together ${p.overlapStart}–${p.overlapEnd} — say hello.`,
+            href: '/player',
+          }),
+        ),
+      )
+      await notifyMany(broadcastIds, {
+        type: 'new_member',
+        title: `${newMemberName} just joined the Clubhouse`,
+        body: 'Say hello in the Member Book.',
+        href: '/member-book',
+      })
     } catch (e) {
       console.warn('[claim-approve-notify] broadcast setup failed:', e)
     }

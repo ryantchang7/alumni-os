@@ -10,6 +10,7 @@ import { memberBookEntries } from '@/lib/member-book/data'
 import { getPublicMembers } from '@/lib/member-book/helpers'
 import ClubhouseActivityFeed from '@/components/ClubhouseActivityFeed'
 import OnTheLoopStrip from '@/components/OnTheLoopStrip'
+import YourEraSection from '@/components/YourEraSection'
 import ClubhouseChecklist from '@/components/ClubhouseChecklist'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import MemberOnlyTease from '@/components/MemberOnlyTease'
@@ -673,6 +674,10 @@ function ClubhouseInner() {
 
         {/* On the Loop — Penn Golf passing through. Tease for non-members. */}
         <OnTheLoopStrip approved={!!onboarding?.linked} />
+
+        {/* Your Era — the guys whose roster years overlapped yours.
+            Members only; hidden entirely when there's no overlap data. */}
+        <YourEraSection approved={!!onboarding?.linked} />
 
         {/* Clubhouse Activity Feed. Tease for non-members. */}
         <ClubhouseActivityFeed approved={!!onboarding?.linked} />

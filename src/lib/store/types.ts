@@ -356,7 +356,7 @@ export interface AppNotification {
   id: string
   /** Recipient account id — the only account that may read this row. */
   accountId: string
-  type: 'request' | 'approved' | 'new_member' | 'new_moment' | 'new_question' | 'question_answered' | 'team_update' | 'spotlight' | 'host_offer' | 'nearby_request'
+  type: 'request' | 'approved' | 'new_member' | 'new_moment' | 'new_question' | 'question_answered' | 'team_update' | 'spotlight' | 'host_offer' | 'nearby_request' | 'era_teammate'
   title: string
   body: string
   /** Where clicking the notification takes the member (e.g. '/player'). */
