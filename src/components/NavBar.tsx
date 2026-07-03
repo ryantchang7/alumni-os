@@ -297,7 +297,7 @@ export default function NavBar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="md:hidden bg-[#0a1628] border-t border-white/[0.08] px-6 pb-4"
+            className="md:hidden bg-[#0a1628] border-t border-white/[0.08] px-6 pb-4 max-h-[calc(100dvh-60px)] overflow-y-auto"
           >
             <div className="flex flex-col gap-1 pt-3">
               {navEntries.map(entry =>

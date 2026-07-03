@@ -258,15 +258,28 @@ function AnswerToggle({ initialChecked }: { initialChecked: boolean }) {
 export default function TeamQuestionsPage() {
   const [data, setData] = useState<QData | null>(null)
   const [loadError, setLoadError] = useState('')
+  // 401 → sign in; 403 → claim your card. Refreshing can't fix either,
+  // so show the right door instead of a retry message.
+  const [gate, setGate] = useState<'signin' | 'claim' | null>(null)
   const [answeredIds, setAnsweredIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     fetch('/api/team-questions')
       .then(async r => {
+        if (r.status === 401) {
+          setGate('signin')
+          return null
+        }
+        if (r.status === 403) {
+          setGate('claim')
+          return null
+        }
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json() as Promise<QData>
       })
-      .then(d => setData(d))
+      .then(d => {
+        if (d) setData(d)
+      })
       .catch(() => setLoadError('Could not load questions. Try refreshing.'))
   }, [])
 
@@ -301,9 +314,35 @@ export default function TeamQuestionsPage() {
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-10">
         {/* Loading */}
-        {!data && !loadError && (
+        {!data && !loadError && !gate && (
           <div className="flex items-center justify-center py-20">
             <div className="w-6 h-6 border-2 border-[#0a1628]/20 border-t-[#0a1628] rounded-full animate-spin" />
+          </div>
+        )}
+
+        {/* Signed out / unclaimed — show the right door, not a retry loop */}
+        {gate && (
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-8 py-12 text-center max-w-lg mx-auto"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
+          >
+            <h2
+              className="text-[#0a1628] text-xl font-medium mb-2"
+              style={{ fontFamily: 'var(--font-playfair)' }}
+            >
+              {gate === 'signin' ? 'Sign in to see your questions.' : 'Claim your card first.'}
+            </h2>
+            <p className="text-[13px] text-[#3d4a5c] mb-6">
+              {gate === 'signin'
+                ? 'Questions and answers are members-only. Sign in and they’ll be right here.'
+                : 'Your account isn’t linked to a member card yet — finish claiming yours to see questions and answers.'}
+            </p>
+            <Link
+              href={gate === 'signin' ? '/login?next=/team/questions' : '/account/setup'}
+              className="inline-block bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-6 py-2.5 rounded-lg transition-colors"
+            >
+              {gate === 'signin' ? 'Sign in' : 'Claim your card'}
+            </Link>
           </div>
         )}
 

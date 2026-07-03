@@ -260,8 +260,8 @@ export async function POST(request: NextRequest) {
     await notify(recipient.id, {
       type: 'request',
       title: `${trimmedName} reached out`,
-      body: `${purposeLabel} — open your requests to respond.`,
-      href: '/player/requests',
+      body: `${purposeLabel} — open your inbox to respond.`,
+      href: '/alumni/requests',
     })
   }
 

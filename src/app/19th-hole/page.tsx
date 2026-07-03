@@ -38,8 +38,9 @@ export default async function NineteenthHolePage() {
   // into Open to Coffee themselves.
   let viewerOptedToCoffee = false
   let viewerPersonId: string | undefined
-  // Open Requests with social intents (drinks/coffee/dinner) — filtered
-  // to exclude the viewer's own posts.
+  let viewerAccountId: string | undefined
+  // Open Requests with social intents (drinks/coffee/dinner). The viewer's
+  // own posts stay in — the strip pins + badges them with a Close button.
   let openSocialRequests: OpenRequest[] = []
 
   if (team) {
@@ -103,6 +104,7 @@ export default async function NineteenthHolePage() {
     // their own "Open to Coffee" group (they don't need to see
     // themselves in there).
     const session = await auth()
+    viewerAccountId = session?.accountId ?? undefined
     const viewer = resolveViewerLocation(session, store, team.id)
     openToCoffee = prioritizeForViewer(
       visible.filter(a => a.openToCoffee),
@@ -147,14 +149,11 @@ export default async function NineteenthHolePage() {
     // Open Requests with social intents — visiting members looking for
     // drinks / coffee / dinner.
     const { getOpenRequestsForTeam } = await import('@/lib/store/local-store')
-    const allSocialRequests = await getOpenRequestsForTeam(team.id, [
+    openSocialRequests = await getOpenRequestsForTeam(team.id, [
       'drinks',
       'coffee',
       'dinner',
     ])
-    openSocialRequests = viewerPersonId
-      ? allSocialRequests.filter(r => r.fromPersonId !== viewerPersonId)
-      : allSocialRequests
   }
 
   if (!approval.approved) {
@@ -187,6 +186,7 @@ export default async function NineteenthHolePage() {
         interestedCounts={Object.fromEntries(interestedByGathering)}
         viewerOptedToCoffee={viewerOptedToCoffee}
         viewerPersonId={viewerPersonId}
+        viewerAccountId={viewerAccountId}
         openRequests={openSocialRequests}
       />
     </div>

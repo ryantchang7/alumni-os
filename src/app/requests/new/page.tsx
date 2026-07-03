@@ -118,7 +118,8 @@ export default function NewOpenRequestPage() {
           </h1>
           <p className="text-[13px] text-[#3d4a5c] mb-7">
             Penn Golf members in {city || 'your area'} will see it.
-            Responses come through chat.
+            Responses come through chat &mdash; and you can close the
+            request anytime from {intent === 'round' ? 'The Course' : 'the 19th Hole'}.
           </p>
           <div className="flex flex-col gap-2.5">
             <Link

@@ -21,7 +21,12 @@ import {
   readStore,
 } from '@/lib/store/local-store'
 import { notifyMany } from '@/lib/notifications/notify'
-import { enrichmentStateToCode, CODE_TO_NAME } from '@/lib/map/state-lookup'
+import {
+  enrichmentStateToCode,
+  CODE_TO_NAME,
+  NAME_TO_CODE,
+  ABBREV_TO_CODE,
+} from '@/lib/map/state-lookup'
 import type { OpenRequestIntent } from '@/lib/store/types'
 
 const TEAM_SLUG = 'penn-mens-golf'
@@ -97,9 +102,23 @@ export async function POST(request: Request) {
   if (note.length > 400) return NextResponse.json({ error: 'note too long (400 max)' }, { status: 400 })
 
   const city = typeof body.city === 'string' ? body.city.trim().slice(0, 160) || undefined : undefined
-  const state = typeof body.state === 'string'
-    ? body.state.trim().toUpperCase().slice(0, 2) || undefined
-    : undefined
+  // Resolve to a REAL USPS code or drop it. Blind slice(0,2) turned pasted
+  // full names into wrong states ("New York" → "NE" notified Nebraska), and
+  // a bogus state also blocked the city-match fallback in the fan-out.
+  const rawState = typeof body.state === 'string' ? body.state.trim() : ''
+  let state: string | undefined
+  if (rawState) {
+    const upper = rawState.toUpperCase()
+    if (upper.length === 2 && CODE_TO_NAME[upper]) {
+      state = upper
+    } else {
+      const lower = rawState.toLowerCase()
+      state =
+        Object.entries(NAME_TO_CODE).find(([n]) => n.toLowerCase() === lower)?.[1] ??
+        ABBREV_TO_CODE[rawState] ??
+        undefined
+    }
+  }
   const startDate =
     typeof body.startDate === 'string' && ISO_DATE_RE.test(body.startDate)
       ? body.startDate

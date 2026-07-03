@@ -15,6 +15,10 @@ import MemberAvatar from '@/components/MemberAvatar'
 
 const QUESTION_MAX = 1000
 
+// Drafts stashed before a sign-in / claim redirect so the typed question
+// survives the OAuth round-trip. Restored (and cleared) on next open.
+const DRAFT_KEY = 'ask-the-team-draft'
+
 export interface AskTarget {
   personId: string
   name: string
@@ -53,6 +57,9 @@ export default function AskTheTeam({
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  // When the send fails on auth, offer the matching CTA (sign in / claim)
+  // instead of a dead-end error string.
+  const [errorAction, setErrorAction] = useState<'signin' | 'claim' | null>(null)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [filter, setFilter] = useState('')
 
@@ -82,14 +89,42 @@ export default function AskTheTeam({
   function handleOpen() {
     // Seed selection from initialTargetPersonIds intersected with valid player ids
     const validIds = new Set(players.map(p => p.personId))
-    const seeded = (initialTargetPersonIds ?? []).filter(id => validIds.has(id))
+    let seeded = (initialTargetPersonIds ?? []).filter(id => validIds.has(id))
+    // Restore a draft stashed before a sign-in redirect, then clear it.
+    let draftQuestion = ''
+    try {
+      const raw = sessionStorage.getItem(DRAFT_KEY)
+      if (raw) {
+        sessionStorage.removeItem(DRAFT_KEY)
+        const draft = JSON.parse(raw) as { question?: string; targetPersonIds?: string[] }
+        if (typeof draft.question === 'string') draftQuestion = draft.question.slice(0, QUESTION_MAX)
+        if (Array.isArray(draft.targetPersonIds) && draft.targetPersonIds.length > 0) {
+          seeded = draft.targetPersonIds.filter(id => validIds.has(id))
+        }
+      }
+    } catch {
+      // sessionStorage unavailable / bad JSON — start clean
+    }
     setSelectedIds(new Set(seeded))
     setOpen(true)
     setStatus('idle')
-    setQuestion('')
+    setQuestion(draftQuestion)
     setErrorMsg('')
+    setErrorAction(null)
     setTurnstileToken(null)
     setFilter('')
+  }
+
+  /** Stash the in-progress question so it survives the auth redirect. */
+  function stashDraft() {
+    try {
+      sessionStorage.setItem(
+        DRAFT_KEY,
+        JSON.stringify({ question, targetPersonIds: [...selectedIds] }),
+      )
+    } catch {
+      // best effort
+    }
   }
 
   function handleClose() {
@@ -122,6 +157,7 @@ export default function AskTheTeam({
     if (status === 'submitting') return
     setStatus('submitting')
     setErrorMsg('')
+    setErrorAction(null)
 
     const payload: {
       question: string
@@ -143,9 +179,11 @@ export default function AskTheTeam({
         const data = await res.json().catch(() => ({}))
         const err = (data as { error?: string }).error
         if (res.status === 401) {
-          setErrorMsg('Sign in to ask the team a question.')
+          setErrorMsg('Sign in to send your question — what you wrote is saved.')
+          setErrorAction('signin')
         } else if (res.status === 403) {
           setErrorMsg(err ?? 'Your account needs to be approved before you can ask questions.')
+          setErrorAction('claim')
         } else if (res.status === 429) {
           setErrorMsg('You’ve sent a few questions recently — give it a day and try again.')
         } else {
@@ -408,9 +446,27 @@ export default function AskTheTeam({
                     <TurnstileWidget onToken={handleTurnstile} />
 
                     {status === 'error' && (
-                      <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-                        {errorMsg}
-                      </p>
+                      <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3 space-y-2">
+                        <p>{errorMsg}</p>
+                        {errorAction === 'signin' && (
+                          <a
+                            href={`/login?next=${encodeURIComponent(window.location.pathname)}`}
+                            onClick={stashDraft}
+                            className="inline-block font-semibold text-[#0a1628] underline underline-offset-2 hover:text-[#990000]"
+                          >
+                            Sign in to send it &rarr;
+                          </a>
+                        )}
+                        {errorAction === 'claim' && (
+                          <a
+                            href="/account/setup"
+                            onClick={stashDraft}
+                            className="inline-block font-semibold text-[#0a1628] underline underline-offset-2 hover:text-[#990000]"
+                          >
+                            Claim your card &rarr;
+                          </a>
+                        )}
+                      </div>
                     )}
 
                     <button

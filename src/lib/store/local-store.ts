@@ -9,6 +9,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { Redis } from '@upstash/redis'
+import { usEasternToday } from '@/lib/us-date'
 import type {
   Store,
   Team,
@@ -1782,7 +1783,9 @@ export async function unlinkAccount(accountId: string): Promise<Account | null> 
 function openRequestIsLive(req: Pick<OpenRequest, 'status' | 'endDate'>): boolean {
   if (req.status !== 'open') return false
   if (req.endDate) {
-    const today = new Date().toISOString().slice(0, 10)
+    // US Eastern, not UTC — endDate is a member-local calendar date and
+    // UTC flips to "tomorrow" at 8pm ET, hiding the request early.
+    const today = usEasternToday()
     if (req.endDate < today) return false
   }
   return true

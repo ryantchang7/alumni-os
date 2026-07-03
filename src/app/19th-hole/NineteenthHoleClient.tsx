@@ -86,6 +86,8 @@ interface Props {
   viewerOptedToCoffee?: boolean
   /** Linked personId of the viewer; powers the "Edit" link target. */
   viewerPersonId?: string
+  /** Account id of the viewer — the request strip pins + badges their own posts. */
+  viewerAccountId?: string
   /** Open Requests with social intents (drinks/coffee/dinner). */
   openRequests?: OpenRequest[]
 }
@@ -107,6 +109,7 @@ export default function NineteenthHoleClient({
   interestedCounts,
   viewerOptedToCoffee,
   viewerPersonId,
+  viewerAccountId,
   openRequests = [],
 }: Props) {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
@@ -210,6 +213,7 @@ export default function NineteenthHoleClient({
           subtitle="Penn Golf members visiting somewhere — drop a note if you can host them."
           accent="#b8860b"
           limit={6}
+          viewerAccountId={viewerAccountId}
         />
       </section>
 

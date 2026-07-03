@@ -7,15 +7,16 @@
  *   /19th-hole    → intent in ('drinks','coffee','dinner')
  *
  * Server pages pass the filtered list. The strip is presentational; it
- * does not fetch. Hide-self is applied by the caller (so the viewer
- * doesn't see their own request mixed in — "Your Requests" in the
- * account dropdown is the surface for that).
+ * does not fetch. The viewer's own requests ARE included (pinned first,
+ * badged "Your request") with a Close button in place of Respond — this
+ * is the only surface where a poster can see and manage their open ask.
  */
 
 import Link from 'next/link'
 import { Beer, Coffee, Flag, MapPin, Plane, Utensils, Plus } from 'lucide-react'
 import type { OpenRequest, OpenRequestIntent } from '@/lib/store/types'
 import RespondButton from './RespondButton'
+import CloseOpenRequestButton from './CloseOpenRequestButton'
 
 const INTENT_ICON: Record<OpenRequestIntent, typeof Flag> = {
   round: Flag,
@@ -69,6 +70,11 @@ interface Props {
    * "member at {course}" pill — answers "who can host me?" at a glance.
    */
   homeCourseByPersonId?: Map<string, string>
+  /**
+   * The viewer's account id. Their own requests are pinned first with a
+   * "Your request" badge and a Close button instead of Respond.
+   */
+  viewerAccountId?: string
 }
 
 export default function OpenRequestStrip({
@@ -79,6 +85,7 @@ export default function OpenRequestStrip({
   accent = '#0a1628',
   limit = 6,
   homeCourseByPersonId,
+  viewerAccountId,
 }: Props) {
   if (requests.length === 0) {
     return (
@@ -113,7 +120,17 @@ export default function OpenRequestStrip({
       </div>
     )
   }
-  const shown = requests.slice(0, limit)
+  // Pin the viewer's own requests first so a fresh post is immediately
+  // visible (the post-success CTA lands here). Stable sort keeps
+  // newest-first order within each group.
+  const ordered = viewerAccountId
+    ? [...requests].sort(
+        (a, b) =>
+          Number(b.fromAccountId === viewerAccountId) -
+          Number(a.fromAccountId === viewerAccountId),
+      )
+    : requests
+  const shown = ordered.slice(0, limit)
   return (
     <div>
       <div className="flex items-baseline justify-between gap-4 mb-3 flex-wrap">
@@ -164,6 +181,7 @@ export default function OpenRequestStrip({
           const homeCourse = req.fromPersonId && homeCourseByPersonId
             ? homeCourseByPersonId.get(req.fromPersonId)
             : undefined
+          const isOwn = viewerAccountId !== undefined && req.fromAccountId === viewerAccountId
           return (
             <div
               key={req.id}
@@ -184,10 +202,16 @@ export default function OpenRequestStrip({
                   <Icon className="w-3 h-3" />
                   {INTENT_LABEL[req.intent]}
                 </span>
-                {req.guestFeesOffered && (
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
-                    Guest fees on me
+                {isOwn ? (
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#7a5f1a] bg-[#c8a84b]/12 border border-[#c8a84b]/30 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                    Your request
                   </span>
+                ) : (
+                  req.guestFeesOffered && (
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                      Guest fees on me
+                    </span>
+                  )
                 )}
               </div>
               <p
@@ -225,12 +249,16 @@ export default function OpenRequestStrip({
                 </span>
               )}
               <div className="mt-3">
-                <RespondButton
-                  targetAccountId={req.fromAccountId}
-                  kickoff={kickoff}
-                  bgColor={accent}
-                  className="w-full"
-                />
+                {isOwn ? (
+                  <CloseOpenRequestButton requestId={req.id} />
+                ) : (
+                  <RespondButton
+                    targetAccountId={req.fromAccountId}
+                    kickoff={kickoff}
+                    bgColor={accent}
+                    className="w-full"
+                  />
+                )}
               </div>
             </div>
           )

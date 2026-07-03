@@ -1,11 +1,15 @@
 // Clubhouse activity feed: recent claims + upcoming gatherings + RSVP momentum.
 //
-// Read-only. No auth required (browse-public). Surfaces signals that the
-// Clubhouse is alive — recently-joined alumni and gatherings with momentum.
+// Read-only and reachable without auth (browse-public), BUT member detail is
+// session-gated: non-approved viewers get the same response shape with names,
+// travel plans, photos, and titles stripped — array lengths and aggregate
+// totals survive so the member-only teases can still show counts.
 
 import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
 import { readStore, getTeamBySlug, getRecentTeamNewsItems } from '@/lib/store/local-store'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
+import { usEasternToday } from '@/lib/us-date'
 
 const TEAM_SLUG = 'penn-mens-golf'
 const RECENT_DAYS = 30
@@ -47,9 +51,10 @@ interface OnTheLoopMember {
 
 // Helper: is this trip currently active? A trip with no endDate is treated
 // as "active until cleared." A trip with no startDate is treated as
-// "starting now."
+// "starting now." Compared in US Eastern — endDate is a member-local
+// calendar date and UTC "today" hid trips hours early in the evening.
 function tripIsActive(t: { startDate?: string; endDate?: string }): boolean {
-  const today = new Date().toISOString().slice(0, 10)
+  const today = usEasternToday()
   if (t.endDate && t.endDate < today) return false
   return true
 }
@@ -167,6 +172,36 @@ export async function GET() {
     sourceUrl: n.sourceUrl,
     publishedAt: n.publishedAt,
   }))
+
+  const session = await auth()
+  const approved = Boolean(session?.accountId && session.linkedPersonId)
+
+  if (!approved) {
+    return NextResponse.json({
+      recentClaims: recentClaims
+        .slice(0, 5)
+        .map((c) => ({ name: null, personId: null, bookId: null, createdAt: c.createdAt })),
+      upcoming: upcoming
+        .slice(0, 4)
+        .map((g) => ({ id: g.id, type: g.type, title: '', dateText: '', interestedCount: 0 })),
+      recentMoments: recentMoments.map((m) => ({
+        id: m.id,
+        photoUrl: '',
+        mediaType: 'image' as const,
+        caption: '',
+        postedByName: '',
+        postedByBookId: null,
+        createdAt: m.createdAt,
+      })),
+      onTheLoop: onTheLoop.map((_, i) => ({
+        personId: `hidden_${i}`,
+        bookId: null,
+        name: '',
+      })),
+      newsItems,
+      totals,
+    })
+  }
 
   return NextResponse.json({
     recentClaims: recentClaims.slice(0, 5),

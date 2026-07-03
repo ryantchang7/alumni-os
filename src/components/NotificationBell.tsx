@@ -94,18 +94,20 @@ export default function NotificationBell() {
     setPermission(Notification.permission)
   }, [])
 
-  // Poll while approved: on mount, every 60s, and on tab focus.
+  // Poll while approved: on mount, every 60s, and when the tab becomes
+  // visible again. visibilitychange alone covers refocus — listening to
+  // 'focus' too double-fired the fetch on every tab switch.
   useEffect(() => {
     if (!approved) return
     refresh()
     const interval = setInterval(refresh, POLL_MS)
-    const onFocus = () => refresh()
-    window.addEventListener('focus', onFocus)
-    document.addEventListener('visibilitychange', onFocus)
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') refresh()
+    }
+    document.addEventListener('visibilitychange', onVisible)
     return () => {
       clearInterval(interval)
-      window.removeEventListener('focus', onFocus)
-      document.removeEventListener('visibilitychange', onFocus)
+      document.removeEventListener('visibilitychange', onVisible)
     }
   }, [approved, refresh])
 

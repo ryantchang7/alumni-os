@@ -92,11 +92,12 @@ export default async function TheCoursePage() {
   let rounds: GatheringData[] = []
   let viewerOptedToRounds = false
   let viewerPersonId: string | undefined
+  let viewerAccountId: string | undefined
   let viewerHandicap: string | undefined
   let similarPlayers: AlumniEntry[] = []
   let viewerBucket: HandicapBucket | null = null
-  // Open Requests (intent='round') visible on this surface. Filtered to
-  // exclude the viewer's own requests.
+  // Open Requests (intent='round') visible on this surface. Includes the
+  // viewer's own (the strip badges + pins them with a Close button).
   type RoundOpenRequest = import('@/lib/store/types').OpenRequest
   let openRoundRequests: RoundOpenRequest[] = []
   // Bunched course roll: each course name → the members who claim it as
@@ -153,6 +154,7 @@ export default async function TheCoursePage() {
     // Prioritize for the viewer: same-city first, then same-state,
     // then recently active. Filter the viewer out of their own list.
     const session = await auth()
+    viewerAccountId = session?.accountId ?? undefined
     const viewer = resolveViewerLocation(session, store, team.id)
     const decorated = visible
       .filter((a) => a.enrichment.openToGolfRounds)
@@ -257,13 +259,11 @@ export default async function TheCoursePage() {
     }
 
     // Open Requests with intent='round' — visiting members looking for
-    // a tee time. Hide the viewer's own requests so they don't see
-    // themselves in the strip.
+    // a tee time. The viewer's own requests stay in: the strip pins them
+    // first with a "Your request" badge and a Close button, so the poster
+    // can confirm it's live and take it down.
     const { getOpenRequestsForTeam } = await import('@/lib/store/local-store')
-    const allRoundRequests = await getOpenRequestsForTeam(team.id, ['round'])
-    openRoundRequests = viewerPersonId
-      ? allRoundRequests.filter(r => r.fromPersonId !== viewerPersonId)
-      : allRoundRequests
+    openRoundRequests = await getOpenRequestsForTeam(team.id, ['round'])
   }
 
   // Build homeCourse lookup for the Open Requests strip.
@@ -465,6 +465,7 @@ export default async function TheCoursePage() {
             accent="#2d6a4f"
             limit={6}
             homeCourseByPersonId={homeCourseByPersonId}
+            viewerAccountId={viewerAccountId}
           />
         </div>
 
