@@ -14,8 +14,8 @@ import YourEraSection from '@/components/YourEraSection'
 import ClubhouseChecklist from '@/components/ClubhouseChecklist'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import MemberOnlyTease from '@/components/MemberOnlyTease'
-import MemberBadges from '@/components/MemberBadges'
 import HeroCrest from '@/components/HeroCrest'
+import AlumniCard from '@/components/alumni/AlumniCard'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import type { AlumniSpotlight, TeamNewsItem } from '@/lib/store/types'
 
@@ -319,26 +319,15 @@ function MiniMemberCard({ profile, teamSlug }: { profile: PlayerProfile; teamSlu
     : profile.career?.currentRole ?? profile.career?.currentCompany ?? null
 
   return (
-    <Link
+    <AlumniCard
+      variant="mini"
       href={`/player/alumni/${profile.personId}?teamSlug=${teamSlug}`}
-      className="block bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 hover:bg-white hover:shadow-sm transition-all group flex-shrink-0 w-[200px]"
-    >
-      <div className="flex items-start justify-between gap-1 mb-1">
-        <p className="font-semibold text-[#0a1628] text-xs leading-snug truncate">{profile.canonicalName}</p>
-        {isCurrentPlayer && (
-          <span className="flex-shrink-0 text-[11px] font-semibold text-[#2d6a4f] bg-[#2d6a4f]/10 px-1.5 py-0.5 rounded-full">
-            Player
-          </span>
-        )}
-      </div>
-      {profile.badges && profile.badges.length > 0 && (
-        <div className="mb-1">
-          <MemberBadges badges={profile.badges} size="sm" iconOnly />
-        </div>
-      )}
-      {subline && <p className="text-[10px] text-ink-muted">{subline}</p>}
-      {careerLine && <p className="text-[10px] text-[#4a5568] mt-0.5 truncate">{careerLine}</p>}
-    </Link>
+      name={profile.canonicalName}
+      subline={subline}
+      careerLine={careerLine}
+      isCurrentPlayer={isCurrentPlayer}
+      badges={profile.badges}
+    />
   )
 }
 

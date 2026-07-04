@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import OpenRequestStrip from '@/components/OpenRequestStrip'
-import MemberAvatar from '@/components/MemberAvatar'
+import AlumniCard from '@/components/alumni/AlumniCard'
 import type { OpenRequest } from '@/lib/store/types'
 
 interface AlumniEntry {
@@ -31,48 +31,8 @@ const ROLE_GROUPS = [
   { key: 'parent', label: 'Family & Affiliate' },
 ] as const
 
-function MemberCard({ entry }: { entry: AlumniEntry }) {
-  return (
-    <Link
-      href={`/player/alumni/${entry.personId}?teamSlug=penn-mens-golf`}
-      className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 hover:shadow-md transition-shadow group"
-      style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-    >
-      <div className="flex items-start gap-3">
-        <MemberAvatar photoUrl={entry.photoUrl} name={entry.canonicalName} size={44} tone={entry.memberRole === 'parent' ? 'red' : 'navy'} />
-        <div className="min-w-0">
-      <p className="font-semibold text-[#0a1628] text-sm">{entry.canonicalName}</p>
-      {(entry.city || entry.state) && (
-        <p className="text-xs text-ink-muted mt-0.5">
-          {[entry.city, entry.state].filter(Boolean).join(', ')}
-        </p>
-      )}
-      {entry.memberRole === 'parent' && entry.parentRelationship ? (
-        <p className="text-xs text-[#990000] mt-0.5">{entry.parentRelationship}</p>
-      ) : (
-        <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-          {entry.classLabel && (
-            <p className="text-xs text-ink-muted">{entry.classLabel}</p>
-          )}
-          {entry.handicap && (
-            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
-              HCP {entry.handicap}
-            </span>
-          )}
-        </div>
-      )}
-      {(entry.currentRole || entry.currentCompany) && (
-        <p className="text-xs text-[#4a5568] mt-1">
-          {[entry.currentRole, entry.currentCompany].filter(Boolean).join(' · ')}
-        </p>
-      )}
-        </div>
-      </div>
-      <span className="text-xs font-medium text-[#990000] group-hover:underline mt-3 block">
-        View profile &rarr;
-      </span>
-    </Link>
-  )
+function memberCareerLine(entry: AlumniEntry): string | null {
+  return [entry.currentRole, entry.currentCompany].filter(Boolean).join(' · ') || null
 }
 
 interface Props {
@@ -269,7 +229,19 @@ export default function NineteenthHoleClient({
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {rows.slice(0, 24).map(entry => (
-                      <MemberCard key={entry.personId} entry={entry} />
+                      <AlumniCard
+                        key={entry.personId}
+                        href={`/player/alumni/${entry.personId}?teamSlug=penn-mens-golf`}
+                        name={entry.canonicalName}
+                        photoUrl={entry.photoUrl}
+                        avatarTone={entry.memberRole === 'parent' ? 'red' : 'navy'}
+                        subline={entry.classLabel}
+                        relationship={entry.memberRole === 'parent' ? entry.parentRelationship : null}
+                        location={[entry.city, entry.state].filter(Boolean).join(', ') || null}
+                        handicap={entry.handicap}
+                        careerLine={memberCareerLine(entry)}
+                        accentColor="#0a1628"
+                      />
                     ))}
                   </div>
                   {rows.length > 24 && (

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Flag, MapPin, Users, ArrowRight } from 'lucide-react'
+import { Flag, MapPin, Users } from 'lucide-react'
 import { normalizeCourseName } from '@/lib/courses'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
@@ -9,7 +9,7 @@ import CourseHero from './CourseHero'
 import CourseHoleSection, { CartPathDivider } from './CourseHoleSection'
 import CourseRoll, { type CourseRollEntry as CourseRollEntryData } from './CourseRoll'
 import OpenRequestStrip from '@/components/OpenRequestStrip'
-import MemberAvatar from '@/components/MemberAvatar'
+import AlumniCard from '@/components/alumni/AlumniCard'
 import { auth } from '@/auth'
 import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 import { bucketHandicap, BUCKET_LABELS, BUCKET_SHORT, type HandicapBucket } from '@/lib/handicap'
@@ -21,63 +21,14 @@ interface AlumniEntry {
   photoUrl: string | null
 }
 
-function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
-  const { person, membership, enrichment, photoUrl } = entry
-  // City + state when both are set, otherwise whichever exists, then
-  // hometown as a last-resort fallback. Matches the Career Room card
-  // treatment so "Brookline" reads as "Brookline, MA".
-  const location =
-    [enrichment.city, enrichment.state].filter(Boolean).join(', ') ||
-    membership.hometown ||
-    null
+// City + state when both are set, otherwise whichever exists, then hometown
+// as a last-resort fallback. Matches the Career Room card treatment so
+// "Brookline" reads as "Brookline, MA".
+function alumniLocation(entry: AlumniEntry): string | null {
   return (
-    <Link
-      href={`/player/alumni/${person.id}?teamSlug=penn-mens-golf`}
-      className="group block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden hover:border-[#2d6a4f]/40 hover:shadow-md transition-all"
-      style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-    >
-      <div className="border-l-4 border-[#2d6a4f] px-5 py-4">
-        <div className="flex items-start justify-between gap-3 mb-2">
-          <div className="flex items-start gap-3 min-w-0">
-            <MemberAvatar photoUrl={photoUrl} name={person.canonicalName} size={44} tone="navy" />
-            <div className="min-w-0">
-            <p
-              className="text-[#0a1628] text-base font-medium leading-snug font-heading"
-            >
-              {person.canonicalName}
-            </p>
-            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-              {membership.classLabel && (
-                <p className="text-[11.5px] text-ink-muted">{membership.classLabel}</p>
-              )}
-              {enrichment.handicap && (
-                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
-                  HCP {enrichment.handicap}
-                </span>
-              )}
-            </div>
-            </div>
-          </div>
-          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-2 py-1 rounded-full whitespace-nowrap">
-            Open
-          </span>
-        </div>
-        {location && (
-          <div className="flex items-center gap-1.5 text-[12px] text-[#4a5568] mt-1">
-            <MapPin className="w-3 h-3 text-ink-muted" />
-            <span>{location}</span>
-          </div>
-        )}
-        {enrichment.favoriteCourses && (
-          <p className="text-[12px] text-[#3d4a5c] mt-2 italic leading-relaxed">
-            &ldquo;{enrichment.favoriteCourses}&rdquo;
-          </p>
-        )}
-        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#990000] mt-3 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center gap-1">
-          Send a note <ArrowRight className="w-3 h-3" />
-        </span>
-      </div>
-    </Link>
+    [entry.enrichment.city, entry.enrichment.state].filter(Boolean).join(', ') ||
+    entry.membership.hometown ||
+    null
   )
 }
 
@@ -539,7 +490,19 @@ export default async function TheCoursePage() {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                           {rows.slice(0, 24).map((entry) => (
-                            <AlumniRoundCard key={entry.person.id} entry={entry} />
+                            <AlumniCard
+                              key={entry.person.id}
+                              href={`/player/alumni/${entry.person.id}?teamSlug=penn-mens-golf`}
+                              name={entry.person.canonicalName}
+                              photoUrl={entry.photoUrl}
+                              subline={entry.membership.classLabel}
+                              location={alumniLocation(entry)}
+                              handicap={entry.enrichment.handicap}
+                              quote={entry.enrichment.favoriteCourses}
+                              showOpenBadge
+                              accentColor="#2d6a4f"
+                              ctaLabel="Send a note"
+                            />
                           ))}
                         </div>
                         {rows.length > 24 && (
@@ -583,7 +546,19 @@ export default async function TheCoursePage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {similarPlayers.slice(0, 24).map(entry => (
-                <AlumniRoundCard key={entry.person.id} entry={entry} />
+                <AlumniCard
+                  key={entry.person.id}
+                  href={`/player/alumni/${entry.person.id}?teamSlug=penn-mens-golf`}
+                  name={entry.person.canonicalName}
+                  photoUrl={entry.photoUrl}
+                  subline={entry.membership.classLabel}
+                  location={alumniLocation(entry)}
+                  handicap={entry.enrichment.handicap}
+                  quote={entry.enrichment.favoriteCourses}
+                  showOpenBadge
+                  accentColor="#2d6a4f"
+                  ctaLabel="Send a note"
+                />
               ))}
             </div>
             {similarPlayers.length > 24 && (
