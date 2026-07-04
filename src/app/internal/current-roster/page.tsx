@@ -60,7 +60,7 @@ export default async function CurrentRosterEditorPage() {
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-8">
         <div className="flex items-center justify-between gap-4 mb-6">
-          <p className="text-sm text-[#8a7f70]">
+          <p className="text-sm text-ink-muted">
             <span className="font-semibold text-[#0a1628]">{players.length}</span> current players — save each card individually.
           </p>
           <Link href="/member-book?role=current_player" className="text-xs font-medium text-[#990000] hover:underline">
@@ -73,7 +73,7 @@ export default async function CurrentRosterEditorPage() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
           >
-            <p className="text-sm text-[#8a7f70]">No current players found for {TEAM_SLUG}.</p>
+            <p className="text-sm text-ink-muted">No current players found for {TEAM_SLUG}.</p>
           </div>
         ) : (
           <RosterEditorClient players={players} teamSlug={TEAM_SLUG} />

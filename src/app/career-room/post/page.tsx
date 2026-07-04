@@ -107,8 +107,7 @@ export default function PostCareerEntryPage() {
         >
           <Briefcase className="w-7 h-7 text-[#0a1628] mx-auto mb-4" />
           <h1
-            className="text-[#0a1628] text-2xl font-medium mb-2"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl font-medium mb-2 font-heading"
           >
             On the floor.
           </h1>
@@ -166,8 +165,7 @@ export default function PostCareerEntryPage() {
           <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
             <span className="block w-10 h-[2px] bg-[#0a1628] mb-5" />
             <h1
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
             >
               Post to the floor
             </h1>
@@ -196,7 +194,7 @@ export default function PostCareerEntryPage() {
           <form onSubmit={handleSubmit} className="px-7 sm:px-10 py-8 space-y-6">
             {/* Kind */}
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Kind
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -214,7 +212,7 @@ export default function PostCareerEntryPage() {
                       }`}
                     >
                       <span className="block">{k.label}</span>
-                      <span className={`block text-[11px] mt-1 ${active ? 'text-white/75' : 'text-[#8a7f70]'}`}>
+                      <span className={`block text-[11px] mt-1 ${active ? 'text-white/75' : 'text-ink-muted'}`}>
                         {k.helper}
                       </span>
                     </button>
@@ -225,7 +223,7 @@ export default function PostCareerEntryPage() {
 
             {/* Sector */}
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Sector
               </label>
               <select
@@ -242,10 +240,10 @@ export default function PostCareerEntryPage() {
             {/* Headline */}
             <div>
               <div className="flex items-baseline justify-between mb-2">
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                   Headline
                 </label>
-                <span className="text-[10.5px] text-[#8a7f70]">
+                <span className="text-[10.5px] text-ink-muted">
                   {headline.length}/{HEADLINE_MAX}
                 </span>
               </div>
@@ -266,10 +264,10 @@ export default function PostCareerEntryPage() {
             {/* Body */}
             <div>
               <div className="flex items-baseline justify-between mb-2">
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                   Detail (optional)
                 </label>
-                <span className="text-[10.5px] text-[#8a7f70]">
+                <span className="text-[10.5px] text-ink-muted">
                   {body.length}/{BODY_MAX}
                 </span>
               </div>
@@ -288,7 +286,7 @@ export default function PostCareerEntryPage() {
 
             {/* Contact email */}
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Reply-to email
               </label>
               <input
@@ -299,7 +297,7 @@ export default function PostCareerEntryPage() {
                 required
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/30 focus:border-[#0a1628]"
               />
-              <p className="text-[11.5px] text-[#8a7f70] mt-2">
+              <p className="text-[11.5px] text-ink-muted mt-2">
                 Visible only via the &ldquo;Reply privately&rdquo; button on the card.
               </p>
             </div>
@@ -320,7 +318,7 @@ export default function PostCareerEntryPage() {
               </button>
               <Link
                 href="/career-room"
-                className="text-[12px] text-[#8a7f70] hover:text-[#0a1628]"
+                className="text-[12px] text-ink-muted hover:text-[#0a1628]"
               >
                 Cancel
               </Link>

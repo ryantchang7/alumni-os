@@ -93,7 +93,7 @@ export default async function InternalPage() {
                   className="block border border-[rgba(180,168,150,0.35)] rounded-lg p-4 hover:border-[#0a1628] hover:shadow-sm transition-all"
                 >
                   <p className="font-semibold text-sm text-[#0a1628] mb-1">{tool.label}</p>
-                  <p className="text-xs text-[#8a7f70]">{tool.description}</p>
+                  <p className="text-xs text-ink-muted">{tool.description}</p>
                 </Link>
               ))}
             </div>

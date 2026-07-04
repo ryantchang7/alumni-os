@@ -73,8 +73,7 @@ export default function LaunchPage() {
             {heroEyebrow}
           </motion.p>
           <motion.h1
-            className="text-white text-5xl sm:text-6xl lg:text-[5.5rem] font-medium tracking-tight leading-[1.02] mb-5 max-w-3xl"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-5xl sm:text-6xl lg:text-[5.5rem] font-medium tracking-tight leading-[1.02] mb-5 max-w-3xl font-heading"
             initial={{ opacity: 0, y: 16 }}
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
             transition={{ delay: 0.25, duration: 0.85, ease }}
@@ -82,8 +81,8 @@ export default function LaunchPage() {
             {HERO_TITLE}
           </motion.h1>
           <motion.p
-            className="text-white/85 text-xl sm:text-2xl max-w-2xl leading-snug mb-5"
-            style={{ fontFamily: 'var(--font-playfair)', fontStyle: 'italic' }}
+            className="font-heading text-white/85 text-xl sm:text-2xl max-w-2xl leading-snug mb-5"
+            style={{ fontStyle: 'italic' }}
             initial={{ opacity: 0, y: 12 }}
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
             transition={{ delay: 0.45, duration: 0.7, ease }}
@@ -150,7 +149,7 @@ export default function LaunchPage() {
       {/* Founder note */}
       <section className="px-5 sm:px-8 py-20 sm:py-24">
         <div className="max-w-3xl mx-auto">
-          <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#8a7f70] mb-5">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-5">
             A note from the founder
           </p>
           <div
@@ -164,7 +163,7 @@ export default function LaunchPage() {
                   key={i}
                   className={
                     isSig
-                      ? 'text-[13px] text-[#8a7f70] mt-6 italic'
+                      ? 'text-[13px] text-ink-muted mt-6 italic'
                       : 'text-[15px] sm:text-base text-[#0a1628] leading-relaxed mb-4 last:mb-0'
                   }
                   style={isSig ? undefined : { fontFamily: 'var(--font-source-serif, var(--font-playfair))' }}
@@ -181,12 +180,11 @@ export default function LaunchPage() {
       <section className="px-5 sm:px-8 pb-20 sm:pb-24">
         <div className="max-w-[1180px] mx-auto">
           <div className="text-center mb-10 sm:mb-12">
-            <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#8a7f70] mb-3">
+            <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-3">
               How the Clubhouse works
             </p>
             <h2
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl sm:text-4xl font-medium font-heading"
             >
               {tagline}
             </h2>
@@ -207,21 +205,20 @@ export default function LaunchPage() {
                     {room.title}
                   </p>
                   <h3
-                    className="text-[#0a1628] text-2xl font-medium mb-2"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-[#0a1628] text-2xl font-medium mb-2 font-heading"
                   >
                     {room.title}.
                   </h3>
                   <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-4">
                     {roomBlurbBy[room.title] ?? room.blurb}
                   </p>
-                  <ul className="text-[12.5px] text-[#8a7f70] space-y-1 mb-5">
+                  <ul className="text-[12.5px] text-ink-muted space-y-1 mb-5">
                     {room.examples.map((ex, i) => (
                       <li key={i} className="italic">{ex}</li>
                     ))}
                   </ul>
                   <div className="mt-auto pt-4 border-t border-[rgba(180,168,150,0.35)]">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
                       Surfaces
                     </p>
                     <p className="text-[12.5px] text-[#0a1628] mt-1">
@@ -239,12 +236,11 @@ export default function LaunchPage() {
       <section className="bg-[#0a1628]/[0.03] border-y border-[rgba(180,168,150,0.4)] px-5 sm:px-8 py-20 sm:py-24">
         <div className="max-w-[1180px] mx-auto">
           <div className="mb-10 sm:mb-12">
-            <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#8a7f70] mb-3">
+            <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-3">
               Inside the Clubhouse
             </p>
             <h2
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl sm:text-4xl font-medium font-heading"
             >
               Eight rooms. One family.
             </h2>
@@ -257,10 +253,10 @@ export default function LaunchPage() {
                 className="group bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-5 py-4 flex items-start justify-between gap-4 hover:border-[#0a1628]/50 transition-colors"
               >
                 <div className="min-w-0">
-                  <p className="text-[#0a1628] font-medium text-[15px] mb-0.5" style={{ fontFamily: 'var(--font-playfair)' }}>
+                  <p className="text-[#0a1628] font-medium text-[15px] mb-0.5 font-heading">
                     {f.label}
                   </p>
-                  <p className="text-[12.5px] text-[#8a7f70] leading-snug">
+                  <p className="text-[12.5px] text-ink-muted leading-snug">
                     {f.blurb}
                   </p>
                 </div>
@@ -277,12 +273,11 @@ export default function LaunchPage() {
       <section className="px-5 sm:px-8 py-20 sm:py-24">
         <div className="max-w-[1080px] mx-auto">
           <div className="mb-10 sm:mb-12">
-            <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#8a7f70] mb-3">
+            <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-3">
               How access works
             </p>
             <h2
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium mb-3"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl sm:text-4xl font-medium mb-3 font-heading"
             >
               Approval-based, not paywalled.
             </h2>
@@ -301,8 +296,7 @@ export default function LaunchPage() {
                   Step {step.step}
                 </p>
                 <p
-                  className="text-[#0a1628] text-xl font-medium mb-2"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-xl font-medium mb-2 font-heading"
                 >
                   {step.label}
                 </p>
@@ -322,8 +316,7 @@ export default function LaunchPage() {
             For the Penn Golf family
           </p>
           <h2
-            className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium leading-tight tracking-tight mb-8"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium leading-tight tracking-tight mb-8 font-heading"
           >
             {closingLine}
           </h2>
@@ -341,7 +334,7 @@ export default function LaunchPage() {
               Claim Your Member Card
             </Link>
           </div>
-          <p className="mt-10 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/45">
+          <p className="mt-10 eyebrow text-gold">
             {tagline}
           </p>
         </div>

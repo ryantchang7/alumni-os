@@ -51,12 +51,11 @@ export default async function TeamUpdatesPage() {
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+          <p className="eyebrow text-gold mb-4">
             Penn Men&rsquo;s Golf
           </p>
           <h1
-            className="text-white text-4xl sm:text-5xl font-medium tracking-tight mb-4"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-4xl sm:text-5xl font-medium tracking-tight mb-4 font-heading"
           >
             Team Updates
           </h1>
@@ -85,11 +84,11 @@ export default async function TeamUpdatesPage() {
                     <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0a1628] bg-[#0a1628]/8 px-2 py-0.5 rounded-full">
                       {SEASON_KIND_LABELS[u.kind]}
                     </span>
-                    <span className="text-[11px] text-[#8a7f70]">{u.dateText}</span>
+                    <span className="text-[11px] text-ink-muted">{u.dateText}</span>
                   </div>
                   <p className="text-sm font-semibold text-[#0a1628]">{u.title}</p>
                   {u.body && (
-                    <p className="text-sm text-[#8a7f70] mt-1.5 leading-relaxed whitespace-pre-line">
+                    <p className="text-sm text-ink-muted mt-1.5 leading-relaxed whitespace-pre-line">
                       {u.body}
                     </p>
                   )}
@@ -106,7 +105,7 @@ export default async function TeamUpdatesPage() {
                           className="w-full h-40 object-cover bg-[#faf7f2]"
                         />
                         <div className="px-3.5 py-3">
-                          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
                             {seasonLinkDomain(u.linkUrl)}
                           </p>
                           {(u.previewTitle || u.linkLabel) && (
@@ -139,7 +138,7 @@ export default async function TeamUpdatesPage() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-sm font-semibold text-[#0a1628]">No updates yet.</p>
-            <p className="text-xs text-[#8a7f70] mt-2 max-w-md mx-auto">
+            <p className="text-xs text-ink-muted mt-2 max-w-md mx-auto">
               Qualifying results, tournament recaps, and stats will appear here as the season
               unfolds. Follow the team to be the first to know.
             </p>
@@ -150,7 +149,7 @@ export default async function TeamUpdatesPage() {
         <div className="mt-10 pt-6 border-t border-[rgba(180,168,150,0.35)]">
           <Link
             href="/team-room"
-            className="text-sm text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+            className="text-sm text-ink-muted hover:text-[#0a1628] transition-colors"
           >
             &larr; Team Room
           </Link>

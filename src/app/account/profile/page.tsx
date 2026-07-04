@@ -114,12 +114,11 @@ export default async function AccountProfilePage() {
     <div className="min-h-screen bg-[#f8f5f0]">
       <div className="bg-[#0a1628] px-5 sm:px-8 pt-12 pb-14">
         <div className="max-w-[820px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+          <p className="eyebrow text-gold mb-4">
             Penn Men&rsquo;s Golf
           </p>
           <h1
-            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-3xl sm:text-4xl font-medium tracking-tight font-heading"
           >
             Your Profile
           </h1>
@@ -140,8 +139,7 @@ export default async function AccountProfilePage() {
           <div className="px-7 sm:px-10 pt-10 pb-8 border-b border-[rgba(180,168,150,0.3)]">
             <span className="block w-12 h-[2px] bg-[#990000] mb-6" />
             <h2
-              className="text-[#0a1628] text-3xl font-medium leading-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl font-medium leading-tight font-heading"
             >
               {person?.canonicalName ?? 'Your Profile'}
             </h2>
@@ -149,7 +147,7 @@ export default async function AccountProfilePage() {
               <p className="text-[15px] text-[#3d4a5c] mt-3">{yearsLabel}</p>
             )}
             {!isParent && membership?.hometown && (
-              <p className="text-[13.5px] text-[#8a7f70] mt-1">{membership.hometown}</p>
+              <p className="text-[13.5px] text-ink-muted mt-1">{membership.hometown}</p>
             )}
             {isParent && membership?.parentRelationship && (
               <p className="text-[13.5px] text-[#990000] mt-1">
@@ -162,12 +160,11 @@ export default async function AccountProfilePage() {
             <div className="px-7 sm:px-10 py-7 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
               <div className="flex items-baseline justify-between mb-3">
                 <p
-                  className="text-[#0a1628] text-base font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-base font-medium font-heading"
                 >
                   Complete your profile
                 </p>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
                   {doneCount} / {totalCount}
                 </span>
               </div>
@@ -186,7 +183,7 @@ export default async function AccountProfilePage() {
                     >
                       ✓
                     </span>
-                    <span className={c.done ? 'text-[#8a7f70] line-through' : 'text-[#3d4a5c]'}>
+                    <span className={c.done ? 'text-ink-muted line-through' : 'text-[#3d4a5c]'}>
                       {c.label}
                     </span>
                   </li>
@@ -198,12 +195,11 @@ export default async function AccountProfilePage() {
           <div className="px-7 sm:px-10 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
             <div>
               <p
-                className="text-[#0a1628] text-base font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-base font-medium font-heading"
               >
                 Update your details
               </p>
-              <p className="text-[12.5px] text-[#8a7f70] mt-1">
+              <p className="text-[12.5px] text-ink-muted mt-1">
                 {isParent
                   ? 'Where you live now, role, company, and how to reach you.'
                   : 'Hometown, where you live now, role, company, and how you can help.'}
@@ -221,12 +217,11 @@ export default async function AccountProfilePage() {
             <div className="px-7 sm:px-10 py-7 border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
               <div>
                 <p
-                  className="text-[#0a1628] text-base font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-base font-medium font-heading"
                 >
                   Your Member Book card
                 </p>
-                <p className="text-[12.5px] text-[#8a7f70] mt-1">
+                <p className="text-[12.5px] text-ink-muted mt-1">
                   How other Penn Golf members see you in the registry.
                 </p>
               </div>
@@ -243,8 +238,7 @@ export default async function AccountProfilePage() {
             <div>
               <div className="flex items-center gap-2">
                 <p
-                  className="text-[#0a1628] text-base font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-base font-medium font-heading"
                 >
                   Your Inbox
                 </p>
@@ -254,7 +248,7 @@ export default async function AccountProfilePage() {
                   </span>
                 )}
               </div>
-              <p className="text-[12.5px] text-[#8a7f70] mt-1">
+              <p className="text-[12.5px] text-ink-muted mt-1">
                 {incomingRequestCount > 0
                   ? `${incomingRequestCount === 1 ? 'A member has' : 'Members have'} reached out to you.`
                   : 'Notes, intros, and questions from other Penn Golf members will land here.'}
@@ -280,12 +274,11 @@ export default async function AccountProfilePage() {
           >
             <div className="px-7 sm:px-10 pt-7 pb-2 border-b border-[rgba(180,168,150,0.3)]">
               <p
-                className="text-[#0a1628] text-base font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-base font-medium font-heading"
               >
                 Penn Golf in {enrichment?.city}
               </p>
-              <p className="text-[12.5px] text-[#8a7f70] mt-1 mb-5">
+              <p className="text-[12.5px] text-ink-muted mt-1 mb-5">
                 Other members nearby. Take the meeting when you&rsquo;re in town.
               </p>
             </div>
@@ -297,13 +290,12 @@ export default async function AccountProfilePage() {
                     className="block px-7 sm:px-10 py-3.5 border-b border-[rgba(180,168,150,0.22)] last:border-b-0 hover:bg-[#faf7f2] transition-colors"
                   >
                     <p
-                      className="text-[#0a1628] text-[15px] font-medium"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[#0a1628] text-[15px] font-medium font-heading"
                     >
                       {a.name}
                     </p>
                     {(a.currentCompany || a.industry) && (
-                      <p className="text-[12px] text-[#8a7f70] mt-0.5">
+                      <p className="text-[12px] text-ink-muted mt-0.5">
                         {a.currentCompany ?? a.industry}
                         {a.currentCompany && a.industry ? ` · ${a.industry}` : ''}
                       </p>
@@ -324,7 +316,7 @@ export default async function AccountProfilePage() {
         >
           <button
             type="submit"
-            className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+            className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted hover:text-[#0a1628] transition-colors"
           >
             Sign out
           </button>

@@ -164,7 +164,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               {classShort}
             </span>
           )}
-          <span className="text-[10px] font-medium text-[#8a7f70] bg-[#f8f5f0] px-2 py-0.5 rounded-full border border-[rgba(180,168,150,0.4)]">
+          <span className="text-[10px] font-medium text-ink-muted bg-[#f8f5f0] px-2 py-0.5 rounded-full border border-[rgba(180,168,150,0.4)]">
             Current Player
           </span>
         </div>
@@ -189,10 +189,10 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
       <div className="p-5 space-y-5">
         {/* Person */}
         <section>
-          <p className="text-[10px] font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">Identity</p>
+          <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider mb-3">Identity</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Full Name</label>
+              <label className="text-xs text-ink-muted block mb-1">Full Name</label>
               <input
                 type="text"
                 value={person.canonicalName}
@@ -201,7 +201,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               />
             </div>
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Normalized Name (auto)</label>
+              <label className="text-xs text-ink-muted block mb-1">Normalized Name (auto)</label>
               <input
                 type="text"
                 value={
@@ -213,7 +213,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
                     .trim()
                 }
                 readOnly
-                className="w-full border border-[rgba(180,168,150,0.3)] rounded-lg px-3 py-2 text-sm text-[#8a7f70] bg-[#f8f5f0] cursor-not-allowed"
+                className="w-full border border-[rgba(180,168,150,0.3)] rounded-lg px-3 py-2 text-sm text-ink-muted bg-[#f8f5f0] cursor-not-allowed"
               />
             </div>
           </div>
@@ -221,10 +221,10 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
 
         {/* Membership */}
         <section>
-          <p className="text-[10px] font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">Roster Details</p>
+          <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider mb-3">Roster Details</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Class</label>
+              <label className="text-xs text-ink-muted block mb-1">Class</label>
               <select
                 value={membership.classLabel ?? ''}
                 onChange={e => {
@@ -242,7 +242,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               </select>
             </div>
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Class Display</label>
+              <label className="text-xs text-ink-muted block mb-1">Class Display</label>
               <input
                 type="text"
                 value={membership.classYearEstimate ?? ''}
@@ -251,7 +251,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               />
             </div>
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Hometown</label>
+              <label className="text-xs text-ink-muted block mb-1">Hometown</label>
               <input
                 type="text"
                 value={membership.hometown ?? ''}
@@ -260,7 +260,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               />
             </div>
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">High School</label>
+              <label className="text-xs text-ink-muted block mb-1">High School</label>
               <input
                 type="text"
                 value={membership.highSchool ?? ''}
@@ -269,7 +269,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               />
             </div>
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Roster Start Year</label>
+              <label className="text-xs text-ink-muted block mb-1">Roster Start Year</label>
               <input
                 type="number"
                 value={membership.rosterStartYear ?? ''}
@@ -278,7 +278,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               />
             </div>
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Roster End Year</label>
+              <label className="text-xs text-ink-muted block mb-1">Roster End Year</label>
               <input
                 type="number"
                 value={membership.rosterEndYear ?? ''}
@@ -298,10 +298,10 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
 
         {/* Enrichment / Profile */}
         <section>
-          <p className="text-[10px] font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">Profile Fields</p>
+          <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider mb-3">Profile Fields</p>
           <div className="space-y-3">
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Bio</label>
+              <label className="text-xs text-ink-muted block mb-1">Bio</label>
               <textarea
                 rows={2}
                 value={enrichment.alumniBio ?? ''}
@@ -310,7 +310,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               />
             </div>
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Help Topics (comma-separated)</label>
+              <label className="text-xs text-ink-muted block mb-1">Help Topics (comma-separated)</label>
               <input
                 type="text"
                 value={helpTopicsRaw}
@@ -321,7 +321,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-[#8a7f70] block mb-1">Contact Preference</label>
+                <label className="text-xs text-ink-muted block mb-1">Contact Preference</label>
                 <select
                   value={enrichment.contactPreference ?? ''}
                   onChange={e => setEnrichment(en => ({ ...en, contactPreference: e.target.value }))}
@@ -331,7 +331,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
                 </select>
               </div>
               <div>
-                <label className="text-xs text-[#8a7f70] block mb-1">Availability</label>
+                <label className="text-xs text-ink-muted block mb-1">Availability</label>
                 <select
                   value={enrichment.availabilityLevel ?? ''}
                   onChange={e => setEnrichment(en => ({ ...en, availabilityLevel: e.target.value }))}
@@ -342,7 +342,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               </div>
             </div>
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Favorite Penn Golf Memory</label>
+              <label className="text-xs text-ink-muted block mb-1">Favorite Penn Golf Memory</label>
               <textarea
                 rows={2}
                 value={enrichment.favoritePennGolfMemory ?? ''}
@@ -351,7 +351,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               />
             </div>
             <div>
-              <label className="text-xs text-[#8a7f70] block mb-1">Favorite Courses</label>
+              <label className="text-xs text-ink-muted block mb-1">Favorite Courses</label>
               <input
                 type="text"
                 value={enrichment.favoriteCourses ?? ''}

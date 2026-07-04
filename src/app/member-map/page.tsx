@@ -257,12 +257,11 @@ export default async function MemberMapPage() {
         <div className="max-w-[1280px] mx-auto flex items-center gap-5 sm:gap-7">
           <HeroCrest src={crestImage} alt="Member Map crest" />
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+            <p className="eyebrow text-gold mb-4">
               Penn Men&rsquo;s Golf
             </p>
             <h1
-              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium leading-tight tracking-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium leading-tight tracking-tight font-heading"
             >
               The Member Map
             </h1>

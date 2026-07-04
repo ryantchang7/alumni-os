@@ -143,8 +143,7 @@ export default function OpenRequestStrip({
           </p>
           <div className="flex items-baseline gap-2 flex-wrap">
             <h3
-              className="text-[#0a1628] text-xl font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-xl font-medium font-heading"
             >
               {title}
             </h3>
@@ -156,7 +155,7 @@ export default function OpenRequestStrip({
             </span>
           </div>
           {subtitle && (
-            <p className="text-[12.5px] text-[#8a7f70] mt-0.5 max-w-md">{subtitle}</p>
+            <p className="text-[12.5px] text-ink-muted mt-0.5 max-w-md">{subtitle}</p>
           )}
         </div>
         <Link
@@ -215,8 +214,7 @@ export default function OpenRequestStrip({
                 )}
               </div>
               <p
-                className="text-[#0a1628] text-[15px] font-medium leading-snug"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-[15px] font-medium leading-snug font-heading"
               >
                 {req.fromPersonId ? (
                   <Link
@@ -230,7 +228,7 @@ export default function OpenRequestStrip({
                 )}
               </p>
               {(location || window) && (
-                <div className="flex items-center gap-2 text-[11.5px] text-[#8a7f70] mt-0.5 flex-wrap">
+                <div className="flex items-center gap-2 text-[11.5px] text-ink-muted mt-0.5 flex-wrap">
                   {location && (
                     <span className="flex items-center gap-1">
                       <MapPin className="w-3 h-3" />

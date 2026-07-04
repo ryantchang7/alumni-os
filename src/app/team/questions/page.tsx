@@ -34,7 +34,7 @@ function TargetLine({ q }: { q: TeamQuestion }) {
     const names = q.targets.map(t => t.name.split(' ')[0]).join(', ')
     return (
       <div className="flex items-center gap-1.5 mb-2">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a7f70]">To</span>
+        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">To</span>
         <span className="inline-flex flex-wrap gap-1">
           {q.targets.map(t => (
             <span
@@ -113,7 +113,7 @@ function OpenQuestionCard({
       <div className="flex items-center gap-2 flex-wrap mb-2">
         <span className="font-semibold text-[#0a1628] text-sm">{q.askerName}</span>
         {q.askerGradYear && (
-          <span className="text-[10px] font-medium text-[#8a7f70] bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-medium text-ink-muted bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded-full">
             &apos;{String(q.askerGradYear).slice(-2)}
           </span>
         )}
@@ -156,7 +156,7 @@ function AnsweredCard({ q }: { q: TeamQuestion }) {
       <div className="flex items-center gap-2 flex-wrap mb-1.5">
         <span className="font-semibold text-[#0a1628] text-sm">{q.askerName}</span>
         {q.askerGradYear && (
-          <span className="text-[10px] font-medium text-[#8a7f70] bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-medium text-ink-muted bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded-full">
             &apos;{String(q.askerGradYear).slice(-2)}
           </span>
         )}
@@ -185,7 +185,7 @@ function MemberQuestionCard({ q }: { q: TeamQuestion }) {
           'text-[10px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full',
           q.status === 'answered'
             ? 'text-[#2d6a4f] bg-[#2d6a4f]/10'
-            : 'text-[#8a7f70] bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)]',
+            : 'text-ink-muted bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)]',
         ].join(' ')}>
           {q.status === 'answered' ? 'Answered' : 'Pending'}
         </span>
@@ -292,12 +292,11 @@ export default function TeamQuestionsPage() {
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+          <p className="eyebrow text-gold mb-4">
             Penn Men&rsquo;s Golf
           </p>
           <h1
-            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-3xl sm:text-4xl font-medium tracking-tight font-heading"
           >
             {data?.role === 'player' ? 'Answer the Team’s Questions' : 'Your Questions'}
           </h1>
@@ -327,8 +326,7 @@ export default function TeamQuestionsPage() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
           >
             <h2
-              className="text-[#0a1628] text-xl font-medium mb-2"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-xl font-medium mb-2 font-heading"
             >
               {gate === 'signin' ? 'Sign in to see your questions.' : 'Claim your card first.'}
             </h2>
@@ -362,7 +360,7 @@ export default function TeamQuestionsPage() {
                 className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4"
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
               >
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8a7f70] mb-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted mb-3">
                   Your availability
                 </p>
                 {/* Default true: undefined means opted in per Account.answersTeamQuestions docs */}
@@ -373,7 +371,7 @@ export default function TeamQuestionsPage() {
             {/* Open questions */}
             <section>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1">Open questions</h2>
-              <p className="text-sm text-[#8a7f70] mb-5">
+              <p className="text-sm text-ink-muted mb-5">
                 Alumni waiting for an answer. Reply whenever you have a minute.
               </p>
 
@@ -383,7 +381,7 @@ export default function TeamQuestionsPage() {
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
                 >
                   <p className="text-sm font-semibold text-[#0a1628]">Queue is clear</p>
-                  <p className="text-xs text-[#8a7f70] mt-2">New questions from alumni will show up here.</p>
+                  <p className="text-xs text-ink-muted mt-2">New questions from alumni will show up here.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -400,7 +398,7 @@ export default function TeamQuestionsPage() {
             {(data as PlayerView).answered.length > 0 && (
               <section>
                 <h2 className="text-base font-semibold text-[#0a1628] mb-1">Recently answered</h2>
-                <p className="text-sm text-[#8a7f70] mb-5">Questions the team has already replied to.</p>
+                <p className="text-sm text-ink-muted mb-5">Questions the team has already replied to.</p>
                 <div className="space-y-4">
                   {(data as PlayerView).answered.map(q => (
                     <AnsweredCard key={q.id} q={q} />
@@ -415,7 +413,7 @@ export default function TeamQuestionsPage() {
         {data?.role === 'member' && (
           <section>
             <h2 className="text-base font-semibold text-[#0a1628] mb-1">Your questions</h2>
-            <p className="text-sm text-[#8a7f70] mb-5">
+            <p className="text-sm text-ink-muted mb-5">
               Questions you&rsquo;ve sent to the team, and any answers they&rsquo;ve sent back.
             </p>
 
@@ -425,7 +423,7 @@ export default function TeamQuestionsPage() {
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
               >
                 <p className="text-sm font-semibold text-[#0a1628]">No questions yet</p>
-                <p className="text-xs text-[#8a7f70] mt-2 max-w-sm mx-auto">
+                <p className="text-xs text-ink-muted mt-2 max-w-sm mx-auto">
                   Head over to Ask the Team and ask the guys anything.
                 </p>
                 <div className="mt-5">

@@ -79,8 +79,7 @@ export default function AddMemberForm() {
           <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
             <span className="block w-10 h-[2px] bg-[#0a1628] mb-5" />
             <h1
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
             >
               Add a member
             </h1>
@@ -103,7 +102,7 @@ export default function AddMemberForm() {
 
           <form onSubmit={handleSubmit} className="px-7 sm:px-10 py-8 space-y-6">
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Full name
               </label>
               <input
@@ -117,7 +116,7 @@ export default function AddMemberForm() {
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Role
               </label>
               <div className="flex gap-2">
@@ -147,7 +146,7 @@ export default function AddMemberForm() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                   Class
                 </label>
                 <input
@@ -159,7 +158,7 @@ export default function AddMemberForm() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                   Hometown
                 </label>
                 <input
@@ -174,7 +173,7 @@ export default function AddMemberForm() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                   Roster start year
                 </label>
                 <input
@@ -188,7 +187,7 @@ export default function AddMemberForm() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                   Roster end year
                 </label>
                 <input
@@ -220,7 +219,7 @@ export default function AddMemberForm() {
               </button>
               <Link
                 href="/internal"
-                className="text-[12px] text-[#8a7f70] hover:text-[#0a1628]"
+                className="text-[12px] text-ink-muted hover:text-[#0a1628]"
               >
                 Done
               </Link>

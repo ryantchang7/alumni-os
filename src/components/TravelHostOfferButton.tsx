@@ -95,12 +95,11 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
               {/* Header */}
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-1">
+                  <p className="eyebrow text-gold mb-1">
                     Penn Men&rsquo;s Golf
                   </p>
                   <h2
-                    className="text-white text-xl font-medium leading-snug"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-white text-xl font-medium leading-snug font-heading"
                   >
                     Offer to host the team
                   </h2>
@@ -140,12 +139,11 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
                       </span>
                     </div>
                     <p
-                      className="text-xl font-medium text-[#0a1628]"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-xl font-medium text-[#0a1628] font-heading"
                     >
                       Thanks &mdash; we&rsquo;ll pass it along.
                     </p>
-                    <p className="mt-3 text-sm text-[#8a7f70]">
+                    <p className="mt-3 text-sm text-ink-muted">
                       The coach and team will see this. We appreciate you looking out for the guys.
                     </p>
                   </div>
@@ -154,7 +152,7 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
                     <div>
                       <label
                         htmlFor="host-location"
-                        className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5"
+                        className="block text-xs font-semibold tracking-widest uppercase text-ink-muted mb-1.5"
                       >
                         Your city <span className="normal-case font-normal tracking-normal">(optional)</span>
                       </label>
@@ -171,7 +169,7 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
                     <div>
                       <label
                         htmlFor="host-message"
-                        className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5"
+                        className="block text-xs font-semibold tracking-widest uppercase text-ink-muted mb-1.5"
                       >
                         What you&rsquo;d like to offer <span className="normal-case font-normal tracking-normal">(optional)</span>
                       </label>

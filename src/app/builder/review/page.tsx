@@ -74,7 +74,7 @@ export default async function BuilderReviewPage({ searchParams }: Props) {
             <p className="text-base font-semibold text-[#0a1628] mb-1">
               No open review items. The pipeline is clean.
             </p>
-            <p className="text-sm text-[#8a7f70] mb-6">
+            <p className="text-sm text-ink-muted mb-6">
               All extracted entries have been processed or there are no entries yet.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
@@ -95,16 +95,16 @@ export default async function BuilderReviewPage({ searchParams }: Props) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-[#f0ece5]">
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Type
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Title
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Priority
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Status
                     </th>
                   </tr>
@@ -112,7 +112,7 @@ export default async function BuilderReviewPage({ searchParams }: Props) {
                 <tbody className="divide-y divide-[rgba(180,168,150,0.2)]">
                   {openItems.map(item => (
                     <tr key={item.id} className="hover:bg-[#f5f2ed] transition-colors">
-                      <td className="px-4 py-3 text-[#8a7f70]">
+                      <td className="px-4 py-3 text-ink-muted">
                         <span className="text-xs font-mono">{typeLabel[item.type]}</span>
                       </td>
                       <td className="px-4 py-3 font-medium text-[#0d1f3c]">{item.title}</td>

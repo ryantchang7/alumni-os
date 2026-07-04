@@ -34,7 +34,7 @@ export function DeleteTravelStop({ stopId }: { stopId: string }) {
         'inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg border transition-colors disabled:opacity-40',
         confirming
           ? 'bg-[#990000] text-white border-[#990000] hover:bg-[#7a0000]'
-          : 'text-[#8a7f70] border-[rgba(180,168,150,0.55)] hover:text-[#990000] hover:border-[#990000]/40 bg-transparent',
+          : 'text-ink-muted border-[rgba(180,168,150,0.55)] hover:text-[#990000] hover:border-[#990000]/40 bg-transparent',
       ].join(' ')}
     >
       <Trash2 size={12} />
@@ -43,7 +43,7 @@ export function DeleteTravelStop({ stopId }: { stopId: string }) {
   )
 }
 
-const labelClass = 'block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5'
+const labelClass = 'block text-xs font-semibold tracking-widest uppercase text-ink-muted mb-1.5'
 const inputClass =
   'w-full rounded-lg border border-[#d9c8a8] bg-white px-4 py-2.5 text-sm text-[#0a1628] placeholder:text-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b] transition-colors'
 
@@ -141,12 +141,11 @@ export default function AddTravelStop() {
               {/* Header */}
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4 flex-shrink-0">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-1">
+                  <p className="eyebrow text-gold mb-1">
                     Penn Men&rsquo;s Golf &mdash; Founders only
                   </p>
                   <h2
-                    className="text-white text-xl font-medium leading-snug"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-white text-xl font-medium leading-snug font-heading"
                   >
                     Add a travel stop
                   </h2>
@@ -246,7 +245,7 @@ export default function AddTravelStop() {
                     <button
                       type="button"
                       onClick={reset}
-                      className="text-sm text-[#8a7f70] hover:text-[#0a1628] transition-colors px-4 py-2"
+                      className="text-sm text-ink-muted hover:text-[#0a1628] transition-colors px-4 py-2"
                     >
                       Cancel
                     </button>

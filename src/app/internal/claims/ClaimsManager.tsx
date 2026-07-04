@@ -100,14 +100,14 @@ export default function ClaimsManager() {
   const resolved = claims.filter(c => c.status !== 'pending')
 
   if (loading) {
-    return <p className="text-sm text-[#8a7f70] py-8 text-center">Loading claims...</p>
+    return <p className="text-sm text-ink-muted py-8 text-center">Loading claims...</p>
   }
 
   if (claims.length === 0) {
     return (
       <div className="py-12 text-center">
         <p className="text-sm font-medium text-[#0a1628] mb-1">No profile claim requests yet</p>
-        <p className="text-xs text-[#8a7f70]">Requests will appear here when alumni submit them from a profile page.</p>
+        <p className="text-xs text-ink-muted">Requests will appear here when alumni submit them from a profile page.</p>
       </div>
     )
   }
@@ -130,7 +130,7 @@ export default function ClaimsManager() {
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#8a7f70]">
+            <p className="text-xs text-ink-muted">
               <span className="font-mono">{claim.requesterEmail}</span>
             </p>
             {claim.pennGolfYears && (
@@ -147,7 +147,7 @@ export default function ClaimsManager() {
               >
                 View Member Book entry &rarr;
               </Link>
-              <span className="text-[10px] text-[#8a7f70]">
+              <span className="text-[10px] text-ink-muted">
                 {new Date(claim.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </span>
             </div>
@@ -155,7 +155,7 @@ export default function ClaimsManager() {
 
           {isPending && (
             <div className="flex items-center gap-2 flex-shrink-0">
-              <label className="flex items-center gap-1.5 text-[10px] text-[#8a7f70] cursor-pointer select-none mr-1">
+              <label className="flex items-center gap-1.5 text-[10px] text-ink-muted cursor-pointer select-none mr-1">
                 <input
                   type="checkbox"
                   checked={selected.has(claim.id)}
@@ -175,7 +175,7 @@ export default function ClaimsManager() {
               <button
                 onClick={() => updateStatus(claim.id, 'declined')}
                 disabled={isUpdating || !!bulk}
-                className="text-xs font-medium text-[#8a7f70] hover:text-[#0a1628] border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/30 px-3 py-1.5 rounded-lg transition-colors"
+                className="text-xs font-medium text-ink-muted hover:text-[#0a1628] border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/30 px-3 py-1.5 rounded-lg transition-colors"
               >
                 Decline
               </button>
@@ -203,7 +203,7 @@ export default function ClaimsManager() {
             </div>
             <div className="flex items-center gap-2">
               {bulk ? (
-                <span className="text-[11px] text-[#8a7f70] tabular-nums">Approving {bulk.done}/{bulk.total}…</span>
+                <span className="text-[11px] text-ink-muted tabular-nums">Approving {bulk.done}/{bulk.total}…</span>
               ) : (
                 <>
                   {selected.size > 0 && (

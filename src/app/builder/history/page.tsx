@@ -436,7 +436,7 @@ function HistoryInner() {
 
 export default function HistoryPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-[#8a7f70] text-sm">Loading…</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">Loading…</div>}>
       <HistoryInner />
     </Suspense>
   )

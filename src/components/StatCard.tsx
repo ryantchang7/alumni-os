@@ -55,7 +55,7 @@ export default function StatCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-sm text-[#8a7f70] font-medium mt-0 leading-none mb-3">
+          <p className="text-sm text-ink-muted font-medium mt-0 leading-none mb-3">
             {label}
           </p>
           <span
@@ -65,7 +65,7 @@ export default function StatCard({
             0
           </span>
           {sublabel && (
-            <p className="text-xs text-[#8a7f70] mt-1.5">{sublabel}</p>
+            <p className="text-xs text-ink-muted mt-1.5">{sublabel}</p>
           )}
         </div>
         {icon && (

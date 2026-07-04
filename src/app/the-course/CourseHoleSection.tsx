@@ -38,8 +38,7 @@ export default function CourseHoleSection({
               Hole {hole}
             </p>
             <h2
-              className="text-2xl text-[#0a1628] font-medium leading-snug"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-2xl text-[#0a1628] font-medium leading-snug font-heading"
             >
               {title}
             </h2>
@@ -51,7 +50,7 @@ export default function CourseHoleSection({
           </span>
         )}
       </div>
-      {subtitle && <p className="text-sm text-[#8a7f70] mb-6 ml-14">{subtitle}</p>}
+      {subtitle && <p className="text-sm text-ink-muted mb-6 ml-14">{subtitle}</p>}
       <div>{children}</div>
     </motion.section>
   )

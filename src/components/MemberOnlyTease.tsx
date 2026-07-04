@@ -41,7 +41,7 @@ export default function MemberOnlyTease({
     <div>
       <div className="flex items-center gap-2 mb-2.5">
         <Icon className="w-4 h-4" style={{ color: iconColor }} />
-        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
           {title}
         </p>
       </div>
@@ -61,7 +61,7 @@ export default function MemberOnlyTease({
               <span className="text-[#c8a84b]">{count}</span>{' '}
               {countLabel}
             </p>
-            <p className="text-[12.5px] text-[#8a7f70] mt-0.5">{valueProp}</p>
+            <p className="text-[12.5px] text-ink-muted mt-0.5">{valueProp}</p>
           </div>
         </div>
         <Link

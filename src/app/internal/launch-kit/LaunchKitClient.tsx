@@ -140,8 +140,7 @@ export default function LaunchKitClient() {
             Internal · Launch Kit
           </p>
           <h1
-            className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-4xl sm:text-5xl font-medium tracking-tight font-heading"
           >
             Ship the launch.
           </h1>
@@ -226,12 +225,11 @@ export default function LaunchKitClient() {
         {/* Pre-Film Check — live-site QA to run the morning of the shoot. */}
         <section id="prefilm" className="mb-16 scroll-mt-24">
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4 font-heading"
           >
             Pre-Film Check
           </h2>
-          <p className="text-[13px] text-[#8a7f70] mb-5">
+          <p className="text-[13px] text-ink-muted mb-5">
             Run this on the live site the morning of the shoot &mdash; tick each as you confirm it
             works. Storage (Vercel Blob + KV) is connected, so everything you post saves for real.
           </p>
@@ -242,8 +240,7 @@ export default function LaunchKitClient() {
                 className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-6"
               >
                 <h3
-                  className="text-[#0a1628] text-lg font-medium mb-3"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-lg font-medium mb-3 font-heading"
                 >
                   {group.area}
                 </h3>
@@ -273,8 +270,7 @@ export default function LaunchKitClient() {
         {/* Plan */}
         <section id="plan" className="mb-16 scroll-mt-24">
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4 font-heading"
           >
             Plan
           </h2>
@@ -284,7 +280,7 @@ export default function LaunchKitClient() {
                 Target length
               </p>
               <p className="text-[#0a1628] text-base font-medium">90 seconds (main launch).</p>
-              <p className="text-[12.5px] text-[#8a7f70] mt-1">60s short cut + 2min founder walkthrough also ready.</p>
+              <p className="text-[12.5px] text-ink-muted mt-1">60s short cut + 2min founder walkthrough also ready.</p>
             </div>
             <div className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl p-5">
               <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-2">
@@ -293,14 +289,14 @@ export default function LaunchKitClient() {
               <p className="text-[#0a1628] text-base font-medium">
                 Claim. Explore. Feel proud.
               </p>
-              <p className="text-[12.5px] text-[#8a7f70] mt-1">Alumni claim their card, look around, and feel the Penn Golf family come alive.</p>
+              <p className="text-[12.5px] text-ink-muted mt-1">Alumni claim their card, look around, and feel the Penn Golf family come alive.</p>
             </div>
             <div className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl p-5">
               <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-2">
                 Distribution
               </p>
               <p className="text-[#0a1628] text-base font-medium">Email + group text + LinkedIn + Instagram.</p>
-              <p className="text-[12.5px] text-[#8a7f70] mt-1">Email carries the long version. Social carries the 60s + caption.</p>
+              <p className="text-[12.5px] text-ink-muted mt-1">Email carries the long version. Social carries the 60s + caption.</p>
             </div>
           </div>
         </section>
@@ -309,8 +305,7 @@ export default function LaunchKitClient() {
         <section id="scripts" className="mb-16 scroll-mt-24">
           <div className="flex items-baseline justify-between gap-3 flex-wrap mb-4">
             <h2
-              className="text-[#0a1628] text-2xl sm:text-3xl font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-2xl sm:text-3xl font-medium font-heading"
             >
               Scripts
             </h2>
@@ -333,8 +328,7 @@ export default function LaunchKitClient() {
                       Target {s.targetSeconds}s · {s.wordCount} words
                     </p>
                     <h3
-                      className="text-[#0a1628] text-xl font-medium"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[#0a1628] text-xl font-medium font-heading"
                     >
                       {s.label}
                     </h3>
@@ -360,12 +354,11 @@ export default function LaunchKitClient() {
         {/* Storyboard */}
         <section id="storyboard" className="mb-16 scroll-mt-24">
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4 font-heading"
           >
             Storyboard
           </h2>
-          <p className="text-[13px] text-[#8a7f70] mb-5">
+          <p className="text-[13px] text-ink-muted mb-5">
             Mapped to the 90-second main cut. Each beat lists the voiceover line, what to show on screen, the route to record, and a production note.
           </p>
           <div className="overflow-x-auto">
@@ -386,7 +379,7 @@ export default function LaunchKitClient() {
                     <td className="px-4 py-4 text-[#0a1628] italic max-w-md">{b.voiceover}</td>
                     <td className="px-4 py-4 text-[#0a1628]">{b.visual}</td>
                     <td className="px-4 py-4 font-mono text-[12px] text-[#0a1628] whitespace-nowrap">{b.route}</td>
-                    <td className="px-4 py-4 text-[#8a7f70]">{b.notes}</td>
+                    <td className="px-4 py-4 text-ink-muted">{b.notes}</td>
                   </tr>
                 ))}
               </tbody>
@@ -397,20 +390,18 @@ export default function LaunchKitClient() {
         {/* Shoot Day playbook */}
         <section id="shoot" className="mb-16 scroll-mt-24">
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-2"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-2 font-heading"
           >
             Shoot Day
           </h2>
-          <p className="text-[13px] text-[#8a7f70] mb-7">
+          <p className="text-[13px] text-ink-muted mb-7">
             Open this on your phone during the shoot. Day-before prep, day-of running order, per-route directing notes, talking-head playbook, tool comparison, edit workflow, and the six gotchas to avoid.
           </p>
 
           {/* Day-before checklist */}
           <div className="mb-8">
             <h3
-              className="text-[#0a1628] text-lg font-medium mb-3"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-lg font-medium mb-3 font-heading"
             >
               The night before
             </h3>
@@ -425,7 +416,7 @@ export default function LaunchKitClient() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-[#0a1628] font-medium text-[14px]">{c.label}</p>
-                    <p className="text-[12.5px] text-[#8a7f70] leading-relaxed mt-1">{c.detail}</p>
+                    <p className="text-[12.5px] text-ink-muted leading-relaxed mt-1">{c.detail}</p>
                   </div>
                 </li>
               ))}
@@ -435,8 +426,7 @@ export default function LaunchKitClient() {
           {/* Day-of phases */}
           <div className="mb-8">
             <h3
-              className="text-[#0a1628] text-lg font-medium mb-3"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-lg font-medium mb-3 font-heading"
             >
               Day-of running order
             </h3>
@@ -450,12 +440,11 @@ export default function LaunchKitClient() {
                     Phase {phase.number} · {phase.duration}
                   </p>
                   <h4
-                    className="text-[#0a1628] text-lg font-medium mb-1"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-[#0a1628] text-lg font-medium mb-1 font-heading"
                   >
                     {phase.label}
                   </h4>
-                  <p className="text-[12.5px] text-[#8a7f70] italic mb-3">{phase.goal}</p>
+                  <p className="text-[12.5px] text-ink-muted italic mb-3">{phase.goal}</p>
                   <ul className="space-y-1.5 text-[12.5px] text-[#0a1628]">
                     {phase.steps.map((s, i) => (
                       <li key={i} className="flex gap-2">
@@ -472,12 +461,11 @@ export default function LaunchKitClient() {
           {/* Per-route screen capture playbook */}
           <div className="mb-8">
             <h3
-              className="text-[#0a1628] text-lg font-medium mb-1"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-lg font-medium mb-1 font-heading"
             >
               Screen capture playbook
             </h3>
-            <p className="text-[12.5px] text-[#8a7f70] mb-4">
+            <p className="text-[12.5px] text-ink-muted mb-4">
               Per-route directing notes. Pre-state, cursor move, dwell, what to hide, whether to add cursor highlight in post.
             </p>
             <div className="space-y-2">
@@ -489,29 +477,29 @@ export default function LaunchKitClient() {
                   <summary className="cursor-pointer flex items-center justify-between gap-3 flex-wrap">
                     <div className="flex items-center gap-3">
                       <code className="text-[11.5px] font-semibold text-[#990000]">{cap.route}</code>
-                      <span className="text-[#0a1628] font-medium" style={{ fontFamily: 'var(--font-playfair)' }}>
+                      <span className="text-[#0a1628] font-medium font-heading">
                         {cap.pageName}
                       </span>
                     </div>
-                    <span className="text-[10.5px] uppercase tracking-[0.16em] text-[#8a7f70]">
+                    <span className="text-[10.5px] uppercase tracking-[0.16em] text-ink-muted">
                       {cap.dwellSeconds}
                     </span>
                   </summary>
                   <div className="mt-3 pt-3 border-t border-[rgba(180,168,150,0.35)] grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-[12.5px] text-[#0a1628]">
                     <div>
-                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-1">Pre-state</p>
+                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-1">Pre-state</p>
                       <p>{cap.preState}</p>
                     </div>
                     <div>
-                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-1">Move</p>
+                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-1">Move</p>
                       <p>{cap.move}</p>
                     </div>
                     <div>
-                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-1">What to hide</p>
+                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-1">What to hide</p>
                       <p>{cap.hide}</p>
                     </div>
                     <div>
-                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-1">Cursor highlight</p>
+                      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-1">Cursor highlight</p>
                       <p>{cap.cursorHighlight.startsWith('yes') ? `Yes — ${cap.cursorHighlight.replace(/^yes\s*\(?/, '').replace(/\)$/, '')}` : 'No — keep cursor still or off-frame'}</p>
                     </div>
                   </div>
@@ -523,8 +511,7 @@ export default function LaunchKitClient() {
           {/* Talking head playbook */}
           <div className="mb-8">
             <h3
-              className="text-[#0a1628] text-lg font-medium mb-3"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-lg font-medium mb-3 font-heading"
             >
               Talking head playbook
             </h3>
@@ -543,12 +530,11 @@ export default function LaunchKitClient() {
           {/* Tool comparison */}
           <div className="mb-8">
             <h3
-              className="text-[#0a1628] text-lg font-medium mb-1"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-lg font-medium mb-1 font-heading"
             >
               Screen capture tool — pick one
             </h3>
-            <p className="text-[12.5px] text-[#8a7f70] mb-4">
+            <p className="text-[12.5px] text-ink-muted mb-4">
               Four common options. The recommended pick is in the first row.
             </p>
             <div className="overflow-x-auto">
@@ -566,9 +552,9 @@ export default function LaunchKitClient() {
                   {TOOL_COMPARISON.map((t, i) => (
                     <tr key={i} className="border-t border-[rgba(180,168,150,0.35)] align-top">
                       <td className="px-4 py-3 font-semibold text-[#0a1628] whitespace-nowrap">{t.tool}</td>
-                      <td className="px-4 py-3 text-[#8a7f70] whitespace-nowrap">{t.cost}</td>
+                      <td className="px-4 py-3 text-ink-muted whitespace-nowrap">{t.cost}</td>
                       <td className="px-4 py-3 text-[#0a1628]">{t.bestFor}</td>
-                      <td className="px-4 py-3 text-[#8a7f70]">{t.watchOut}</td>
+                      <td className="px-4 py-3 text-ink-muted">{t.watchOut}</td>
                       <td className="px-4 py-3 text-[#0a1628]">{t.pickIf}</td>
                     </tr>
                   ))}
@@ -580,8 +566,7 @@ export default function LaunchKitClient() {
           {/* Post-production */}
           <div className="mb-8">
             <h3
-              className="text-[#0a1628] text-lg font-medium mb-3"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-lg font-medium mb-3 font-heading"
             >
               Post-production in CapCut
             </h3>
@@ -613,8 +598,7 @@ export default function LaunchKitClient() {
           {/* Common mistakes */}
           <div>
             <h3
-              className="text-[#0a1628] text-lg font-medium mb-3"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-lg font-medium mb-3 font-heading"
             >
               Don&rsquo;t do this
             </h3>
@@ -634,12 +618,11 @@ export default function LaunchKitClient() {
         {/* Recording checklist */}
         <section id="recording" className="mb-16 scroll-mt-24">
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4 font-heading"
           >
             Recording checklist
           </h2>
-          <p className="text-[13px] text-[#8a7f70] mb-5">
+          <p className="text-[13px] text-ink-muted mb-5">
             Go in this order. Each line is one screen-capture take. Don&rsquo;t worry about perfect runs &mdash; you&rsquo;ll cherry-pick the best segments in the edit.
           </p>
           <ol className="space-y-2">
@@ -653,13 +636,13 @@ export default function LaunchKitClient() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-3 flex-wrap">
-                    <p className="text-[#0a1628] font-medium" style={{ fontFamily: 'var(--font-playfair)' }}>
+                    <p className="text-[#0a1628] font-medium font-heading">
                       {c.pageName}
                     </p>
                     <code className="text-[11.5px] text-[#990000]">{c.route}</code>
                   </div>
                   <p className="text-[13px] text-[#0a1628] mt-1">{c.action}</p>
-                  <p className="text-[11.5px] text-[#8a7f70] italic mt-1">{c.why}</p>
+                  <p className="text-[11.5px] text-ink-muted italic mt-1">{c.why}</p>
                 </div>
               </li>
             ))}
@@ -667,8 +650,7 @@ export default function LaunchKitClient() {
 
           <div className="mt-7 bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-6">
             <h3
-              className="text-[#0a1628] text-xl font-medium mb-3"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-xl font-medium mb-3 font-heading"
             >
               Production flow
             </h3>
@@ -686,12 +668,11 @@ export default function LaunchKitClient() {
         {/* Marketing copy blocks */}
         <section id="copy" className="mb-16 scroll-mt-24">
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4 font-heading"
           >
             Marketing copy
           </h2>
-          <p className="text-[13px] text-[#8a7f70] mb-5">
+          <p className="text-[13px] text-ink-muted mb-5">
             Ready to paste. Each block is sized for its channel. Personalize the bracketed pieces before sending.
           </p>
           <div className="space-y-5">
@@ -703,8 +684,7 @@ export default function LaunchKitClient() {
                       {block.surface}
                     </p>
                     <h3
-                      className="text-[#0a1628] text-xl font-medium"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[#0a1628] text-xl font-medium font-heading"
                     >
                       {block.label}
                     </h3>
@@ -722,12 +702,11 @@ export default function LaunchKitClient() {
         {/* AI B-roll */}
         <section id="broll" className="mb-16 scroll-mt-24">
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4 font-heading"
           >
             AI B-roll prompts
           </h2>
-          <p className="text-[13px] text-[#8a7f70] mb-5">
+          <p className="text-[13px] text-ink-muted mb-5">
             Drop these into Higgsfield, Runway, or CapCut to generate short atmosphere clips. Real screen recordings and Ryan&rsquo;s piece-to-camera carry the video; AI is texture only.
           </p>
 
@@ -766,8 +745,7 @@ export default function LaunchKitClient() {
         {/* Assets + sizes */}
         <section id="assets" className="mb-16 scroll-mt-24">
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4 font-heading"
           >
             Assets &amp; sizes
           </h2>
@@ -779,7 +757,7 @@ export default function LaunchKitClient() {
                   {s.ratio}
                 </p>
                 <p className="text-[#0a1628] font-medium">{s.pixels}</p>
-                <p className="text-[12.5px] text-[#8a7f70] mt-1">{s.where}</p>
+                <p className="text-[12.5px] text-ink-muted mt-1">{s.where}</p>
               </div>
             ))}
           </div>
@@ -788,13 +766,13 @@ export default function LaunchKitClient() {
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="bg-[#0a1628]/[0.03] border-b border-[rgba(180,168,150,0.35)] text-left">
-                  <th className="px-5 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px] text-[#8a7f70]">
+                  <th className="px-5 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px] text-ink-muted">
                     Asset
                   </th>
-                  <th className="px-5 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px] text-[#8a7f70]">
+                  <th className="px-5 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px] text-ink-muted">
                     Value
                   </th>
-                  <th className="px-5 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px] text-[#8a7f70]">
+                  <th className="px-5 py-3 font-semibold uppercase tracking-[0.14em] text-[10.5px] text-ink-muted">
                     Note
                   </th>
                 </tr>
@@ -804,7 +782,7 @@ export default function LaunchKitClient() {
                   <tr key={i} className="border-t border-[rgba(180,168,150,0.25)] align-top">
                     <td className="px-5 py-3 text-[#0a1628] font-medium whitespace-nowrap">{a.label}</td>
                     <td className="px-5 py-3 font-mono text-[#0a1628]">{a.value}</td>
-                    <td className="px-5 py-3 text-[#8a7f70]">{a.note ?? ''}</td>
+                    <td className="px-5 py-3 text-ink-muted">{a.note ?? ''}</td>
                   </tr>
                 ))}
               </tbody>

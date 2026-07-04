@@ -101,7 +101,7 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
       >
         <div>
           <p className="font-semibold text-[#0a1628] text-sm">Share the Clubhouse</p>
-          <p className="text-xs text-[#8a7f70] mt-0.5">
+          <p className="text-xs text-ink-muted mt-0.5">
             Sends a link via your phone&rsquo;s share sheet, or copies it on desktop.
           </p>
         </div>
@@ -135,7 +135,7 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
       {/* Not-joined list */}
       {notJoined.length > 0 && (
         <div className="mb-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-3">
             Not on the Clubhouse yet
           </p>
           <div className="space-y-2">
@@ -162,7 +162,7 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
       {/* Joined list */}
       {joined.length > 0 && (
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-3">
             Already on the Clubhouse
           </p>
           <div className="space-y-2">
@@ -171,7 +171,7 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
                 key={t.name}
                 className="flex items-center justify-between gap-3 bg-[#faf7f2] border border-[rgba(180,168,150,0.25)] rounded-xl px-4 py-3"
               >
-                <span className="text-sm text-[#8a7f70]">{t.name}</span>
+                <span className="text-sm text-ink-muted">{t.name}</span>
                 <span className="flex items-center gap-1.5 text-[11px] text-[#2d6a4f] font-semibold">
                   <Check className="w-3.5 h-3.5" />
                   On the Clubhouse
@@ -187,7 +187,7 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
           className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-12 text-center"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
         >
-          <p className="text-sm text-[#8a7f70]">No teammates match that search.</p>
+          <p className="text-sm text-ink-muted">No teammates match that search.</p>
         </div>
       )}
 
@@ -204,7 +204,7 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
               showToast('Link: ' + url)
             }
           }}
-          className="inline-flex items-center gap-2 text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+          className="inline-flex items-center gap-2 text-xs text-ink-muted hover:text-[#0a1628] transition-colors"
         >
           <Copy className="w-3.5 h-3.5" />
           Copy invite link

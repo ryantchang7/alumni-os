@@ -111,8 +111,7 @@ function NewMomentForm() {
                 Posting to the Locker Room
               </p>
               <h1
-                className="text-white text-3xl sm:text-4xl font-medium leading-tight"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-white text-3xl sm:text-4xl font-medium leading-tight font-heading"
               >
                 Just for the team.
               </h1>
@@ -126,8 +125,7 @@ function NewMomentForm() {
             <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
               <span className="block w-10 h-[2px] bg-[#c8a84b] mb-5" />
               <h1
-                className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
               >
                 Post a moment
               </h1>
@@ -170,7 +168,7 @@ function NewMomentForm() {
             />
 
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Caption
               </label>
               <textarea
@@ -182,7 +180,7 @@ function NewMomentForm() {
                 required
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30 focus:border-[#c8a84b]"
               />
-              <p className="text-[11px] text-[#8a7f70] mt-1 text-right">
+              <p className="text-[11px] text-ink-muted mt-1 text-right">
                 {caption.length} / 800
               </p>
             </div>
@@ -215,7 +213,7 @@ function NewMomentForm() {
                     </span>
                     <span
                       className={`block text-[12px] mt-1 leading-relaxed ${
-                        lockerMode ? 'text-white/65' : 'text-[#8a7f70]'
+                        lockerMode ? 'text-white/65' : 'text-ink-muted'
                       }`}
                     >
                       Visible to current players and alumni. Hidden from
@@ -251,7 +249,7 @@ function NewMomentForm() {
               </button>
               <Link
                 href={lockerMode ? '/locker-room' : '/moments'}
-                className="text-[12px] text-[#8a7f70] hover:text-[#0a1628]"
+                className="text-[12px] text-ink-muted hover:text-[#0a1628]"
               >
                 Cancel
               </Link>

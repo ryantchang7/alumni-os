@@ -37,7 +37,7 @@ function PersonRow({
     <div className="flex items-center justify-between gap-4 py-3 border-b border-[rgba(180,168,150,0.2)] last:border-0">
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-[#0a1628] truncate">{person.canonicalName}</p>
-        <p className="text-xs text-[#8a7f70] mt-0.5">
+        <p className="text-xs text-ink-muted mt-0.5">
           {[person.classLabel, person.hometown].filter(Boolean).join(' · ') || 'Roster member'}
         </p>
       </div>
@@ -51,14 +51,14 @@ function PersonRow({
             <button
               onClick={() => onHide(person.personId)}
               disabled={isBusy}
-              className="text-xs font-medium text-[#8a7f70] hover:text-[#0a1628] border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40"
+              className="text-xs font-medium text-ink-muted hover:text-[#0a1628] border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40"
             >
               {isBusy ? '...' : 'Hide'}
             </button>
           </>
         ) : (
           <>
-            <span className="inline-flex items-center gap-1 text-xs font-medium text-[#8a7f70] bg-[#f5f2ee] border border-[rgba(180,168,150,0.35)] rounded-full px-2.5 py-1">
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-ink-muted bg-[#f5f2ee] border border-[rgba(180,168,150,0.35)] rounded-full px-2.5 py-1">
               <EyeOff className="w-3 h-3" />
               Hidden from players
             </span>
@@ -81,7 +81,7 @@ function StepNumber({ n, done, active }: { n: number; done: boolean; active: boo
   return (
     <span
       className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold flex-shrink-0 ${
-        active ? 'bg-[#0a1628] text-white' : 'border border-[rgba(180,168,150,0.5)] text-[#8a7f70]'
+        active ? 'bg-[#0a1628] text-white' : 'border border-[rgba(180,168,150,0.5)] text-ink-muted'
       }`}
     >
       {n}
@@ -255,10 +255,10 @@ function BuildPageInner() {
             <div className="flex gap-4 p-5">
               <StepNumber n={1} done={step1Done} active={activeStep === 1} />
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold text-sm leading-snug mb-1 ${step1Done || activeStep === 1 ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                <p className={`font-semibold text-sm leading-snug mb-1 ${step1Done || activeStep === 1 ? 'text-[#0a1628]' : 'text-ink-muted'}`}>
                   Penn Golf confirmed
                 </p>
-                <p className={`text-xs leading-relaxed ${step1Done || activeStep === 1 ? 'text-[#4a5568]' : 'text-[#8a7f70]'}`}>
+                <p className={`text-xs leading-relaxed ${step1Done || activeStep === 1 ? 'text-[#4a5568]' : 'text-ink-muted'}`}>
                   {loading
                     ? 'Checking...'
                     : step1Done
@@ -274,7 +274,7 @@ function BuildPageInner() {
             <div className="flex gap-4 p-5">
               <StepNumber n={2} done={step2Done} active={activeStep === 2} />
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold text-sm leading-snug mb-1 ${step2Done || activeStep === 2 ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                <p className={`font-semibold text-sm leading-snug mb-1 ${step2Done || activeStep === 2 ? 'text-[#0a1628]' : 'text-ink-muted'}`}>
                   Find alumni
                 </p>
                 {step2Done ? (
@@ -282,7 +282,7 @@ function BuildPageInner() {
                     {people.length} {people.length === 1 ? 'person' : 'people'} found from Penn Golf rosters.
                   </p>
                 ) : importStatus === 'idle' ? (
-                  <p className={`text-xs leading-relaxed ${activeStep === 2 ? 'text-[#4a5568]' : 'text-[#8a7f70]'}`}>
+                  <p className={`text-xs leading-relaxed ${activeStep === 2 ? 'text-[#4a5568]' : 'text-ink-muted'}`}>
                     Pull verified Penn Golf rosters from 2000 through today.
                   </p>
                 ) : importStatus === 'running' ? (
@@ -327,7 +327,7 @@ function BuildPageInner() {
               <div className="px-5 pb-5 pt-0">
                 <button
                   onClick={runHistoricalImport}
-                  className="text-xs font-medium text-[#8a7f70] hover:text-[#0a1628] border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] rounded-lg px-3 py-1.5 transition-colors"
+                  className="text-xs font-medium text-ink-muted hover:text-[#0a1628] border border-[rgba(180,168,150,0.5)] hover:border-[#0a1628] rounded-lg px-3 py-1.5 transition-colors"
                 >
                   Re-run import
                 </button>
@@ -340,10 +340,10 @@ function BuildPageInner() {
             <div className="flex gap-4 p-5">
               <StepNumber n={3} done={step3Done} active={activeStep === 3} />
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold text-sm leading-snug mb-1 ${step3Done || activeStep === 3 ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                <p className={`font-semibold text-sm leading-snug mb-1 ${step3Done || activeStep === 3 ? 'text-[#0a1628]' : 'text-ink-muted'}`}>
                   Review and publish
                 </p>
-                <p className={`text-xs leading-relaxed ${step3Done || activeStep === 3 ? 'text-[#4a5568]' : 'text-[#8a7f70]'}`}>
+                <p className={`text-xs leading-relaxed ${step3Done || activeStep === 3 ? 'text-[#4a5568]' : 'text-ink-muted'}`}>
                   {step3Done
                     ? `${publishedCount} ${publishedCount === 1 ? 'profile' : 'profiles'} visible to players.`
                     : 'Choose who appears in the clubhouse. Nothing is visible until you publish.'}
@@ -354,11 +354,11 @@ function BuildPageInner() {
             {hasPeople && (
               <div className="px-5 pb-5">
                 <div className="border-t border-[rgba(180,168,150,0.2)] pt-4">
-                  <p className="text-xs text-[#8a7f70] mb-3">
+                  <p className="text-xs text-ink-muted mb-3">
                     Published alumni are visible to current players.
                   </p>
                   {loading ? (
-                    <p className="text-sm text-[#8a7f70] py-4 text-center">Loading...</p>
+                    <p className="text-sm text-ink-muted py-4 text-center">Loading...</p>
                   ) : (
                     <div>
                       {people.map(person => (
@@ -382,10 +382,10 @@ function BuildPageInner() {
             <div className="flex gap-4 p-5">
               <StepNumber n={4} done={false} active={activeStep === 4} />
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold text-sm leading-snug mb-1 ${activeStep === 4 ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                <p className={`font-semibold text-sm leading-snug mb-1 ${activeStep === 4 ? 'text-[#0a1628]' : 'text-ink-muted'}`}>
                   Open Player Clubhouse
                 </p>
-                <p className={`text-xs leading-relaxed ${activeStep === 4 ? 'text-[#4a5568]' : 'text-[#8a7f70]'}`}>
+                <p className={`text-xs leading-relaxed ${activeStep === 4 ? 'text-[#4a5568]' : 'text-ink-muted'}`}>
                   {hasPublished ? (
                     <>
                       Players can now browse and reach out to alumni.{' '}
@@ -419,7 +419,7 @@ function BuildPageInner() {
 
 export default function BuildPage() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-sm text-[#8a7f70]">Loading...</div>}>
+    <Suspense fallback={<div className="py-20 text-center text-sm text-ink-muted">Loading...</div>}>
       <BuildPageInner />
     </Suspense>
   )

@@ -53,12 +53,11 @@ export default async function SpotlightPage() {
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-16">
         <div className="max-w-[1320px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+          <p className="eyebrow text-gold mb-4">
             Penn Men&rsquo;s Golf
           </p>
           <h1
-            className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight font-heading"
           >
             Alumni Spotlight
           </h1>
@@ -96,12 +95,11 @@ export default async function SpotlightPage() {
                     />
                   </div>
                   <div className="min-w-0 pb-1">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-2">
+                    <p className="eyebrow text-gold mb-2">
                       This week&rsquo;s spotlight
                     </p>
                     <h2
-                      className="text-white text-3xl sm:text-4xl lg:text-5xl font-medium leading-tight tracking-tight"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-white text-3xl sm:text-4xl lg:text-5xl font-medium leading-tight tracking-tight font-heading"
                     >
                       {current.name}
                     </h2>
@@ -131,12 +129,11 @@ export default async function SpotlightPage() {
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
               <div className="bg-[#0a1628] px-6 sm:px-10 py-10 text-center">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-3">
+                <p className="eyebrow text-gold mb-3">
                   This week&rsquo;s spotlight
                 </p>
                 <p
-                  className="text-white/60 text-2xl font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-white/60 text-2xl font-medium font-heading"
                 >
                   Coming soon
                 </p>
@@ -156,7 +153,7 @@ export default async function SpotlightPage() {
         {/* Past spotlights */}
         {past.length > 0 && (
           <section>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-5">
               Past spotlights
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -175,15 +172,14 @@ export default async function SpotlightPage() {
                     />
                     <div className="min-w-0 flex-1">
                       <p
-                        className="font-semibold text-[#0a1628] text-sm leading-tight"
-                        style={{ fontFamily: 'var(--font-playfair)' }}
+                        className="font-semibold text-[#0a1628] text-sm leading-tight font-heading"
                       >
                         {s.name}
                       </p>
                       {s.headline && (
                         <p className="text-xs text-[#c8a84b] mt-0.5 leading-snug">{s.headline}</p>
                       )}
-                      <p className="text-[10px] text-[#8a7f70] mt-1">{formatDate(s.featuredAt)}</p>
+                      <p className="text-[10px] text-ink-muted mt-1">{formatDate(s.featuredAt)}</p>
                     </div>
                   </div>
                   <p className="text-xs text-[#4a5568] leading-relaxed line-clamp-3">{s.blurb}</p>

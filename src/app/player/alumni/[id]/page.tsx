@@ -97,7 +97,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
           <div className="flex items-center gap-2 mb-6 text-[10px] font-medium uppercase tracking-[0.15em]">
             <Link
               href="/member-book"
-              className="text-white/35 hover:text-white/60 transition-colors"
+              className="text-gold hover:text-white transition-colors"
             >
               Member Book
             </Link>
@@ -114,15 +114,14 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               <span className={`inline-block text-[11px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-sm border mb-3 ${
                 isCurrentPlayer
                   ? 'text-[#2d6a4f] bg-[#2d6a4f]/15 border-[#2d6a4f]/30'
-                  : 'text-white/45 bg-white/8 border-white/15'
+                  : 'text-gold bg-gold/15 border-gold/30'
               }`}>
                 {isCurrentPlayer ? 'Current Player' : 'Penn Golf Alumni'}
               </span>
 
               {/* Name */}
               <h1
-                className="text-white text-3xl sm:text-4xl font-medium leading-tight tracking-tight"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-white text-3xl sm:text-4xl font-medium leading-tight tracking-tight font-heading"
               >
                 {person.canonicalName}
               </h1>
@@ -168,32 +167,32 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
             >
               <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                   Penn Golf
                 </p>
               </div>
               <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">
                 {rosterYears && (
                   <div className="flex justify-between items-baseline py-2.5">
-                    <dt className="text-xs text-[#8a7f70]">Seasons</dt>
+                    <dt className="text-xs text-ink-muted">Seasons</dt>
                     <dd className="text-sm font-medium text-[#0a1628]">{rosterYears}</dd>
                   </div>
                 )}
                 {membership.classLabel && (
                   <div className="flex justify-between items-baseline py-2.5">
-                    <dt className="text-xs text-[#8a7f70]">Class</dt>
+                    <dt className="text-xs text-ink-muted">Class</dt>
                     <dd className="text-sm font-medium text-[#0a1628]">{membership.classLabel}</dd>
                   </div>
                 )}
                 {membership.hometown && (
                   <div className="flex justify-between items-baseline gap-4 py-2.5">
-                    <dt className="text-xs text-[#8a7f70] flex-shrink-0">Hometown</dt>
+                    <dt className="text-xs text-ink-muted flex-shrink-0">Hometown</dt>
                     <dd className="text-sm font-medium text-[#0a1628] text-right">{membership.hometown}</dd>
                   </div>
                 )}
                 {membership.highSchool && (
                   <div className="flex justify-between items-baseline gap-4 py-2.5">
-                    <dt className="text-xs text-[#8a7f70] flex-shrink-0">High School</dt>
+                    <dt className="text-xs text-ink-muted flex-shrink-0">High School</dt>
                     <dd className="text-sm font-medium text-[#0a1628] text-right">{membership.highSchool}</dd>
                   </div>
                 )}
@@ -207,12 +206,11 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
               >
                 <p
-                  className="text-[#0a1628] text-base font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-base font-medium font-heading"
                 >
                   Is this you?
                 </p>
-                <p className="text-[12.5px] text-[#8a7f70] mt-1.5">
+                <p className="text-[12.5px] text-ink-muted mt-1.5">
                   Sign in with Google to claim {person.canonicalName.split(' ')[0]}&rsquo;s card and start sharing your story with the Clubhouse.
                 </p>
                 <Link
@@ -235,7 +233,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
                 <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                     How I Can Help
                   </p>
                 </div>
@@ -276,30 +274,30 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
                 <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">Career</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">Career</p>
                 </div>
                 <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">
                   {enrichment?.currentRole && (
                     <div className="flex justify-between items-baseline gap-4 py-2.5">
-                      <dt className="text-xs text-[#8a7f70] flex-shrink-0">Role</dt>
+                      <dt className="text-xs text-ink-muted flex-shrink-0">Role</dt>
                       <dd className="text-sm font-medium text-[#0a1628] text-right">{enrichment.currentRole}</dd>
                     </div>
                   )}
                   {enrichment?.currentCompany && (
                     <div className="flex justify-between items-baseline gap-4 py-2.5">
-                      <dt className="text-xs text-[#8a7f70] flex-shrink-0">Company</dt>
+                      <dt className="text-xs text-ink-muted flex-shrink-0">Company</dt>
                       <dd className="text-sm font-medium text-[#0a1628] text-right">{enrichment.currentCompany}</dd>
                     </div>
                   )}
                   {enrichment?.industry && (
                     <div className="flex justify-between items-baseline gap-4 py-2.5">
-                      <dt className="text-xs text-[#8a7f70] flex-shrink-0">Industry</dt>
+                      <dt className="text-xs text-ink-muted flex-shrink-0">Industry</dt>
                       <dd className="text-sm font-medium text-[#0a1628] text-right">{enrichment.industry}</dd>
                     </div>
                   )}
                   {location && (
                     <div className="flex justify-between items-baseline gap-4 py-2.5">
-                      <dt className="text-xs text-[#8a7f70] flex-shrink-0">Location</dt>
+                      <dt className="text-xs text-ink-muted flex-shrink-0">Location</dt>
                       <dd className="text-sm font-medium text-[#0a1628] text-right">{location}</dd>
                     </div>
                   )}
@@ -314,12 +312,12 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
                 <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">Golf</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">Golf</p>
                 </div>
                 <div className="px-5 py-4 space-y-3">
                   {enrichment?.favoriteCourses && (
                     <div>
-                      <p className="text-[10px] text-[#8a7f70] uppercase tracking-wider mb-1">Favorite courses</p>
+                      <p className="text-[10px] text-ink-muted uppercase tracking-wider mb-1">Favorite courses</p>
                       <p className="text-sm font-medium text-[#0a1628]">{enrichment.favoriteCourses}</p>
                     </div>
                   )}
@@ -339,7 +337,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
                 <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">About</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">About</p>
                 </div>
                 <p className="px-5 py-4 text-sm text-[#0a1628] leading-relaxed">{enrichment.alumniBio}</p>
               </div>
@@ -353,11 +351,11 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
                 <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2] flex items-center justify-between">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                     Contact
                   </p>
                   {!viewerIsApproved && (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#8a7f70]">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-medium text-ink-muted">
                       <Lock className="w-2.5 h-2.5" />
                       Members only
                     </span>
@@ -368,7 +366,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                     <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">
                       {enrichment?.email && (
                         <div className="flex items-center justify-between gap-4 py-2.5">
-                          <dt className="text-xs text-[#8a7f70] flex items-center gap-2 flex-shrink-0">
+                          <dt className="text-xs text-ink-muted flex items-center gap-2 flex-shrink-0">
                             <Mail className="w-3 h-3" /> Email
                           </dt>
                           <dd className="text-sm font-medium text-[#0a1628] text-right truncate">
@@ -380,7 +378,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                       )}
                       {enrichment?.phone && (
                         <div className="flex items-center justify-between gap-4 py-2.5">
-                          <dt className="text-xs text-[#8a7f70] flex items-center gap-2 flex-shrink-0">
+                          <dt className="text-xs text-ink-muted flex items-center gap-2 flex-shrink-0">
                             <Phone className="w-3 h-3" /> Phone
                           </dt>
                           <dd className="text-sm font-medium text-[#0a1628] text-right">
@@ -392,7 +390,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                       )}
                       {enrichment?.linkedinUrl && (
                         <div className="flex items-center justify-between gap-4 py-2.5">
-                          <dt className="text-xs text-[#8a7f70] flex items-center gap-2 flex-shrink-0">
+                          <dt className="text-xs text-ink-muted flex items-center gap-2 flex-shrink-0">
                             <ExternalLink className="w-3 h-3" /> LinkedIn
                           </dt>
                           <dd className="text-sm font-medium text-[#0a1628] text-right truncate">
@@ -409,7 +407,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                       )}
                     </dl>
                   ) : (
-                    <p className="px-5 py-4 text-[12.5px] text-[#8a7f70] italic">
+                    <p className="px-5 py-4 text-[12.5px] text-ink-muted italic">
                       {person.canonicalName.split(' ')[0]} hasn&rsquo;t added contact details yet. Use the request buttons above to start a private conversation.
                     </p>
                   )

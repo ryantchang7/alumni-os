@@ -15,12 +15,11 @@ export default async function RolesPage() {
     return (
       <div className="min-h-[calc(100dvh-60px)] bg-[#f8f5f0] flex items-center justify-center px-6">
         <div className="max-w-md text-center bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-10">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-3">
             Restricted
           </p>
           <h1
-            className="text-[#0a1628] text-2xl font-medium mb-2"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl font-medium mb-2 font-heading"
           >
             Founder only.
           </h1>

@@ -83,12 +83,11 @@ export default function SuggestTrigger() {
               {/* Header */}
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-1">
+                  <p className="eyebrow text-gold mb-1">
                     Penn Golf Clubhouse
                   </p>
                   <h2
-                    className="text-white text-xl font-medium leading-snug"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-white text-xl font-medium leading-snug font-heading"
                   >
                     Suggest an idea
                   </h2>

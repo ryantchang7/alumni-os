@@ -135,12 +135,11 @@ export default async function ClaimRedirectPage({
     return (
       <div className="min-h-screen bg-[#f8f5f0] py-20 px-6 text-center">
         <h1
-          className="text-2xl text-[#0a1628] font-medium"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="text-2xl text-[#0a1628] font-medium font-heading"
         >
           Claim a Profile
         </h1>
-        <p className="text-sm text-[#8a7f70] mt-2 max-w-md mx-auto">
+        <p className="text-sm text-ink-muted mt-2 max-w-md mx-auto">
           Start from the Member Book and click &ldquo;Claim &amp; Update&rdquo;
           on your card.
         </p>

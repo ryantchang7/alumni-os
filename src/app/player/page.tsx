@@ -101,7 +101,7 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
               </span>
               {g.isExample && (
                 <span
-                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a7f70] bg-[#faf7f2] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
+                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted bg-[#faf7f2] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
                   title="Sample gathering — host a real one to replace it."
                 >
                   Example
@@ -111,11 +111,11 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
             <p className="font-semibold text-[#0a1628] text-sm leading-snug mb-1.5">{g.title}</p>
             <div className="space-y-0.5">
               <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">
-                <Calendar className="w-3 h-3 text-[#8a7f70]" />
+                <Calendar className="w-3 h-3 text-ink-muted" />
                 <span>{g.dateText}</span>
               </div>
               {(g.city || g.venue) && (
-                <div className="flex items-center gap-1.5 text-xs text-[#8a7f70]">
+                <div className="flex items-center gap-1.5 text-xs text-ink-muted">
                   <MapPin className="w-3 h-3" />
                   <span>{g.venue ?? `${g.city}${g.state ? `, ${g.state}` : ''}`}</span>
                 </div>
@@ -182,8 +182,7 @@ function SpotlightCard({ spotlight }: { spotlight: AlumniSpotlight }) {
       >
         <div className="flex items-start gap-4">
           <div
-            className="flex-shrink-0 w-12 h-12 rounded-full bg-[#0a1628] flex items-center justify-center text-white text-lg font-semibold"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="flex-shrink-0 w-12 h-12 rounded-full bg-[#0a1628] flex items-center justify-center text-white text-lg font-semibold font-heading"
             aria-hidden="true"
           >
             {spotlight.name.charAt(0).toUpperCase()}
@@ -191,8 +190,7 @@ function SpotlightCard({ spotlight }: { spotlight: AlumniSpotlight }) {
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2 flex-wrap">
               <p
-                className="font-semibold text-[#0a1628] text-sm leading-tight"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="font-semibold text-[#0a1628] text-sm leading-tight font-heading"
               >
                 {spotlight.name}
               </p>
@@ -235,14 +233,13 @@ function TraditionSection() {
             style={{ backgroundImage: 'repeating-linear-gradient(0deg, white, white 1px, transparent 1px, transparent 22px)' }}
           />
           <div className="relative">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/35 mb-2.5">Penn Men&apos;s Golf</p>
+            <p className="eyebrow text-gold mb-2.5">Penn Men&apos;s Golf</p>
             <h2
-              className="text-xl sm:text-2xl font-medium text-white leading-tight mb-2"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-xl sm:text-2xl font-medium text-white leading-tight mb-2 font-heading"
             >
               {PENN_GOLF_TRADITION.title}
             </h2>
-            <p className="text-[11px] text-white/45 max-w-lg leading-relaxed">{PENN_GOLF_TRADITION.subtitle}</p>
+            <p className="text-[11px] text-white/60 max-w-lg leading-relaxed">{PENN_GOLF_TRADITION.subtitle}</p>
           </div>
         </div>
         {/* Penn red ribbon */}
@@ -252,14 +249,13 @@ function TraditionSection() {
           {PENN_GOLF_TRADITION.achievements.map((a) => (
             <div key={a.label} className="px-5 sm:px-6 py-6 sm:py-7 hover:-translate-y-px hover:bg-white transition-all duration-150 cursor-default">
               <p
-                className={`text-[3rem] sm:text-[3.5rem] font-light leading-none mb-1 ${a.featured ? 'text-[#990000]' : 'text-[#0a1628]'}`}
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className={`font-heading text-[3rem] sm:text-[3.5rem] font-light leading-none mb-1 ${a.featured ? 'text-[#990000]' : 'text-[#0a1628]'}`}
               >
                 {a.value}
               </p>
-              <p className="text-[8px] font-semibold uppercase tracking-[0.2em] text-[#8a7f70] mb-2 leading-tight">{a.label}</p>
+              <p className="text-[8px] font-semibold uppercase tracking-[0.2em] text-ink-muted mb-2 leading-tight">{a.label}</p>
               <p className="text-[11px] font-medium text-[#3d4a5c] mb-1.5 leading-snug">{a.detail}</p>
-              <p className="text-[10px] text-[#8a7f70] leading-relaxed">{a.description}</p>
+              <p className="text-[10px] text-ink-muted leading-relaxed">{a.description}</p>
             </div>
           ))}
         </div>
@@ -340,7 +336,7 @@ function MiniMemberCard({ profile, teamSlug }: { profile: PlayerProfile; teamSlu
           <MemberBadges badges={profile.badges} size="sm" iconOnly />
         </div>
       )}
-      {subline && <p className="text-[10px] text-[#8a7f70]">{subline}</p>}
+      {subline && <p className="text-[10px] text-ink-muted">{subline}</p>}
       {careerLine && <p className="text-[10px] text-[#4a5568] mt-0.5 truncate">{careerLine}</p>}
     </Link>
   )
@@ -363,8 +359,7 @@ function WelcomeBanner({ name }: { name: string }) {
         className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-sm bg-[#c8a84b]"
       />
       <p
-        className="text-[#0a1628] text-[15px] leading-snug pl-2"
-        style={{ fontFamily: 'var(--font-playfair)' }}
+        className="text-[#0a1628] text-[15px] leading-snug pl-2 font-heading"
       >
         Welcome home, {name}.{' '}
         <span className="text-[#3d4a5c] italic">
@@ -459,7 +454,7 @@ function ClubhouseInner() {
           <HeroCrest src={crestImage} alt="Penn Golf crest" />
           <div className="min-w-0 flex-1">
             <motion.p
-              className="text-xs text-white/35 uppercase tracking-widest mb-3"
+              className="eyebrow text-gold mb-3"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
@@ -519,8 +514,7 @@ function ClubhouseInner() {
                   Back the program
                 </p>
                 <p
-                  className="text-white text-base sm:text-lg font-medium leading-snug"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-white text-base sm:text-lg font-medium leading-snug font-heading"
                 >
                   Membership keeps the Clubhouse running and 70% goes to Penn Men&rsquo;s Golf.
                 </p>
@@ -555,8 +549,7 @@ function ClubhouseInner() {
                   You&rsquo;re in
                 </p>
                 <p
-                  className="text-[#0a1628] text-base font-medium leading-snug"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-base font-medium leading-snug font-heading"
                 >
                   Three places to start.
                 </p>
@@ -571,7 +564,7 @@ function ClubhouseInner() {
                   </span>
                   <div className="min-w-0">
                     <p className="text-[13px] font-semibold text-[#0a1628] leading-snug mb-0.5">Your class</p>
-                    <p className="text-[11.5px] text-[#8a7f70] leading-snug">Find teammates from your years in the Member Book.</p>
+                    <p className="text-[11.5px] text-ink-muted leading-snug">Find teammates from your years in the Member Book.</p>
                     <span className="text-[10.5px] font-semibold text-[#990000] group-hover:underline mt-1.5 inline-block">Browse &rarr;</span>
                   </div>
                 </Link>
@@ -584,7 +577,7 @@ function ClubhouseInner() {
                   </span>
                   <div className="min-w-0">
                     <p className="text-[13px] font-semibold text-[#0a1628] leading-snug mb-0.5">Who&rsquo;s near you</p>
-                    <p className="text-[11.5px] text-[#8a7f70] leading-snug">See where Penn Golf members are living and playing now.</p>
+                    <p className="text-[11.5px] text-ink-muted leading-snug">See where Penn Golf members are living and playing now.</p>
                     <span className="text-[10.5px] font-semibold text-[#990000] group-hover:underline mt-1.5 inline-block">Open the map &rarr;</span>
                   </div>
                 </Link>
@@ -597,14 +590,14 @@ function ClubhouseInner() {
                   </span>
                   <div className="min-w-0">
                     <p className="text-[13px] font-semibold text-[#0a1628] leading-snug mb-0.5">The current team</p>
-                    <p className="text-[11.5px] text-[#8a7f70] leading-snug">The guys playing now. They know who you are.</p>
+                    <p className="text-[11.5px] text-ink-muted leading-snug">The guys playing now. They know who you are.</p>
                     <span className="text-[10.5px] font-semibold text-[#990000] group-hover:underline mt-1.5 inline-block">Meet the team &rarr;</span>
                   </div>
                 </Link>
               </div>
               {membersOn != null && (
                 <div className="px-5 py-3 border-t border-[rgba(180,168,150,0.25)] flex items-center justify-between gap-3 flex-wrap">
-                  <p className="text-[11.5px] text-[#8a7f70]">
+                  <p className="text-[11.5px] text-ink-muted">
                     <span className="font-semibold text-[#0a1628]">{membersOn}</span>
                     {' '}
                     {membersOn === 1 ? 'alum' : 'alumni'} in the Clubhouse
@@ -702,7 +695,7 @@ function ClubhouseInner() {
                 <div className="px-5 pt-5 pb-4 border-b border-[rgba(180,168,150,0.3)] flex items-center justify-between">
                   <div>
                     <h2 className="text-sm font-semibold text-[#0a1628]">Member Book</h2>
-                    <p className="text-xs text-[#8a7f70] mt-0.5">
+                    <p className="text-xs text-ink-muted mt-0.5">
                       {TOTAL_MEMBERS} members across generations
                       {currentPlayers.length > 0 && (
                         <> · {currentPlayers.length} in the Clubhouse this season</>
@@ -720,7 +713,7 @@ function ClubhouseInner() {
                 {/* Current players row */}
                 {currentPlayers.length > 0 && (
                   <div className="px-5 py-4 border-b border-[rgba(180,168,150,0.2)]">
-                    <p className="text-[10px] font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
+                    <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider mb-3">
                       Current Players
                     </p>
                     <div className="relative">
@@ -738,7 +731,7 @@ function ClubhouseInner() {
                 {/* Alumni row */}
                 {alumni.length > 0 && (
                   <div className="px-5 py-4">
-                    <p className="text-[10px] font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
+                    <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider mb-3">
                       Alumni
                     </p>
                     <div className="relative">
@@ -776,7 +769,7 @@ function ClubhouseInner() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}>
             <div>
               <p className="text-sm font-semibold text-[#0a1628]">Your Requests</p>
-              <p className="text-xs text-[#8a7f70] mt-0.5">See the status of requests you&rsquo;ve sent.</p>
+              <p className="text-xs text-ink-muted mt-0.5">See the status of requests you&rsquo;ve sent.</p>
             </div>
             <Link href="/player/requests" className="text-xs font-semibold text-[#990000] hover:underline whitespace-nowrap">
               View &rarr;

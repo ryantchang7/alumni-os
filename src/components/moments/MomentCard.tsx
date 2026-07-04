@@ -246,7 +246,7 @@ export default function MomentCard({
   if (removed) {
     return (
       <article className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-6 py-5">
-        <p className="text-[13px] text-[#8a7f70]">Taken down. This moment was removed.</p>
+        <p className="text-[13px] text-ink-muted">Taken down. This moment was removed.</p>
       </article>
     )
   }
@@ -301,20 +301,18 @@ export default function MomentCard({
         </p>
         <div className="mt-4 flex items-baseline justify-between gap-3 text-[12px]">
           <div className="flex items-baseline gap-2 flex-wrap min-w-0">
-            <p className="text-[#8a7f70]">
-              <span className="text-[#8a7f70]">Posted by </span>
+            <p className="text-ink-muted">
+              <span className="text-ink-muted">Posted by </span>
               {bookId ? (
                 <Link
                   href={`/member-book/${encodeURIComponent(bookId)}`}
-                  className="text-[#0a1628] hover:underline font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] hover:underline font-medium font-heading"
                 >
                   {moment.postedByName}
                 </Link>
               ) : (
                 <span
-                  className="text-[#0a1628] font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] font-medium font-heading"
                 >
                   {moment.postedByName}
                 </span>
@@ -333,7 +331,7 @@ export default function MomentCard({
                 className={`inline-flex items-center gap-1 text-[11px] font-medium transition-colors disabled:opacity-40 ${
                   featured
                     ? 'text-[#c8a84b] hover:text-[#9a7e38]'
-                    : 'text-[#8a7f70] hover:text-[#c8a84b]'
+                    : 'text-ink-muted hover:text-[#c8a84b]'
                 }`}
               >
                 <Star className={`w-3.5 h-3.5 ${featured ? 'fill-current' : ''}`} />
@@ -380,7 +378,7 @@ export default function MomentCard({
             type="button"
             onClick={() => setPickerOpen(o => !o)}
             disabled={!canPost}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[12px] border border-dashed border-[rgba(180,168,150,0.5)] text-[#8a7f70] hover:border-[#0a1628]/40 hover:text-[#0a1628] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[12px] border border-dashed border-[rgba(180,168,150,0.5)] text-ink-muted hover:border-[#0a1628]/40 hover:text-[#0a1628] disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Add a reaction"
           >
             <SmilePlus className="w-4 h-4" />
@@ -449,7 +447,7 @@ export default function MomentCard({
               </button>
             </div>
           ) : (
-            <p className="text-[12px] text-[#8a7f70] italic">
+            <p className="text-[12px] text-ink-muted italic">
               Sign in and claim your card to comment or react.
             </p>
           )}
@@ -504,8 +502,7 @@ function CommentRow({
     <div>
       <div className="text-[13.5px] text-[#0a1628] leading-relaxed">
         <span
-          className="font-medium"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="font-medium font-heading"
         >
           {comment.fromName}
         </span>
@@ -518,7 +515,7 @@ function CommentRow({
         <button
           type="button"
           onClick={() => setReplyTo(replying ? null : comment.id)}
-          className="inline-flex items-center gap-1 mt-1.5 text-[11.5px] font-medium text-[#8a7f70] hover:text-[#0a1628]"
+          className="inline-flex items-center gap-1 mt-1.5 text-[11.5px] font-medium text-ink-muted hover:text-[#0a1628]"
         >
           <Reply className="w-3 h-3" />
           {replying ? 'Cancel' : 'Reply'}
@@ -530,8 +527,7 @@ function CommentRow({
           {replies.map(r => (
             <div key={r.id} className="text-[13px] text-[#0a1628] leading-relaxed">
               <span
-                className="font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="font-medium font-heading"
               >
                 {r.fromName}
               </span>

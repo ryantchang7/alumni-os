@@ -107,8 +107,7 @@ export default function HostRoundPage() {
         >
           <Flag className="w-7 h-7 text-[#2d6a4f] mx-auto mb-4" />
           <h1
-            className="text-[#0a1628] text-2xl font-medium mb-2"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl font-medium mb-2 font-heading"
           >
             Tee box opened.
           </h1>
@@ -169,8 +168,7 @@ export default function HostRoundPage() {
           <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
             <span className="block w-10 h-[2px] bg-[#5a7a3e] mb-5" />
             <h1
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
             >
               Host a Round
             </h1>
@@ -401,7 +399,7 @@ export default function HostRoundPage() {
               </button>
               <Link
                 href="/the-course"
-                className="text-[12px] text-[#8a7f70] hover:text-[#0a1628]"
+                className="text-[12px] text-ink-muted hover:text-[#0a1628]"
               >
                 Cancel
               </Link>

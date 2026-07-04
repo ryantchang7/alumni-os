@@ -44,7 +44,7 @@ export default function BuilderPage() {
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-[#0a1628] mb-1">Roster Agent</p>
-              <p className="text-sm text-[#8a7f70] max-w-lg">
+              <p className="text-sm text-ink-muted max-w-lg">
                 Start with one roster link. The agent extracts rows, asks for approval, and builds a verified alumni graph.
               </p>
             </div>
@@ -65,7 +65,7 @@ export default function BuilderPage() {
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-[#0a1628] mb-1">Captain Review</p>
-              <p className="text-sm text-[#8a7f70] max-w-lg">
+              <p className="text-sm text-ink-muted max-w-lg">
                 Review alumni in the graph and publish verified profiles to the Player Network. Only published profiles are visible to players.
               </p>
             </div>
@@ -86,13 +86,13 @@ export default function BuilderPage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="font-semibold text-[#0a1628] mb-1">Player Network</p>
-              <p className="text-sm text-[#8a7f70]">
+              <p className="text-sm text-ink-muted">
                 The player-facing alumni network. Only published, captain-approved profiles appear here.
               </p>
             </div>
             <Link
               href="/network/search?teamSlug=penn-mens-golf"
-              className="text-sm font-medium border border-gray-300 hover:border-[#0a1628] text-[#8a7f70] hover:text-[#0a1628] px-4 py-2 rounded-md transition-colors whitespace-nowrap"
+              className="text-sm font-medium border border-gray-300 hover:border-[#0a1628] text-ink-muted hover:text-[#0a1628] px-4 py-2 rounded-md transition-colors whitespace-nowrap"
             >
               Preview Network &rarr;
             </Link>
@@ -109,7 +109,7 @@ export default function BuilderPage() {
             {trustRules.map(rule => (
               <div key={rule} className="flex gap-2 items-start">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-[#8a7f70]">{rule}</span>
+                <span className="text-sm text-ink-muted">{rule}</span>
               </div>
             ))}
           </div>

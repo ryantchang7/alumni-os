@@ -9,12 +9,11 @@ export default function ClaimPendingPage() {
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
       >
         <Clock className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-2">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-2">
           Penn Men&rsquo;s Golf
         </p>
         <h1
-          className="text-[#0a1628] text-2xl font-medium mb-3"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="text-[#0a1628] text-2xl font-medium mb-3 font-heading"
         >
           In front of the captain.
         </h1>
@@ -35,7 +34,7 @@ export default function ClaimPendingPage() {
           </Link>
           <Link
             href="/member-book"
-            className="text-[12px] text-[#8a7f70] hover:text-[#0a1628] py-2"
+            className="text-[12px] text-ink-muted hover:text-[#0a1628] py-2"
           >
             Browse the Member Book
           </Link>

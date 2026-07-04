@@ -46,8 +46,7 @@ export default async function RequirementsPage() {
           >
             <div className="px-7 sm:px-9 pt-8 pb-5 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
               <h2
-                className="text-[#0a1628] text-2xl font-medium leading-tight"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-2xl font-medium leading-tight font-heading"
               >
                 {section.label}
               </h2>
@@ -76,7 +75,7 @@ export default async function RequirementsPage() {
                       </p>
                     )}
                     {line.appearsOn && line.appearsOn.length > 0 && (
-                      <p className="text-[11px] text-[#8a7f70] mt-1">
+                      <p className="text-[11px] text-ink-muted mt-1">
                         <span className="font-semibold uppercase tracking-[0.12em] mr-1.5">
                           Appears on
                         </span>
@@ -108,7 +107,7 @@ export default async function RequirementsPage() {
                       </p>
                     )}
                     {line.appearsOn && line.appearsOn.length > 0 && (
-                      <p className="text-[11px] text-[#8a7f70] mt-1">
+                      <p className="text-[11px] text-ink-muted mt-1">
                         <span className="font-semibold uppercase tracking-[0.12em] mr-1.5">
                           Appears on
                         </span>

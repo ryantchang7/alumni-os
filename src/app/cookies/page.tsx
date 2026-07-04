@@ -8,26 +8,25 @@ export default function CookiesPage() {
   return (
     <div className="bg-[#f8f5f0] min-h-[calc(100dvh-60px)] px-5 sm:px-8 py-14 sm:py-20">
       <article className="max-w-[760px] mx-auto bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-10 sm:px-12 sm:py-14">
-        <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#8a7f70] mb-4">
+        <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-4">
           Penn Golf Clubhouse
         </p>
         <h1
-          className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight mb-2"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight mb-2 font-heading"
         >
           Cookie Policy
         </h1>
-        <p className="text-[12.5px] text-[#8a7f70] mb-8">Last updated 2026-06-27</p>
+        <p className="text-[12.5px] text-ink-muted mb-8">Last updated 2026-06-27</p>
 
         <section className="space-y-5 text-[14.5px] text-[#0a1628] leading-relaxed">
           <p>
             This Cookie Policy explains how the Penn Golf Clubhouse uses cookies and similar technologies. We keep it simple: we use as few cookies as possible and never for advertising or cross-site tracking.
           </p>
-          <p className="text-[13px] text-[#8a7f70] italic">
+          <p className="text-[13px] text-ink-muted italic">
             This Cookie Policy was prepared for informational purposes. It does not constitute legal advice. A qualified attorney should review it before formal public launch.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Cookies we use
           </h2>
           <p>
@@ -39,7 +38,7 @@ export default function CookiesPage() {
             </li>
           </ul>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             What we do NOT use
           </h2>
           <ul className="list-disc pl-6 space-y-2">
@@ -49,7 +48,7 @@ export default function CookiesPage() {
             <li>No persistent preference cookies beyond what is strictly necessary to keep you signed in.</li>
           </ul>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Cloudflare Turnstile
           </h2>
           <p>
@@ -65,7 +64,7 @@ export default function CookiesPage() {
             . We do not control or receive the data Cloudflare collects for its bot-challenge; we only receive a pass/fail signal.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Managing cookies
           </h2>
           <p>
@@ -80,7 +79,7 @@ export default function CookiesPage() {
             Please note: if you block or delete the essential session cookie, you will be signed out and will not be able to sign back in until you allow the cookie again. Because it is strictly necessary, there is no opt-out mechanism that preserves full functionality.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Contact
           </h2>
           <p>
@@ -93,7 +92,7 @@ export default function CookiesPage() {
         </section>
 
         <hr className="border-t border-[rgba(180,168,150,0.4)] my-10" />
-        <p className="text-[12px] text-[#8a7f70]">
+        <p className="text-[12px] text-ink-muted">
           See also:{' '}
           <Link href="/privacy" className="text-[#0a1628] hover:text-[#990000] hover:underline">
             Privacy Policy

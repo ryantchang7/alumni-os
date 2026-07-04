@@ -88,9 +88,8 @@ export default function LandingPage() {
 
         {/* Title */}
         <motion.h1
-          className="text-white text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] leading-[1.05] tracking-tight mb-6 sm:mb-8"
+          className="font-heading text-white text-[3rem] sm:text-[4.5rem] md:text-[5.5rem] leading-[1.05] tracking-tight mb-6 sm:mb-8"
           style={{
-            fontFamily: 'var(--font-playfair)',
             fontWeight: 500,
             textShadow: '0 2px 24px rgba(10,22,40,0.5), 0 1px 6px rgba(10,22,40,0.4)',
           }}

@@ -179,7 +179,7 @@ function EnrichListInner() {
             .
           </div>
         ) : loading ? (
-          <div className="flex items-center gap-3 text-[#8a7f70] text-sm py-12 justify-center">
+          <div className="flex items-center gap-3 text-ink-muted text-sm py-12 justify-center">
             <span className="w-5 h-5 border-2 border-[#8a7f70]/30 border-t-[#8a7f70] rounded-full animate-spin" />
             Loading profiles…
           </div>
@@ -189,7 +189,7 @@ function EnrichListInner() {
           </div>
         ) : profiles.length === 0 ? (
           <div className="bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-12 text-center">
-            <p className="text-sm text-[#8a7f70] mb-3">
+            <p className="text-sm text-ink-muted mb-3">
               No promoted people yet. Promote roster entries first.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
@@ -219,7 +219,7 @@ function EnrichListInner() {
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                       activeTab === tab.id
                         ? 'bg-[#0a1628] text-white'
-                        : 'bg-[#ece8e1] text-[#8a7f70] hover:bg-[#e0dbd3]'
+                        : 'bg-[#ece8e1] text-ink-muted hover:bg-[#e0dbd3]'
                     }`}
                   >
                     {tab.label}
@@ -245,22 +245,22 @@ function EnrichListInner() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-[#f0ece5]">
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Name
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Roster Years
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Hometown / HS
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Enrichment
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Status
                     </th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                       Sources
                     </th>
                     <th className="px-4 py-3" />
@@ -269,7 +269,7 @@ function EnrichListInner() {
                 <tbody className="divide-y divide-[rgba(180,168,150,0.2)]">
                   {filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-4 py-8 text-center text-[#8a7f70] text-sm">
+                      <td colSpan={7} className="px-4 py-8 text-center text-ink-muted text-sm">
                         No profiles match the current filter.
                       </td>
                     </tr>
@@ -279,10 +279,10 @@ function EnrichListInner() {
                         <td className="px-4 py-3 font-medium text-[#0d1f3c]">
                           {profile.canonicalName}
                         </td>
-                        <td className="px-4 py-3 text-[#8a7f70] text-xs">
+                        <td className="px-4 py-3 text-ink-muted text-xs">
                           {profile.rosterYearsLabel || '—'}
                         </td>
-                        <td className="px-4 py-3 text-[#8a7f70] text-xs">
+                        <td className="px-4 py-3 text-ink-muted text-xs">
                           {profile.hometown || profile.highSchool ? (
                             <span>
                               {profile.hometown && <span>{profile.hometown}</span>}
@@ -293,13 +293,13 @@ function EnrichListInner() {
                             <span className="text-[#c4bbb0]">—</span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-[#8a7f70] text-xs max-w-[220px] truncate">
+                        <td className="px-4 py-3 text-ink-muted text-xs max-w-[220px] truncate">
                           {enrichmentSummary(profile)}
                         </td>
                         <td className="px-4 py-3">
                           {statusPill(profile.enrichmentStatus)}
                         </td>
-                        <td className="px-4 py-3 text-[#8a7f70] text-xs">
+                        <td className="px-4 py-3 text-ink-muted text-xs">
                           {profile.enrichment?.sourceUrls?.length ?? 0}
                         </td>
                         <td className="px-4 py-3">
@@ -317,7 +317,7 @@ function EnrichListInner() {
               </table>
             </div>
 
-            <p className="text-xs text-[#8a7f70] mt-3">
+            <p className="text-xs text-ink-muted mt-3">
               {filtered.length} of {profiles.length} profile{profiles.length !== 1 ? 's' : ''}
             </p>
           </>
@@ -331,7 +331,7 @@ export default function EnrichPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-[#8a7f70] text-sm">
+        <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">
           Loading…
         </div>
       }

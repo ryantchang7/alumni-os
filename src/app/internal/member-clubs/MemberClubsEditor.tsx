@@ -89,7 +89,7 @@ function MemberRowCard({ row }: { row: MemberRow }) {
             <span className="font-medium text-sm text-[#0a1628]">{row.name}</span>
             <RoleChip role={row.role} />
           </div>
-          <p className="text-[11px] text-[#8a7f70] mt-0.5">
+          <p className="text-[11px] text-ink-muted mt-0.5">
             {[row.classLabel, row.years].filter(Boolean).join(' · ') || '—'}
           </p>
         </div>
@@ -147,7 +147,7 @@ export default function MemberClubsEditor({ rows }: { rows: MemberRow[] }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <p className="text-sm text-[#8a7f70]">
+        <p className="text-sm text-ink-muted">
           <span className="font-semibold text-[#0a1628]">{rows.length}</span> members
         </p>
         <input
@@ -164,7 +164,7 @@ export default function MemberClubsEditor({ rows }: { rows: MemberRow[] }) {
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
       >
         {filtered.length === 0 ? (
-          <p className="text-sm text-[#8a7f70] text-center py-8">No members match &ldquo;{query}&rdquo;.</p>
+          <p className="text-sm text-ink-muted text-center py-8">No members match &ldquo;{query}&rdquo;.</p>
         ) : (
           filtered.map(row => <MemberRowCard key={row.personId} row={row} />)
         )}

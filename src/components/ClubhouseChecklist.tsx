@@ -88,7 +88,7 @@ export default function ClubhouseChecklist({
         type="button"
         onClick={dismiss}
         aria-label="Dismiss checklist"
-        className="absolute top-4 right-4 text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+        className="absolute top-4 right-4 text-ink-muted hover:text-[#0a1628] transition-colors"
       >
         <X className="w-4 h-4" />
       </button>
@@ -96,13 +96,12 @@ export default function ClubhouseChecklist({
         <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]">
           Set up your locker
         </p>
-        <p className="text-[11.5px] text-[#8a7f70] font-medium">
+        <p className="text-[11.5px] text-ink-muted font-medium">
           {completed}/{steps.length}
         </p>
       </div>
       <p
-        className="text-[#0a1628] text-lg sm:text-xl font-medium mb-5"
-        style={{ fontFamily: 'var(--font-playfair)' }}
+        className="text-[#0a1628] text-lg sm:text-xl font-medium mb-5 font-heading"
       >
         Three quick things and the Penn Golf family can find you.
       </p>
@@ -116,7 +115,7 @@ export default function ClubhouseChecklist({
               className={`inline-flex items-center justify-center w-6 h-6 rounded-full flex-shrink-0 ${
                 step.done
                   ? 'bg-[#2d6a4f] text-white'
-                  : 'bg-[#f8f5f0] border border-[rgba(180,168,150,0.45)] text-[#8a7f70]'
+                  : 'bg-[#f8f5f0] border border-[rgba(180,168,150,0.45)] text-ink-muted'
               }`}
               aria-hidden
             >
@@ -125,13 +124,13 @@ export default function ClubhouseChecklist({
             <div className="flex-1 min-w-0">
               <p
                 className={`text-[14px] leading-snug ${
-                  step.done ? 'text-[#8a7f70] line-through' : 'text-[#0a1628] font-medium'
+                  step.done ? 'text-ink-muted line-through' : 'text-[#0a1628] font-medium'
                 }`}
               >
                 {step.label}
               </p>
               {!step.done && (
-                <p className="text-[12px] text-[#8a7f70] mt-0.5">{step.helper}</p>
+                <p className="text-[12px] text-ink-muted mt-0.5">{step.helper}</p>
               )}
             </div>
             {!step.done && (

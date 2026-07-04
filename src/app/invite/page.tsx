@@ -57,12 +57,11 @@ export default async function InvitePage() {
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[860px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+          <p className="eyebrow text-gold mb-4">
             Penn Men&rsquo;s Golf
           </p>
           <h1
-            className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-4xl sm:text-5xl font-medium tracking-tight font-heading"
           >
             Invite the guys
           </h1>

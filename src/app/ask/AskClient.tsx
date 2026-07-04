@@ -89,12 +89,12 @@ function StepBar({ step }: { step: number }) {
                     ? 'bg-[#2d6a4f] text-white'
                     : active
                       ? 'bg-[#0a1628] text-white'
-                      : 'bg-[#e8e3db] text-[#8a7f70]'
+                      : 'bg-[#e8e3db] text-ink-muted'
                 }`}
               >
                 {done ? '✓' : n}
               </div>
-              <p className={`text-[10px] mt-1 whitespace-nowrap hidden sm:block ${active ? 'text-[#0a1628] font-medium' : 'text-[#8a7f70]'}`}>
+              <p className={`text-[10px] mt-1 whitespace-nowrap hidden sm:block ${active ? 'text-[#0a1628] font-medium' : 'text-ink-muted'}`}>
                 {label}
               </p>
             </div>
@@ -155,14 +155,14 @@ function MemberCard({
             )}
           </div>
           {(profile.classLabel || years) && (
-            <p className="text-xs text-[#8a7f70] mt-0.5">
+            <p className="text-xs text-ink-muted mt-0.5">
               {[profile.classLabel, years ? `Penn Golf ${years}` : null].filter(Boolean).join(' · ')}
             </p>
           )}
           {careerLine && (
             <p className="text-xs text-[#4a5568] mt-0.5">{careerLine}</p>
           )}
-          <p className="text-xs text-[#8a7f70] italic mt-1.5">{profile.whyLine}</p>
+          <p className="text-xs text-ink-muted italic mt-1.5">{profile.whyLine}</p>
         </div>
       </div>
     </button>
@@ -290,7 +290,7 @@ export default function AskClient() {
       <div className="min-h-screen bg-[#f8f5f0]">
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
           <div className="max-w-[680px] mx-auto">
-            <p className="text-xs text-white/35 uppercase tracking-widest mb-3">Penn Golf · Clubhouse</p>
+            <p className="eyebrow text-gold mb-3">Penn Golf · Clubhouse</p>
             <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Request sent.</h1>
             <p className="text-white/55 text-sm mt-2">Your message is in {first}&rsquo;s Clubhouse inbox.</p>
           </div>
@@ -299,7 +299,7 @@ export default function AskClient() {
           <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
             <p className="text-base font-semibold text-[#0a1628] mb-2">In their inbox.</p>
-            <p className="text-sm text-[#8a7f70] max-w-sm mx-auto mb-6">
+            <p className="text-sm text-ink-muted max-w-sm mx-auto mb-6">
               {first} gets pinged on the Clubhouse. Give it a few days. Penn Golf members have day jobs.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
@@ -346,7 +346,7 @@ export default function AskClient() {
             <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1">Reach out about...</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Pick the closest one. We&rsquo;ll line everything up. Pick &ldquo;Something else&rdquo; to write your own.</p>
+              <p className="text-xs text-ink-muted mb-5">Pick the closest one. We&rsquo;ll line everything up. Pick &ldquo;Something else&rdquo; to write your own.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {PURPOSES.map(p => (
                   <button
@@ -360,7 +360,7 @@ export default function AskClient() {
                     }`}
                   >
                     <p className="font-medium text-[#0a1628] text-sm">{p.label}</p>
-                    <p className="text-xs text-[#8a7f70] mt-0.5 leading-snug">{p.desc}</p>
+                    <p className="text-xs text-ink-muted mt-0.5 leading-snug">{p.desc}</p>
                   </button>
                 ))}
               </div>
@@ -386,13 +386,13 @@ export default function AskClient() {
                   &larr; Back
                 </button>
                 {purposeObj && (
-                  <span className="text-xs font-medium text-[#8a7f70]">· {purposeObj.label}</span>
+                  <span className="text-xs font-medium text-ink-muted">· {purposeObj.label}</span>
                 )}
               </div>
               {purpose === 'custom' ? (
                 <>
                   <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">What do you want to ask?</h2>
-                  <p className="text-xs text-[#8a7f70] mb-4">
+                  <p className="text-xs text-ink-muted mb-4">
                     Type your idea in your own words. We&rsquo;ll wrap it in a clean Hey / Thanks so it reads as a real note.
                   </p>
                   <textarea
@@ -405,14 +405,14 @@ export default function AskClient() {
                     autoFocus
                     className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-y focus:outline-none focus:border-[#0a1628] transition-colors leading-relaxed"
                   />
-                  <p className="text-[11px] text-[#8a7f70] mt-1.5">
+                  <p className="text-[11px] text-ink-muted mt-1.5">
                     You can tweak the whole note in the next step before sending.
                   </p>
                 </>
               ) : (
                 <>
                   <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">What&rsquo;s the situation?</h2>
-                  <p className="text-xs text-[#8a7f70] mb-5">Helps us find the right alum and write a note that actually sounds like you.</p>
+                  <p className="text-xs text-ink-muted mb-5">Helps us find the right alum and write a note that actually sounds like you.</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {CONTEXTS.map(c => (
                       <button
@@ -432,7 +432,7 @@ export default function AskClient() {
 
                   {/* Additional context */}
                   <div className="mt-5">
-                    <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wider mb-2">
                       One more line of context? <span className="font-normal normal-case">(optional)</span>
                     </label>
                     <textarea
@@ -444,7 +444,7 @@ export default function AskClient() {
                       placeholder={'"Applying to Goldman summer roles." / "I\'ll be in NYC in July." / "Coach said you\'d be a good person to ask."'}
                       className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
                     />
-                    <p className="text-[11px] text-[#8a7f70] mt-1">
+                    <p className="text-[11px] text-ink-muted mt-1">
                       Whatever you put here goes into the note naturally.
                     </p>
                   </div>
@@ -473,18 +473,18 @@ export default function AskClient() {
                   &larr; Back
                 </button>
                 {purposeObj && contextObj && (
-                  <span className="text-xs font-medium text-[#8a7f70]">
+                  <span className="text-xs font-medium text-ink-muted">
                     · {purposeObj.label} · {contextObj.label}
                   </span>
                 )}
               </div>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Pick someone to ask.</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Sorted by fit. Everyone here has said they&rsquo;re open to it.</p>
+              <p className="text-xs text-ink-muted mb-5">Sorted by fit. Everyone here has said they&rsquo;re open to it.</p>
 
               {loadingProfiles ? (
-                <p className="text-sm text-[#8a7f70] py-6 text-center">Loading members…</p>
+                <p className="text-sm text-ink-muted py-6 text-center">Loading members…</p>
               ) : scoredProfiles.length === 0 ? (
-                <p className="text-sm text-[#8a7f70] py-6 text-center">No members available. Try a different purpose.</p>
+                <p className="text-sm text-ink-muted py-6 text-center">No members available. Try a different purpose.</p>
               ) : (
                 <div className="space-y-2.5">
                   {scoredProfiles.map(p => (
@@ -520,17 +520,17 @@ export default function AskClient() {
                   &larr; Back
                 </button>
                 {selectedProfile && (
-                  <span className="text-xs font-medium text-[#8a7f70]">
+                  <span className="text-xs font-medium text-ink-muted">
                     · To {selectedProfile.canonicalName}
                   </span>
                 )}
               </div>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Last look. Sound like you?</h2>
-              <p className="text-xs text-[#8a7f70] mb-5">Tweak anything until it reads in your voice. They&rsquo;ll see it as is.</p>
+              <p className="text-xs text-ink-muted mb-5">Tweak anything until it reads in your voice. They&rsquo;ll see it as is.</p>
 
               {/* Draft */}
               <div className="mb-4">
-                <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wider mb-2">
                   Your message
                 </label>
                 <textarea
@@ -540,12 +540,12 @@ export default function AskClient() {
                   maxLength={2000}
                   className="w-full text-sm text-[#0a1628] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-y focus:outline-none focus:border-[#0a1628] transition-colors font-[inherit] leading-relaxed"
                 />
-                <p className="text-[11px] text-[#8a7f70] mt-1 text-right">{draft.length}/2000</p>
+                <p className="text-[11px] text-ink-muted mt-1 text-right">{draft.length}/2000</p>
               </div>
 
               {/* From name */}
               <div className="mb-5">
-                <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wider mb-2">
                   Your name
                 </label>
                 <input
@@ -565,7 +565,7 @@ export default function AskClient() {
               <TurnstileWidget onToken={setTurnstileToken} className="mb-4" />
 
               <div className="flex items-center justify-between gap-4">
-                <p className="text-xs text-[#8a7f70]">
+                <p className="text-xs text-ink-muted">
                   Lands in {selectedProfile?.canonicalName?.split(' ')[0]}&rsquo;s Clubhouse inbox. Give it a few days. Alumni have day jobs.
                 </p>
                 <button

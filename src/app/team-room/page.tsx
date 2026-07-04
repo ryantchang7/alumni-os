@@ -159,12 +159,11 @@ export default async function TeamRoomPage() {
         <div className="max-w-[1320px] mx-auto flex items-center gap-5 sm:gap-7">
           <HeroCrest src={crestImage} alt="Team Room crest" />
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+            <p className="eyebrow text-gold mb-4">
               Penn Men&rsquo;s Golf
             </p>
             <h1
-              className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight font-heading"
             >
               Team Room
             </h1>
@@ -189,9 +188,9 @@ export default async function TeamRoomPage() {
         {/* Current season roster */}
         <section>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">{rosterLabel}</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">Current players on the Penn Men&apos;s Golf team.</p>
+          <p className="text-sm text-ink-muted mb-6">Current players on the Penn Men&apos;s Golf team.</p>
           {currentPlayers.length === 0 ? (
-            <p className="text-sm text-[#8a7f70]">Roster will appear here once players are added to the Clubhouse.</p>
+            <p className="text-sm text-ink-muted">Roster will appear here once players are added to the Clubhouse.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {currentPlayers.map(({ person, membership }) => {
@@ -223,10 +222,10 @@ export default async function TeamRoomPage() {
                       )}
                     </div>
                     {membership.hometown && (
-                      <p className="text-xs text-[#8a7f70] mt-2">{membership.hometown}</p>
+                      <p className="text-xs text-ink-muted mt-2">{membership.hometown}</p>
                     )}
                     {membership.highSchool && (
-                      <p className="text-xs text-[#8a7f70]">{membership.highSchool}</p>
+                      <p className="text-xs text-ink-muted">{membership.highSchool}</p>
                     )}
                   </Link>
                 )
@@ -243,7 +242,7 @@ export default async function TeamRoomPage() {
             Live from the Course
           </p>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Season Tracker</h2>
-          <p className="text-sm text-[#8a7f70] mb-4">
+          <p className="text-sm text-ink-muted mb-4">
             Qualifying, tournament results, and stats as the season unfolds.
           </p>
           <Link
@@ -265,11 +264,11 @@ export default async function TeamRoomPage() {
                       <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0a1628] bg-[#0a1628]/8 px-2 py-0.5 rounded-full">
                         {SEASON_KIND_LABELS[u.kind]}
                       </span>
-                      <span className="text-[11px] text-[#8a7f70]">{u.dateText}</span>
+                      <span className="text-[11px] text-ink-muted">{u.dateText}</span>
                     </div>
                     <p className="text-sm font-semibold text-[#0a1628]">{u.title}</p>
                     {u.body && (
-                      <p className="text-sm text-[#8a7f70] mt-1.5 leading-relaxed whitespace-pre-line">{u.body}</p>
+                      <p className="text-sm text-ink-muted mt-1.5 leading-relaxed whitespace-pre-line">{u.body}</p>
                     )}
                     {u.linkUrl && (
                       u.previewImageUrl ? (
@@ -284,7 +283,7 @@ export default async function TeamRoomPage() {
                             className="w-full h-40 object-cover bg-[#faf7f2]"
                           />
                           <div className="px-3.5 py-3">
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
                               {seasonLinkDomain(u.linkUrl)}
                             </p>
                             {(u.previewTitle || u.linkLabel) && (
@@ -320,7 +319,7 @@ export default async function TeamRoomPage() {
               <p className="text-sm font-semibold text-[#0a1628]">
                 Live qualifying, tournament results, and stats are coming soon.
               </p>
-              <p className="text-xs text-[#8a7f70] mt-2 max-w-md mx-auto">
+              <p className="text-xs text-ink-muted mt-2 max-w-md mx-auto">
                 Updates will appear here as the season unfolds.
               </p>
             </div>
@@ -331,7 +330,7 @@ export default async function TeamRoomPage() {
         {coaches.length > 0 && (
           <section>
             <h2 className="text-base font-semibold text-[#0a1628] mb-1">Coaching Staff</h2>
-            <p className="text-sm text-[#8a7f70] mb-6">The coaches behind the program.</p>
+            <p className="text-sm text-ink-muted mb-6">The coaches behind the program.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {coaches.map(({ person, membership }) => {
                 const badges = badgesForPerson(person.id, store.accounts)
@@ -358,7 +357,7 @@ export default async function TeamRoomPage() {
                       </span>
                     </div>
                     {membership.hometown && (
-                      <p className="text-xs text-[#8a7f70] mt-2">{membership.hometown}</p>
+                      <p className="text-xs text-ink-muted mt-2">{membership.hometown}</p>
                     )}
                   </div>
                 )
@@ -379,7 +378,7 @@ export default async function TeamRoomPage() {
                 {captainNote}
               </p>
             ) : (
-              <p className="text-sm text-[#8a7f70] leading-relaxed italic">
+              <p className="text-sm text-ink-muted leading-relaxed italic">
                 A note from this year&apos;s captain will appear here each season.
               </p>
             )}
@@ -390,7 +389,7 @@ export default async function TeamRoomPage() {
         {recentAlumni.length > 0 && (
           <section>
             <h2 className="text-base font-semibold text-[#0a1628] mb-1">Recent Alumni</h2>
-            <p className="text-sm text-[#8a7f70] mb-6">Just finished their Penn Golf careers.</p>
+            <p className="text-sm text-ink-muted mb-6">Just finished their Penn Golf careers.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {recentAlumni.map(({ person, membership }) => {
                 const badges = badgesForPerson(person.id, store.accounts)
@@ -414,13 +413,13 @@ export default async function TeamRoomPage() {
                         </div>
                       </div>
                       {membership.rosterEndYear && (
-                        <span className="text-[10px] font-medium text-[#8a7f70] bg-[#f8f5f0] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border border-[rgba(180,168,150,0.35)]">
+                        <span className="text-[10px] font-medium text-ink-muted bg-[#f8f5f0] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border border-[rgba(180,168,150,0.35)]">
                           &apos;{String(membership.rosterEndYear).slice(2)}
                         </span>
                       )}
                     </div>
                     {membership.hometown && (
-                      <p className="text-xs text-[#8a7f70] mt-2">{membership.hometown}</p>
+                      <p className="text-xs text-ink-muted mt-2">{membership.hometown}</p>
                     )}
                   </Link>
                 )
@@ -432,7 +431,7 @@ export default async function TeamRoomPage() {
         {/* Support the Program — three ways */}
         <section>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Support the Program</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">
+          <p className="text-sm text-ink-muted mb-6">
             Three ways alumni keep Penn Men&rsquo;s Golf moving forward.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -493,7 +492,7 @@ export default async function TeamRoomPage() {
         >
           <div>
             <p className="font-semibold text-[#0a1628] text-sm">Team Travel</p>
-            <p className="text-xs text-[#8a7f70] mt-0.5">
+            <p className="text-xs text-ink-muted mt-0.5">
               Where the team is headed &mdash; offer to host them when they&rsquo;re near you.
             </p>
           </div>
@@ -512,7 +511,7 @@ export default async function TeamRoomPage() {
         >
           <div>
             <p className="font-semibold text-[#0a1628] text-sm">Browse the Member Book</p>
-            <p className="text-xs text-[#8a7f70] mt-0.5">Every Penn Men&rsquo;s Golf member, across generations.</p>
+            <p className="text-xs text-ink-muted mt-0.5">Every Penn Men&rsquo;s Golf member, across generations.</p>
           </div>
           <Link
             href="/member-book"

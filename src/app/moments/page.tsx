@@ -89,8 +89,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                 Penn Men&rsquo;s Golf · The Wall
               </p>
               <h1
-                className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight font-heading"
               >
                 Moments
               </h1>
@@ -144,8 +143,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
               Penn Men&rsquo;s Golf · The Wall
             </p>
             <h1
-              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight font-heading"
             >
               Moments
             </h1>
@@ -240,8 +238,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                   <Lock className="w-7 h-7 text-[#c8a84b] mb-5" />
                 )}
                 <p
-                  className="text-[#c8a84b] text-2xl font-medium mb-3"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#c8a84b] text-2xl font-medium mb-3 font-heading"
                 >
                   {lockerEmptyHeadline}
                 </p>
@@ -264,12 +261,11 @@ export default async function MomentsPage({ searchParams }: PageProps) {
             >
               <Camera className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
               <p
-                className="text-[#0a1628] text-lg font-medium mb-2"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-lg font-medium mb-2 font-heading"
               >
                 {emptyHeadline}
               </p>
-              <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6 whitespace-pre-line">
+              <p className="text-[13px] text-ink-muted max-w-md mx-auto mb-6 whitespace-pre-line">
                 {emptyBlurb}
               </p>
               <Link

@@ -102,7 +102,7 @@ export default function BuilderDiscoveryPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wide mb-1.5">
                   Team Name
                 </label>
                 <input
@@ -114,7 +114,7 @@ export default function BuilderDiscoveryPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wide mb-1.5">
                   School Name
                 </label>
                 <input
@@ -125,7 +125,7 @@ export default function BuilderDiscoveryPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wide mb-1.5">
                   Sport
                 </label>
                 <input
@@ -136,7 +136,7 @@ export default function BuilderDiscoveryPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wide mb-1.5">
                   Gender
                 </label>
                 <select
@@ -152,7 +152,7 @@ export default function BuilderDiscoveryPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#8a7f70] uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wide mb-1.5">
                 Team Website URL
               </label>
               <input
@@ -197,7 +197,7 @@ export default function BuilderDiscoveryPage() {
                 className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
               >
-                <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">Root Page</p>
+                <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-3">Root Page</p>
                 <div className="space-y-1.5">
                   <p className="text-xs font-mono text-[#0a1628] truncate">{result.rootPage.finalUrl || result.rootPage.url}</p>
                   {result.rootPage.title && (
@@ -210,7 +210,7 @@ export default function BuilderDiscoveryPage() {
                       HTTP {result.rootPage.status}
                     </span>
                     {result.rootPage.contentType && (
-                      <span className="text-xs text-[#8a7f70] font-mono">{result.rootPage.contentType}</span>
+                      <span className="text-xs text-ink-muted font-mono">{result.rootPage.contentType}</span>
                     )}
                   </div>
                 </div>
@@ -255,17 +255,17 @@ export default function BuilderDiscoveryPage() {
               </div>
               {result.discoveredPages.length === 0 ? (
                 <div className="px-5 py-8 text-center">
-                  <p className="text-sm text-[#8a7f70]">No pages discovered.</p>
+                  <p className="text-sm text-ink-muted">No pages discovered.</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-[rgba(180,168,150,0.35)] bg-[#f8f5f0]">
-                        <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#8a7f70] uppercase tracking-wide">Page</th>
-                        <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#8a7f70] uppercase tracking-wide">Type</th>
-                        <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#8a7f70] uppercase tracking-wide">Confidence</th>
-                        <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#8a7f70] uppercase tracking-wide">Reason</th>
+                        <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Page</th>
+                        <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Type</th>
+                        <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Confidence</th>
+                        <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Reason</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -275,7 +275,7 @@ export default function BuilderDiscoveryPage() {
                             <p className="text-xs font-mono text-[#0a1628] truncate" title={page.url}>
                               {page.label || page.url}
                             </p>
-                            <p className="text-[10px] text-[#8a7f70] font-mono truncate mt-0.5">{page.url}</p>
+                            <p className="text-[10px] text-ink-muted font-mono truncate mt-0.5">{page.url}</p>
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap">
                             <PageTypeBadge type={page.pageType} priority={page.priority} />
@@ -286,7 +286,7 @@ export default function BuilderDiscoveryPage() {
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-xs text-[#8a7f70] leading-relaxed">{page.reason}</span>
+                            <span className="text-xs text-ink-muted leading-relaxed">{page.reason}</span>
                           </td>
                         </tr>
                       ))}
@@ -332,7 +332,7 @@ export default function BuilderDiscoveryPage() {
                     </div>
                     <Link
                       href={`/builder/debug-roster?url=${encodeURIComponent(form.website)}`}
-                      className="flex items-center gap-1.5 text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+                      className="flex items-center gap-1.5 text-xs text-ink-muted hover:text-[#0a1628] transition-colors"
                     >
                       <Bug className="h-3.5 w-3.5" />
                       Debug extractor
@@ -340,7 +340,7 @@ export default function BuilderDiscoveryPage() {
                   </div>
                   {entries.length === 0 ? (
                     <div className="px-5 py-8 text-center">
-                      <p className="text-sm text-[#8a7f70]">
+                      <p className="text-sm text-ink-muted">
                         No roster structure found on the root page. Select a discovered roster page to try extraction.
                       </p>
                       <Link
@@ -355,10 +355,10 @@ export default function BuilderDiscoveryPage() {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-[rgba(180,168,150,0.35)] bg-[#f8f5f0]">
-                            <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#8a7f70] uppercase tracking-wide">Name</th>
-                            <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#8a7f70] uppercase tracking-wide">Class</th>
-                            <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#8a7f70] uppercase tracking-wide">Hometown</th>
-                            <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#8a7f70] uppercase tracking-wide">Confidence</th>
+                            <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Name</th>
+                            <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Class</th>
+                            <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Hometown</th>
+                            <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Confidence</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -373,10 +373,10 @@ export default function BuilderDiscoveryPage() {
                                 </div>
                               </td>
                               <td className="px-4 py-3">
-                                <span className="text-sm text-[#8a7f70]">{entry.classLabel ?? '—'}</span>
+                                <span className="text-sm text-ink-muted">{entry.classLabel ?? '—'}</span>
                               </td>
                               <td className="px-4 py-3">
-                                <span className="text-sm text-[#8a7f70]">{entry.hometown ?? '—'}</span>
+                                <span className="text-sm text-ink-muted">{entry.hometown ?? '—'}</span>
                               </td>
                               <td className="px-4 py-3">
                                 <span className="text-sm font-mono text-[#0a1628]">

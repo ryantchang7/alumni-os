@@ -111,8 +111,7 @@ export default function NewOpenRequestPage() {
             style={{ color: currentIntent.accent }}
           />
           <h1
-            className="text-[#0a1628] text-2xl font-medium mb-2"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl font-medium mb-2 font-heading"
           >
             Request is up.
           </h1>
@@ -172,8 +171,7 @@ export default function NewOpenRequestPage() {
           <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
             <span className="block w-10 h-[2px] bg-[#c8a84b] mb-5" />
             <h1
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
             >
               Post an open request
             </h1>
@@ -203,7 +201,7 @@ export default function NewOpenRequestPage() {
           <form onSubmit={handleSubmit} className="px-7 sm:px-10 py-8 space-y-6">
             {/* Intent picker */}
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 What are you looking for
               </label>
               <div className="flex flex-wrap gap-2">
@@ -231,7 +229,7 @@ export default function NewOpenRequestPage() {
 
             {/* Where */}
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Where
               </label>
               <CityStateInput
@@ -246,8 +244,8 @@ export default function NewOpenRequestPage() {
 
             {/* When */}
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
-                When <span className="text-[#8a7f70] normal-case tracking-normal">(optional)</span>
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
+                When <span className="text-ink-muted normal-case tracking-normal">(optional)</span>
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <input
@@ -267,7 +265,7 @@ export default function NewOpenRequestPage() {
 
             {/* Note */}
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Note
               </label>
               <textarea
@@ -278,7 +276,7 @@ export default function NewOpenRequestPage() {
                 placeholder={PLACEHOLDER_BY_INTENT[intent]}
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] resize-none focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
               />
-              <p className="text-[11px] text-[#8a7f70] mt-1 text-right">
+              <p className="text-[11px] text-ink-muted mt-1 text-right">
                 {note.length} / 400
               </p>
             </div>
@@ -294,7 +292,7 @@ export default function NewOpenRequestPage() {
                 />
                 <span className="flex-1 text-[13px]">
                   <span className="font-semibold text-[#2d6a4f]">I&rsquo;ll cover guest fees.</span>{' '}
-                  <span className="text-[#8a7f70]">
+                  <span className="text-ink-muted">
                     Shows as a small pill so visiting members see who&rsquo;s offering.
                   </span>
                 </span>
@@ -317,7 +315,7 @@ export default function NewOpenRequestPage() {
               </button>
               <Link
                 href="/player"
-                className="text-[12px] text-[#8a7f70] hover:text-[#0a1628]"
+                className="text-[12px] text-ink-muted hover:text-[#0a1628]"
               >
                 Cancel
               </Link>

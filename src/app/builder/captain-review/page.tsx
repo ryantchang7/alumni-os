@@ -139,17 +139,17 @@ function CaptainReviewInner() {
 
         {loading ? (
           <div className="py-20 text-center">
-            <p className="text-sm text-[#8a7f70]">Loading graph people...</p>
+            <p className="text-sm text-ink-muted">Loading graph people...</p>
           </div>
         ) : fetchError ? (
           <div className="py-20 text-center">
             <p className="text-base font-semibold text-[#990000] mb-2">Failed to load people</p>
-            <p className="text-sm text-[#8a7f70]">{fetchError}</p>
+            <p className="text-sm text-ink-muted">{fetchError}</p>
           </div>
         ) : profiles.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-base font-semibold text-[#0a1628] mb-2">No people in the graph yet</p>
-            <p className="text-sm text-[#8a7f70] mb-6">
+            <p className="text-sm text-ink-muted mb-6">
               Use the AI Builder to extract and add people to the graph first.
             </p>
             <Link
@@ -180,7 +180,7 @@ function CaptainReviewInner() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-[#8a7f70]">
+                    <div className="flex items-center gap-3 text-xs text-ink-muted">
                       {profile.rosterYearsLabel !== '—' && (
                         <span>Penn Golf {profile.rosterYearsLabel}</span>
                       )}
@@ -195,7 +195,7 @@ function CaptainReviewInner() {
                         data-testid={`unpublish-btn-${profile.personId}`}
                         onClick={() => handleUnpublish(profile.personId)}
                         disabled={isLoading}
-                        className="text-xs font-medium px-3 py-1.5 rounded border border-[rgba(180,168,150,0.5)] text-[#8a7f70] hover:text-[#0a1628] hover:border-[#0a1628]/30 transition-colors disabled:opacity-50"
+                        className="text-xs font-medium px-3 py-1.5 rounded border border-[rgba(180,168,150,0.5)] text-ink-muted hover:text-[#0a1628] hover:border-[#0a1628]/30 transition-colors disabled:opacity-50"
                       >
                         {isLoading ? 'Saving...' : 'Unpublish'}
                       </button>
@@ -234,7 +234,7 @@ function CaptainReviewInner() {
 
 export default function CaptainReviewPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center"><p className="text-sm text-[#8a7f70]">Loading...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center"><p className="text-sm text-ink-muted">Loading...</p></div>}>
       <CaptainReviewInner />
     </Suspense>
   )

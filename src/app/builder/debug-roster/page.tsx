@@ -128,20 +128,20 @@ function DebugRosterInner() {
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-8">
-          <p className="text-xs font-medium uppercase tracking-widest text-[#8a7f70] mb-1">
+          <p className="text-xs font-medium uppercase tracking-widest text-ink-muted mb-1">
             Builder · Debug
           </p>
           <h1 className="text-2xl font-semibold text-[#0d1f3c] tracking-tight">
             Roster Extraction Debugger
           </h1>
-          <p className="mt-1 text-sm text-[#8a7f70]">
+          <p className="mt-1 text-sm text-ink-muted">
             Inspect what the extraction engine pulls from any roster page before committing to a build.
           </p>
         </div>
 
         {/* URL input */}
         <div data-testid="roster-extract-form" className="bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-5 mb-6">
-          <label className="block text-xs font-medium uppercase tracking-wider text-[#8a7f70] mb-2">
+          <label className="block text-xs font-medium uppercase tracking-wider text-ink-muted mb-2">
             Roster URL
           </label>
           <div className="flex gap-3">
@@ -151,7 +151,7 @@ function DebugRosterInner() {
               value={url}
               onChange={e => setUrl(e.target.value)}
               placeholder="https://pennathletics.com/sports/mens-golf/roster"
-              className="flex-1 rounded-md border border-[rgba(180,168,150,0.5)] bg-white px-3 py-2 text-sm text-[#0d1f3c] placeholder:text-[#8a7f70] focus:outline-none focus:ring-2 focus:ring-[#0a1628]"
+              className="flex-1 rounded-md border border-[rgba(180,168,150,0.5)] bg-white px-3 py-2 text-sm text-[#0d1f3c] placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-[#0a1628]"
             />
             <button
               data-testid="roster-extract-submit"
@@ -205,7 +205,7 @@ function DebugRosterInner() {
               <div className="bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-5 mb-4">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wider text-[#8a7f70] mb-1">Page</p>
+                    <p className="text-xs font-medium uppercase tracking-wider text-ink-muted mb-1">Page</p>
                     <p className="text-sm font-medium text-[#0d1f3c]">{result.page.title ?? '(no title)'}</p>
                     <a
                       href={result.page.finalUrl}
@@ -220,15 +220,15 @@ function DebugRosterInner() {
                   <div className="flex gap-6 text-right">
                     <div>
                       <p className="text-2xl font-bold text-[#0d1f3c]">{result.counts.entries}</p>
-                      <p className="text-xs text-[#8a7f70]">Players found</p>
+                      <p className="text-xs text-ink-muted">Players found</p>
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-green-700">{result.counts.highConfidence}</p>
-                      <p className="text-xs text-[#8a7f70]">High confidence</p>
+                      <p className="text-xs text-ink-muted">High confidence</p>
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-amber-600">{result.counts.lowConfidence}</p>
-                      <p className="text-xs text-[#8a7f70]">Low confidence</p>
+                      <p className="text-xs text-ink-muted">Low confidence</p>
                     </div>
                   </div>
                 </div>
@@ -255,13 +255,13 @@ function DebugRosterInner() {
                 return (
                   <div className="mb-4 bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-5">
                     <div className="flex items-center gap-2 mb-3">
-                      <p className="text-xs font-medium uppercase tracking-wider text-[#8a7f70]">QA: {qa.label}</p>
+                      <p className="text-xs font-medium uppercase tracking-wider text-ink-muted">QA: {qa.label}</p>
                       <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${countPass && result.entries.length === qa.expectedCount && qa.expectedNames.every(n => extractedNames.has(n)) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                         {countPass && qa.expectedNames.every(n => extractedNames.has(n)) ? 'PASS' : 'FAIL'}
                       </span>
                     </div>
                     <div className="flex items-center gap-4 mb-3 text-sm">
-                      <span className="text-[#8a7f70]">Expected count:</span>
+                      <span className="text-ink-muted">Expected count:</span>
                       <span className={`font-semibold ${countPass ? 'text-green-700' : 'text-red-600'}`}>
                         {result.counts.entries} / {qa.expectedCount}
                         {countPass
@@ -288,7 +288,7 @@ function DebugRosterInner() {
 
               {/* Save to team graph */}
               <div className="mb-4 bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-5">
-                <p className="text-xs font-medium uppercase tracking-wider text-[#8a7f70] mb-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-ink-muted mb-3">
                   Save to Team Graph
                 </p>
                 {teamSlug ? (
@@ -301,7 +301,7 @@ function DebugRosterInner() {
                     >
                       {saveLoading ? 'Saving…' : 'Save this extraction to team graph'}
                     </button>
-                    <span className="text-xs text-[#8a7f70]">Team: <span className="font-mono text-[#0a1628]">{teamSlug}</span></span>
+                    <span className="text-xs text-ink-muted">Team: <span className="font-mono text-[#0a1628]">{teamSlug}</span></span>
                     {saveResult && (
                       <span className="text-xs text-green-700 bg-green-50 border border-green-200 rounded px-3 py-1.5">
                         Saved {saveResult.entriesCount} entries.{' '}
@@ -320,7 +320,7 @@ function DebugRosterInner() {
                     )}
                   </div>
                 ) : (
-                  <p className="text-sm text-[#8a7f70]">
+                  <p className="text-sm text-ink-muted">
                     Create or select a team first to save this extraction.{' '}
                     <Link href="/builder/new" className="text-[#990000] hover:underline font-medium">
                       Create a team →
@@ -332,20 +332,20 @@ function DebugRosterInner() {
               {/* Entries table */}
               {result.entries.length === 0 ? (
                 <div className="bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-10 text-center">
-                  <XCircle className="h-8 w-8 text-[#8a7f70] mx-auto mb-3" />
-                  <p className="text-sm text-[#8a7f70]">No roster entries extracted from this page.</p>
+                  <XCircle className="h-8 w-8 text-ink-muted mx-auto mb-3" />
+                  <p className="text-sm text-ink-muted">No roster entries extracted from this page.</p>
                 </div>
               ) : (
                 <div className="bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg overflow-hidden">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-[#f0ece5]">
-                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">#</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Name</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Class</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Hometown</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">High School</th>
-                        <th className="text-right px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Conf.</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">#</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Name</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Class</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Hometown</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">High School</th>
+                        <th className="text-right px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Conf.</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[rgba(180,168,150,0.2)]">
@@ -356,7 +356,7 @@ function DebugRosterInner() {
                             onClick={() => setExpandedRow(expandedRow === i ? null : i)}
                             className="hover:bg-[#f5f2ed] cursor-pointer transition-colors"
                           >
-                            <td className="px-4 py-3 text-[#8a7f70] font-mono text-xs">{i + 1}</td>
+                            <td className="px-4 py-3 text-ink-muted font-mono text-xs">{i + 1}</td>
                             <td className="px-4 py-3 font-medium text-[#0d1f3c]">
                               <div className="flex items-center gap-2">
                                 {e.extractionConfidence >= 0.8 ? (
@@ -367,9 +367,9 @@ function DebugRosterInner() {
                                 {e.fullName}
                               </div>
                             </td>
-                            <td className="px-4 py-3 text-[#8a7f70]">{e.classLabel ?? <span className="text-[#c4bbb0]">—</span>}</td>
-                            <td className="px-4 py-3 text-[#8a7f70]">{e.hometown ?? <span className="text-[#c4bbb0]">—</span>}</td>
-                            <td className="px-4 py-3 text-[#8a7f70]">{e.highSchool ?? <span className="text-[#c4bbb0]">—</span>}</td>
+                            <td className="px-4 py-3 text-ink-muted">{e.classLabel ?? <span className="text-[#c4bbb0]">—</span>}</td>
+                            <td className="px-4 py-3 text-ink-muted">{e.hometown ?? <span className="text-[#c4bbb0]">—</span>}</td>
+                            <td className="px-4 py-3 text-ink-muted">{e.highSchool ?? <span className="text-[#c4bbb0]">—</span>}</td>
                             <td className="px-4 py-3 text-right">
                               <ConfidencePill value={e.extractionConfidence} />
                             </td>
@@ -383,7 +383,7 @@ function DebugRosterInner() {
                                 exit={{ opacity: 0 }}
                               >
                                 <td colSpan={6} className="px-4 py-3 bg-[#f0ece5]">
-                                  <p className="text-xs font-medium uppercase tracking-wider text-[#8a7f70] mb-1">Raw text block</p>
+                                  <p className="text-xs font-medium uppercase tracking-wider text-ink-muted mb-1">Raw text block</p>
                                   <pre className="text-xs text-[#0d1f3c] whitespace-pre-wrap break-words font-mono bg-white rounded p-3 border border-[rgba(180,168,150,0.35)] max-h-40 overflow-y-auto">
                                     {e.rawText ?? '(none)'}
                                   </pre>
@@ -417,7 +417,7 @@ function DebugRosterInner() {
 
 export default function DebugRosterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-[#8a7f70] text-sm">Loading…</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">Loading…</div>}>
       <DebugRosterInner />
     </Suspense>
   )

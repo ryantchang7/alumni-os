@@ -186,7 +186,7 @@ function PromoteInner() {
             .
           </div>
         ) : loading ? (
-          <div className="flex items-center gap-3 text-[#8a7f70] text-sm py-12 justify-center">
+          <div className="flex items-center gap-3 text-ink-muted text-sm py-12 justify-center">
             <span className="w-5 h-5 border-2 border-[#8a7f70]/30 border-t-[#8a7f70] rounded-full animate-spin" />
             Loading entries…
           </div>
@@ -232,8 +232,8 @@ function PromoteInner() {
 
             {entries.length === 0 ? (
               <div className="bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-12 text-center">
-                <XCircle className="h-8 w-8 text-[#8a7f70] mx-auto mb-3" />
-                <p className="text-sm text-[#8a7f70] mb-2">No extracted entries yet.</p>
+                <XCircle className="h-8 w-8 text-ink-muted mx-auto mb-3" />
+                <p className="text-sm text-ink-muted mb-2">No extracted entries yet.</p>
                 <Link
                   href={`/builder/debug-roster?teamSlug=${teamSlug}`}
                   className="text-sm text-[#990000] hover:underline font-medium"
@@ -244,7 +244,7 @@ function PromoteInner() {
             ) : allDone ? (
               <div className="bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-8 text-center">
                 <CheckCircle2 className="h-8 w-8 text-green-600 mx-auto mb-3" />
-                <p className="text-sm text-[#8a7f70] mb-4">
+                <p className="text-sm text-ink-muted mb-4">
                   All entries have been promoted or rejected.
                 </p>
                 <div className="flex gap-3 justify-center flex-wrap">
@@ -272,28 +272,28 @@ function PromoteInner() {
                   <thead>
                     <tr className="bg-[#f0ece5]">
                       <th className="px-4 py-3 w-8" />
-                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                         Name
                       </th>
-                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                         Class
                       </th>
-                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                         Hometown
                       </th>
-                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                         High School
                       </th>
-                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                         Season
                       </th>
-                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                         Conf.
                       </th>
-                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                         Status
                       </th>
-                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                      <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                         Source
                       </th>
                     </tr>
@@ -329,16 +329,16 @@ function PromoteInner() {
                               {entry.fullName}
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-[#8a7f70]">
+                          <td className="px-4 py-3 text-ink-muted">
                             {entry.classLabel ?? <span className="text-[#c4bbb0]">—</span>}
                           </td>
-                          <td className="px-4 py-3 text-[#8a7f70]">
+                          <td className="px-4 py-3 text-ink-muted">
                             {entry.hometown ?? <span className="text-[#c4bbb0]">—</span>}
                           </td>
-                          <td className="px-4 py-3 text-[#8a7f70]">
+                          <td className="px-4 py-3 text-ink-muted">
                             {entry.highSchool ?? <span className="text-[#c4bbb0]">—</span>}
                           </td>
-                          <td className="px-4 py-3 text-[#8a7f70]">
+                          <td className="px-4 py-3 text-ink-muted">
                             {entry.seasonYear ?? <span className="text-[#c4bbb0]">—</span>}
                           </td>
                           <td className="px-4 py-3">
@@ -347,7 +347,7 @@ function PromoteInner() {
                           <td className="px-4 py-3">
                             <StatusPill status={entry.status} />
                           </td>
-                          <td className="px-4 py-3 text-[#8a7f70] font-mono text-xs max-w-[180px] truncate">
+                          <td className="px-4 py-3 text-ink-muted font-mono text-xs max-w-[180px] truncate">
                             <a
                               href={entry.sourceUrl}
                               target="_blank"
@@ -376,7 +376,7 @@ function PromoteInner() {
 
 export default function PromotePage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-[#8a7f70] text-sm">Loading…</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">Loading…</div>}>
       <PromoteInner />
     </Suspense>
   )

@@ -119,7 +119,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Camera className="w-4 h-4 text-[#c8a84b]" />
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                   Latest Moments
                 </p>
               </div>
@@ -158,8 +158,8 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
                   <p className="text-[12px] text-[#3d4a5c] mt-1.5 line-clamp-2 leading-snug">
                     {m.caption}
                   </p>
-                  <p className="text-[11px] text-[#8a7f70] mt-0.5">
-                    <span style={{ fontFamily: 'var(--font-playfair)' }}>{m.postedByName}</span>
+                  <p className="text-[11px] text-ink-muted mt-0.5">
+                    <span className="font-heading">{m.postedByName}</span>
                     <span className="mx-1.5">·</span>
                     {timeAgo(m.createdAt)}
                   </p>
@@ -246,14 +246,13 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
                     className="block group"
                   >
                     <p
-                      className="text-[13px] text-[#0a1628] group-hover:text-[#990000] leading-snug transition-colors line-clamp-3"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[13px] text-[#0a1628] group-hover:text-[#990000] leading-snug transition-colors line-clamp-3 font-heading"
                     >
                       {n.title}
                       <ArrowUpRight className="inline w-3 h-3 ml-1 opacity-60 align-middle" />
                     </p>
                     {n.publishedAt && (
-                      <p className="text-[11px] text-[#8a7f70] mt-0.5">
+                      <p className="text-[11px] text-ink-muted mt-0.5">
                         {timeAgo(n.publishedAt)} · Penn Athletics
                       </p>
                     )}
@@ -267,7 +266,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
         {/* Recently joined — approved only */}
         {approved && (
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2.5">
               Recently Joined
             </p>
             {hasClaims ? (
@@ -276,17 +275,16 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
                   <li key={`${c.personId}-${i}`} className="text-[13px] leading-snug">
                     <Link
                       href={c.bookId ? `/member-book/${encodeURIComponent(c.bookId)}` : '/member-book'}
-                      className="text-[#0a1628] hover:underline"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[#0a1628] hover:underline font-heading"
                     >
                       {c.name ?? 'A new member'}
                     </Link>
-                    <span className="text-[#8a7f70] text-[12px] ml-2">{timeAgo(c.createdAt)}</span>
+                    <span className="text-ink-muted text-[12px] ml-2">{timeAgo(c.createdAt)}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-[12.5px] text-[#8a7f70] italic">
+              <p className="text-[12.5px] text-ink-muted italic">
                 Be one of the first to claim a card &mdash;{' '}
                 <Link href="/login?next=/account/setup" className="text-[#990000] hover:underline">
                   sign in
@@ -300,7 +298,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
         {/* Upcoming gatherings — approved only */}
         {approved && (
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2.5">
               Upcoming Gatherings
             </p>
             {hasUpcoming ? (
@@ -314,7 +312,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
                       <p className="text-[13px] text-[#0a1628] group-hover:underline leading-snug">
                         {g.title}
                       </p>
-                      <p className="text-[12px] text-[#8a7f70]">
+                      <p className="text-[12px] text-ink-muted">
                         {g.dateText}
                         {g.city ? ` · ${g.city}${g.state ? `, ${g.state}` : ''}` : ''}
                         {g.interestedCount > 0 ? ` · ${g.interestedCount} interested` : ''}
@@ -324,7 +322,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
                 ))}
               </ul>
             ) : (
-              <p className="text-[12.5px] text-[#8a7f70] italic">
+              <p className="text-[12.5px] text-ink-muted italic">
                 No gatherings scheduled yet. Captains and hosts add them anytime.
               </p>
             )}
@@ -333,7 +331,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
 
         {/* Totals — public, aggregate only */}
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2.5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2.5">
             The Pulse
           </p>
           {(data.totals.publishedMoments ?? 0) > 0 && (

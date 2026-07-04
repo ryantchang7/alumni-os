@@ -103,7 +103,7 @@ export default function HometownInput({
                   }`}
                 >
                   <span className="font-medium">{s.city}</span>
-                  <span className="text-[#8a7f70] ml-2 text-xs">{s.state}</span>
+                  <span className="text-ink-muted ml-2 text-xs">{s.state}</span>
                 </button>
               </li>
             )

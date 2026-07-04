@@ -110,7 +110,7 @@ function AgentTimeline({ steps }: { steps: AgentRunStep[] }) {
                     <span className="text-xs text-gray-400">{s.count}</span>
                   )}
                 </div>
-                <p className="text-xs text-[#8a7f70] leading-relaxed">{s.description}</p>
+                <p className="text-xs text-ink-muted leading-relaxed">{s.description}</p>
                 {s.href && s.status !== 'locked' && (
                   <Link href={s.href} className="text-xs text-[#990000] hover:underline mt-1 inline-block">
                     Open &rarr;
@@ -246,7 +246,7 @@ function AgentInner() {
       <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">
         <div className="text-center space-y-4 max-w-sm px-6">
           <p className="text-base font-semibold text-[#0a1628]">No team selected</p>
-          <p className="text-sm text-[#8a7f70]">Add a teamSlug query parameter to continue.</p>
+          <p className="text-sm text-ink-muted">Add a teamSlug query parameter to continue.</p>
           <Link href="/builder" className="inline-block text-sm font-medium bg-[#0a1628] text-white px-4 py-2 rounded hover:bg-[#112240] transition-colors">
             Back to Builder
           </Link>
@@ -411,12 +411,12 @@ function AgentInner() {
                     : `${displayEntries.length} roster rows pending`}
                 </p>
                 {extractionResult && (
-                  <p className="text-xs text-[#8a7f70] mt-0.5">
+                  <p className="text-xs text-ink-muted mt-0.5">
                     {extractionResult.counts.highConfidence} high-confidence &middot; {extractionResult.counts.lowConfidence} low-confidence
                   </p>
                 )}
                 {displayEntries[0]?.sourceUrl && (
-                  <p className="text-xs text-[#8a7f70] font-mono mt-0.5 truncate max-w-xs">
+                  <p className="text-xs text-ink-muted font-mono mt-0.5 truncate max-w-xs">
                     Source: {displayEntries[0].sourceUrl}
                   </p>
                 )}
@@ -521,7 +521,7 @@ function AgentInner() {
             </button>
           )}
           {agentSummary.recommendedActionId === 'run_extraction' && (
-            <p className="text-xs text-[#8a7f70] mt-1">Enter the roster URL above and click Run roster extraction.</p>
+            <p className="text-xs text-ink-muted mt-1">Enter the roster URL above and click Run roster extraction.</p>
           )}
           {agentSummary.recommendedActionId === 'import_historical' && (
             <Link href={`/builder/history?teamSlug=${teamSlug}`} className="mt-2 inline-block text-sm font-medium text-[#990000] hover:underline">

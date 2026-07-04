@@ -92,7 +92,7 @@ export default function CourseAutocomplete({
         autoComplete="off"
         required={required && !disabled}
         disabled={disabled}
-        className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 disabled:bg-[#faf7f2] disabled:text-[#8a7f70] disabled:cursor-not-allowed"
+        className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 disabled:bg-[#faf7f2] disabled:text-ink-muted disabled:cursor-not-allowed"
       />
       {open && suggestions.length > 0 && (
         <ul
@@ -115,7 +115,7 @@ export default function CourseAutocomplete({
                   }`}
                 >
                   <span className="font-medium">{s.name}</span>
-                  <span className="text-[#8a7f70] ml-2 text-xs">{s.state}</span>
+                  <span className="text-ink-muted ml-2 text-xs">{s.state}</span>
                 </button>
               </li>
             )

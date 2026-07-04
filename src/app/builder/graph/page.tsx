@@ -104,11 +104,11 @@ export default async function BuilderGraphPage({ searchParams }: Props) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-[#f0ece5]">
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Name</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Class</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Hometown</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">High School</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Conf.</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Name</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Class</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Hometown</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">High School</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Conf.</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[rgba(180,168,150,0.2)]">
@@ -117,9 +117,9 @@ export default async function BuilderGraphPage({ searchParams }: Props) {
                     return (
                       <tr key={person.id} className="hover:bg-[#f5f2ed] transition-colors">
                         <td className="px-4 py-3 font-medium text-[#0d1f3c]">{person.canonicalName}</td>
-                        <td className="px-4 py-3 text-[#8a7f70]">{m?.classLabel ?? <span className="text-[#c4bbb0]">—</span>}</td>
-                        <td className="px-4 py-3 text-[#8a7f70]">{m?.hometown ?? <span className="text-[#c4bbb0]">—</span>}</td>
-                        <td className="px-4 py-3 text-[#8a7f70]">{m?.highSchool ?? <span className="text-[#c4bbb0]">—</span>}</td>
+                        <td className="px-4 py-3 text-ink-muted">{m?.classLabel ?? <span className="text-[#c4bbb0]">—</span>}</td>
+                        <td className="px-4 py-3 text-ink-muted">{m?.hometown ?? <span className="text-[#c4bbb0]">—</span>}</td>
+                        <td className="px-4 py-3 text-ink-muted">{m?.highSchool ?? <span className="text-[#c4bbb0]">—</span>}</td>
                         <td className="px-4 py-3">
                           {m ? (
                             <span
@@ -205,7 +205,7 @@ export default async function BuilderGraphPage({ searchParams }: Props) {
               <p className="text-base font-semibold text-[#0a1628] mb-1">
                 No promoted people yet for <span className="font-mono text-sm">{teamSlug}</span>.
               </p>
-              <p className="text-sm text-[#8a7f70] mb-6">
+              <p className="text-sm text-ink-muted mb-6">
                 Extract the roster and promote entries before the graph can be built.
               </p>
               <div className="flex flex-wrap gap-3">

@@ -26,13 +26,12 @@ export default function GlobalError({ error, reset }: Props) {
       </div>
 
       <h1
-        className="text-2xl sm:text-3xl font-medium text-[#0a1628] mb-3"
-        style={{ fontFamily: 'var(--font-playfair)' }}
+        className="text-2xl sm:text-3xl font-medium text-[#0a1628] mb-3 font-heading"
       >
         Something went sideways in the clubhouse.
       </h1>
 
-      <p className="text-[14px] text-[#8a7f70] max-w-sm leading-relaxed mb-8">
+      <p className="text-[14px] text-ink-muted max-w-sm leading-relaxed mb-8">
         An unexpected error occurred. Try reloading — if it keeps happening, the team is already on it.
       </p>
 

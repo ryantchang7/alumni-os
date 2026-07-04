@@ -74,13 +74,13 @@ export default function CourseRoll({ entries }: Props) {
             </button>
           )}
         </div>
-        <span className="text-[11px] text-[#8a7f70] whitespace-nowrap">
+        <span className="text-[11px] text-ink-muted whitespace-nowrap">
           {filtered.length} {filtered.length === 1 ? 'course' : 'courses'}
         </span>
       </div>
 
       {filtered.length === 0 ? (
-        <p className="px-5 py-6 text-[12.5px] text-[#8a7f70] italic">
+        <p className="px-5 py-6 text-[12.5px] text-ink-muted italic">
           No courses match.
         </p>
       ) : (
@@ -105,13 +105,12 @@ export default function CourseRoll({ entries }: Props) {
                 >
                   <span className="flex items-center gap-2 min-w-0">
                     {isOpen ? (
-                      <ChevronDown className="w-3.5 h-3.5 text-[#8a7f70] flex-shrink-0" />
+                      <ChevronDown className="w-3.5 h-3.5 text-ink-muted flex-shrink-0" />
                     ) : (
-                      <ChevronRight className="w-3.5 h-3.5 text-[#8a7f70] flex-shrink-0" />
+                      <ChevronRight className="w-3.5 h-3.5 text-ink-muted flex-shrink-0" />
                     )}
                     <span
-                      className="text-[14px] text-[#0a1628] leading-snug truncate"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[14px] text-[#0a1628] leading-snug truncate font-heading"
                     >
                       {entry.course}
                     </span>
@@ -121,7 +120,7 @@ export default function CourseRoll({ entries }: Props) {
                       </span>
                     )}
                   </span>
-                  <span className="text-[11px] font-medium text-[#8a7f70] whitespace-nowrap">
+                  <span className="text-[11px] font-medium text-ink-muted whitespace-nowrap">
                     {entry.members.length}{' '}
                     {entry.members.length === 1 ? 'member' : 'members'}
                   </span>

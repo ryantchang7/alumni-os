@@ -72,8 +72,7 @@ export default function CourseHero({ rounds }: Props) {
               Penn Men&rsquo;s Golf · The Tee Sheet
             </p>
             <h1
-              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight font-heading"
             >
               The Course
             </h1>
@@ -159,8 +158,7 @@ export default function CourseHero({ rounds }: Props) {
                   <p className="text-white/70 text-[15px] leading-[1.65] max-w-[480px]">
                     {stageThreePrefix}{' '}
                     <span
-                      className="text-white"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-white font-heading"
                     >
                       {pickedRound.title}
                     </span>
@@ -209,7 +207,7 @@ export default function CourseHero({ rounds }: Props) {
                   />
                 )
               })}
-              <span className="text-[10px] uppercase tracking-[0.22em] text-white/45 ml-1">
+              <span className="eyebrow text-gold ml-1">
                 {stage === 'plaque'
                   ? 'Tee'
                   : stage === 'sheet'
@@ -267,9 +265,8 @@ function HolePlaque() {
       </p>
 
       <p
-        className="text-center text-[#f4e3b8] text-[28px] leading-none"
+        className="font-heading text-center text-[#f4e3b8] text-[28px] leading-none"
         style={{
-          fontFamily: 'var(--font-playfair)',
           letterSpacing: '0.08em',
         }}
       >
@@ -277,8 +274,7 @@ function HolePlaque() {
       </p>
 
       <p
-        className="text-center text-[12px] italic text-[#c8a84b]/80 mt-3"
-        style={{ fontFamily: 'var(--font-playfair)' }}
+        className="text-center text-[12px] italic text-[#c8a84b]/80 mt-3 font-heading"
       >
         Founded 1894
       </p>
@@ -331,8 +327,7 @@ function TeeSheet({
         style={{ background: '#0a1628', color: '#f4e3b8' }}
       >
         <p
-          className="text-[15px] tracking-[0.18em]"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="text-[15px] tracking-[0.18em] font-heading"
         >
           THE TEE SHEET
         </p>
@@ -366,15 +361,13 @@ function TeeSheet({
                 >
                   <div className="flex items-baseline gap-3">
                     <span
-                      className="text-[11px] font-semibold text-[#0a1628] w-5"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[11px] font-semibold text-[#0a1628] w-5 font-heading"
                     >
                       {i + 1}.
                     </span>
                     <div className="min-w-0 flex-1">
                       <p
-                        className="text-[16px] text-[#2c1f0e] leading-snug truncate"
-                        style={{ fontFamily: 'var(--font-playfair)' }}
+                        className="text-[16px] text-[#2c1f0e] leading-snug truncate font-heading"
                       >
                         {g.title}
                       </p>

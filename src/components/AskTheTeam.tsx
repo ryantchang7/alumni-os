@@ -266,12 +266,11 @@ export default function AskTheTeam({
               {/* Header */}
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4 flex-shrink-0">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-1">
+                  <p className="eyebrow text-gold mb-1">
                     Penn Men&rsquo;s Golf
                   </p>
                   <h2
-                    className="text-white text-xl font-medium leading-snug"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-white text-xl font-medium leading-snug font-heading"
                   >
                     Ask the Team
                   </h2>
@@ -310,12 +309,11 @@ export default function AskTheTeam({
                       </span>
                     </div>
                     <p
-                      className="text-[1.15rem] leading-snug text-[#0a1628]"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[1.15rem] leading-snug text-[#0a1628] font-heading"
                     >
                       {successHeadline}
                     </p>
-                    <p className="mt-3 text-sm text-[#8a7f70]">
+                    <p className="mt-3 text-sm text-ink-muted">
                       Usually within a couple days. Thanks for asking.
                     </p>
                   </div>
@@ -329,14 +327,14 @@ export default function AskTheTeam({
                     {players.length > 0 && (
                       <div className="space-y-3">
                         <div className="flex items-baseline justify-between">
-                          <label className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70]">
+                          <label className="block text-xs font-semibold tracking-widest uppercase text-ink-muted">
                             Who are you asking?
                           </label>
                           {selectedIds.size > 0 && (
                             <button
                               type="button"
                               onClick={clearSelection}
-                              className="inline-flex items-center gap-1 text-[10px] font-medium text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+                              className="inline-flex items-center gap-1 text-[10px] font-medium text-ink-muted hover:text-[#0a1628] transition-colors"
                             >
                               <Users size={11} />
                               Whole team
@@ -418,7 +416,7 @@ export default function AskTheTeam({
                       <div className="flex items-baseline justify-between mb-1.5">
                         <label
                           htmlFor="ask-question"
-                          className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70]"
+                          className="block text-xs font-semibold tracking-widest uppercase text-ink-muted"
                         >
                           Your question
                         </label>

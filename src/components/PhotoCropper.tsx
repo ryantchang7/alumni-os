@@ -65,14 +65,14 @@ export default function PhotoCropper({ file, shape = 'square', onComplete, onCan
     >
       <div className="bg-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-xl">
         <div className="flex items-center justify-between px-5 py-3 border-b border-[rgba(180,168,150,0.35)] bg-[#faf7f2]">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
             Crop your photo
           </p>
           <button
             type="button"
             onClick={onCancel}
             aria-label="Cancel"
-            className="text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+            className="text-ink-muted hover:text-[#0a1628] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -95,7 +95,7 @@ export default function PhotoCropper({ file, shape = 'square', onComplete, onCan
         </div>
 
         <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.35)]">
-          <label className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-1.5">
+          <label className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-1.5">
             Zoom
           </label>
           <input
@@ -114,7 +114,7 @@ export default function PhotoCropper({ file, shape = 'square', onComplete, onCan
             type="button"
             onClick={onCancel}
             disabled={working}
-            className="text-[12px] text-[#8a7f70] hover:text-[#0a1628] px-3 py-2"
+            className="text-[12px] text-ink-muted hover:text-[#0a1628] px-3 py-2"
           >
             Cancel
           </button>

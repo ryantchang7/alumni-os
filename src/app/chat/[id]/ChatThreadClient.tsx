@@ -211,8 +211,7 @@ export default function ChatThreadClient({
           </Link>
           <div className="text-center flex-1 min-w-0">
             <p
-              className="text-white text-[15px] font-medium leading-tight truncate"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-white text-[15px] font-medium leading-tight truncate font-heading"
             >
               {title}
             </p>
@@ -232,7 +231,7 @@ export default function ChatThreadClient({
       <div className="flex-1 overflow-y-auto px-5 sm:px-8 py-5">
         <div className="max-w-[680px] mx-auto space-y-3">
           {messages.length === 0 && (
-            <p className="text-center text-[13px] text-[#8a7f70] italic py-12">
+            <p className="text-center text-[13px] text-ink-muted italic py-12">
               Say hi. This is just between you and the other members.
             </p>
           )}
@@ -244,7 +243,7 @@ export default function ChatThreadClient({
                 {showDay && (
                   <div className="flex items-center gap-3 my-5">
                     <div className="flex-1 h-px bg-[rgba(180,168,150,0.3)]" />
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] px-2.5 py-0.5 rounded-full">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] px-2.5 py-0.5 rounded-full">
                       {fmtDay(m.createdAt)}
                     </span>
                     <div className="flex-1 h-px bg-[rgba(180,168,150,0.3)]" />
@@ -253,7 +252,7 @@ export default function ChatThreadClient({
                 <div className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[78%] ${mine ? 'items-end' : 'items-start'} flex flex-col`}>
                     {!mine && (
-                      <p className="text-[11px] font-medium text-[#8a7f70] mb-1 ml-3.5 tracking-wide">{m.fromName}</p>
+                      <p className="text-[11px] font-medium text-ink-muted mb-1 ml-3.5 tracking-wide">{m.fromName}</p>
                     )}
                     <div
                       className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed whitespace-pre-wrap break-words ${
@@ -265,7 +264,7 @@ export default function ChatThreadClient({
                       {m.body}
                     </div>
                     <div className={`flex items-center gap-1.5 mt-1 ${mine ? 'mr-3' : 'ml-3'}`}>
-                      <span className="text-[10.5px] text-[#8a7f70]">
+                      <span className="text-[10.5px] text-ink-muted">
                         {m.pending ? 'Sending…' : fmtTime(m.createdAt)}
                       </span>
                       {m.failed && (

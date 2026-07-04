@@ -8,26 +8,25 @@ export default function CopyrightPage() {
   return (
     <div className="bg-[#f8f5f0] min-h-[calc(100dvh-60px)] px-5 sm:px-8 py-14 sm:py-20">
       <article className="max-w-[760px] mx-auto bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-10 sm:px-12 sm:py-14">
-        <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#8a7f70] mb-4">
+        <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-4">
           Penn Golf Clubhouse
         </p>
         <h1
-          className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight mb-2"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight mb-2 font-heading"
         >
           Copyright &amp; DMCA Policy
         </h1>
-        <p className="text-[12.5px] text-[#8a7f70] mb-8">Last updated 2026-06-27</p>
+        <p className="text-[12.5px] text-ink-muted mb-8">Last updated 2026-06-27</p>
 
         <section className="space-y-5 text-[14.5px] text-[#0a1628] leading-relaxed">
           <p>
             The Penn Golf Clubhouse respects intellectual property rights and responds to valid notices of copyright infringement under the Digital Millennium Copyright Act, 17 U.S.C. &sect;512 (&ldquo;DMCA&rdquo;). If you believe content on the Clubhouse infringes your copyright, please follow the process below.
           </p>
-          <p className="text-[13px] text-[#8a7f70] italic">
+          <p className="text-[13px] text-ink-muted italic">
             This Copyright &amp; DMCA Policy was prepared for informational purposes. It does not constitute legal advice. A qualified attorney should review it before formal public launch.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Reporting copyright infringement
           </h2>
           <p>
@@ -57,7 +56,7 @@ export default function CopyrightPage() {
             Notices that do not comply with all six requirements may not receive a response. Submitting a false DMCA notice may expose you to legal liability, including under 17 U.S.C. &sect;512(f).
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Designated agent
           </h2>
           <p>
@@ -73,7 +72,7 @@ export default function CopyrightPage() {
             We will respond to properly submitted notices promptly and take appropriate action, which may include removing or disabling access to the identified material.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Counter-notification
           </h2>
           <p>
@@ -93,14 +92,14 @@ export default function CopyrightPage() {
             Upon receipt of a valid counter-notification, we will forward a copy to the original complainant and may restore the removed material no sooner than 10 and no later than 14 business days, unless we first receive notice that the complainant has filed an action seeking a court order to restrain you from engaging in infringing activity.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Repeat infringers
           </h2>
           <p>
             In accordance with 17 U.S.C. &sect;512(i), we will, in appropriate circumstances, terminate the accounts of users who are repeat infringers of copyright or other intellectual property rights.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Contact
           </h2>
           <p>
@@ -113,7 +112,7 @@ export default function CopyrightPage() {
         </section>
 
         <hr className="border-t border-[rgba(180,168,150,0.4)] my-10" />
-        <p className="text-[12px] text-[#8a7f70]">
+        <p className="text-[12px] text-ink-muted">
           See also:{' '}
           <Link href="/terms" className="text-[#0a1628] hover:text-[#990000] hover:underline">
             Terms of Use

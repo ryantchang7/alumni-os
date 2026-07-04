@@ -54,8 +54,7 @@ function HeroPlaque({ value, label }: { value: number | string; label: string })
   return (
     <div className="flex items-baseline gap-4">
       <p
-        className="text-5xl sm:text-6xl font-light text-white leading-none"
-        style={{ fontFamily: 'var(--font-playfair)' }}
+        className="text-5xl sm:text-6xl font-light text-white leading-none font-heading"
       >
         {value}
       </p>
@@ -122,8 +121,7 @@ function RegistryEntry({
                 aria-hidden
               >
                 <span
-                  className="text-[14px] font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[14px] font-medium font-heading"
                 >
                   {initials}
                 </span>
@@ -131,8 +129,7 @@ function RegistryEntry({
             )}
             <div className="min-w-0 flex-1">
               <p
-                className="text-[#0a1628] text-[17px] font-medium leading-snug"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-[17px] font-medium leading-snug font-heading"
               >
                 {member.displayName}
               </p>
@@ -144,7 +141,7 @@ function RegistryEntry({
               {years && (
                 <p className="text-[13px] text-[#3d4a5c] mt-1.5">{years}</p>
               )}
-              <div className="text-[12.5px] text-[#8a7f70] mt-0.5 leading-relaxed">
+              <div className="text-[12.5px] text-ink-muted mt-0.5 leading-relaxed">
                 {classYear && <p>{classYear}</p>}
                 {hometown && <p>{hometown}</p>}
               </div>
@@ -212,8 +209,7 @@ function FamilyRegistryEntry({
               aria-hidden
             >
               <span
-                className="text-[14px] font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[14px] font-medium font-heading"
               >
                 {initials}
               </span>
@@ -221,8 +217,7 @@ function FamilyRegistryEntry({
           )}
           <div className="min-w-0 flex-1">
             <p
-              className="text-[#0a1628] text-[17px] font-medium leading-snug"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-[17px] font-medium leading-snug font-heading"
             >
               {entry.canonicalName}
             </p>
@@ -271,12 +266,11 @@ function BookHeader({
       <div className="max-w-[1280px] mx-auto flex items-center gap-5 sm:gap-7">
         <HeroCrest src={crestImage} alt="Member Book crest" />
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+          <p className="eyebrow text-gold mb-4">
             Penn Men&rsquo;s Golf
           </p>
           <h1
-            className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium leading-tight tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium leading-tight tracking-tight font-heading"
             data-testid="member-book-title"
           >
             The Member Book
@@ -462,8 +456,7 @@ function MemberBookPageInner() {
                 Filtering by Industry
               </span>
               <span
-                className="font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="font-medium font-heading"
               >
                 {activeIndustry}
               </span>
@@ -562,7 +555,7 @@ function MemberBookPageInner() {
                   </button>
                 )}
               </div>
-              <span className="text-xs text-[#8a7f70] ml-auto">
+              <span className="text-xs text-ink-muted ml-auto">
                 <span
                   className="font-semibold text-[#0a1628]"
                   data-testid="member-results-count"
@@ -600,7 +593,7 @@ function MemberBookPageInner() {
                   })}
                 </div>
                 <div className="ml-auto flex items-center gap-3">
-                  <label className="flex items-center gap-2 text-[11px] text-[#8a7f70]">
+                  <label className="flex items-center gap-2 text-[11px] text-ink-muted">
                     <span className="font-semibold uppercase tracking-wider">Sort</span>
                     <select
                       value={filters.sort}
@@ -618,7 +611,7 @@ function MemberBookPageInner() {
                   {hasActiveFilters && (
                     <button
                       onClick={clearAll}
-                      className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+                      className="text-xs text-ink-muted hover:text-[#0a1628] transition-colors"
                     >
                       Clear
                     </button>
@@ -641,12 +634,11 @@ function MemberBookPageInner() {
               {filtered.length === 0 ? (
                 <div className="text-center py-20">
                   <p
-                    className="text-lg text-[#0a1628] mb-2"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-lg text-[#0a1628] mb-2 font-heading"
                   >
                     No members found.
                   </p>
-                  <p className="text-sm text-[#8a7f70] mb-5">
+                  <p className="text-sm text-ink-muted mb-5">
                     Try a different name, year, or era.
                   </p>
                   <button
@@ -686,8 +678,7 @@ function MemberBookPageInner() {
                         Family &amp; Affiliate
                       </p>
                       <p
-                        className="text-[#0a1628] text-2xl"
-                        style={{ fontFamily: 'var(--font-playfair)' }}
+                        className="text-[#0a1628] text-2xl font-heading"
                       >
                         Family and longtime supporters of Penn Men&rsquo;s Golf.
                       </p>
@@ -716,12 +707,11 @@ function MemberBookPageInner() {
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
                 >
                   <p
-                    className="text-[#0a1628] text-lg font-medium mb-2"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-[#0a1628] text-lg font-medium mb-2 font-heading"
                   >
                     {parents.length === 0 ? 'No family members yet.' : 'No matches.'}
                   </p>
-                  <p className="text-[13px] text-[#8a7f70] max-w-md mx-auto mb-6">
+                  <p className="text-[13px] text-ink-muted max-w-md mx-auto mb-6">
                     {parents.length === 0
                       ? 'Parents, family, and longtime supporters of Penn Men’s Golf can join the Clubhouse too.'
                       : 'Try a different name.'}

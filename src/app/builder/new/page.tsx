@@ -172,7 +172,7 @@ export default function BuilderNewPage() {
               </Button>
             </div>
 
-            <p className="text-xs text-[#8a7f70] text-center leading-relaxed pt-1">
+            <p className="text-xs text-ink-muted text-center leading-relaxed pt-1">
               Team data is saved locally for development. No external accounts are created.
             </p>
           </form>

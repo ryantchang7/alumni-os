@@ -86,8 +86,7 @@ export default function FoundersWall({
             The Founders Wall
           </p>
           <p
-            className="text-white text-xl sm:text-2xl font-medium leading-tight mt-1"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-xl sm:text-2xl font-medium leading-tight mt-1 font-heading"
           >
             Backers of the Clubhouse.
           </p>
@@ -160,8 +159,7 @@ export default function FoundersWall({
             {founderRows.map(f => (
               <li
                 key={f.name}
-                className="flex items-center gap-3 text-[14.5px]"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="flex items-center gap-3 text-[14.5px] font-heading"
               >
                 {f.isProgramFounder ? (
                   <Crown className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
@@ -179,7 +177,7 @@ export default function FoundersWall({
                   <span className="text-white">{f.name}</span>
                 )}
                 {f.classLabel && (
-                  <span className="text-[12px] text-white/45">{f.classLabel}</span>
+                  <span className="text-[12px] text-white/60">{f.classLabel}</span>
                 )}
                 {f.isProgramFounder && (
                   <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#c8a84b] ml-1">
@@ -212,8 +210,7 @@ export default function FoundersWall({
             {familyRows.map(f => (
               <li
                 key={f.name}
-                className="flex items-center gap-3 text-[14.5px]"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="flex items-center gap-3 text-[14.5px] font-heading"
               >
                 <Heart className="w-3.5 h-3.5 text-[#990000] flex-shrink-0" />
                 {f.bookId ? (
@@ -227,7 +224,7 @@ export default function FoundersWall({
                   <span className="text-white">{f.name}</span>
                 )}
                 {f.parentRelationship && (
-                  <span className="text-[12px] text-white/45 truncate">
+                  <span className="text-[12px] text-white/60 truncate">
                     {f.parentRelationship}
                   </span>
                 )}

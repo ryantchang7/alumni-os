@@ -25,7 +25,7 @@ export default function ClubhouseFooter() {
         }}
       />
       <div className="max-w-[1320px] mx-auto px-6 sm:px-10 py-6 text-center space-y-2">
-        <p className="text-[10.5px] text-[#8a7f70] tracking-[0.06em]">
+        <p className="text-[10.5px] text-ink-muted tracking-[0.06em]">
           Built by{' '}
           <a
             href="https://www.linkedin.com/in/ryantchang/"
@@ -37,7 +37,7 @@ export default function ClubhouseFooter() {
           </a>
           .
         </p>
-        <p className="text-[10.5px] text-[#8a7f70] tracking-[0.06em] flex items-center justify-center gap-3">
+        <p className="text-[10.5px] text-ink-muted tracking-[0.06em] flex items-center justify-center gap-3">
           <Link href="/privacy" className="hover:text-[#0a1628] hover:underline transition-colors">
             Privacy
           </Link>

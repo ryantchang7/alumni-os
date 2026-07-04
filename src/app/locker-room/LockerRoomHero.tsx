@@ -39,8 +39,7 @@ export default function LockerRoomHero({ crestImage, showPostCta }: Props) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: 'easeOut', delay: 0.12 }}
-            className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight font-heading"
           >
             Locker Room
           </motion.h1>

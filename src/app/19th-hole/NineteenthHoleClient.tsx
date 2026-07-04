@@ -43,7 +43,7 @@ function MemberCard({ entry }: { entry: AlumniEntry }) {
         <div className="min-w-0">
       <p className="font-semibold text-[#0a1628] text-sm">{entry.canonicalName}</p>
       {(entry.city || entry.state) && (
-        <p className="text-xs text-[#8a7f70] mt-0.5">
+        <p className="text-xs text-ink-muted mt-0.5">
           {[entry.city, entry.state].filter(Boolean).join(', ')}
         </p>
       )}
@@ -52,7 +52,7 @@ function MemberCard({ entry }: { entry: AlumniEntry }) {
       ) : (
         <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
           {entry.classLabel && (
-            <p className="text-xs text-[#8a7f70]">{entry.classLabel}</p>
+            <p className="text-xs text-ink-muted">{entry.classLabel}</p>
           )}
           {entry.handicap && (
             <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
@@ -132,8 +132,7 @@ export default function NineteenthHoleClient({
               Open the wall
             </p>
             <p
-              className="text-white text-xl sm:text-2xl font-medium leading-snug"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-white text-xl sm:text-2xl font-medium leading-snug font-heading"
             >
               Pick a spot. Penn Golf finds you there.
             </p>
@@ -157,7 +156,7 @@ export default function NineteenthHoleClient({
           <div className="flex items-baseline justify-between gap-4 mb-4">
             <div>
               <h2 className="text-base font-semibold text-[#0a1628]">Upcoming Gatherings</h2>
-              <p className="text-sm text-[#8a7f70] mt-0.5">
+              <p className="text-sm text-ink-muted mt-0.5">
                 Coffee, dinners, and signature events organized by Penn Golf alumni.
               </p>
             </div>
@@ -172,7 +171,7 @@ export default function NineteenthHoleClient({
                 className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
                   typeFilter === t
                     ? 'bg-[#0a1628] text-white border-[#0a1628]'
-                    : 'bg-white text-[#8a7f70] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/30 hover:text-[#0a1628]'
+                    : 'bg-white text-ink-muted border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/30 hover:text-[#0a1628]'
                 }`}
               >
                 {TYPE_LABELS[t]}
@@ -182,7 +181,7 @@ export default function NineteenthHoleClient({
 
           {filteredGatherings.length === 0 ? (
             <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-ink-muted"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
             >
               No {typeFilter === 'all' ? '' : typeFilter + ' '}gatherings scheduled right now.
@@ -229,7 +228,7 @@ export default function NineteenthHoleClient({
             </span>
           )}
         </div>
-        <p className="text-sm text-[#8a7f70] mb-3">
+        <p className="text-sm text-ink-muted mb-3">
           Penn Golf members open to an informal catch-up.
         </p>
         {viewerOptedToCoffee && viewerPersonId && (
@@ -246,7 +245,7 @@ export default function NineteenthHoleClient({
         )}
         {openToCoffee.length === 0 ? (
           <div
-            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
+            className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-ink-muted"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
           >
             No one has marked themselves open to coffee yet.
@@ -261,10 +260,10 @@ export default function NineteenthHoleClient({
               return (
                 <div key={group.key}>
                   <div className="flex items-baseline gap-2 mb-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70]">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-muted">
                       {group.label}
                     </p>
-                    <span className="text-[10.5px] tabular-nums text-[#8a7f70]">
+                    <span className="text-[10.5px] tabular-nums text-ink-muted">
                       · {rows.length}
                     </span>
                   </div>
@@ -294,7 +293,7 @@ export default function NineteenthHoleClient({
       {cityGroups.length > 0 && (
         <section>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Alumni by City</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">Cities with two or more Penn Golf members.</p>
+          <p className="text-sm text-ink-muted mb-6">Cities with two or more Penn Golf members.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {cityGroups.map(({ city, count, coffeeCount }) => (
               <Link
@@ -304,7 +303,7 @@ export default function NineteenthHoleClient({
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
               >
                 <p className="font-semibold text-[#0a1628] text-sm">{city}</p>
-                <p className="text-xs text-[#8a7f70] mt-0.5">
+                <p className="text-xs text-ink-muted mt-0.5">
                   {count} {count === 1 ? 'member' : 'members'}
                   {coffeeCount > 0 && ` · ${coffeeCount} open to coffee`}
                 </p>
@@ -324,12 +323,11 @@ export default function NineteenthHoleClient({
       >
         <div>
           <p
-            className="text-[#0a1628] text-base font-medium"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-base font-medium font-heading"
           >
             Alumni in your city
           </p>
-          <p className="text-[12.5px] text-[#8a7f70] mt-1">
+          <p className="text-[12.5px] text-ink-muted mt-1">
             Mark yourself open to a coffee or dinner and other members will find you.
           </p>
         </div>

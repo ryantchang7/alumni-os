@@ -108,8 +108,7 @@ export default async function LockerRoomPage() {
                 </span>
               )}
               <p
-                className="text-[#c8a84b] text-2xl font-medium mb-3"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#c8a84b] text-2xl font-medium mb-3 font-heading"
               >
                 {emptyHeadline}
               </p>

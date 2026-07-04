@@ -72,7 +72,7 @@ export default function SpotlightNominate() {
     }
   }
 
-  const labelClass = 'block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5'
+  const labelClass = 'block text-xs font-semibold tracking-widest uppercase text-ink-muted mb-1.5'
   const inputClass =
     'w-full rounded-lg border border-[#d9c8a8] bg-white px-4 py-2.5 text-sm text-[#0a1628] placeholder:text-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b] transition-colors'
 
@@ -99,12 +99,11 @@ export default function SpotlightNominate() {
               {/* Header */}
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-1">
+                  <p className="eyebrow text-gold mb-1">
                     Penn Men&rsquo;s Golf
                   </p>
                   <h2
-                    className="text-white text-xl font-medium leading-snug"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-white text-xl font-medium leading-snug font-heading"
                   >
                     Nominate someone
                   </h2>
@@ -132,12 +131,11 @@ export default function SpotlightNominate() {
                       </svg>
                     </div>
                     <p
-                      className="text-[#0a1628] text-lg font-medium mb-2"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[#0a1628] text-lg font-medium mb-2 font-heading"
                     >
                       Thanks &mdash; we&rsquo;ll take a look.
                     </p>
-                    <p className="text-sm text-[#8a7f70]">
+                    <p className="text-sm text-ink-muted">
                       Your nomination has been sent.
                     </p>
                     <button
@@ -151,7 +149,7 @@ export default function SpotlightNominate() {
                 ) : status === 'rate-limited' ? (
                   <div className="text-center py-6">
                     <p className="text-sm font-semibold text-[#0a1628] mb-1">Slow down a bit</p>
-                    <p className="text-sm text-[#8a7f70]">You&rsquo;ve sent a few nominations recently. Try again later.</p>
+                    <p className="text-sm text-ink-muted">You&rsquo;ve sent a few nominations recently. Try again later.</p>
                     <button
                       type="button"
                       onClick={handleClose}
@@ -207,7 +205,7 @@ export default function SpotlightNominate() {
                       <button
                         type="button"
                         onClick={handleClose}
-                        className="text-sm text-[#8a7f70] hover:text-[#0a1628] transition-colors px-4 py-2"
+                        className="text-sm text-ink-muted hover:text-[#0a1628] transition-colors px-4 py-2"
                       >
                         Cancel
                       </button>

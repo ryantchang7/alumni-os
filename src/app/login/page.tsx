@@ -24,16 +24,15 @@ function LoginInner() {
             '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)',
         }}
       >
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7f70] mb-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-3">
           Penn Men&rsquo;s Golf
         </p>
         <h1
-          className="text-[#0a1628] text-3xl font-medium mb-2"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="text-[#0a1628] text-3xl font-medium mb-2 font-heading"
         >
           Sign in to the Clubhouse
         </h1>
-        <p className="text-[13px] text-[#8a7f70] mb-8 leading-relaxed">
+        <p className="text-[13px] text-ink-muted mb-8 leading-relaxed">
           {body}
         </p>
 
@@ -57,7 +56,7 @@ function LoginInner() {
           </p>
         )}
 
-        <p className="text-[11px] text-[#8a7f70] mt-8">
+        <p className="text-[11px] text-ink-muted mt-8">
           New here? After signing in you&rsquo;ll find your name in the Member Book and claim your card.
         </p>
         <Link
@@ -75,7 +74,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[calc(100dvh-60px)] flex items-center justify-center text-sm text-[#8a7f70]">
+        <div className="min-h-[calc(100dvh-60px)] flex items-center justify-center text-sm text-ink-muted">
           Loading...
         </div>
       }

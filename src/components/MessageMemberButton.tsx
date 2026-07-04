@@ -37,7 +37,7 @@ export default function MessageMemberButton({ targetAccountId, targetFirstName }
 
   if (sessionStatus === 'loading') {
     return (
-      <span className="inline-flex items-center gap-2 text-[12.5px] text-[#8a7f70] px-4 py-2.5">
+      <span className="inline-flex items-center gap-2 text-[12.5px] text-ink-muted px-4 py-2.5">
         Loading…
       </span>
     )

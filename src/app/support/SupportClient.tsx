@@ -203,8 +203,7 @@ export default function SupportClient({ status }: Props) {
             Optional support
           </p>
           <h1
-            className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight font-heading"
           >
             Support Penn Men&rsquo;s Golf.
           </h1>
@@ -311,7 +310,7 @@ export default function SupportClient({ status }: Props) {
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <p
                       className={`text-[10px] font-semibold uppercase tracking-[0.22em] ${
-                        tier.accent ? 'text-[#c8a84b]' : 'text-[#8a7f70]'
+                        tier.accent ? 'text-[#c8a84b]' : 'text-ink-muted'
                       }`}
                     >
                       {tier.name}
@@ -324,18 +323,17 @@ export default function SupportClient({ status }: Props) {
                   </div>
                   <div className="flex items-baseline gap-2 mb-3">
                     <p
-                      className="text-[#0a1628] text-5xl font-medium"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="text-[#0a1628] text-5xl font-medium font-heading"
                     >
                       ${tier.price}
                     </p>
-                    <p className="text-[#8a7f70] text-base">/ month</p>
+                    <p className="text-ink-muted text-base">/ month</p>
                   </div>
                   <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-5">
                     {tier.tagline}
                   </p>
                   <div className="mb-5 pb-5 border-b border-[rgba(180,168,150,0.4)]">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                       You&rsquo;ll get this badge
                     </p>
                     <MemberBadges badges={[TIER_BADGE[tier.id]]} size="md" />
@@ -401,8 +399,7 @@ export default function SupportClient({ status }: Props) {
             One-time contribution
           </p>
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium leading-tight mb-2"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium leading-tight mb-2 font-heading"
           >
             Or contribute directly.
           </h2>
@@ -433,7 +430,7 @@ export default function SupportClient({ status }: Props) {
               )
             })}
             <div className="flex items-center gap-1 border border-[rgba(180,168,150,0.55)] rounded-lg px-3 py-2 bg-white">
-              <span className="text-[14px] text-[#8a7f70]">$</span>
+              <span className="text-[14px] text-ink-muted">$</span>
               <input
                 type="number"
                 min={5}
@@ -444,7 +441,7 @@ export default function SupportClient({ status }: Props) {
               />
             </div>
           </div>
-          <p className="text-[11px] text-[#8a7f70] mb-6">Minimum $5.</p>
+          <p className="text-[11px] text-ink-muted mb-6">Minimum $5.</p>
 
           <button
             type="button"
@@ -475,7 +472,7 @@ export default function SupportClient({ status }: Props) {
 
         {/* Footer note */}
         <div className="text-center pt-2">
-          <p className="text-[11.5px] text-[#8a7f70] max-w-md mx-auto leading-relaxed">
+          <p className="text-[11.5px] text-ink-muted max-w-md mx-auto leading-relaxed">
             Payments processed by Stripe. Penn Men&rsquo;s Golf is not a registered
             501(c)(3), so contributions are not tax-deductible. The 70% transfer to
             the program is reconciled quarterly by the captain.{' '}
@@ -484,7 +481,7 @@ export default function SupportClient({ status }: Props) {
             </Link>
             .
           </p>
-          <p className="text-[11px] text-[#8a7f70] mt-2">
+          <p className="text-[11px] text-ink-muted mt-2">
             <Link href="/subscription-terms" className="hover:text-[#0a1628] hover:underline">
               Subscription &amp; Billing Terms
             </Link>

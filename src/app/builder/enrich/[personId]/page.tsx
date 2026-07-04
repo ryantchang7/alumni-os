@@ -265,7 +265,7 @@ function EnrichPersonInner() {
 
   if (!teamSlug || !personId) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-[#8a7f70] text-sm p-8">
+      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm p-8">
         Missing teamSlug or personId.
       </div>
     )
@@ -273,7 +273,7 @@ function EnrichPersonInner() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-[#8a7f70] text-sm">
+      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">
         <span className="w-5 h-5 border-2 border-[#8a7f70]/30 border-t-[#8a7f70] rounded-full animate-spin mr-3" />
         Loading profile…
       </div>
@@ -326,41 +326,41 @@ function EnrichPersonInner() {
             <div data-testid="roster-truth-panel" className="bg-white border border-[rgba(180,168,150,0.35)] rounded-lg p-5" style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}>
               <div className="flex items-center gap-2 mb-4">
                 <h2 className="text-[#0a1628] font-semibold text-sm">Roster facts — source of truth</h2>
-                <span className="text-xs text-[#8a7f70] bg-[#f0ece5] px-2 py-0.5 rounded">Read only</span>
+                <span className="text-xs text-ink-muted bg-[#f0ece5] px-2 py-0.5 rounded">Read only</span>
               </div>
               <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm">
                 <div>
-                  <dt className="text-xs text-[#8a7f70] uppercase tracking-wide">Name</dt>
+                  <dt className="text-xs text-ink-muted uppercase tracking-wide">Name</dt>
                   <dd className="text-[#0d1f3c] font-medium mt-0.5">{name}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-[#8a7f70] uppercase tracking-wide">Penn Golf years</dt>
+                  <dt className="text-xs text-ink-muted uppercase tracking-wide">Penn Golf years</dt>
                   <dd className="text-[#0d1f3c] mt-0.5">{rosterYears(membership)}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-[#8a7f70] uppercase tracking-wide">Class</dt>
+                  <dt className="text-xs text-ink-muted uppercase tracking-wide">Class</dt>
                   <dd className="text-[#0d1f3c] mt-0.5">{membership?.classLabel ?? '—'}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-[#8a7f70] uppercase tracking-wide">Hometown</dt>
+                  <dt className="text-xs text-ink-muted uppercase tracking-wide">Hometown</dt>
                   <dd className="text-[#0d1f3c] mt-0.5">{membership?.hometown ?? '—'}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-[#8a7f70] uppercase tracking-wide">High School</dt>
+                  <dt className="text-xs text-ink-muted uppercase tracking-wide">High School</dt>
                   <dd className="text-[#0d1f3c] mt-0.5">{membership?.highSchool ?? '—'}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-[#8a7f70] uppercase tracking-wide">Confidence</dt>
+                  <dt className="text-xs text-ink-muted uppercase tracking-wide">Confidence</dt>
                   <dd className="text-[#0d1f3c] mt-0.5">
                     {membership ? `${Math.round(membership.confidence * 100)}%` : '—'}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-[#8a7f70] uppercase tracking-wide">Bio URLs</dt>
+                  <dt className="text-xs text-ink-muted uppercase tracking-wide">Bio URLs</dt>
                   <dd className="text-[#0d1f3c] mt-0.5">{membership?.bioUrls.length ?? 0}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-[#8a7f70] uppercase tracking-wide">Source URLs</dt>
+                  <dt className="text-xs text-ink-muted uppercase tracking-wide">Source URLs</dt>
                   <dd className="text-[#0d1f3c] mt-0.5">{membership?.sourceUrls.length ?? 0}</dd>
                 </div>
               </dl>
@@ -377,7 +377,7 @@ function EnrichPersonInner() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#8a7f70] mb-1">Current Role</label>
+                  <label className="block text-xs font-medium text-ink-muted mb-1">Current Role</label>
                   <input
                     type="text"
                     value={form.currentRole ?? ''}
@@ -387,7 +387,7 @@ function EnrichPersonInner() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#8a7f70] mb-1">Current Company</label>
+                  <label className="block text-xs font-medium text-ink-muted mb-1">Current Company</label>
                   <input
                     type="text"
                     value={form.currentCompany ?? ''}
@@ -399,7 +399,7 @@ function EnrichPersonInner() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#8a7f70] mb-1">Industry</label>
+                <label className="block text-xs font-medium text-ink-muted mb-1">Industry</label>
                 <input
                   type="text"
                   value={form.industry ?? ''}
@@ -411,7 +411,7 @@ function EnrichPersonInner() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#8a7f70] mb-1">City</label>
+                  <label className="block text-xs font-medium text-ink-muted mb-1">City</label>
                   <input
                     type="text"
                     value={form.city ?? ''}
@@ -421,7 +421,7 @@ function EnrichPersonInner() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#8a7f70] mb-1">State</label>
+                  <label className="block text-xs font-medium text-ink-muted mb-1">State</label>
                   <input
                     type="text"
                     value={form.state ?? ''}
@@ -431,7 +431,7 @@ function EnrichPersonInner() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#8a7f70] mb-1">Country</label>
+                  <label className="block text-xs font-medium text-ink-muted mb-1">Country</label>
                   <input
                     type="text"
                     value={form.country ?? ''}
@@ -444,7 +444,7 @@ function EnrichPersonInner() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#8a7f70] mb-1">Email</label>
+                  <label className="block text-xs font-medium text-ink-muted mb-1">Email</label>
                   <input
                     type="email"
                     value={form.email ?? ''}
@@ -454,7 +454,7 @@ function EnrichPersonInner() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#8a7f70] mb-1">LinkedIn URL</label>
+                  <label className="block text-xs font-medium text-ink-muted mb-1">LinkedIn URL</label>
                   <input
                     type="url"
                     value={form.linkedinUrl ?? ''}
@@ -466,7 +466,7 @@ function EnrichPersonInner() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#8a7f70] mb-1">Personal Website URL</label>
+                <label className="block text-xs font-medium text-ink-muted mb-1">Personal Website URL</label>
                 <input
                   type="url"
                   value={form.personalWebsiteUrl ?? ''}
@@ -477,7 +477,7 @@ function EnrichPersonInner() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#8a7f70] mb-1">Notes</label>
+                <label className="block text-xs font-medium text-ink-muted mb-1">Notes</label>
                 <textarea
                   value={form.notes ?? ''}
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
@@ -489,7 +489,7 @@ function EnrichPersonInner() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#8a7f70] mb-1">Relationship Status</label>
+                  <label className="block text-xs font-medium text-ink-muted mb-1">Relationship Status</label>
                   <select
                     value={form.relationshipStatus ?? 'not_started'}
                     onChange={e => setForm(f => ({ ...f, relationshipStatus: e.target.value }))}
@@ -501,7 +501,7 @@ function EnrichPersonInner() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#8a7f70] mb-1">Verification Status</label>
+                  <label className="block text-xs font-medium text-ink-muted mb-1">Verification Status</label>
                   <select
                     value={form.verificationStatus ?? 'unverified'}
                     onChange={e => setForm(f => ({ ...f, verificationStatus: e.target.value }))}
@@ -540,7 +540,7 @@ function EnrichPersonInner() {
               <h2 className="text-[#0a1628] font-semibold text-sm">Supporting Sources</h2>
 
               {sources.length === 0 ? (
-                <p className="text-sm text-[#8a7f70]">No sources added yet.</p>
+                <p className="text-sm text-ink-muted">No sources added yet.</p>
               ) : (
                 <ul className="space-y-3">
                   {sources.map(src => (
@@ -555,11 +555,11 @@ function EnrichPersonInner() {
                           {src.title ?? src.url}
                         </a>
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
-                          <span className="text-xs text-[#8a7f70] bg-[#f0ece5] px-2 py-0.5 rounded">
+                          <span className="text-xs text-ink-muted bg-[#f0ece5] px-2 py-0.5 rounded">
                             {SOURCE_TYPES.find(t => t.value === src.sourceType)?.label ?? src.sourceType}
                           </span>
                           {src.notes && (
-                            <span className="text-xs text-[#8a7f70]">{src.notes}</span>
+                            <span className="text-xs text-ink-muted">{src.notes}</span>
                           )}
                         </div>
                       </div>
@@ -576,7 +576,7 @@ function EnrichPersonInner() {
 
               {/* Add source form */}
               <form data-testid="enrichment-source-form" onSubmit={handleAddSource} className="border border-[rgba(180,168,150,0.35)] rounded-md p-4 space-y-3 bg-[#faf8f5]">
-                <p className="text-xs font-medium text-[#8a7f70] uppercase tracking-wide">Add a source</p>
+                <p className="text-xs font-medium text-ink-muted uppercase tracking-wide">Add a source</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="sm:col-span-2">
                     <input
@@ -641,10 +641,10 @@ function EnrichPersonInner() {
                 <h3 className="text-[#0a1628] font-semibold text-sm">Profile summary</h3>
                 <div>
                   <p className="text-[#0d1f3c] font-semibold text-base">{name}</p>
-                  <p className="text-[#8a7f70] text-xs mt-0.5">Penn Golf {rosterYears(membership)}</p>
+                  <p className="text-ink-muted text-xs mt-0.5">Penn Golf {rosterYears(membership)}</p>
                 </div>
                 {membership && (
-                  <p className="text-[#8a7f70] text-xs">
+                  <p className="text-ink-muted text-xs">
                     Confidence: {Math.round(membership.confidence * 100)}%
                   </p>
                 )}
@@ -658,19 +658,19 @@ function EnrichPersonInner() {
                 <h3 className="text-[#0a1628] font-semibold text-sm mb-3">Quick links</h3>
                 <Link
                   href={`/builder/enrich?teamSlug=${teamSlug}`}
-                  className="block text-sm text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+                  className="block text-sm text-ink-muted hover:text-[#0a1628] transition-colors"
                 >
                   ← Back to Enrich List
                 </Link>
                 <Link
                   href={`/player/alumni/${personId}`}
-                  className="block text-sm text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+                  className="block text-sm text-ink-muted hover:text-[#0a1628] transition-colors"
                 >
                   View Player Profile →
                 </Link>
                 <Link
                   href={`/player/outreach/${personId}`}
-                  className="block text-sm text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+                  className="block text-sm text-ink-muted hover:text-[#0a1628] transition-colors"
                 >
                   Draft Outreach →
                 </Link>
@@ -687,7 +687,7 @@ export default function EnrichPersonPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-[#8a7f70] text-sm">
+        <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">
           Loading…
         </div>
       }

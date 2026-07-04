@@ -142,7 +142,7 @@ export default function PhotoUpload({
               />
             )
           ) : (
-            <ImageIcon className="w-8 h-8 text-[#8a7f70]" />
+            <ImageIcon className="w-8 h-8 text-ink-muted" />
           )}
         </div>
 
@@ -200,7 +200,7 @@ export default function PhotoUpload({
               {allowVideo ? 'Take photo or video' : 'Take photo'}
             </button>
           </div>
-          <p className="text-[11px] text-[#8a7f70]">
+          <p className="text-[11px] text-ink-muted">
             {allowVideo
               ? 'Photo or short video clip from your camera roll. Or paste a URL below.'
               : 'Pick from your camera roll, crop it, done. Or paste a URL below.'}

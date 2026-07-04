@@ -53,8 +53,7 @@ export default function HallOfFamePage() {
             Penn Men&rsquo;s Golf · The Record Book
           </p>
           <h1
-            className="text-white text-4xl sm:text-6xl font-medium tracking-tight leading-[1.05]"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-4xl sm:text-6xl font-medium tracking-tight leading-[1.05] font-heading"
           >
             Hall of Fame
           </h1>
@@ -91,22 +90,20 @@ export default function HallOfFamePage() {
                   )}
                   <div className="min-w-0 flex-1">
                     <p
-                      className={`text-5xl font-light leading-none ${
+                      className={`font-heading text-5xl font-light leading-none ${
                         featured ? 'text-[#990000]' : 'text-[#0a1628]'
                       }`}
-                      style={{ fontFamily: 'var(--font-playfair)' }}
                     >
                       {a.value}
                     </p>
                   </div>
                 </div>
                 <p
-                  className="text-[#0a1628] text-[15px] font-medium mb-1.5"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-[15px] font-medium mb-1.5 font-heading"
                 >
                   {a.label}
                 </p>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70] mb-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-3">
                   {a.detail}
                 </p>
                 <p className="text-[13px] text-[#3d4a5c] leading-relaxed">{a.description}</p>
@@ -121,8 +118,7 @@ export default function HallOfFamePage() {
         <section>
           <div className="flex items-baseline justify-between mb-1">
             <h2
-              className="text-2xl text-[#0a1628] font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-2xl text-[#0a1628] font-medium font-heading"
             >
               Ivy League Champions
             </h2>
@@ -130,7 +126,7 @@ export default function HallOfFamePage() {
               4 crowns
             </span>
           </div>
-          <p className="text-sm text-[#8a7f70] mb-6">
+          <p className="text-sm text-ink-muted mb-6">
             The four seasons Penn took the Ivy. Letter winners from each championship team.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -142,8 +138,7 @@ export default function HallOfFamePage() {
               >
                 <div className="flex items-baseline justify-between mb-3">
                   <p
-                    className="text-3xl text-[#0a1628] font-medium leading-none"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-3xl text-[#0a1628] font-medium leading-none font-heading"
                   >
                     {year}
                   </p>
@@ -152,15 +147,14 @@ export default function HallOfFamePage() {
                   </span>
                 </div>
                 {members.length === 0 ? (
-                  <p className="text-[12.5px] text-[#8a7f70] italic">Roster data for this year is still being compiled.</p>
+                  <p className="text-[12.5px] text-ink-muted italic">Roster data for this year is still being compiled.</p>
                 ) : (
                   <ul className="space-y-1">
                     {members.map((m) => (
                       <li key={m.id}>
                         <Link
                           href={`/member-book/${encodeURIComponent(m.id)}`}
-                          className="text-[13px] text-[#0a1628] hover:underline"
-                          style={{ fontFamily: 'var(--font-playfair)' }}
+                          className="text-[13px] text-[#0a1628] hover:underline font-heading"
                         >
                           {m.displayName}
                         </Link>
@@ -177,8 +171,7 @@ export default function HallOfFamePage() {
         <section>
           <div className="flex items-baseline justify-between mb-1">
             <h2
-              className="text-2xl text-[#0a1628] font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-2xl text-[#0a1628] font-medium font-heading"
             >
               NCAA Championships
             </h2>
@@ -186,7 +179,7 @@ export default function HallOfFamePage() {
               5 appearances
             </span>
           </div>
-          <p className="text-sm text-[#8a7f70] mb-6">
+          <p className="text-sm text-ink-muted mb-6">
             Penn teams that reached the NCAA Championships stage.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -197,16 +190,15 @@ export default function HallOfFamePage() {
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
               >
                 <p
-                  className="text-2xl text-[#990000] font-medium leading-none mb-1"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-2xl text-[#990000] font-medium leading-none mb-1 font-heading"
                 >
                   {year}
                 </p>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
                   NCAA
                 </p>
                 {members.length > 0 && (
-                  <p className="text-[11px] text-[#8a7f70] mt-2">
+                  <p className="text-[11px] text-ink-muted mt-2">
                     {members.length} member{members.length === 1 ? '' : 's'}
                   </p>
                 )}
@@ -222,12 +214,11 @@ export default function HallOfFamePage() {
         >
           <div>
             <p
-              className="text-[#0a1628] text-base font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-base font-medium font-heading"
             >
               Every Penn Golf member, 1948–present
             </p>
-            <p className="text-[12.5px] text-[#8a7f70] mt-1">
+            <p className="text-[12.5px] text-ink-muted mt-1">
               The full registry, beyond championship rosters.
             </p>
           </div>

@@ -94,9 +94,9 @@ export default function RolesClient({ initialAccounts }: Props) {
           value={filter}
           onChange={e => setFilter(e.target.value)}
           placeholder="Filter by name or email"
-          className="flex-1 max-w-md text-[13px] px-3 py-2 border border-[rgba(180,168,150,0.55)] rounded-lg bg-white text-[#0a1628] placeholder:text-[#8a7f70]/70 focus:outline-none focus:border-[#0a1628]"
+          className="flex-1 max-w-md text-[13px] px-3 py-2 border border-[rgba(180,168,150,0.55)] rounded-lg bg-white text-[#0a1628] placeholder:text-ink-muted/70 focus:outline-none focus:border-[#0a1628]"
         />
-        <p className="text-[11px] text-[#8a7f70]">
+        <p className="text-[11px] text-ink-muted">
           {filtered.length} of {rows.length}
         </p>
       </div>
@@ -110,7 +110,7 @@ export default function RolesClient({ initialAccounts }: Props) {
       <div className="overflow-x-auto">
         <table className="w-full text-[13px]">
           <thead>
-            <tr className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70] border-b border-[rgba(180,168,150,0.4)]">
+            <tr className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted border-b border-[rgba(180,168,150,0.4)]">
               <th className="text-left py-2 px-2">Account</th>
               <th className="text-left py-2 px-2">Stripe</th>
               <th className="text-center py-2 px-2">{BADGE_LABELS.captain}</th>
@@ -130,9 +130,9 @@ export default function RolesClient({ initialAccounts }: Props) {
                 >
                   <td className="py-2.5 px-2">
                     <p className="font-medium text-[#0a1628]">{display}</p>
-                    <p className="text-[11px] text-[#8a7f70]">{row.email}</p>
+                    <p className="text-[11px] text-ink-muted">{row.email}</p>
                   </td>
-                  <td className="py-2.5 px-2 text-[11px] text-[#8a7f70]">
+                  <td className="py-2.5 px-2 text-[11px] text-ink-muted">
                     {row.stripeTier === 'founding'
                       ? 'Founding'
                       : row.stripeTier === 'parent'
@@ -174,7 +174,7 @@ export default function RolesClient({ initialAccounts }: Props) {
             })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-[12px] text-[#8a7f70]">
+                <td colSpan={6} className="py-8 text-center text-[12px] text-ink-muted">
                   No accounts match.
                 </td>
               </tr>
@@ -183,7 +183,7 @@ export default function RolesClient({ initialAccounts }: Props) {
         </table>
       </div>
 
-      <p className="text-[11px] text-[#8a7f70] leading-relaxed">
+      <p className="text-[11px] text-ink-muted leading-relaxed">
         Manual grants stack on top of any Stripe-driven badges and are
         used purely for presentation + access control. They do not create
         a Stripe subscription.

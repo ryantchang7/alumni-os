@@ -206,7 +206,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   if (removed) {
     return (
       <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4">
-        <p className="text-xs text-[#8a7f70]">Removed. It&rsquo;s off the board.</p>
+        <p className="text-xs text-ink-muted">Removed. It&rsquo;s off the board.</p>
       </div>
     )
   }
@@ -245,14 +245,14 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 {TYPE_LABEL[gathering.type]}
               </span>
               {gathering.vibe && (
-                <span className="text-[10px] font-medium text-[#8a7f70] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-medium text-ink-muted bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
                   {VIBE_LABEL[gathering.vibe]}
                 </span>
               )}
               <GatheringStatusPill status={gathering.status} />
               {gathering.isExample && (
                 <span
-                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a7f70] bg-[#faf7f2] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
+                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted bg-[#faf7f2] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
                   title="Sample gathering — host a real one to replace it."
                 >
                   Example
@@ -275,7 +275,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         {/* Meta */}
         <div className="space-y-1 mb-3">
           <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">
-            <Calendar className="w-3 h-3 text-[#8a7f70] flex-shrink-0" />
+            <Calendar className="w-3 h-3 text-ink-muted flex-shrink-0" />
             <span>{gathering.dateText}{gathering.timeText ? ` · ${gathering.timeText}` : ''}</span>
           </div>
           {(gathering.city || gathering.venue) && (
@@ -291,20 +291,20 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-xs text-[#4a5568] hover:text-[#0a1628] group/map"
                 >
-                  <MapPin className="w-3 h-3 text-[#8a7f70] flex-shrink-0" />
+                  <MapPin className="w-3 h-3 text-ink-muted flex-shrink-0" />
                   <span className="group-hover/map:underline">{locationText}</span>
                   <span className="text-[#990000] text-[11px] font-medium">· Map</span>
                 </a>
               ) : (
                 <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">
-                  <MapPin className="w-3 h-3 text-[#8a7f70] flex-shrink-0" />
+                  <MapPin className="w-3 h-3 text-ink-muted flex-shrink-0" />
                   <span>{locationText}</span>
                 </div>
               )
             })()
           )}
           {(liveCount > 0 || gathering.capacity) && (
-            <div className="flex items-center gap-1.5 text-xs text-[#8a7f70]">
+            <div className="flex items-center gap-1.5 text-xs text-ink-muted">
               <Users className="w-3 h-3 flex-shrink-0" />
               <span>
                 {liveCount > 0 ? `${liveCount} on the sheet` : null}
@@ -314,7 +314,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             </div>
           )}
           {gathering.hostName && (
-            <div className="flex items-center gap-1.5 text-xs text-[#8a7f70]">
+            <div className="flex items-center gap-1.5 text-xs text-ink-muted">
               <Clock className="w-3 h-3 flex-shrink-0" />
               <span>Hosted by {gathering.hostName}</span>
             </div>
@@ -350,7 +350,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             on the card so it works without depending on the RSVP email. */}
         {!gathering.isExample && (
           <div className="flex items-center gap-2 flex-wrap mb-4 text-xs">
-            <span className="inline-flex items-center gap-1.5 text-[#8a7f70]">
+            <span className="inline-flex items-center gap-1.5 text-ink-muted">
               <CalendarPlus className="w-3.5 h-3.5" />
               Add to calendar:
             </span>
@@ -386,7 +386,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         {/* Attendee list (approved members only) */}
         {approved && !gathering.isExample && attendees && attendees.length > 0 && (
           <div className="mb-4 pt-3 border-t border-[rgba(180,168,150,0.3)]">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a7f70] mb-1.5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-1.5">
               On the sheet
             </p>
             <ul className="flex flex-wrap gap-x-3 gap-y-1">
@@ -395,13 +395,12 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                   {a.bookId ? (
                     <Link
                       href={`/member-book/${encodeURIComponent(a.bookId)}`}
-                      className="hover:underline"
-                      style={{ fontFamily: 'var(--font-playfair)' }}
+                      className="hover:underline font-heading"
                     >
                       {a.name}
                     </Link>
                   ) : (
-                    <span style={{ fontFamily: 'var(--font-playfair)' }}>{a.name}</span>
+                    <span className="font-heading">{a.name}</span>
                   )}
                 </li>
               ))}
@@ -411,7 +410,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
 
         {/* Action */}
         {gathering.isExample ? (
-          <p className="text-xs text-[#8a7f70] italic">
+          <p className="text-xs text-ink-muted italic">
             Sample gathering — host a real one to replace it.
           </p>
         ) : isHost ? (
@@ -433,7 +432,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         ) : gathering.status === 'open' ? (
           <>
             {!approved && sessionStatus !== 'loading' && (
-              <p className="inline-flex items-center gap-1.5 text-xs text-[#8a7f70]">
+              <p className="inline-flex items-center gap-1.5 text-xs text-ink-muted">
                 <Lock className="w-3 h-3" />
                 <Link
                   href={sessionStatus === 'authenticated' ? '/account/setup' : '/login?next=/19th-hole'}
@@ -470,7 +469,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             )}
           </>
         ) : gathering.status === 'full' ? (
-          <p className="text-xs text-[#8a7f70]">This gathering is full.</p>
+          <p className="text-xs text-ink-muted">This gathering is full.</p>
         ) : null}
       </div>
 

@@ -21,7 +21,7 @@ export default function BuilderRunPage() {
         <p className="text-base text-[#0a1628] font-semibold mb-2">
           The agent pipeline animation has been replaced by the real workflow.
         </p>
-        <p className="text-sm text-[#8a7f70] mb-8 max-w-prose">
+        <p className="text-sm text-ink-muted mb-8 max-w-prose">
           Use the Team Workspace to run historical imports, extract rosters, and promote
           entries into the alumni graph. History and per-season progress are tracked there.
         </p>

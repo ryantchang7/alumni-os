@@ -219,7 +219,7 @@ function OutreachPageInner() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">
-        <p className="text-sm text-[#8a7f70]">Loading profile…</p>
+        <p className="text-sm text-ink-muted">Loading profile…</p>
       </div>
     )
   }
@@ -315,12 +315,12 @@ function OutreachPageInner() {
                         ? 'bg-[#0a1628] text-white'
                         : active
                           ? 'bg-[#990000] text-white'
-                          : 'bg-[rgba(180,168,150,0.3)] text-[#8a7f70]'
+                          : 'bg-[rgba(180,168,150,0.3)] text-ink-muted'
                     }`}
                   >
                     {done ? '✓' : s}
                   </div>
-                  <span className={`text-xs font-medium hidden sm:block ${active ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                  <span className={`text-xs font-medium hidden sm:block ${active ? 'text-[#0a1628]' : 'text-ink-muted'}`}>
                     {label}
                   </span>
                 </div>
@@ -338,7 +338,7 @@ function OutreachPageInner() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <div className="flex items-center justify-between mb-4">
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider">
+              <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
                 Step 1 — What kind of request?
               </p>
               {step > 1 && (
@@ -392,7 +392,7 @@ function OutreachPageInner() {
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
               <div className="flex items-center justify-between mb-4">
-                <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider">
+                <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
                   Step 2 — A bit of context
                 </p>
                 {step > 2 && (
@@ -448,18 +448,18 @@ function OutreachPageInner() {
               className="bg-white border border-[#0a1628]/30 rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
+              <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-4">
                 Step 3 — Your message
               </p>
 
               <div className="mb-3">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-medium text-[#8a7f70]">Edit as needed</label>
+                  <label className="text-xs font-medium text-ink-muted">Edit as needed</label>
                   {messageEdited && (
                     <button
                       type="button"
                       onClick={() => { setCustomMessage(generatedDraft); setMessageEdited(false) }}
-                      className="text-xs text-[#8a7f70] hover:text-[#0a1628]"
+                      className="text-xs text-ink-muted hover:text-[#0a1628]"
                     >
                       Reset draft
                     </button>
@@ -490,7 +490,7 @@ function OutreachPageInner() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                    Your email <span className="text-[#8a7f70]">(optional — for the alum to reply to)</span>
+                    Your email <span className="text-ink-muted">(optional — for the alum to reply to)</span>
                   </label>
                   <input
                     type="email"
@@ -530,7 +530,7 @@ function OutreachPageInner() {
 
 export default function PlayerOutreachPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center"><p className="text-sm text-[#8a7f70]">Loading…</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center"><p className="text-sm text-ink-muted">Loading…</p></div>}>
       <OutreachPageInner />
     </Suspense>
   )

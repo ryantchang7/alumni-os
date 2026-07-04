@@ -87,8 +87,7 @@ export default function ConfirmDialog({
 
         <h2
           id="confirm-dialog-title"
-          className="mt-2 text-[17px] font-semibold text-[#0a1628] leading-snug"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="mt-2 text-[17px] font-semibold text-[#0a1628] leading-snug font-heading"
         >
           {title}
         </h2>

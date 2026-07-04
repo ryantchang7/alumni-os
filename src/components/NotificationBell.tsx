@@ -235,8 +235,7 @@ export default function NotificationBell() {
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(180,168,150,0.25)] bg-[#faf7f2]">
             <span
-              className="text-[14px] font-semibold"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[14px] font-semibold font-heading"
             >
               Notifications
             </span>

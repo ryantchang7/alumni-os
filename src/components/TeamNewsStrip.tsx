@@ -73,8 +73,7 @@ export default function TeamNewsStrip({ items }: Props) {
             From the box
           </p>
           <h2
-            className="text-[#0a1628] text-base font-medium"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-base font-medium font-heading"
           >
             Penn Men&rsquo;s Golf — Latest
           </h2>
@@ -102,12 +101,11 @@ export default function TeamNewsStrip({ items }: Props) {
             {item.imageUrl ? <NewsThumb src={item.imageUrl} alt={item.title || 'Article thumbnail'} /> : <PlaceholderThumb />}
             <div className="p-4">
               <p
-                className="text-[#0a1628] text-[13.5px] font-medium leading-snug line-clamp-3 group-hover:text-[#990000] transition-colors"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-[13.5px] font-medium leading-snug line-clamp-3 group-hover:text-[#990000] transition-colors font-heading"
               >
                 {item.title}
               </p>
-              <p className="text-[10.5px] text-[#8a7f70] mt-2 flex items-center gap-1">
+              <p className="text-[10.5px] text-ink-muted mt-2 flex items-center gap-1">
                 {timeAgo(item.publishedAt)}
                 <ArrowUpRight className="w-2.5 h-2.5 ml-auto opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity" />
               </p>

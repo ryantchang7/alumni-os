@@ -105,7 +105,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
         >
           Thanks &mdash; Ryan will see this.
         </p>
-        <p className="mt-3 text-sm text-[#8a7f70]">
+        <p className="mt-3 text-sm text-ink-muted">
           We read every idea. Appreciate you taking the time.
         </p>
       </div>
@@ -118,7 +118,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
       <div>
         <label
           htmlFor="suggest-name"
-          className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5"
+          className="block text-xs font-semibold tracking-widest uppercase text-ink-muted mb-1.5"
         >
           Name
         </label>
@@ -138,7 +138,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
       <div>
         <label
           htmlFor="suggest-email"
-          className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-1.5"
+          className="block text-xs font-semibold tracking-widest uppercase text-ink-muted mb-1.5"
         >
           Email <span className="normal-case font-normal tracking-normal">(optional)</span>
         </label>
@@ -155,7 +155,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
 
       {/* Topic chips — optional single-select */}
       <div>
-        <p className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70] mb-2">
+        <p className="block text-xs font-semibold tracking-widest uppercase text-ink-muted mb-2">
           What&apos;s this about? <span className="normal-case font-normal tracking-normal">(optional)</span>
         </p>
         <div className="flex flex-wrap gap-2">
@@ -185,7 +185,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
         <div className="flex items-baseline justify-between mb-1.5">
           <label
             htmlFor="suggest-message"
-            className="block text-xs font-semibold tracking-widest uppercase text-[#8a7f70]"
+            className="block text-xs font-semibold tracking-widest uppercase text-ink-muted"
           >
             Your idea
           </label>

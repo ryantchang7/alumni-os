@@ -131,7 +131,7 @@ function PeopleInner() {
             .
           </div>
         ) : loading ? (
-          <div className="flex items-center gap-3 text-[#8a7f70] text-sm py-12 justify-center">
+          <div className="flex items-center gap-3 text-ink-muted text-sm py-12 justify-center">
             <span className="w-5 h-5 border-2 border-[#8a7f70]/30 border-t-[#8a7f70] rounded-full animate-spin" />
             Loading people…
           </div>
@@ -141,7 +141,7 @@ function PeopleInner() {
           </div>
         ) : people.length === 0 ? (
           <div className="bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-12 text-center">
-            <p className="text-sm text-[#8a7f70] mb-3">
+            <p className="text-sm text-ink-muted mb-3">
               No promoted people yet. Run a scrape and promote roster entries first.
             </p>
             <Link
@@ -159,34 +159,34 @@ function PeopleInner() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-[#f0ece5]">
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     Name
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     Roster Years
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     Class
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     Hometown
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     High School
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     Conf.
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     Bio URLs
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     Sources
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     Inspect
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">
+                  <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">
                     Enrich
                   </th>
                 </tr>
@@ -199,17 +199,17 @@ function PeopleInner() {
                       <td className="px-4 py-3 font-medium text-[#0d1f3c]">
                         {person.canonicalName}
                       </td>
-                      <td className="px-4 py-3 text-[#8a7f70]">{rosterYears(m)}</td>
-                      <td className="px-4 py-3 text-[#8a7f70]">
+                      <td className="px-4 py-3 text-ink-muted">{rosterYears(m)}</td>
+                      <td className="px-4 py-3 text-ink-muted">
                         {m?.classLabel ?? <span className="text-[#c4bbb0]">—</span>}
                       </td>
-                      <td className="px-4 py-3 text-[#8a7f70]">
+                      <td className="px-4 py-3 text-ink-muted">
                         {m?.hometown ?? <span className="text-[#c4bbb0]">—</span>}
                       </td>
-                      <td className="px-4 py-3 text-[#8a7f70]">
+                      <td className="px-4 py-3 text-ink-muted">
                         {m?.highSchool ?? <span className="text-[#c4bbb0]">—</span>}
                       </td>
-                      <td className="px-4 py-3 text-[#8a7f70]">
+                      <td className="px-4 py-3 text-ink-muted">
                         {m ? (
                           <span
                             className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -224,7 +224,7 @@ function PeopleInner() {
                           <span className="text-[#c4bbb0]">—</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-[#8a7f70]">
+                      <td className="px-4 py-3 text-ink-muted">
                         {m && m.bioUrls.length > 0 ? (
                           <span
                             className="text-xs font-medium text-[#0a1628] cursor-default"
@@ -236,7 +236,7 @@ function PeopleInner() {
                           <span className="text-[#c4bbb0]">—</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-[#8a7f70]">
+                      <td className="px-4 py-3 text-ink-muted">
                         {m && m.sourceUrls.length > 0 ? (
                           <span
                             className="text-xs font-medium text-[#0a1628] cursor-default"
@@ -302,7 +302,7 @@ function PeopleInner() {
 
 export default function PeoplePage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-[#8a7f70] text-sm">Loading…</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">Loading…</div>}>
       <PeopleInner />
     </Suspense>
   )

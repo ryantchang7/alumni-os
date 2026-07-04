@@ -25,7 +25,7 @@ export default async function SuggestPage() {
       <div className="max-w-2xl mx-auto px-6 sm:px-10 py-16 sm:py-24">
         {/* Header */}
         <div className="mb-10">
-          <p className="text-xs font-semibold tracking-[0.22em] uppercase text-[#8a7f70] mb-4">
+          <p className="text-xs font-semibold tracking-[0.22em] uppercase text-ink-muted mb-4">
             Penn Men&rsquo;s Golf
           </p>
           <h1

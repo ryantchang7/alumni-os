@@ -80,7 +80,7 @@ export default function GlobalError({ error, reset }: Props) {
           style={{
             fontSize: '14px',
             lineHeight: 1.6,
-            color: '#8a7f70',
+            color: 'var(--ink-muted)',
             maxWidth: '24rem',
             margin: '0 0 32px',
           }}

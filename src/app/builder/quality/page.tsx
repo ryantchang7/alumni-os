@@ -79,7 +79,7 @@ function QualityInner() {
         )}
 
         {loading && (
-          <div className="flex items-center gap-3 text-[#8a7f70] text-sm py-16 justify-center">
+          <div className="flex items-center gap-3 text-ink-muted text-sm py-16 justify-center">
             <span className="w-5 h-5 border-2 border-[#8a7f70]/30 border-t-[#8a7f70] rounded-full animate-spin" />
             Analyzing graph quality…
           </div>
@@ -163,18 +163,18 @@ function QualityInner() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-[#f0ece5]">
-                      <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Season</th>
-                      <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Entries</th>
-                      <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Promoted</th>
-                      <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Avg Conf.</th>
-                      <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Source</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Season</th>
+                      <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Entries</th>
+                      <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Promoted</th>
+                      <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Avg Conf.</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Source</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[rgba(180,168,150,0.2)]">
                     {coverage.map((row, i) => (
                       <tr key={row.seasonYear} className={i % 2 === 1 ? 'bg-[#faf9f7]' : ''}>
                         <td className="px-5 py-3 font-mono text-[#0a1628]">{row.seasonYear}</td>
-                        <td className="px-5 py-3 text-right text-[#8a7f70]">{row.totalEntries}</td>
+                        <td className="px-5 py-3 text-right text-ink-muted">{row.totalEntries}</td>
                         <td className="px-5 py-3 text-right">
                           <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${row.promotedEntries > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
                             {row.promotedEntries}
@@ -230,7 +230,7 @@ function QualityInner() {
                             {d.personB.canonicalName}
                           </Link>
                         </div>
-                        <p className="text-xs text-[#8a7f70] mt-0.5">{duplicateReasonLabel(d.reason)}</p>
+                        <p className="text-xs text-ink-muted mt-0.5">{duplicateReasonLabel(d.reason)}</p>
                       </div>
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${d.confidence >= 0.9 ? 'bg-red-100 text-red-700' : d.confidence >= 0.7 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600'}`}>
                         {Math.round(d.confidence * 100)}% match
@@ -262,9 +262,9 @@ function QualityInner() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-[#f0ece5]">
-                      <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Name</th>
-                      <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Missing</th>
-                      <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Action</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Name</th>
+                      <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Missing</th>
+                      <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[rgba(180,168,150,0.2)]">
@@ -321,7 +321,7 @@ function QualityInner() {
 
         {quality && quality.totalPeople === 0 && (
           <div className="bg-[#fffdf9] border border-[rgba(180,168,150,0.35)] rounded-lg p-12 text-center">
-            <p className="text-sm text-[#8a7f70] mb-3">No promoted people yet for this team.</p>
+            <p className="text-sm text-ink-muted mb-3">No promoted people yet for this team.</p>
             <Link
               href={`/builder/promote?teamSlug=${teamSlug}`}
               className="text-sm text-[#990000] hover:underline font-medium"
@@ -337,7 +337,7 @@ function QualityInner() {
 
 export default function QualityPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-[#8a7f70] text-sm">Loading…</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">Loading…</div>}>
       <QualityInner />
     </Suspense>
   )

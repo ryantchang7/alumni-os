@@ -76,12 +76,11 @@ export default async function MeetTheTeamPage() {
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+          <p className="eyebrow text-gold mb-4">
             The Team
           </p>
           <h1
-            className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight font-heading"
           >
             Ask the Team
           </h1>
@@ -106,7 +105,7 @@ export default async function MeetTheTeamPage() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-sm font-semibold text-[#0a1628]">No current players yet</p>
-            <p className="text-xs text-[#8a7f70] mt-2 max-w-sm mx-auto">
+            <p className="text-xs text-ink-muted mt-2 max-w-sm mx-auto">
               Current roster members will appear here once they&rsquo;re added to the Clubhouse.
             </p>
             <div className="mt-6">
@@ -149,7 +148,7 @@ export default async function MeetTheTeamPage() {
                           {person.canonicalName}
                         </p>
                         {classShort && (
-                          <p className="text-xs text-[#8a7f70] mt-0.5">{classShort}</p>
+                          <p className="text-xs text-ink-muted mt-0.5">{classShort}</p>
                         )}
                         {badges.length > 0 && (
                           <div className="mt-1.5">
@@ -176,10 +175,10 @@ export default async function MeetTheTeamPage() {
                   {(membership.hometown || membership.highSchool) && !enrichment?.alumniBio && (
                     <div className="space-y-0.5">
                       {membership.hometown && (
-                        <p className="text-xs text-[#8a7f70]">{membership.hometown}</p>
+                        <p className="text-xs text-ink-muted">{membership.hometown}</p>
                       )}
                       {membership.highSchool && (
-                        <p className="text-xs text-[#8a7f70]">{membership.highSchool}</p>
+                        <p className="text-xs text-ink-muted">{membership.highSchool}</p>
                       )}
                     </div>
                   )}
@@ -222,7 +221,7 @@ export default async function MeetTheTeamPage() {
           >
             <div>
               <p className="font-semibold text-[#0a1628] text-sm">Have a question for the team?</p>
-              <p className="text-xs text-[#8a7f70] mt-0.5">
+              <p className="text-xs text-ink-muted mt-0.5">
                 Current players answer when they can &mdash; usually within a couple days.
               </p>
             </div>
@@ -236,7 +235,7 @@ export default async function MeetTheTeamPage() {
         <div className="mt-6 text-center">
           <Link
             href="/team/questions"
-            className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+            className="text-xs text-ink-muted hover:text-[#0a1628] transition-colors"
           >
             See your questions &rarr;
           </Link>

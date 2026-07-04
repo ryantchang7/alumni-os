@@ -277,7 +277,7 @@ function AlumniProfileInner() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8f5f0] py-20 text-center">
-        <p className="text-sm text-[#8a7f70]">Loading profile...</p>
+        <p className="text-sm text-ink-muted">Loading profile...</p>
       </div>
     )
   }
@@ -286,7 +286,7 @@ function AlumniProfileInner() {
     return (
       <div className="min-h-screen bg-[#f8f5f0] py-20 text-center">
         <p className="text-base font-semibold text-[#990000] mb-2">Profile not found</p>
-        <p className="text-sm text-[#8a7f70] mb-6">{error}</p>
+        <p className="text-sm text-ink-muted mb-6">{error}</p>
         <Link href="/alumni" className="text-sm font-medium text-[#990000] hover:underline">
           Back to Your Profile
         </Link>
@@ -334,7 +334,7 @@ function AlumniProfileInner() {
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
             >
               <p className="text-sm font-semibold text-[#0a1628]">Profile claimed.</p>
-              <p className="text-xs text-[#8a7f70] mt-1">
+              <p className="text-xs text-ink-muted mt-1">
                 Add your details below so other Penn Golf members can find you.
               </p>
             </div>
@@ -346,7 +346,7 @@ function AlumniProfileInner() {
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
             >
               <p className="text-sm font-semibold text-[#0a1628]">View-only</p>
-              <p className="text-xs text-[#8a7f70] mt-1">
+              <p className="text-xs text-ink-muted mt-1">
                 {sessionStatus === 'authenticated'
                   ? 'You can only edit your own profile. Manage yours from your account.'
                   : 'Sign in to claim and edit this profile.'}
@@ -367,19 +367,19 @@ function AlumniProfileInner() {
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-3">
+              <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-3">
                 From the Penn Golf record
               </p>
               <div className="grid grid-cols-2 gap-x-8 gap-y-2">
                 {profile.highSchool && (
                   <div>
-                    <p className="text-xs text-[#8a7f70]">High school</p>
+                    <p className="text-xs text-ink-muted">High school</p>
                     <p className="text-sm text-[#0a1628]">{profile.highSchool}</p>
                   </div>
                 )}
                 {rosterYearsLabel && (
                   <div>
-                    <p className="text-xs text-[#8a7f70]">Penn Golf years</p>
+                    <p className="text-xs text-ink-muted">Penn Golf years</p>
                     <p className="text-sm text-[#0a1628]">{rosterYearsLabel}</p>
                   </div>
                 )}
@@ -408,10 +408,10 @@ function AlumniProfileInner() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+            <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
               Your current info
             </p>
-            <p className="text-xs text-[#8a7f70] mb-4">
+            <p className="text-xs text-ink-muted mb-4">
               Updates flow to your Member Book card and the Member Map.
             </p>
             <div className="space-y-4">
@@ -460,7 +460,7 @@ function AlumniProfileInner() {
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
                   Industries <span className="text-[#990000]">*</span>
                 </label>
-                <p className="text-[11px] text-[#8a7f70] mb-2">Pick any that apply.</p>
+                <p className="text-[11px] text-ink-muted mb-2">Pick any that apply.</p>
                 <div className="flex flex-wrap gap-1.5">
                   {INDUSTRY_OPTIONS.map((opt) => {
                     const selected = industry
@@ -532,7 +532,7 @@ function AlumniProfileInner() {
                         setAdditionalLocations(additionalLocations.filter((_, i) => i !== idx))
                       }
                       aria-label="Remove location"
-                      className="w-7 h-7 rounded-full text-[#8a7f70] hover:bg-[#faf7f2] hover:text-[#990000] text-base leading-none"
+                      className="w-7 h-7 rounded-full text-ink-muted hover:bg-[#faf7f2] hover:text-[#990000] text-base leading-none"
                     >
                       ×
                     </button>
@@ -553,7 +553,7 @@ function AlumniProfileInner() {
                     + Add another location
                   </button>
                 )}
-                <p className="text-[11px] text-[#8a7f70] mt-1.5 leading-snug">
+                <p className="text-[11px] text-ink-muted mt-1.5 leading-snug">
                   For "winters in FL," "summers on Cape Cod," etc. Up to 3 extra locations
                   — each appears on the Member Map.
                 </p>
@@ -565,7 +565,7 @@ function AlumniProfileInner() {
               <div className="border-t border-[rgba(180,168,150,0.35)] pt-5 mt-1">
                 <div className="flex items-baseline justify-between mb-1">
                   <label className="block text-xs font-medium text-[#4a5568]">
-                    On the loop <span className="text-[#8a7f70] font-normal italic">— passing through somewhere?</span>
+                    On the loop <span className="text-ink-muted font-normal italic">— passing through somewhere?</span>
                   </label>
                   {(inTownCity || inTownState || inTownStart || inTownEnd || inTownNote) && (
                     <button
@@ -612,7 +612,7 @@ function AlumniProfileInner() {
                   placeholder="e.g. open to a round at Winged Foot · drinks Friday night"
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] mt-2 focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                 />
-                <p className="text-[11px] text-[#8a7f70] mt-1.5 leading-snug">
+                <p className="text-[11px] text-ink-muted mt-1.5 leading-snug">
                   Surfaces on the Clubhouse for any Penn Golf alum in that city. Auto-clears after the end date.
                 </p>
               </div>
@@ -652,10 +652,10 @@ function AlumniProfileInner() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+            <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
               Golf
             </p>
-            <p className="text-xs text-[#8a7f70] mb-4">
+            <p className="text-xs text-ink-muted mb-4">
               {isParent
                 ? 'Optional — share a home course or favorites if you have them.'
                 : 'Used on The Course and to surface you to alumni wanting to play near you.'}
@@ -677,7 +677,7 @@ function AlumniProfileInner() {
                   multiple
                 />
                 {!noHomeCourse && (
-                  <p className="text-[11px] text-[#8a7f70] mt-1">
+                  <p className="text-[11px] text-ink-muted mt-1">
                     Member at more than one? Add them all, separated by a comma
                     &mdash; each shows on The Course, and you appear under both.
                   </p>
@@ -776,10 +776,10 @@ function AlumniProfileInner() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+            <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
               Photo
             </p>
-            <p className="text-xs text-[#8a7f70] mb-4">
+            <p className="text-xs text-ink-muted mb-4">
               Shown on your Member Book card. Upload from your camera roll or paste a URL.
             </p>
             <PhotoUpload value={photoUrl} onChange={setPhotoUrl} label="Profile photo" />
@@ -796,7 +796,7 @@ function AlumniProfileInner() {
               <button
                 type="button"
                 onClick={() => setPhotoUrl('')}
-                className="mt-2 ml-3 text-[11px] text-[#8a7f70] hover:text-[#0a1628]"
+                className="mt-2 ml-3 text-[11px] text-ink-muted hover:text-[#0a1628]"
               >
                 Clear
               </button>
@@ -808,10 +808,10 @@ function AlumniProfileInner() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+            <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
               Contact
             </p>
-            <p className="text-xs text-[#8a7f70] mb-4">
+            <p className="text-xs text-ink-muted mb-4">
               Visible to other approved Penn Golf members.{' '}
               <span className="text-[#990000] font-semibold">At least one</span>{' '}
               is required so people can actually reach you.
@@ -862,10 +862,10 @@ function AlumniProfileInner() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+            <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
               What I&rsquo;m open to
             </p>
-            <p className="text-xs text-[#8a7f70] mb-4">
+            <p className="text-xs text-ink-muted mb-4">
               These ticks decide whether you show up on The Course (hosting / joining a round), in 19th Hole &ldquo;Open to Coffee,&rdquo; and on mentorship + intro lists.
             </p>
             <div className="space-y-2.5">
@@ -895,10 +895,10 @@ function AlumniProfileInner() {
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
-              <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-1">
+              <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
                 How I can help
               </p>
-              <p className="text-xs text-[#8a7f70] mb-4">
+              <p className="text-xs text-ink-muted mb-4">
                 Players see which topics you are open to. Pick all that apply.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -925,7 +925,7 @@ function AlumniProfileInner() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
-            <p className="text-xs font-semibold text-[#8a7f70] uppercase tracking-wider mb-4">
+            <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-4">
               How to reach me
             </p>
             <div className="space-y-2">
@@ -959,7 +959,7 @@ function AlumniProfileInner() {
               />
               <div>
                 <p className="text-sm font-medium text-[#0a1628]">Visible to players</p>
-                <p className="text-xs text-[#8a7f70] mt-0.5">
+                <p className="text-xs text-ink-muted mt-0.5">
                   Uncheck to hide your profile from the player-facing network at any time.
                 </p>
               </div>
@@ -1030,7 +1030,7 @@ export default function AlumniProfilePage() {
   return (
     <Suspense
       fallback={
-        <div className="py-20 text-center text-sm text-[#8a7f70]">Loading profile...</div>
+        <div className="py-20 text-center text-sm text-ink-muted">Loading profile...</div>
       }
     >
       <AlumniProfileInner />

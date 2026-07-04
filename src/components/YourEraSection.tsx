@@ -72,7 +72,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
         <Users className="w-4 h-4 text-[#c8a84b] self-center" />
         <h2 className="text-base font-semibold text-[#0a1628]">Your Era</h2>
         {data.eraLabel && (
-          <p className="text-[12px] text-[#8a7f70] italic ml-1">
+          <p className="text-[12px] text-ink-muted italic ml-1">
             — the guys you played with, {data.eraLabel}
           </p>
         )}
@@ -119,12 +119,11 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
                       ? `/member-book/${encodeURIComponent(t.bookId)}`
                       : `/player/alumni/${encodeURIComponent(t.personId)}?teamSlug=penn-mens-golf`
                   }
-                  className="block text-[#0a1628] text-[14.5px] leading-snug truncate hover:underline"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="block text-[#0a1628] text-[14.5px] leading-snug truncate hover:underline font-heading"
                 >
                   {t.name}
                 </Link>
-                <p className="text-[11px] text-[#8a7f70] truncate">
+                <p className="text-[11px] text-ink-muted truncate">
                   {overlapText(t)}
                   {t.classLabel ? ` · ${t.classLabel}` : ''}
                 </p>
@@ -153,7 +152,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
       </div>
 
       {data.teammates.length > SHOW_MAX && (
-        <p className="text-[11.5px] text-[#8a7f70] mt-2.5">
+        <p className="text-[11.5px] text-ink-muted mt-2.5">
           + {data.teammates.length - SHOW_MAX} more from your era in the{' '}
           <Link href="/member-book" className="text-[#990000] hover:underline">
             Member Book

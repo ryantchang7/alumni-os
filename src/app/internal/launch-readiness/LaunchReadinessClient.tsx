@@ -62,7 +62,7 @@ function ItemRow({ row }: { row: Row }) {
         <p className="text-[#0a1628] font-medium text-[14px]">{row.label}</p>
         <p className="text-[12.5px] text-[#3d4a5c] leading-relaxed mt-0.5">{row.detail}</p>
         {row.hint && (
-          <p className="text-[12px] text-[#8a7f70] italic mt-1">{row.hint}</p>
+          <p className="text-[12px] text-ink-muted italic mt-1">{row.hint}</p>
         )}
         {row.link && (
           <Link
@@ -294,8 +294,7 @@ export default function LaunchReadinessClient({
             Captain Checklist
           </p>
           <h1
-            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-3xl sm:text-4xl font-medium tracking-tight font-heading"
           >
             Launch Readiness
           </h1>
@@ -320,12 +319,11 @@ export default function LaunchReadinessClient({
         {/* Numbers */}
         <section>
           <h2
-            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-1"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-1 font-heading"
           >
             By the numbers
           </h2>
-          <p className="text-[12.5px] text-[#8a7f70] mb-4">
+          <p className="text-[12.5px] text-ink-muted mb-4">
             Live counts straight from the store. No third-party trackers.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -352,7 +350,7 @@ export default function LaunchReadinessClient({
                 className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-4 py-4"
               >
                 <p className="text-2xl font-semibold text-[#0a1628]">{value}</p>
-                <p className="text-[10.5px] uppercase tracking-[0.18em] text-[#8a7f70] mt-1">{label}</p>
+                <p className="text-[10.5px] uppercase tracking-[0.18em] text-ink-muted mt-1">{label}</p>
               </div>
             ))}
           </div>
@@ -364,10 +362,10 @@ export default function LaunchReadinessClient({
             <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-2">
               Persistence roundtrip
             </p>
-            <p className="text-[#0a1628] font-medium mb-1" style={{ fontFamily: 'var(--font-playfair)' }}>
+            <p className="text-[#0a1628] font-medium mb-1 font-heading">
               Confirm KV writes survive.
             </p>
-            <p className="text-[12.5px] text-[#8a7f70] mb-4">
+            <p className="text-[12.5px] text-ink-muted mb-4">
               Writes a 60-second heartbeat to Upstash and reads it back. Refuses if KV env vars are missing.
             </p>
             <button
@@ -386,10 +384,10 @@ export default function LaunchReadinessClient({
             <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-2">
               Test email
             </p>
-            <p className="text-[#0a1628] font-medium mb-1" style={{ fontFamily: 'var(--font-playfair)' }}>
+            <p className="text-[#0a1628] font-medium mb-1 font-heading">
               Send a real Resend message to your inbox.
             </p>
-            <p className="text-[12.5px] text-[#8a7f70] mb-4">
+            <p className="text-[12.5px] text-ink-muted mb-4">
               Sends to the email on your session only. Cannot dispatch to anyone else.
             </p>
             <button
@@ -414,8 +412,7 @@ export default function LaunchReadinessClient({
                 {group.letter}
               </span>
               <h2
-                className="text-[#0a1628] text-xl sm:text-2xl font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-xl sm:text-2xl font-medium font-heading"
               >
                 {group.title}
               </h2>

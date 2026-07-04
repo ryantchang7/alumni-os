@@ -112,8 +112,7 @@ export default function HostNineteenthHolePage() {
         >
           <Beer className="w-7 h-7 text-[#b8860b] mx-auto mb-4" />
           <h1
-            className="text-[#0a1628] text-2xl font-medium mb-2"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-2xl font-medium mb-2 font-heading"
           >
             Round&rsquo;s on you.
           </h1>
@@ -175,8 +174,7 @@ export default function HostNineteenthHolePage() {
           <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
             <span className="block w-10 h-[2px] bg-[#b8860b] mb-5" />
             <h1
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
             >
               Host the 19th
             </h1>
@@ -227,7 +225,7 @@ export default function HostNineteenthHolePage() {
                   )
                 })}
               </div>
-              <p className="text-[11.5px] text-[#8a7f70] mt-2">{currentType.helper}</p>
+              <p className="text-[11.5px] text-ink-muted mt-2">{currentType.helper}</p>
             </div>
 
             {/* Venue */}
@@ -387,7 +385,7 @@ export default function HostNineteenthHolePage() {
               </button>
               <Link
                 href="/19th-hole"
-                className="text-[12px] text-[#8a7f70] hover:text-[#0a1628]"
+                className="text-[12px] text-ink-muted hover:text-[#0a1628]"
               >
                 Cancel
               </Link>

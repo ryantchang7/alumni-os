@@ -65,8 +65,7 @@ export default async function MemberClubsPage() {
           </div>
           <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">Founder tools</p>
           <h1
-            className="text-white text-2xl sm:text-3xl font-semibold tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-2xl sm:text-3xl font-semibold tracking-tight font-heading"
           >
             Member Home Clubs
           </h1>
@@ -83,7 +82,7 @@ export default async function MemberClubsPage() {
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
           >
-            <p className="text-sm text-[#8a7f70]">No members found for {TEAM_SLUG}.</p>
+            <p className="text-sm text-ink-muted">No members found for {TEAM_SLUG}.</p>
           </div>
         ) : (
           <MemberClubsEditor rows={rows} />

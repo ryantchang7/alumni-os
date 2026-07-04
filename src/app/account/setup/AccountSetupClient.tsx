@@ -100,15 +100,13 @@ export default function AccountSetupClient({
             </p>
           </div>
           <h1
-            className="text-white text-3xl sm:text-[40px] font-medium tracking-tight leading-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-3xl sm:text-[40px] font-medium tracking-tight leading-tight font-heading"
           >
             {firstName ? <>Welcome through the gate, {firstName}.</> : 'Welcome through the gate.'}
           </h1>
           {claimedCount > 0 && (
             <p
-              className="text-white/70 text-[15px] sm:text-base mt-4 max-w-xl leading-relaxed"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-white/70 text-[15px] sm:text-base mt-4 max-w-xl leading-relaxed font-heading"
             >
               <span className="text-[#c8a84b]">{claimedCount}</span> of your foursome have already
               checked in
@@ -120,7 +118,7 @@ export default function AccountSetupClient({
               . Find your card to be found.
             </p>
           )}
-          <p className="text-white/45 text-[13px] mt-4 max-w-xl leading-relaxed">
+          <p className="text-white/60 text-[13px] mt-4 max-w-xl leading-relaxed">
             {signedInEmail ? <>Signed in as {signedInEmail}. </> : null}
             Search by name, hometown, or class year. Once you claim, edit your role and how you can help.
           </p>
@@ -167,14 +165,14 @@ export default function AccountSetupClient({
 
         {filtered.length === 0 ? (
           <div className="max-w-md mx-auto text-center py-10">
-            <p className="text-[#0a1628] text-base" style={{ fontFamily: 'var(--font-playfair)' }}>
+            <p className="text-[#0a1628] text-base font-heading">
               No match found.
             </p>
-            <p className="text-sm text-[#8a7f70] mt-2 mb-3">
+            <p className="text-sm text-ink-muted mt-2 mb-3">
               Try just a first or last name. The Member Book holds every Penn Men&rsquo;s Golf player from 1948 onward.
             </p>
             {womensNote && (
-              <p className="text-[12.5px] text-[#8a7f70] italic mb-6 leading-relaxed max-w-sm mx-auto">
+              <p className="text-[12.5px] text-ink-muted italic mb-6 leading-relaxed max-w-sm mx-auto">
                 {womensNote}
               </p>
             )}
@@ -182,7 +180,7 @@ export default function AccountSetupClient({
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 text-left"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 6px 16px rgba(10,22,40,0.04)' }}
             >
-              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mb-2">
+              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-muted mb-2">
                 Still stuck?
               </p>
               <p className="text-sm text-[#0a1628] leading-relaxed">
@@ -215,15 +213,14 @@ export default function AccountSetupClient({
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04), 0 2px 8px rgba(10,22,40,0.03)' }}
                 >
                   <p
-                    className="text-[#0a1628] text-[17px] font-medium leading-snug"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-[#0a1628] text-[17px] font-medium leading-snug font-heading"
                   >
                     {m.displayName}
                   </p>
                   {m.yearsLabel && (
                     <p className="text-[13px] text-[#3d4a5c] mt-1.5">{m.yearsLabel}</p>
                   )}
-                  <div className="text-[12.5px] text-[#8a7f70] mt-0.5 leading-relaxed">
+                  <div className="text-[12.5px] text-ink-muted mt-0.5 leading-relaxed">
                     {m.classYear && <p>Class of {m.classYear}</p>}
                     {m.hometown && <p>{m.hometown}</p>}
                   </div>

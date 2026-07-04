@@ -150,14 +150,13 @@ function ContextualRow({ member }: { member: MapMember }) {
           <MemberAvatar photoUrl={member.photoUrl} name={member.canonicalName} size={40} tone={isParent ? 'red' : 'navy'} />
           <div className="min-w-0">
           <p
-            className="text-[#0a1628] text-[14px] font-medium leading-snug"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-[14px] font-medium leading-snug font-heading"
           >
             {member.canonicalName}
           </p>
           {/* For players/alumni: roster years. For parents: the relationship line. */}
           {!isParent && years && (
-            <p className="text-[12px] text-[#8a7f70] mt-0.5">{years}</p>
+            <p className="text-[12px] text-ink-muted mt-0.5">{years}</p>
           )}
           {isParent && member.parentRelationship && (
             <p className="text-[12px] text-[#3d4a5c] mt-0.5">
@@ -405,7 +404,7 @@ export default function MemberMapClient({
               )
             })}
           </div>
-          <p className="text-[12px] text-[#8a7f70] sm:text-right max-w-md">
+          <p className="text-[12px] text-ink-muted sm:text-right max-w-md">
             {lens === 'hometown'
               ? 'Where Penn Golf members grew up, drawn from the Member Book.'
               : 'Where Penn Golf members live now — only members who have updated their location appear.'}
@@ -413,7 +412,7 @@ export default function MemberMapClient({
         </div>
       )}
       {view === 'family' && (
-        <p className="text-[12px] text-[#8a7f70] max-w-md">
+        <p className="text-[12px] text-ink-muted max-w-md">
           Parents, family, and longtime supporters, by where they live now.
         </p>
       )}
@@ -426,7 +425,7 @@ export default function MemberMapClient({
         {view === 'all' && (
           <>
             <div data-testid="role-filter">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Who
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -448,7 +447,7 @@ export default function MemberMapClient({
             </div>
 
             <div data-testid="era-filter">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Era
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -473,7 +472,7 @@ export default function MemberMapClient({
 
         <div className="flex items-end gap-4 flex-wrap pt-1">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-1.5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-1.5">
               State
             </p>
             <select
@@ -491,7 +490,7 @@ export default function MemberMapClient({
             </select>
           </div>
           <p
-            className="text-xs text-[#8a7f70] sm:ml-auto"
+            className="text-xs text-ink-muted sm:ml-auto"
             data-testid="map-filter-summary"
           >
             <span className="font-semibold text-[#0a1628]">{totalShown}</span> member
@@ -511,22 +510,21 @@ export default function MemberMapClient({
           {!hasData ? (
             <div className="flex flex-col items-center justify-center text-center px-6" style={{ height: 380 }}>
               <p
-                className="text-[#0a1628] text-lg font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-lg font-medium font-heading"
               >
                 {lens === 'current'
                   ? 'No alumni have updated their location yet.'
                   : 'No member locations on this map yet.'}
               </p>
               {lens === 'current' && (
-                <p className="text-[12.5px] text-[#8a7f70] mt-2 max-w-md">
+                <p className="text-[12.5px] text-ink-muted mt-2 max-w-md">
                   Once alumni add where they live now, they&rsquo;ll appear here. The Hometowns view shows everyone we have data for today.
                 </p>
               )}
             </div>
           ) : geoError ? (
             <div className="flex flex-col items-center justify-center gap-3" style={{ height: 380 }}>
-              <p className="text-sm text-[#8a7f70]">Map couldn&rsquo;t load — check your connection.</p>
+              <p className="text-sm text-ink-muted">Map couldn&rsquo;t load — check your connection.</p>
               <button
                 type="button"
                 onClick={() => { setGeoError(false); setGeoRetry(n => n + 1) }}
@@ -537,7 +535,7 @@ export default function MemberMapClient({
             </div>
           ) : geos.length === 0 ? (
             <div className="flex items-center justify-center" style={{ height: 380 }}>
-              <p className="text-sm text-[#8a7f70]">Loading map…</p>
+              <p className="text-sm text-ink-muted">Loading map…</p>
             </div>
           ) : (
             <svg
@@ -592,30 +590,30 @@ export default function MemberMapClient({
                 className="w-3 h-3 rounded-sm inline-block"
                 style={{ background: '#4a8fc4' }}
               />
-              <span className="text-[10px] text-[#8a7f70]">1 member</span>
+              <span className="text-[10px] text-ink-muted">1 member</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span
                 className="w-3 h-3 rounded-sm inline-block"
                 style={{ background: '#2d6a9f' }}
               />
-              <span className="text-[10px] text-[#8a7f70]">2–4 members</span>
+              <span className="text-[10px] text-ink-muted">2–4 members</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span
                 className="w-3 h-3 rounded-sm inline-block"
                 style={{ background: '#1e4a7c' }}
               />
-              <span className="text-[10px] text-[#8a7f70]">5+ members</span>
+              <span className="text-[10px] text-ink-muted">5+ members</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span
                 className="w-3 h-3 rounded-sm inline-block"
                 style={{ background: '#0a1628' }}
               />
-              <span className="text-[10px] text-[#8a7f70]">Selected</span>
+              <span className="text-[10px] text-ink-muted">Selected</span>
             </div>
-            <p className="text-[10px] text-[#8a7f70] ml-auto hidden sm:block">
+            <p className="text-[10px] text-ink-muted ml-auto hidden sm:block">
               Click a state to see members
             </p>
           </div>
@@ -632,8 +630,7 @@ export default function MemberMapClient({
               <div className="bg-[#0a1628] px-5 py-4 flex items-start justify-between gap-2">
                 <div>
                   <p
-                    className="font-medium text-white text-base"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="font-medium text-white text-base font-heading"
                   >
                     {selectedState.stateName}
                   </p>
@@ -653,7 +650,7 @@ export default function MemberMapClient({
               </div>
               <div className="overflow-y-auto" style={{ maxHeight: 420 }}>
                 {filteredMembers.length === 0 ? (
-                  <p className="text-xs text-[#8a7f70] px-5 py-6">
+                  <p className="text-xs text-ink-muted px-5 py-6">
                     No members match this filter. Try another era.
                   </p>
                 ) : (
@@ -678,12 +675,11 @@ export default function MemberMapClient({
           ) : (
             <div className="px-6 py-10 text-center">
               <p
-                className="text-[#0a1628] text-lg font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-lg font-medium font-heading"
               >
                 Select a state
               </p>
-              <p className="text-[12.5px] text-[#8a7f70] mt-2 max-w-[220px] mx-auto leading-relaxed">
+              <p className="text-[12.5px] text-ink-muted mt-2 max-w-[220px] mx-auto leading-relaxed">
                 Click any state on the map to see Penn Golf members there.
               </p>
               <Link
@@ -704,12 +700,11 @@ export default function MemberMapClient({
       >
         <div>
           <p
-            className="text-[#0a1628] text-[15px] font-medium"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-[15px] font-medium font-heading"
           >
             Are you on this map?
           </p>
-          <p className="text-[12.5px] text-[#8a7f70] mt-1">
+          <p className="text-[12.5px] text-ink-muted mt-1">
             Update your hometown and where you live now so the next class can find you.
           </p>
         </div>

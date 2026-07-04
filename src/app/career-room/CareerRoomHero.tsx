@@ -25,8 +25,7 @@ export default function CareerRoomHero() {
               Penn Men&rsquo;s Golf · Advice &amp; Introductions
             </p>
             <h1
-              className="text-[#f4ecdb] text-5xl sm:text-7xl font-medium tracking-tight leading-[0.92]"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#f4ecdb] text-5xl sm:text-7xl font-medium tracking-tight leading-[0.92] font-heading"
             >
               Career Room
             </h1>

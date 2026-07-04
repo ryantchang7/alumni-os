@@ -72,7 +72,7 @@ export default function CaptainsLineup({
       <h2 className="text-base font-semibold text-[#0a1628] mb-1">
         Clubhouse Captains
       </h2>
-      <p className="text-sm text-[#8a7f70] mb-5">
+      <p className="text-sm text-ink-muted mb-5">
         The members who built and look after the Clubhouse — your point people for the Penn Golf family.
       </p>
       <div className="flex flex-wrap gap-4">
@@ -92,8 +92,7 @@ export default function CaptainsLineup({
             />
             <div className="min-w-0">
               <p
-                className="text-sm font-semibold text-[#0a1628] leading-snug"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-sm font-semibold text-[#0a1628] leading-snug font-heading"
               >
                 {displayName}
               </p>

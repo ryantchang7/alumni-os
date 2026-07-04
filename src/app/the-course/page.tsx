@@ -42,14 +42,13 @@ function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
             <MemberAvatar photoUrl={photoUrl} name={person.canonicalName} size={44} tone="navy" />
             <div className="min-w-0">
             <p
-              className="text-[#0a1628] text-base font-medium leading-snug"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-base font-medium leading-snug font-heading"
             >
               {person.canonicalName}
             </p>
             <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
               {membership.classLabel && (
-                <p className="text-[11.5px] text-[#8a7f70]">{membership.classLabel}</p>
+                <p className="text-[11.5px] text-ink-muted">{membership.classLabel}</p>
               )}
               {enrichment.handicap && (
                 <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 px-1.5 py-0.5 rounded-full whitespace-nowrap">
@@ -65,7 +64,7 @@ function AlumniRoundCard({ entry }: { entry: AlumniEntry }) {
         </div>
         {location && (
           <div className="flex items-center gap-1.5 text-[12px] text-[#4a5568] mt-1">
-            <MapPin className="w-3 h-3 text-[#8a7f70]" />
+            <MapPin className="w-3 h-3 text-ink-muted" />
             <span>{location}</span>
           </div>
         )}
@@ -378,8 +377,7 @@ export default async function TheCoursePage() {
                 Open your tee box
               </p>
               <p
-                className="text-white text-xl sm:text-2xl font-medium leading-snug"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-white text-xl sm:text-2xl font-medium leading-snug font-heading"
               >
                 Host a round. Penn Golf will find you there.
               </p>
@@ -415,12 +413,11 @@ export default async function TheCoursePage() {
                     </span>
                     <div>
                       <p
-                        className="text-[#0a1628] text-[15px] font-medium leading-snug mb-1"
-                        style={{ fontFamily: 'var(--font-playfair)' }}
+                        className="text-[#0a1628] text-[15px] font-medium leading-snug mb-1 font-heading"
                       >
                         {card.label}
                       </p>
-                      <p className="text-[12.5px] text-[#8a7f70] leading-snug">{card.description}</p>
+                      <p className="text-[12.5px] text-ink-muted leading-snug">{card.description}</p>
                     </div>
                   </div>
                 </Link>
@@ -496,12 +493,11 @@ export default async function TheCoursePage() {
             >
               <Flag className="w-6 h-6 text-[#2d6a4f] mx-auto mb-3" />
               <p
-                className="text-[#0a1628] text-base font-medium mb-2"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-base font-medium mb-2 font-heading"
               >
                 No one&rsquo;s teed off yet.
               </p>
-              <p className="text-[13px] text-[#8a7f70] mb-5 max-w-md mx-auto">
+              <p className="text-[13px] text-ink-muted mb-5 max-w-md mx-auto">
                 Be the first. Mark yourself open to hosting a round and players in your
                 city will find you here.
               </p>
@@ -537,7 +533,7 @@ export default async function TheCoursePage() {
                           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#2d6a4f]">
                             {g.label}
                           </p>
-                          <span className="text-[10.5px] tabular-nums text-[#8a7f70]">
+                          <span className="text-[10.5px] tabular-nums text-ink-muted">
                             · {rows.length}
                           </span>
                         </div>
@@ -575,14 +571,14 @@ export default async function TheCoursePage() {
               <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#2d6a4f]">
                 Around your level
               </p>
-              <span className="text-[10.5px] tabular-nums text-[#8a7f70]">
+              <span className="text-[10.5px] tabular-nums text-ink-muted">
                 · {similarPlayers.length}
               </span>
             </div>
             <h2 className="text-base font-semibold text-[#0a1628] mb-1">
               {BUCKET_SHORT[viewerBucket]}
             </h2>
-            <p className="text-sm text-[#8a7f70] mb-5">
+            <p className="text-sm text-ink-muted mb-5">
               Penn Golf members in your bucket — {BUCKET_LABELS[viewerBucket].toLowerCase()}.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -625,12 +621,11 @@ export default async function TheCoursePage() {
         >
           <div>
             <p
-              className="text-[#0a1628] text-base font-medium"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-base font-medium font-heading"
             >
               Have a home course?
             </p>
-            <p className="text-[12.5px] text-[#8a7f70] mt-1">
+            <p className="text-[12.5px] text-ink-muted mt-1">
               Add it to your profile and mark yourself open to hosting. Members and current players will find you.
             </p>
           </div>

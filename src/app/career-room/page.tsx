@@ -59,14 +59,13 @@ function PostCard({ post }: { post: CareerPost }) {
         >
           {isAsk ? 'Ask' : 'Offer'}
         </span>
-        <span className="text-[10px] font-mono uppercase tracking-[0.14em] text-[#8a7f70] bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded">
+        <span className="text-[10px] font-mono uppercase tracking-[0.14em] text-ink-muted bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded">
           {SECTOR_LABEL[post.sector]}
         </span>
-        <span className="text-[10.5px] text-[#8a7f70] ml-auto">{timeAgo(post.createdAt)}</span>
+        <span className="text-[10.5px] text-ink-muted ml-auto">{timeAgo(post.createdAt)}</span>
       </div>
       <p
-        className="text-[#0a1628] text-[16px] font-medium leading-snug"
-        style={{ fontFamily: 'var(--font-playfair)' }}
+        className="text-[#0a1628] text-[16px] font-medium leading-snug font-heading"
       >
         {post.headline}
       </p>
@@ -76,7 +75,7 @@ function PostCard({ post }: { post: CareerPost }) {
         </p>
       )}
       <div className="flex items-center justify-between gap-3 pt-2 border-t border-[rgba(180,168,150,0.3)]">
-        <p className="text-[12px] text-[#8a7f70]">
+        <p className="text-[12px] text-ink-muted">
           <span className="text-[#0a1628] font-medium">{post.postedByName}</span>
         </p>
         <a
@@ -127,12 +126,12 @@ function AlumniCard({ entry }: { entry: AlumniEntry }) {
         </p>
       )}
       {(enrichment.city || enrichment.state) && (
-        <p className="text-xs text-[#8a7f70] mt-0.5">
+        <p className="text-xs text-ink-muted mt-0.5">
           {[enrichment.city, enrichment.state].filter(Boolean).join(', ')}
         </p>
       )}
       {membership.classLabel && (
-        <p className="text-xs text-[#8a7f70]">{membership.classLabel}</p>
+        <p className="text-xs text-ink-muted">{membership.classLabel}</p>
       )}
         </div>
       </div>
@@ -160,7 +159,7 @@ function ViewerListedChip({ personId }: { personId: string }) {
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-[#8a7f70]"
+    <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 text-sm text-ink-muted"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}>
       {label}
     </div>
@@ -281,7 +280,7 @@ export default async function CareerRoomPage() {
                 The Floor
               </p>
               <h2 className="text-base font-semibold text-[#0a1628]">Asks &amp; Offers</h2>
-              <p className="text-sm text-[#8a7f70] mt-0.5">
+              <p className="text-sm text-ink-muted mt-0.5">
                 Concrete asks alumni are working on. Concrete offers alumni can give. Reply privately.
               </p>
             </div>
@@ -301,12 +300,11 @@ export default async function CareerRoomPage() {
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
             >
               <p
-                className="text-[#0a1628] text-base font-medium"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-[#0a1628] text-base font-medium font-heading"
               >
                 No posts yet.
               </p>
-              <p className="text-[13px] text-[#8a7f70] mt-2 max-w-md mx-auto">
+              <p className="text-[13px] text-ink-muted mt-2 max-w-md mx-auto">
                 Post a specific ask (&ldquo;Warm intro to PE associate in NYC&rdquo;) or a specific
                 offer (&ldquo;Can intro 1 alum/month to MDs at Centerview&rdquo;). The first post
                 sets the tone.
@@ -326,12 +324,12 @@ export default async function CareerRoomPage() {
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#990000]">
                     Asks
                   </p>
-                  <span className="text-[10.5px] text-[#8a7f70]">
+                  <span className="text-[10.5px] text-ink-muted">
                     {asks.length} open
                   </span>
                 </div>
                 {asks.length === 0 ? (
-                  <p className="text-[12.5px] text-[#8a7f70] italic">No open asks right now.</p>
+                  <p className="text-[12.5px] text-ink-muted italic">No open asks right now.</p>
                 ) : (
                   <div className="space-y-4">
                     {asks.map(p => <PostCard key={p.id} post={p} />)}
@@ -345,12 +343,12 @@ export default async function CareerRoomPage() {
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2d6a4f]">
                     Offers
                   </p>
-                  <span className="text-[10.5px] text-[#8a7f70]">
+                  <span className="text-[10.5px] text-ink-muted">
                     {offers.length} open
                   </span>
                 </div>
                 {offers.length === 0 ? (
-                  <p className="text-[12.5px] text-[#8a7f70] italic">No open offers right now.</p>
+                  <p className="text-[12.5px] text-ink-muted italic">No open offers right now.</p>
                 ) : (
                   <div className="space-y-4">
                     {offers.map(p => <PostCard key={p.id} post={p} />)}
@@ -364,7 +362,7 @@ export default async function CareerRoomPage() {
         {/* Explore by Industry */}
         <section>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Explore by Industry</h2>
-          <p className="text-sm text-[#8a7f70] mb-6">Browse alumni by their field.</p>
+          <p className="text-sm text-ink-muted mb-6">Browse alumni by their field.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {INDUSTRIES.map(ind => (
               <Link
@@ -393,7 +391,7 @@ export default async function CareerRoomPage() {
               </span>
             )}
           </div>
-          <p className="text-sm text-[#8a7f70] mb-3">
+          <p className="text-sm text-ink-muted mb-3">
             Alumni who have offered to mentor current players.
           </p>
           {viewerOptedToMentor && viewerPersonId && (
@@ -432,7 +430,7 @@ export default async function CareerRoomPage() {
               </span>
             )}
           </div>
-          <p className="text-sm text-[#8a7f70] mb-3">
+          <p className="text-sm text-ink-muted mb-3">
             Alumni who can connect you with someone in their network.
           </p>
           {viewerOptedToIntros && viewerPersonId && (
@@ -471,7 +469,7 @@ export default async function CareerRoomPage() {
               </span>
             )}
           </div>
-          <p className="text-sm text-[#8a7f70] mb-3">
+          <p className="text-sm text-ink-muted mb-3">
             Alumni open to an informal chat over coffee.
           </p>
           {viewerOptedToCoffee && viewerPersonId && (
@@ -508,7 +506,7 @@ export default async function CareerRoomPage() {
         >
           <div>
             <p className="font-semibold text-[#0a1628] text-sm">Looking for someone in a specific field?</p>
-            <p className="text-xs text-[#8a7f70] mt-0.5">Browse the Member Book to find Penn Golf alumni by era or hometown.</p>
+            <p className="text-xs text-ink-muted mt-0.5">Browse the Member Book to find Penn Golf alumni by era or hometown.</p>
           </div>
           <Link
             href="/member-book"

@@ -83,8 +83,7 @@ export default function InstallAppBanner() {
         <img src="/icon-192.png" alt="" className="h-11 w-11 flex-shrink-0 rounded-xl" />
         <div className="min-w-0 flex-1">
           <p
-            className="text-[14px] font-semibold leading-tight text-white"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[14px] font-semibold leading-tight text-white font-heading"
           >
             Add to your home screen
           </p>

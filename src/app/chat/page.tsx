@@ -14,8 +14,7 @@ export default async function ChatIndexPage() {
               Penn Men&rsquo;s Golf · Clubhouse
             </p>
             <h1
-              className="text-white text-4xl sm:text-5xl font-medium tracking-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-white text-4xl sm:text-5xl font-medium tracking-tight font-heading"
             >
               Chat
             </h1>
@@ -39,8 +38,7 @@ export default async function ChatIndexPage() {
             Penn Men&rsquo;s Golf · Clubhouse
           </p>
           <h1
-            className="text-white text-3xl sm:text-4xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-3xl sm:text-4xl font-medium tracking-tight font-heading"
           >
             Chat
           </h1>

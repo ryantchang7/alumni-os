@@ -195,11 +195,11 @@ export default async function PersonDetailPage({ params, searchParams }: Props) 
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-[#f0ece5]">
-                  <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Season</th>
-                  <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Status</th>
-                  <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Conf.</th>
-                  <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Class</th>
-                  <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-[#8a7f70]">Source URL</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Season</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Status</th>
+                  <th className="text-right px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Conf.</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Class</th>
+                  <th className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wider text-ink-muted">Source URL</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[rgba(180,168,150,0.2)]">
@@ -230,7 +230,7 @@ export default async function PersonDetailPage({ params, searchParams }: Props) 
                         {Math.round(entry.extractionConfidence * 100)}%
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-[#8a7f70]">{entry.classLabel ?? '—'}</td>
+                    <td className="px-5 py-3 text-ink-muted">{entry.classLabel ?? '—'}</td>
                     <td className="px-5 py-3">
                       <a
                         href={entry.sourceUrl}

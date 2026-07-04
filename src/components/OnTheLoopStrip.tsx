@@ -99,7 +99,7 @@ export default function OnTheLoopStrip({ approved }: Props) {
       <div className="flex items-baseline gap-2 mb-3">
         <Plane className="w-4 h-4 text-[#c8a84b]" />
         <h2 className="text-base font-semibold text-[#0a1628]">On the Loop</h2>
-        <p className="text-[12px] text-[#8a7f70] italic ml-1">
+        <p className="text-[12px] text-ink-muted italic ml-1">
           — Penn Golf passing through
         </p>
       </div>
@@ -122,8 +122,7 @@ export default function OnTheLoopStrip({ approved }: Props) {
             >
               <div className="flex items-baseline justify-between gap-2 mb-1">
                 <p
-                  className="text-[#0a1628] text-[15px] leading-snug truncate"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-[15px] leading-snug truncate font-heading"
                 >
                   {m.name}
                 </p>
@@ -134,7 +133,7 @@ export default function OnTheLoopStrip({ approved }: Props) {
                 )}
               </div>
               {window && (
-                <p className="text-[11.5px] text-[#8a7f70]">{window}</p>
+                <p className="text-[11.5px] text-ink-muted">{window}</p>
               )}
               {m.note && (
                 <p className="text-[12.5px] text-[#3d4a5c] mt-1.5 italic leading-snug line-clamp-2">

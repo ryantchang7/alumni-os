@@ -61,7 +61,7 @@ export default function ChatListClient() {
   }, [])
 
   if (!loaded) {
-    return <p className="text-sm text-[#8a7f70] text-center py-8">Loading…</p>
+    return <p className="text-sm text-ink-muted text-center py-8">Loading…</p>
   }
 
   return (
@@ -89,12 +89,11 @@ export default function ChatListClient() {
         >
           <MessageSquare className="w-7 h-7 text-[#c8a84b] mx-auto mb-3" />
           <p
-            className="text-[#0a1628] text-lg font-medium mb-1"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-lg font-medium mb-1 font-heading"
           >
             No conversations yet.
           </p>
-          <p className="text-[13px] text-[#8a7f70] mb-5 max-w-sm mx-auto">
+          <p className="text-[13px] text-ink-muted mb-5 max-w-sm mx-auto">
             Start a thread with an alum or a small group. Messages stay between members.
           </p>
           <Link
@@ -117,25 +116,24 @@ export default function ChatListClient() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3.5 min-w-0">
                     <div className="w-11 h-11 rounded-full bg-[#0a1628] ring-1 ring-[#c8a84b]/25 flex items-center justify-center flex-shrink-0 text-white shadow-[0_2px_6px_rgba(10,22,40,0.18)]">
-                      {c.type === 'group' ? <Users className="w-5 h-5" /> : <span className="text-[15px] font-semibold" style={{ fontFamily: 'var(--font-playfair)' }}>{c.title.charAt(0).toUpperCase()}</span>}
+                      {c.type === 'group' ? <Users className="w-5 h-5 font-heading" /> : <span className="text-[15px] font-semibold">{c.title.charAt(0).toUpperCase()}</span>}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p
-                        className={`text-[#0a1628] text-[15px] leading-snug truncate ${c.unreadCount > 0 ? 'font-semibold' : 'font-medium'}`}
-                        style={{ fontFamily: 'var(--font-playfair)' }}
+                        className={`font-heading text-[#0a1628] text-[15px] leading-snug truncate ${c.unreadCount > 0 ? 'font-semibold' : 'font-medium'}`}
                       >
                         {c.title}
                       </p>
                       {c.lastMessagePreview && (
                         <p className={`text-[12.5px] truncate mt-0.5 ${c.unreadCount > 0 ? 'text-[#0a1628]' : 'text-[#3d4a5c]'}`}>
-                          {c.lastMessageFromName ? <span className="text-[#8a7f70]">{c.lastMessageFromName}: </span> : null}
+                          {c.lastMessageFromName ? <span className="text-ink-muted">{c.lastMessageFromName}: </span> : null}
                           {c.lastMessagePreview}
                         </p>
                       )}
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                    <span className="text-[11px] text-[#8a7f70]">{timeAgo(c.lastMessageAt)}</span>
+                    <span className="text-[11px] text-ink-muted">{timeAgo(c.lastMessageAt)}</span>
                     {c.unreadCount > 0 && (
                       <span className="inline-flex items-center justify-center min-w-[20px] h-[20px] rounded-full bg-[#990000] text-white text-[11px] font-semibold px-1.5">
                         {c.unreadCount}

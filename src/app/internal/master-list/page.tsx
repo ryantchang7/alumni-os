@@ -32,7 +32,7 @@ function StatBox({ label, value }: { label: string; value: number }) {
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
     >
       <p className="text-2xl font-bold text-[#0a1628]">{value}</p>
-      <p className="text-xs text-[#8a7f70] mt-0.5 leading-tight">{label}</p>
+      <p className="text-xs text-ink-muted mt-0.5 leading-tight">{label}</p>
     </div>
   )
 }
@@ -164,7 +164,7 @@ export default async function MasterListPage() {
             <StatBox label="Enriched" value={enrichedCount} />
           </div>
 
-          <p className="text-xs text-[#8a7f70]">
+          <p className="text-xs text-ink-muted">
             {hiddenCount} hidden from the public network.
             {' '}<Link href="/internal/add-member" className="text-[#990000] hover:underline font-semibold">+ Add a member</Link>
           </p>
@@ -178,7 +178,7 @@ export default async function MasterListPage() {
               <h2 className="text-sm font-semibold text-[#0a1628]">
                 All Members ({rows.length})
               </h2>
-              <p className="text-xs text-[#8a7f70] mt-0.5">
+              <p className="text-xs text-ink-muted mt-0.5">
                 Current players first, then alumni in the team store, then the historical Member Book.
               </p>
             </div>
@@ -186,15 +186,15 @@ export default async function MasterListPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[rgba(180,168,150,0.25)] bg-[#faf8f5]">
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Name</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Role</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Years</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Class</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Hometown</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Published</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Visible</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Enrichment</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#8a7f70] uppercase tracking-wider whitespace-nowrap">Source</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">Name</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">Role</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">Years</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">Class</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">Hometown</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">Published</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">Visible</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">Enrichment</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">Source</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[rgba(180,168,150,0.15)]">
@@ -239,7 +239,7 @@ export default async function MasterListPage() {
                       <td className="px-4 py-3 text-[#4a5568] whitespace-nowrap">{row.classLabel}</td>
                       <td className="px-4 py-3 text-[#4a5568] whitespace-nowrap max-w-[160px] truncate">{row.hometown}</td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`text-xs font-medium ${row.published ? 'text-emerald-700' : 'text-[#8a7f70]'}`}>
+                        <span className={`text-xs font-medium ${row.published ? 'text-emerald-700' : 'text-ink-muted'}`}>
                           {row.published ? 'Yes' : 'No'}
                         </span>
                       </td>
@@ -249,12 +249,12 @@ export default async function MasterListPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`text-xs font-medium ${row.hasEnrichment ? 'text-[#0a1628]' : 'text-[#8a7f70]'}`}>
+                        <span className={`text-xs font-medium ${row.hasEnrichment ? 'text-[#0a1628]' : 'text-ink-muted'}`}>
                           {row.hasEnrichment ? 'Has info' : 'None'}
                         </span>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="text-[10px] uppercase tracking-wider text-[#8a7f70]">
+                        <span className="text-[10px] uppercase tracking-wider text-ink-muted">
                           {row.source === 'store' ? 'Team store' : 'Member book'}
                         </span>
                       </td>

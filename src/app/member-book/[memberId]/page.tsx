@@ -178,8 +178,7 @@ export default async function MemberDetailPage({
                   aria-hidden
                 >
                   <span
-                    className="text-[26px] font-medium"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
+                    className="text-[26px] font-medium font-heading"
                   >
                     {member.displayName
                       .split(' ')
@@ -192,8 +191,7 @@ export default async function MemberDetailPage({
               )}
               <div className="min-w-0 flex-1">
                 <h1
-                  className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
                   data-testid="member-detail-name"
                 >
                   {member.displayName}
@@ -211,19 +209,19 @@ export default async function MemberDetailPage({
             <dl className="text-[13.5px] text-[#3d4a5c] mt-3 space-y-0.5">
               {classYear && (
                 <div className="flex gap-2">
-                  <dt className="text-[#8a7f70]">Class:</dt>
+                  <dt className="text-ink-muted">Class:</dt>
                   <dd>{classYear}</dd>
                 </div>
               )}
               {highSchool && (
                 <div className="flex gap-2">
-                  <dt className="text-[#8a7f70]">High school:</dt>
+                  <dt className="text-ink-muted">High school:</dt>
                   <dd>{highSchool}</dd>
                 </div>
               )}
               {hometown && (
                 <div className="flex gap-2">
-                  <dt className="text-[#8a7f70]">Hometown:</dt>
+                  <dt className="text-ink-muted">Hometown:</dt>
                   <dd>{hometown}</dd>
                 </div>
               )}
@@ -280,7 +278,7 @@ export default async function MemberDetailPage({
                 </div>
               )}
               {!years && totalLetters === 0 && totalSeasons === 0 && (
-                <p className="text-[14px] text-[#8a7f70] italic">
+                <p className="text-[14px] text-ink-muted italic">
                   Historical records for this era are limited.
                 </p>
               )}
@@ -322,7 +320,7 @@ export default async function MemberDetailPage({
                       const place = [loc.city, loc.state].filter(Boolean).join(', ')
                       if (!place) return null
                       return (
-                        <span key={i} className="text-[#8a7f70]">
+                        <span key={i} className="text-ink-muted">
                           {city || i > 0 ? ' · ' : ''}
                           {place}
                           {loc.label && (
@@ -338,7 +336,7 @@ export default async function MemberDetailPage({
                 )}
                 {interests && (
                   <p className="text-[#3d4a5c] leading-relaxed pt-1">
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mr-2">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted mr-2">
                       Interests
                     </span>
                     {interests}
@@ -346,7 +344,7 @@ export default async function MemberDetailPage({
                 )}
               </div>
             ) : (
-              <p className="text-[14px] text-[#8a7f70] italic">
+              <p className="text-[14px] text-ink-muted italic">
                 This member hasn&rsquo;t added details yet.
               </p>
             )}
@@ -398,7 +396,7 @@ export default async function MemberDetailPage({
               <div className="space-y-2.5 text-[14px] text-[#3d4a5c]">
                 {homeCourse && (
                   <p>
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mr-2">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted mr-2">
                       Home Course
                     </span>
                     <span className="text-[#0a1628]">{homeCourse}</span>
@@ -406,7 +404,7 @@ export default async function MemberDetailPage({
                 )}
                 {favoriteCourses && (
                   <p>
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mr-2">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted mr-2">
                       Favorites
                     </span>
                     {favoriteCourses}
@@ -414,7 +412,7 @@ export default async function MemberDetailPage({
                 )}
                 {favoritePennGolfMemory && (
                   <div className="pt-1">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mb-1.5">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted mb-1.5">
                       Penn Golf Memory
                     </p>
                     <p className="leading-relaxed italic">&ldquo;{favoritePennGolfMemory}&rdquo;</p>
@@ -429,12 +427,11 @@ export default async function MemberDetailPage({
             <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <p
-                  className="text-[#0a1628] text-base font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-base font-medium font-heading"
                 >
                   This is your card.
                 </p>
-                <p className="text-[12.5px] text-[#8a7f70] mt-1 max-w-md">
+                <p className="text-[12.5px] text-ink-muted mt-1 max-w-md">
                   Update your hometown, location, and how you can help.
                 </p>
               </div>
@@ -452,8 +449,7 @@ export default async function MemberDetailPage({
                 Ask for help
               </p>
               <p
-                className="text-white text-xl sm:text-2xl font-medium leading-snug mb-2"
-                style={{ fontFamily: 'var(--font-playfair)' }}
+                className="text-white text-xl sm:text-2xl font-medium leading-snug mb-2 font-heading"
               >
                 Send {member.displayName.split(' ')[0]} a request.
               </p>
@@ -482,12 +478,11 @@ export default async function MemberDetailPage({
             <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <p
-                  className="text-[#0a1628] text-base font-medium"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-base font-medium font-heading"
                 >
                   Is this you?
                 </p>
-                <p className="text-[12.5px] text-[#8a7f70] mt-1 max-w-md">
+                <p className="text-[12.5px] text-ink-muted mt-1 max-w-md">
                   Sign in to claim your card or reach out to other members.
                 </p>
               </div>
@@ -506,7 +501,7 @@ export default async function MemberDetailPage({
         <div className="mt-8 text-center">
           <Link
             href="/member-book"
-            className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+            className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted hover:text-[#0a1628] transition-colors"
           >
             &larr; The Member Book
           </Link>
@@ -525,7 +520,7 @@ function Section({
 }) {
   return (
     <section className="px-7 sm:px-10 py-7 border-b border-[rgba(180,168,150,0.3)] last:border-b-0">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-3">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-3">
         {title}
       </p>
       {children}
@@ -537,12 +532,11 @@ function Stat({ value, label }: { value: number; label: string }) {
   return (
     <div className="bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] rounded-lg px-4 py-3">
       <p
-        className="text-2xl text-[#0a1628] font-medium leading-none"
-        style={{ fontFamily: 'var(--font-playfair)' }}
+        className="text-2xl text-[#0a1628] font-medium leading-none font-heading"
       >
         {value}
       </p>
-      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mt-1.5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted mt-1.5">
         {label}
       </p>
     </div>

@@ -8,33 +8,32 @@ export default function CommunityGuidelinesPage() {
   return (
     <div className="bg-[#f8f5f0] min-h-[calc(100dvh-60px)] px-5 sm:px-8 py-14 sm:py-20">
       <article className="max-w-[760px] mx-auto bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-10 sm:px-12 sm:py-14">
-        <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#8a7f70] mb-4">
+        <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-4">
           Penn Golf Clubhouse
         </p>
         <h1
-          className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight mb-2"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight mb-2 font-heading"
         >
           Community Guidelines
         </h1>
-        <p className="text-[12.5px] text-[#8a7f70] mb-8">Last updated 2026-06-27</p>
+        <p className="text-[12.5px] text-ink-muted mb-8">Last updated 2026-06-27</p>
 
         <section className="space-y-5 text-[14.5px] text-[#0a1628] leading-relaxed">
           <p>
             The Penn Golf Clubhouse is the private network for the Penn Men&rsquo;s Golf family &mdash; players, alumni, coaches, family, and longtime affiliates. This is a community built on shared experience and mutual respect. Treat it that way.
           </p>
-          <p className="text-[13px] text-[#8a7f70] italic">
+          <p className="text-[13px] text-ink-muted italic">
             These Community Guidelines were prepared for informational purposes. They do not constitute legal advice. A qualified attorney should review them before formal public launch.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Be real
           </h2>
           <p>
             Use your authentic identity. Claim only the member card that is genuinely yours &mdash; don&rsquo;t claim a card that belongs to someone else, and don&rsquo;t impersonate another person. Members hold one account each. Misrepresenting who you are undermines the trust this community is built on.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Be respectful
           </h2>
           <p>
@@ -46,7 +45,7 @@ export default function CommunityGuidelinesPage() {
             <li>Content that is deliberately hostile, defamatory, or intended to harm another member&rsquo;s reputation.</li>
           </ul>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Respect privacy
           </h2>
           <p>
@@ -58,7 +57,7 @@ export default function CommunityGuidelinesPage() {
             <li>Don&rsquo;t export, scrape, or copy the Member Book or Member Map for use outside the Penn Golf community.</li>
           </ul>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Keep it relevant
           </h2>
           <p>
@@ -70,7 +69,7 @@ export default function CommunityGuidelinesPage() {
             <li>Commercial promotions, affiliate links, and business solicitations are not permitted without prior approval from the Operator.</li>
           </ul>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Reporting
           </h2>
           <p>
@@ -81,7 +80,7 @@ export default function CommunityGuidelinesPage() {
             . Include as much detail as you can &mdash; what you saw, where, and when. We take every report seriously and will review it promptly.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Enforcement
           </h2>
           <p>
@@ -108,7 +107,7 @@ export default function CommunityGuidelinesPage() {
             . Violating the Terms is also a violation of these Guidelines.
           </p>
 
-          <h2 className="text-xl font-medium pt-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <h2 className="text-xl font-medium pt-2 font-heading">
             Contact
           </h2>
           <p>
@@ -121,7 +120,7 @@ export default function CommunityGuidelinesPage() {
         </section>
 
         <hr className="border-t border-[rgba(180,168,150,0.4)] my-10" />
-        <p className="text-[12px] text-[#8a7f70]">
+        <p className="text-[12px] text-ink-muted">
           See also:{' '}
           <Link href="/terms" className="text-[#0a1628] hover:text-[#990000] hover:underline">
             Terms of Use

@@ -11,12 +11,28 @@
   }
 }
 
+/* "1881 Heritage" — small-caps brass-plaque label. Hardcoded 11px floor
+   (never smaller, regardless of what size class a caller used to have) so
+   every eyebrow in the app reads at the same scale. No color baked in —
+   pair with text-gold (on navy) or text-gold-ink (on cream). */
+@utility eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+/* Engraved line texture for navy headers (trophy cabinet, foyer). */
+@utility texture-engraved {
+  background-image: repeating-linear-gradient(0deg, white, white 1px, transparent 1px, transparent 22px);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-playfair);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -62,6 +78,9 @@
   --color-offwhite: var(--offwhite);
   --color-offwhite-dark: var(--offwhite-dark);
   --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-paper: var(--paper);
 }
 
 :root {
@@ -73,7 +92,15 @@
   --penn-red-light: #cc0000;
   --offwhite: #f8f5f0;
   --offwhite-dark: #ede9e3;
-  --gold: #b8952a;
+  --gold: #c8a84b;
+  /* "1881 Heritage" additions: gold-ink is gold TEXT on cream (the display
+     --gold reads too light for small text on light backgrounds); ink-muted
+     replaces #8a7f70 for TEXT roles only (5.7:1 on cream vs 3.5:1 — the old
+     value stays in use for borders/hairlines, where contrast rules don't
+     apply); paper is the photo-mat color for the Moments frame treatment. */
+  --gold-ink: #7a6420;
+  --ink-muted: #6b6155;
+  --paper: #fffdf8;
 
   --background: oklch(0.97 0.008 75);
   --foreground: oklch(0.145 0.04 237);

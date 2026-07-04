@@ -120,8 +120,7 @@ export default function StudioClient() {
           <div className="flex items-center gap-2 mb-2">
             <Wand2 className="w-5 h-5 text-[#c8a84b]" />
             <h1
-              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
             >
               Studio
             </h1>
@@ -139,7 +138,7 @@ export default function StudioClient() {
         )}
 
         {!slots && (
-          <p className="text-[13px] text-[#8a7f70]">Loading…</p>
+          <p className="text-[13px] text-ink-muted">Loading…</p>
         )}
 
         <div className="space-y-6">
@@ -161,7 +160,7 @@ export default function StudioClient() {
                   <div>
                     <p className="text-[13px] font-semibold text-[#0a1628]">{slot.label}</p>
                     {slot.hint && (
-                      <p className="text-[12px] text-[#8a7f70] mt-0.5">{slot.hint}</p>
+                      <p className="text-[12px] text-ink-muted mt-0.5">{slot.hint}</p>
                     )}
                   </div>
                   {isOverride && (
@@ -214,7 +213,7 @@ export default function StudioClient() {
                       type="button"
                       onClick={() => reset(slot)}
                       disabled={saving}
-                      className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[#8a7f70] hover:text-[#0a1628] px-3 py-2 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-ink-muted hover:text-[#0a1628] px-3 py-2 transition-colors"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       Reset to default
@@ -223,7 +222,7 @@ export default function StudioClient() {
                   {saved && (
                     <span className="text-[12px] text-[#2d6a4f] font-medium">Saved.</span>
                   )}
-                  <p className="text-[11px] text-[#8a7f70] ml-auto font-mono">{slot.id}</p>
+                  <p className="text-[11px] text-ink-muted ml-auto font-mono">{slot.id}</p>
                 </div>
               </div>
             )

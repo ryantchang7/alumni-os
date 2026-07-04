@@ -151,8 +151,7 @@ export default function ParentSignupPage() {
         <div className="mb-6 flex items-center gap-2">
           <Heart className="w-5 h-5 text-[#990000]" />
           <h1
-            className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
           >
             Join as Family or Affiliate
           </h1>
@@ -174,7 +173,7 @@ export default function ParentSignupPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Your full name
               </label>
               <input
@@ -189,7 +188,7 @@ export default function ParentSignupPage() {
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Relationship to the program
               </label>
               <input
@@ -201,7 +200,7 @@ export default function ParentSignupPage() {
                 placeholder="Parent of John Smith C'24 / Affiliate — supporter since 2010"
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30 focus:border-[#c8a84b]"
               />
-              <p className="text-[11px] text-[#8a7f70] mt-1.5">
+              <p className="text-[11px] text-ink-muted mt-1.5">
                 A short line so the captain knows who you are. Shown on your
                 Member Book card.
               </p>
@@ -229,7 +228,7 @@ export default function ParentSignupPage() {
           </form>
         </div>
 
-        <p className="text-[12px] text-[#8a7f70] mt-6 max-w-xl leading-relaxed">
+        <p className="text-[12px] text-ink-muted mt-6 max-w-xl leading-relaxed">
           Free to join. Once approved, you can optionally support the program
           through the{' '}
           <Link href="/support" className="text-[#0a1628] hover:underline">

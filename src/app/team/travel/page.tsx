@@ -55,12 +55,11 @@ export default async function TeamTravelPage() {
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-4">
+          <p className="eyebrow text-gold mb-4">
             Penn Men&rsquo;s Golf
           </p>
           <h1
-            className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight font-heading"
           >
             Team Travel
           </h1>
@@ -86,7 +85,7 @@ export default async function TeamTravelPage() {
             <p className="text-sm font-semibold text-[#0a1628]">
               {isFounder ? 'No stops yet — add the first one.' : 'No trips posted yet.'}
             </p>
-            <p className="text-xs text-[#8a7f70] mt-2 max-w-sm mx-auto">
+            <p className="text-xs text-ink-muted mt-2 max-w-sm mx-auto">
               {isFounder
                 ? 'Once you add a stop, alumni near that location can offer to host the team.'
                 : 'Check back once the schedule is posted.'}
@@ -107,19 +106,18 @@ export default async function TeamTravelPage() {
                     <div className="flex items-start justify-between gap-4 flex-wrap">
                       <div className="min-w-0 flex-1">
                         {/* Date badge */}
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-1.5">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-1.5">
                           {formatDate(stop.startDate)}
                           {stop.endDate ? ` – ${formatDate(stop.endDate)}` : ''}
                         </p>
                         <h2
-                          className="text-[#0a1628] text-xl font-medium leading-snug"
-                          style={{ fontFamily: 'var(--font-playfair)' }}
+                          className="text-[#0a1628] text-xl font-medium leading-snug font-heading"
                         >
                           {stop.eventName}
                         </h2>
                         <p className="text-sm text-[#4a5568] mt-1">{stop.locationText}</p>
                         {stop.note && (
-                          <p className="text-xs text-[#8a7f70] mt-2.5 leading-relaxed max-w-xl border-l-2 border-[rgba(180,168,150,0.5)] pl-3">
+                          <p className="text-xs text-ink-muted mt-2.5 leading-relaxed max-w-xl border-l-2 border-[rgba(180,168,150,0.5)] pl-3">
                             {stop.note}
                           </p>
                         )}
@@ -139,7 +137,7 @@ export default async function TeamTravelPage() {
                   {/* Host offers (founder-only) */}
                   {isFounder && (
                     <div className="border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2] px-5 sm:px-6 py-4">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7f70] mb-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted mb-3">
                         Host offers ({offers.length})
                       </p>
                       {offers.length === 0 ? (
@@ -157,7 +155,7 @@ export default async function TeamTravelPage() {
                                     {offer.byName}
                                   </span>
                                   {offer.byLocation && (
-                                    <span className="text-[11px] text-[#8a7f70]">
+                                    <span className="text-[11px] text-ink-muted">
                                       &mdash; {offer.byLocation}
                                     </span>
                                   )}
@@ -191,7 +189,7 @@ export default async function TeamTravelPage() {
           >
             <div>
               <p className="font-semibold text-[#0a1628] text-sm">Near one of these stops?</p>
-              <p className="text-xs text-[#8a7f70] mt-0.5 max-w-md leading-relaxed">
+              <p className="text-xs text-ink-muted mt-0.5 max-w-md leading-relaxed">
                 Alumni hosting the team is what makes Penn Golf, Penn Golf. Tap any stop above to offer.
               </p>
             </div>

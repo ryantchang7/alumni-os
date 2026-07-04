@@ -11,7 +11,7 @@
 const NAVY = '#0a1628'
 const CREAM = '#faf7f2'
 const GOLD = '#c8a84b'
-const MUTED = '#8a7f70'
+const MUTED = '#6b6155'
 const SERIF = "Georgia, 'Times New Roman', serif"
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
 

@@ -136,11 +136,11 @@ function RequestCard({
               {req.purposeLabel}
             </span>
             {req.contextLabel && (
-              <span className="text-xs text-[#8a7f70] bg-[#f5f2ee] border border-[rgba(180,168,150,0.3)] px-2 py-0.5 rounded-full">
+              <span className="text-xs text-ink-muted bg-[#f5f2ee] border border-[rgba(180,168,150,0.3)] px-2 py-0.5 rounded-full">
                 {req.contextLabel}
               </span>
             )}
-            <span className="text-xs text-[#8a7f70]">{formatDate(req.createdAt)}</span>
+            <span className="text-xs text-ink-muted">{formatDate(req.createdAt)}</span>
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@ function RequestCard({
       {/* Additional context note */}
       {req.additionalContext && (
         <div className="mt-3 px-3 py-2.5 bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] rounded-lg">
-          <p className="text-xs text-[#8a7f70] font-medium mb-0.5 uppercase tracking-wide">Additional context</p>
+          <p className="text-xs text-ink-muted font-medium mb-0.5 uppercase tracking-wide">Additional context</p>
           <p className="text-xs text-[#2d3748] leading-relaxed">{req.additionalContext}</p>
         </div>
       )}
@@ -177,13 +177,13 @@ function RequestCard({
           <p className="text-xs text-[#2d6a4f] font-medium mb-0.5 uppercase tracking-wide">Your response</p>
           <p className="text-xs text-[#2d3748] leading-relaxed italic">&ldquo;{req.responseMessage}&rdquo;</p>
           {req.respondedAt && (
-            <p className="text-[11px] text-[#8a7f70] mt-1">{formatDate(req.respondedAt)}</p>
+            <p className="text-[11px] text-ink-muted mt-1">{formatDate(req.respondedAt)}</p>
           )}
         </div>
       )}
       {req.suggestedPersonName && !req.responseMessage && (
         <div className="mt-3 px-3 py-2.5 bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] rounded-lg">
-          <p className="text-xs text-[#8a7f70] font-medium mb-0.5">Suggested:</p>
+          <p className="text-xs text-ink-muted font-medium mb-0.5">Suggested:</p>
           <p className="text-xs text-[#0a1628] font-semibold">{req.suggestedPersonName}</p>
         </div>
       )}
@@ -203,7 +203,7 @@ function RequestCard({
                 maxLength={1000}
                 className="w-full text-sm text-[#0a1628] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
               />
-              <p className="text-[11px] text-[#8a7f70] mt-1">{responseText.length}/1000</p>
+              <p className="text-[11px] text-ink-muted mt-1">{responseText.length}/1000</p>
             </>
           )}
           {action === 'suggest' && (
@@ -251,7 +251,7 @@ function RequestCard({
             <button
               type="button"
               onClick={() => setAction(null)}
-              className="text-xs text-[#8a7f70] hover:text-[#0a1628] px-3 py-2 transition-colors"
+              className="text-xs text-ink-muted hover:text-[#0a1628] px-3 py-2 transition-colors"
             >
               Cancel
             </button>
@@ -282,7 +282,7 @@ function RequestCard({
             type="button"
             disabled={updatingId === req.id}
             onClick={() => openAction('decline')}
-            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#8a7f70] text-[#8a7f70] transition-colors disabled:opacity-50 bg-white"
+            className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[rgba(180,168,150,0.5)] hover:border-[#8a7f70] text-ink-muted transition-colors disabled:opacity-50 bg-white"
           >
             Decline politely
           </button>
@@ -292,7 +292,7 @@ function RequestCard({
                 type="button"
                 disabled={updatingId === req.id}
                 onClick={() => onUpdate(req.id, 'seen')}
-                className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors disabled:opacity-50"
+                className="text-xs text-ink-muted hover:text-[#0a1628] transition-colors disabled:opacity-50"
               >
                 Mark seen
               </button>
@@ -301,7 +301,7 @@ function RequestCard({
               type="button"
               disabled={updatingId === req.id}
               onClick={() => onUpdate(req.id, 'closed')}
-              className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors disabled:opacity-50"
+              className="text-xs text-ink-muted hover:text-[#0a1628] transition-colors disabled:opacity-50"
             >
               Close
             </button>
@@ -324,7 +324,7 @@ function RequestCard({
             type="button"
             disabled={updatingId === req.id}
             onClick={() => onUpdate(req.id, 'closed')}
-            className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors disabled:opacity-50"
+            className="text-xs text-ink-muted hover:text-[#0a1628] transition-colors disabled:opacity-50"
           >
             Close
           </button>
@@ -451,7 +451,7 @@ function AlumniRequestsInner() {
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
             >
               <p className="text-sm font-semibold text-[#0a1628] mb-1">Sign in to see your inbox</p>
-              <p className="text-xs text-[#8a7f70] mb-4">
+              <p className="text-xs text-ink-muted mb-4">
                 Your inbox holds notes and intros sent to you by other Penn Golf members.
               </p>
               <button
@@ -471,7 +471,7 @@ function AlumniRequestsInner() {
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
             >
               <p className="text-sm font-semibold text-[#0a1628] mb-1">Claim your profile first</p>
-              <p className="text-xs text-[#8a7f70] mb-4">
+              <p className="text-xs text-ink-muted mb-4">
                 Find your card in the Member Book to start receiving messages.
               </p>
               <Link
@@ -491,7 +491,7 @@ function AlumniRequestsInner() {
                   className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
                 >
-                  <p className="text-sm text-[#8a7f70]">Loading requests…</p>
+                  <p className="text-sm text-ink-muted">Loading requests…</p>
                 </div>
               )}
 
@@ -510,7 +510,7 @@ function AlumniRequestsInner() {
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
                 >
                   <p className="text-base font-semibold text-[#0a1628] mb-2">Your inbox is clear.</p>
-                  <p className="text-sm text-[#8a7f70] max-w-sm mx-auto">
+                  <p className="text-sm text-ink-muted max-w-sm mx-auto">
                     Notes and intros from other Penn Golf members will land here.
                   </p>
                 </div>
@@ -539,7 +539,7 @@ export default function AlumniRequestsPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-[#f8f5f0] py-20 text-center">
-          <p className="text-sm text-[#8a7f70]">Loading…</p>
+          <p className="text-sm text-ink-muted">Loading…</p>
         </div>
       }
     >

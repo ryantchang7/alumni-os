@@ -31,14 +31,14 @@ function GatheringRow({ gathering }: { gathering: GatheringWithRequests }) {
             <GatheringStatusPill status={gathering.status} />
           </div>
           <p className="font-semibold text-[#0a1628] text-sm">{gathering.title}</p>
-          <p className="text-xs text-[#8a7f70] mt-0.5">
+          <p className="text-xs text-ink-muted mt-0.5">
             {gathering.dateText}
             {gathering.city ? ` · ${gathering.city}${gathering.state ? `, ${gathering.state}` : ''}` : ''}
           </p>
         </div>
         <div className="text-right flex-shrink-0">
           <p className="text-xs font-semibold text-[#0a1628]">{gathering.requestCount ?? 0}</p>
-          <p className="text-[11px] text-[#8a7f70]">requests</p>
+          <p className="text-[11px] text-ink-muted">requests</p>
         </div>
       </div>
     </div>
@@ -135,7 +135,7 @@ export default function GatheringsManager() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-base font-semibold text-[#0a1628]">Gatherings</h2>
-          <p className="text-xs text-[#8a7f70] mt-0.5">{gatherings.length} active</p>
+          <p className="text-xs text-ink-muted mt-0.5">{gatherings.length} active</p>
         </div>
         <button
           type="button"
@@ -248,11 +248,11 @@ export default function GatheringsManager() {
 
       {/* List */}
       {loading ? (
-        <p className="text-sm text-[#8a7f70]">Loading…</p>
+        <p className="text-sm text-ink-muted">Loading…</p>
       ) : gatherings.length === 0 ? (
         <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}>
-          <p className="text-sm text-[#8a7f70]">No gatherings yet. Create one above.</p>
+          <p className="text-sm text-ink-muted">No gatherings yet. Create one above.</p>
         </div>
       ) : (
         <div className="space-y-3">

@@ -50,8 +50,7 @@ export default function GatedPreview({
           {eyebrow}
         </p>
         <h1
-          className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight mb-3"
-          style={{ fontFamily: 'var(--font-playfair)' }}
+          className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight mb-3 font-heading"
         >
           {headline}
         </h1>
@@ -67,12 +66,11 @@ export default function GatedPreview({
                 className="bg-[#faf7f2] border border-[rgba(180,168,150,0.35)] rounded-lg py-3 px-2"
               >
                 <p
-                  className="text-[#0a1628] text-xl font-medium leading-none mb-1"
-                  style={{ fontFamily: 'var(--font-playfair)' }}
+                  className="text-[#0a1628] text-xl font-medium leading-none mb-1 font-heading"
                 >
                   {s.value}
                 </p>
-                <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#8a7f70]">
+                <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted">
                   {s.label}
                 </p>
               </div>
@@ -86,7 +84,7 @@ export default function GatedPreview({
         >
           {ctaLabel}
         </Link>
-        <p className="text-[11px] text-[#8a7f70] mt-4">
+        <p className="text-[11px] text-ink-muted mt-4">
           Approved by the captain within a day or two.
         </p>
       </div>

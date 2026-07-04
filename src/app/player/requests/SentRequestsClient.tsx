@@ -35,12 +35,12 @@ const STATUS_LABEL: Record<string, string> = {
 
 const STATUS_COLOR: Record<string, string> = {
   requested: 'bg-[#0a1628]/8 text-[#0a1628] border border-[#0a1628]/15',
-  seen: 'bg-[#f5f2ee] text-[#8a7f70] border border-[rgba(180,168,150,0.5)]',
+  seen: 'bg-[#f5f2ee] text-ink-muted border border-[rgba(180,168,150,0.5)]',
   accepted: 'bg-[#2d6a4f]/10 text-[#2d6a4f] border border-[#2d6a4f]/25',
-  declined: 'bg-[#f5f2ee] text-[#8a7f70] border border-[rgba(180,168,150,0.5)]',
+  declined: 'bg-[#f5f2ee] text-ink-muted border border-[rgba(180,168,150,0.5)]',
   suggested: 'bg-[#c8a84b]/10 text-[#7a6020] border border-[#c8a84b]/30',
   responded: 'bg-[#2d6a4f]/10 text-[#2d6a4f] border border-[#2d6a4f]/25',
-  closed: 'bg-[#f5f2ee] text-[#8a7f70] border border-[rgba(180,168,150,0.5)]',
+  closed: 'bg-[#f5f2ee] text-ink-muted border border-[rgba(180,168,150,0.5)]',
 }
 
 function formatDate(iso: string) {
@@ -77,18 +77,18 @@ function SentRequestCard({ req }: { req: SentRequest }) {
               {req.purposeLabel}
             </span>
             {req.contextLabel && (
-              <span className="text-xs text-[#8a7f70] bg-[#f5f2ee] border border-[rgba(180,168,150,0.3)] px-2 py-0.5 rounded-full">
+              <span className="text-xs text-ink-muted bg-[#f5f2ee] border border-[rgba(180,168,150,0.3)] px-2 py-0.5 rounded-full">
                 {req.contextLabel}
               </span>
             )}
-            <span className="text-xs text-[#8a7f70]">{formatDate(req.createdAt)}</span>
+            <span className="text-xs text-ink-muted">{formatDate(req.createdAt)}</span>
           </div>
         </div>
       </div>
 
       {/* Your message */}
       <div className="mb-3">
-        <p className="text-[11px] text-[#8a7f70] font-medium uppercase tracking-wide mb-1">Your message</p>
+        <p className="text-[11px] text-ink-muted font-medium uppercase tracking-wide mb-1">Your message</p>
         <p className={`text-sm text-[#2d3748] leading-relaxed whitespace-pre-wrap ${!expanded ? 'line-clamp-3' : ''}`}>
           {req.message}
         </p>
@@ -108,7 +108,7 @@ function SentRequestCard({ req }: { req: SentRequest }) {
         <div className="mt-3 border-t border-[rgba(180,168,150,0.25)] pt-3">
           {req.responseMessage && (
             <div className="mb-2">
-              <p className="text-[11px] text-[#8a7f70] font-medium uppercase tracking-wide mb-1">
+              <p className="text-[11px] text-ink-muted font-medium uppercase tracking-wide mb-1">
                 {req.alumniName.split(' ')[0]}&rsquo;s response
               </p>
               <p className="text-sm text-[#0a1628] leading-relaxed italic">&ldquo;{req.responseMessage}&rdquo;</p>
@@ -116,7 +116,7 @@ function SentRequestCard({ req }: { req: SentRequest }) {
           )}
           {(req.suggestedPersonName || req.suggestedPersonId) && (
             <div className="flex items-center gap-2 mt-2">
-              <p className="text-xs text-[#8a7f70]">Suggested member:</p>
+              <p className="text-xs text-ink-muted">Suggested member:</p>
               {req.suggestedPersonId ? (
                 <Link
                   href={`/player/alumni/${req.suggestedPersonId}`}
@@ -130,7 +130,7 @@ function SentRequestCard({ req }: { req: SentRequest }) {
             </div>
           )}
           {req.respondedAt && (
-            <p className="text-[11px] text-[#8a7f70] mt-2">Responded {formatDate(req.respondedAt)}</p>
+            <p className="text-[11px] text-ink-muted mt-2">Responded {formatDate(req.respondedAt)}</p>
           )}
         </div>
       )}
@@ -201,7 +201,7 @@ export default function SentRequestsClient() {
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
               <p className="text-sm font-semibold text-[#0a1628] mb-1">Enter your name to view your sent requests</p>
-              <p className="text-xs text-[#8a7f70] mb-4">Use the same name you used when sending your requests.</p>
+              <p className="text-xs text-ink-muted mb-4">Use the same name you used when sending your requests.</p>
               <form onSubmit={handleLookup} className="flex gap-3">
                 <input
                   type="text"
@@ -224,11 +224,11 @@ export default function SentRequestsClient() {
           {/* Switch name */}
           {fromName && (
             <div className="flex items-center justify-between">
-              <p className="text-xs text-[#8a7f70]">Showing requests for <span className="font-semibold text-[#0a1628]">{fromName}</span></p>
+              <p className="text-xs text-ink-muted">Showing requests for <span className="font-semibold text-[#0a1628]">{fromName}</span></p>
               <button
                 type="button"
                 onClick={() => router.push('/player/requests')}
-                className="text-xs text-[#8a7f70] hover:text-[#0a1628] transition-colors"
+                className="text-xs text-ink-muted hover:text-[#0a1628] transition-colors"
               >
                 Switch name
               </button>
@@ -239,7 +239,7 @@ export default function SentRequestsClient() {
           {loading && (
             <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}>
-              <p className="text-sm text-[#8a7f70]">Loading…</p>
+              <p className="text-sm text-ink-muted">Loading…</p>
             </div>
           )}
 
@@ -256,7 +256,7 @@ export default function SentRequestsClient() {
             <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-10 text-center"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
               <p className="text-base font-semibold text-[#0a1628] mb-2">No requests found.</p>
-              <p className="text-sm text-[#8a7f70] max-w-sm mx-auto mb-5">
+              <p className="text-sm text-ink-muted max-w-sm mx-auto mb-5">
                 No requests found for &ldquo;{fromName}&rdquo;. Make sure the name matches exactly what you used when sending.
               </p>
               <Link href="/ask" className="text-sm font-semibold text-[#990000] hover:underline">

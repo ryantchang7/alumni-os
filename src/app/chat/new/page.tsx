@@ -101,8 +101,7 @@ export default function NewChatPage() {
         >
           <div className="px-7 py-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
             <h1
-              className="text-[#0a1628] text-2xl font-medium leading-tight"
-              style={{ fontFamily: 'var(--font-playfair)' }}
+              className="text-[#0a1628] text-2xl font-medium leading-tight font-heading"
             >
               Start a chat
             </h1>
@@ -134,7 +133,7 @@ export default function NewChatPage() {
             )}
 
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a7f70]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted" />
               <input
                 type="text"
                 value={query}
@@ -145,11 +144,11 @@ export default function NewChatPage() {
             </div>
 
             {!loaded && (
-              <p className="text-[13px] text-[#8a7f70] text-center py-4">Loading members…</p>
+              <p className="text-[13px] text-ink-muted text-center py-4">Loading members…</p>
             )}
 
             {loaded && filtered.length === 0 && (
-              <p className="text-[13px] text-[#8a7f70] text-center py-4">
+              <p className="text-[13px] text-ink-muted text-center py-4">
                 {members.length === 0
                   ? 'No other approved members yet.'
                   : 'No matches.'}
@@ -171,7 +170,7 @@ export default function NewChatPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-[14px] text-[#0a1628] truncate">{m.name}</p>
                         {m.classLabel && (
-                          <p className="text-[11px] text-[#8a7f70]">{m.classLabel}</p>
+                          <p className="text-[11px] text-ink-muted">{m.classLabel}</p>
                         )}
                       </div>
                     </button>
@@ -182,7 +181,7 @@ export default function NewChatPage() {
 
             {selected.length >= 2 && (
               <div>
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7f70] mb-2">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                   Group name (optional)
                 </label>
                 <input
@@ -209,7 +208,7 @@ export default function NewChatPage() {
               >
                 {submitting ? 'Starting…' : 'Start chat'}
               </button>
-              <Link href="/chat" className="text-[12px] text-[#8a7f70] hover:text-[#0a1628]">
+              <Link href="/chat" className="text-[12px] text-ink-muted hover:text-[#0a1628]">
                 Cancel
               </Link>
             </div>
