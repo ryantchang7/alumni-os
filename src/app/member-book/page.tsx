@@ -13,6 +13,7 @@ import type { FounderEntry, FamilySupporterEntry } from '@/lib/founders'
 import type { BadgeId } from '@/lib/badges'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import HeroCrest from '@/components/HeroCrest'
+import MemberAvatar from '@/components/MemberAvatar'
 import {
   filterPublicMembers,
   DEFAULT_PUBLIC_FILTERS,
@@ -82,12 +83,6 @@ function RegistryEntry({
   const classYear = member.profile.classYearEstimate
     ? `Class of ${member.profile.classYearEstimate}`
     : null
-  const initials = member.displayName
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(p => p[0]?.toUpperCase() ?? '')
-    .join('')
 
   return (
     <motion.div
@@ -104,29 +99,7 @@ function RegistryEntry({
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3 min-w-0 flex-1">
-            {photoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={photoUrl}
-                alt={member.displayName}
-                width={48}
-                height={48}
-                loading="lazy"
-                decoding="async"
-                className="w-12 h-12 rounded-full object-cover border border-[rgba(180,168,150,0.5)] flex-shrink-0"
-              />
-            ) : (
-              <div
-                className="w-12 h-12 rounded-full bg-[#0a1628] text-white flex items-center justify-center flex-shrink-0 border border-[rgba(180,168,150,0.5)]"
-                aria-hidden
-              >
-                <span
-                  className="text-[14px] font-medium font-heading"
-                >
-                  {initials}
-                </span>
-              </div>
-            )}
+            <MemberAvatar photoUrl={photoUrl} name={member.displayName} size={48} tone="navy" />
             <div className="min-w-0 flex-1">
               <p
                 className="text-[#0a1628] text-[17px] font-medium leading-snug font-heading"
@@ -172,12 +145,6 @@ function FamilyRegistryEntry({
   entry: ParentEntry
   index: number
 }) {
-  const initials = entry.canonicalName
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(p => p[0]?.toUpperCase() ?? '')
-    .join('')
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -192,29 +159,7 @@ function FamilyRegistryEntry({
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04), 0 2px 8px rgba(10,22,40,0.03)' }}
       >
         <div className="flex items-start gap-3 min-w-0">
-          {entry.photoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={entry.photoUrl}
-              alt={entry.canonicalName}
-              width={48}
-              height={48}
-              loading="lazy"
-              decoding="async"
-              className="w-12 h-12 rounded-full object-cover border border-[rgba(180,168,150,0.5)] flex-shrink-0"
-            />
-          ) : (
-            <div
-              className="w-12 h-12 rounded-full bg-[#990000] text-white flex items-center justify-center flex-shrink-0 border border-[rgba(180,168,150,0.5)]"
-              aria-hidden
-            >
-              <span
-                className="text-[14px] font-medium font-heading"
-              >
-                {initials}
-              </span>
-            </div>
-          )}
+          <MemberAvatar photoUrl={entry.photoUrl} name={entry.canonicalName} size={48} tone="red" />
           <div className="min-w-0 flex-1">
             <p
               className="text-[#0a1628] text-[17px] font-medium leading-snug font-heading"

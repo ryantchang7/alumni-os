@@ -15,10 +15,14 @@ interface MemberAvatarProps {
   className?: string
 }
 
+// "Engraved yearbook plate" — the no-photo state is designed, not a plain
+// grey circle, since ~50 members means plenty of unclaimed/no-upload cards.
+// onDark gets a lighter glass fill (not another navy-on-navy gradient,
+// which would nearly disappear against the header it already sits on).
 const FALLBACK_TONE = {
-  navy: 'bg-[#0a1628] text-white border-[rgba(180,168,150,0.5)]',
-  red: 'bg-[#990000] text-white border-[rgba(180,168,150,0.5)]',
-  onDark: 'bg-white/10 text-white border-white/15',
+  navy: 'bg-gradient-to-br from-[#0a1628] to-[#060e1a] text-gold border-gold/40',
+  red: 'bg-gradient-to-br from-[#0a1628] to-[#990000] text-gold border-gold/40',
+  onDark: 'bg-gradient-to-br from-white/20 to-white/5 text-gold border-gold/35',
 } as const
 
 const PHOTO_BORDER = {
@@ -66,8 +70,8 @@ export default function MemberAvatar({
       aria-hidden
     >
       <span
-        className="font-medium leading-none"
-        style={{ fontFamily: 'var(--font-playfair)', fontSize: Math.round(size * 0.4) }}
+        className="font-heading italic font-medium leading-none"
+        style={{ fontSize: Math.round(size * 0.4) }}
       >
         {initials}
       </span>
