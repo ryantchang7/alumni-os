@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
+import { MotionConfig } from 'framer-motion'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import NavBar from '@/components/NavBar'
 import ClubhouseFooter from '@/components/ClubhouseFooter'
@@ -82,15 +83,17 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#f8f5f0]">
-        <SessionProviderWrapper>
-          <TooltipProvider>
-            <NavBar />
-            <main className="flex-1">{children}</main>
-            <ClubhouseFooter />
-          </TooltipProvider>
-        </SessionProviderWrapper>
-        <ServiceWorkerRegister />
-        <InstallAppBanner />
+        <MotionConfig reducedMotion="user">
+          <SessionProviderWrapper>
+            <TooltipProvider>
+              <NavBar />
+              <main className="flex-1">{children}</main>
+              <ClubhouseFooter />
+            </TooltipProvider>
+          </SessionProviderWrapper>
+          <ServiceWorkerRegister />
+          <InstallAppBanner />
+        </MotionConfig>
       </body>
     </html>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { settle } from '@/lib/motion'
 
 interface Props {
   /** Resolved image URL. Empty string → component renders nothing. */
@@ -34,7 +35,7 @@ export default function HeroCrest({ src, alt = 'Crest', delay = 0.15 }: Props) {
       className="flex-shrink-0"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay, duration: 0.55 }}
+      transition={{ ...settle, delay }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
