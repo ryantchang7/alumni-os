@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useRef, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, animate } from 'framer-motion'
+import { settle } from '@/lib/motion'
 import { MessageSquare, Users, Flag, CalendarDays, MapPin, Calendar, BookOpen } from 'lucide-react'
 import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
 import { memberBookEntries } from '@/lib/member-book/data'
@@ -60,8 +61,9 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
     return (
       <motion.div
         initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ...spring, delay: 0.55 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={settle}
         className="pb-8"
         data-testid="this-week-panel"
       >
@@ -79,8 +81,9 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...spring, delay: 0.55 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={settle}
       className="pb-8"
       data-testid="this-week-panel"
     >
@@ -156,14 +159,13 @@ interface PlayerProfile {
   badges?: import('@/lib/badges').BadgeId[]
 }
 
-const spring = { type: 'spring' as const, stiffness: 120, damping: 22, mass: 0.8 }
-
 function SpotlightCard({ spotlight }: { spotlight: AlumniSpotlight }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...spring, delay: 0.48 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={settle}
       className="pb-8"
     >
       <div className="flex items-center justify-between mb-3">
@@ -212,12 +214,55 @@ function SpotlightCard({ spotlight }: { spotlight: AlumniSpotlight }) {
   )
 }
 
+// The one sanctioned count-up in the app — trophy-cabinet stats only.
+// Fires once, ignores prefers-reduced-motion by jumping straight to the
+// target (MotionConfig's reducedMotion="user" only covers motion.*
+// components, not this imperative animate() call).
+function CountUpValue({ value, className }: { value: string; className?: string }) {
+  const ref = useRef<HTMLParagraphElement>(null)
+  const target = parseInt(value, 10)
+  const [display, setDisplay] = useState(Number.isNaN(target) ? value : '0')
+
+  useEffect(() => {
+    if (Number.isNaN(target) || !ref.current) return
+    const el = ref.current
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) {
+      setDisplay(String(target))
+      return
+    }
+    let fired = false
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || fired) return
+        fired = true
+        animate(0, target, {
+          duration: 1.2,
+          ease: [0.22, 1, 0.36, 1],
+          onUpdate: (v) => setDisplay(String(Math.round(v))),
+        })
+        io.disconnect()
+      },
+      { threshold: 0.4 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [target])
+
+  return (
+    <p ref={ref} className={className}>
+      {display}
+    </p>
+  )
+}
+
 function TraditionSection() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...spring, delay: 0.45 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={settle}
       className="mb-8"
       data-testid="tradition-section"
     >
@@ -227,11 +272,7 @@ function TraditionSection() {
       >
         {/* Trophy cabinet header — deep navy */}
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-6 pb-5 relative overflow-hidden">
-          {/* Subtle horizontal line texture */}
-          <div
-            className="absolute inset-0 opacity-[0.035] pointer-events-none"
-            style={{ backgroundImage: 'repeating-linear-gradient(0deg, white, white 1px, transparent 1px, transparent 22px)' }}
-          />
+          <div className="absolute inset-0 opacity-[0.035] pointer-events-none texture-engraved" />
           <div className="relative">
             <p className="eyebrow text-gold mb-2.5">Penn Men&apos;s Golf</p>
             <h2
@@ -248,11 +289,10 @@ function TraditionSection() {
         <div className="bg-[#faf7f2] grid grid-cols-2 sm:grid-cols-3 divide-x divide-y divide-[rgba(180,168,150,0.3)]">
           {PENN_GOLF_TRADITION.achievements.map((a) => (
             <div key={a.label} className="px-5 sm:px-6 py-6 sm:py-7 hover:-translate-y-px hover:bg-white transition-all duration-150 cursor-default">
-              <p
+              <CountUpValue
+                value={a.value}
                 className={`font-heading text-[3rem] sm:text-[3.5rem] font-light leading-none mb-1 ${a.featured ? 'text-[#990000]' : 'text-[#0a1628]'}`}
-              >
-                {a.value}
-              </p>
+              />
               <p className="text-[8px] font-semibold uppercase tracking-[0.2em] text-ink-muted mb-2 leading-tight">{a.label}</p>
               <p className="text-[11px] font-medium text-[#3d4a5c] mb-1.5 leading-snug">{a.detail}</p>
               <p className="text-[10px] text-ink-muted leading-relaxed">{a.description}</p>
@@ -437,9 +477,11 @@ function ClubhouseInner() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      {/* Header */}
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
-        <div className="max-w-[1320px] mx-auto flex items-center gap-5 sm:gap-7">
+      {/* Header — the foyer. Engraved texture + a gold hairline drawing in
+          under the headline, matching the trophy cabinet's treatment below. */}
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.035] pointer-events-none texture-engraved" />
+        <div className="max-w-[1320px] mx-auto flex items-center gap-5 sm:gap-7 relative">
           <HeroCrest src={crestImage} alt="Penn Golf crest" />
           <div className="min-w-0 flex-1">
             <motion.p
@@ -451,15 +493,21 @@ function ClubhouseInner() {
               Penn Golf · Clubhouse
             </motion.p>
             <motion.h1
-              className="text-white text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-tight"
+              className="font-heading text-white text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight leading-tight"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, ...spring }}
+              transition={{ delay: 0.2, ...settle }}
             >
               Welcome to the Penn Golf Clubhouse.
             </motion.h1>
+            <motion.span
+              className="block h-px bg-gold mt-4 w-16 origin-left"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 0.5, ...settle }}
+            />
             <motion.p
-              className="text-white/55 text-sm sm:text-base mt-2 max-w-xl"
+              className="text-white/55 text-sm sm:text-base mt-3 max-w-xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35 }}
@@ -525,8 +573,9 @@ function ClubhouseInner() {
         {onboarding?.linked && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...spring, delay: 0.3 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={settle}
             className="mb-8"
           >
             <div
@@ -624,20 +673,24 @@ function ClubhouseInner() {
                 <motion.div
                   key={room.id}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ ...spring, delay: 0.15 + i * 0.07 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ ...settle, delay: i * 0.07 }}
                 >
+                  {/* "Locker door" — double keyline (border + inset ring),
+                      brass roundel, 0.3s lift on hover. No bounce. */}
                   <Link
                     href={room.href}
-                    className="block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 h-full hover:shadow-md transition-shadow group"
+                    className="relative block bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5 h-full hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group"
                     style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
                   >
-                    <div className="w-9 h-9 rounded-lg bg-[#f0ece5] flex items-center justify-center mb-3">
-                      <Icon className="w-4 h-4 text-[#0a1628]" />
+                    <span className="pointer-events-none absolute inset-1 rounded-lg border border-[rgba(180,168,150,0.22)] group-hover:border-gold/35 transition-colors duration-300" />
+                    <div className="relative w-9 h-9 rounded-full flex items-center justify-center mb-3 bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/40">
+                      <Icon className="w-4 h-4 text-gold-ink" />
                     </div>
-                    <p className="font-semibold text-[#0a1628] text-base mb-1.5">{room.label}</p>
-                    <p className="text-xs text-[#6b7280] leading-relaxed mb-4">{room.description}</p>
-                    <span className="text-xs font-semibold text-[#990000] group-hover:underline">
+                    <p className="relative font-semibold text-[#0a1628] text-base mb-1.5">{room.label}</p>
+                    <p className="relative text-xs text-[#6b7280] leading-relaxed mb-4">{room.description}</p>
+                    <span className="relative text-xs font-semibold text-[#990000] group-hover:underline">
                       {room.cta} &rarr;
                     </span>
                   </Link>
@@ -671,8 +724,9 @@ function ClubhouseInner() {
           return (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ...spring, delay: 0.5 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={settle}
               className="pb-10"
               data-testid="network-alumni-grid"
             >
