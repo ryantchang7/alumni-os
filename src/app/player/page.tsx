@@ -15,7 +15,6 @@ import YourEraSection from '@/components/YourEraSection'
 import ClubhouseChecklist from '@/components/ClubhouseChecklist'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import MemberOnlyTease from '@/components/MemberOnlyTease'
-import HeroCrest from '@/components/HeroCrest'
 import AlumniCard from '@/components/alumni/AlumniCard'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import type { AlumniSpotlight, TeamNewsItem } from '@/lib/store/types'
@@ -415,7 +414,6 @@ function ClubhouseInner() {
     'player.welcome-line',
     'A private clubhouse for Penn Golf players, alumni, families, and friends to stay close, help the next generation, and keep playing together.',
   )
-  const crestImage = useSiteContent('player.crest-image', '')
 
   const [profiles, setProfiles] = useState<PlayerProfile[]>([])
   const [loading, setLoading] = useState(true)
@@ -477,44 +475,58 @@ function ClubhouseInner() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      {/* Header — the foyer. Engraved texture + a gold hairline drawing in
-          under the headline, matching the trophy cabinet's treatment below. */}
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.035] pointer-events-none texture-engraved" />
-        <div className="max-w-[1320px] mx-auto flex items-center gap-5 sm:gap-7 relative">
-          <HeroCrest src={crestImage} alt="Penn Golf crest" />
-          <div className="min-w-0 flex-1">
-            <motion.p
-              className="eyebrow text-gold mb-3"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              Penn Golf · Clubhouse
-            </motion.p>
-            <motion.h1
-              className="font-heading text-white text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight leading-tight"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.06, ...settle }}
-            >
-              Welcome to the Penn Golf Clubhouse.
-            </motion.h1>
-            <motion.span
-              className="block h-px bg-gold mt-4 w-16 origin-left"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ delay: 0.18, ...settle }}
-            />
-            <motion.p
-              className="text-white/55 text-sm sm:text-base mt-3 max-w-xl"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.14, duration: 0.3 }}
-            >
-              {welcomeLine}
-            </motion.p>
-          </div>
+      {/* Header — the foyer. The clubhouse hero photo carries the visual
+          weight; a navy gradient keeps the headline legible over it. */}
+      <div className="relative overflow-hidden px-6 sm:px-8 pt-16 pb-16 sm:pt-24 sm:pb-20">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/clubhouse-hero.jpg"
+          alt="The Penn Golf clubhouse at golden hour, Philadelphia skyline behind the 18th green"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(100deg, rgba(6,14,26,0.94) 0%, rgba(10,22,40,0.82) 42%, rgba(10,22,40,0.45) 100%)',
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(6,14,26,0.7), transparent 55%)' }}
+        />
+        <div className="max-w-[1320px] mx-auto relative">
+          <motion.p
+            className="eyebrow text-gold mb-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            Penn Golf · Clubhouse · Est. 1899
+          </motion.p>
+          <motion.h1
+            className="font-heading text-white text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight leading-tight max-w-2xl"
+            style={{ textShadow: '0 2px 20px rgba(6,14,26,0.5)' }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.06, ...settle }}
+          >
+            Welcome to the Penn Golf Clubhouse.
+          </motion.h1>
+          <motion.span
+            className="block h-px bg-gold mt-4 w-16 origin-left"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 0.18, ...settle }}
+          />
+          <motion.p
+            className="text-white/70 text-sm sm:text-base mt-3 max-w-xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.14, duration: 0.3 }}
+          >
+            {welcomeLine}
+          </motion.p>
         </div>
       </div>
 
