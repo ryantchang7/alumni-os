@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion, animate } from 'framer-motion'
-import { settle } from '@/lib/motion'
+import { settle, revealViewport } from '@/lib/motion'
 import { MessageSquare, Users, Flag, CalendarDays, MapPin, Calendar, BookOpen } from 'lucide-react'
 import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
 import { memberBookEntries } from '@/lib/member-book/data'
@@ -62,7 +62,7 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-40px' }}
+        viewport={revealViewport}
         transition={settle}
         className="pb-8"
         data-testid="this-week-panel"
@@ -82,7 +82,7 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
+      viewport={revealViewport}
       transition={settle}
       className="pb-8"
       data-testid="this-week-panel"
@@ -164,7 +164,7 @@ function SpotlightCard({ spotlight }: { spotlight: AlumniSpotlight }) {
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
+      viewport={revealViewport}
       transition={settle}
       className="pb-8"
     >
@@ -237,7 +237,7 @@ function CountUpValue({ value, className }: { value: string; className?: string 
         if (!entry.isIntersecting || fired) return
         fired = true
         animate(0, target, {
-          duration: 1.2,
+          duration: 0.85,
           ease: [0.22, 1, 0.36, 1],
           onUpdate: (v) => setDisplay(String(Math.round(v))),
         })
@@ -261,7 +261,7 @@ function TraditionSection() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
+      viewport={revealViewport}
       transition={settle}
       className="mb-8"
       data-testid="tradition-section"
@@ -488,7 +488,7 @@ function ClubhouseInner() {
               className="eyebrow text-gold mb-3"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
+              transition={{ duration: 0.3 }}
             >
               Penn Golf · Clubhouse
             </motion.p>
@@ -496,7 +496,7 @@ function ClubhouseInner() {
               className="font-heading text-white text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight leading-tight"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, ...settle }}
+              transition={{ delay: 0.06, ...settle }}
             >
               Welcome to the Penn Golf Clubhouse.
             </motion.h1>
@@ -504,13 +504,13 @@ function ClubhouseInner() {
               className="block h-px bg-gold mt-4 w-16 origin-left"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
-              transition={{ delay: 0.5, ...settle }}
+              transition={{ delay: 0.18, ...settle }}
             />
             <motion.p
               className="text-white/55 text-sm sm:text-base mt-3 max-w-xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.35 }}
+              transition={{ delay: 0.14, duration: 0.3 }}
             >
               {welcomeLine}
             </motion.p>
@@ -574,7 +574,7 @@ function ClubhouseInner() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
+            viewport={revealViewport}
             transition={settle}
             className="mb-8"
           >
@@ -674,8 +674,8 @@ function ClubhouseInner() {
                   key={room.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ ...settle, delay: i * 0.07 }}
+                  viewport={revealViewport}
+                  transition={{ ...settle, delay: i * 0.05 }}
                 >
                   {/* "Locker door" — double keyline (border + inset ring),
                       brass roundel, 0.3s lift on hover. No bounce. */}
@@ -725,7 +725,7 @@ function ClubhouseInner() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
+              viewport={revealViewport}
               transition={settle}
               className="pb-10"
               data-testid="network-alumni-grid"
