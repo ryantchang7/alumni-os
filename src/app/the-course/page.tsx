@@ -295,7 +295,7 @@ export default async function TheCoursePage() {
     ).size
     return (
       <div className="min-h-screen bg-[#fbf9f6]">
-        <CourseHero rounds={[]} />
+        <CourseHero />
         <GatedPreview
           signedIn={approval.signedIn}
           eyebrow="Members only · The Course"
@@ -314,7 +314,7 @@ export default async function TheCoursePage() {
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
-      <CourseHero rounds={rounds} />
+      <CourseHero />
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-12 space-y-14">
         {/* Host a Round — prominent CTA, always visible */}

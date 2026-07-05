@@ -1,41 +1,25 @@
 'use client'
 
 import { useSiteContent } from '@/lib/site-content/use-site-content'
-import HeroCrest from '@/components/HeroCrest'
+import SectionEmblemHeader from '@/components/SectionEmblemHeader'
 
 /**
- * Hero for /career-room — a private-library register. Badge on the left,
- * title block on the right. Matches the /player layout pattern.
+ * Hero for /career-room — uses the shared framed-emblem header so every
+ * section reads the same. The Career Room emblem sits beside the title.
  */
 export default function CareerRoomHero() {
-  const crestImage = useSiteContent('career-room.crest-image', '')
   const heroBlurb = useSiteContent(
     'career-room.hero-blurb',
     'Find Penn Golf members by industry, company, and experience. Ask questions, get thoughtful advice, and help the next player when it’s your turn.',
   )
 
   return (
-    <div className="relative overflow-hidden bg-[#0a1628]">
-      <div className="relative max-w-[1320px] mx-auto px-6 sm:px-8 pt-14 pb-16">
-        <div className="flex items-center gap-5 sm:gap-7">
-          <HeroCrest src={crestImage} alt="Career Room crest" />
-          {/* Title block */}
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-3">
-              Penn Men&rsquo;s Golf · Advice &amp; Introductions
-            </p>
-            <h1
-              className="text-[#f4ecdb] text-5xl sm:text-7xl font-medium tracking-tight leading-[0.92] font-heading"
-            >
-              Career Room
-            </h1>
-            <p className="text-[#f4ecdb]/65 text-[15px] leading-relaxed max-w-md mt-5">
-              {heroBlurb}
-            </p>
-          </div>
-
-        </div>
-      </div>
-    </div>
+    <SectionEmblemHeader
+      eyebrow="Penn Men's Golf · Advice & Introductions"
+      title="Career Room"
+      subtitle={heroBlurb}
+      emblemSrc="/emblems/career-room.png"
+      emblemAlt="Penn Golf career room emblem"
+    />
   )
 }
