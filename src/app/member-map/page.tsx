@@ -12,8 +12,7 @@ import {
   getMemberStartYear,
   getMemberEndYear,
 } from '@/lib/member-book/helpers'
-import { getSiteContentOrDefault } from '@/lib/site-content/read'
-import HeroCrest from '@/components/HeroCrest'
+import SectionEmblemHeader from '@/components/SectionEmblemHeader'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -63,7 +62,6 @@ export default async function MemberMapPage() {
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug(TEAM_SLUG)
-  const crestImage = await getSiteContentOrDefault('member-map.crest-image')
 
   // Three parallel datasets:
   //   hometownByState — players + alumni + coach keyed by hometown
@@ -253,24 +251,14 @@ export default async function MemberMapPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
-        <div className="max-w-[1280px] mx-auto flex items-center gap-5 sm:gap-7">
-          <HeroCrest src={crestImage} alt="Member Map crest" />
-          <div className="min-w-0 flex-1">
-            <p className="eyebrow text-gold mb-4">
-              Penn Men&rsquo;s Golf
-            </p>
-            <h1
-              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium leading-tight tracking-tight font-heading"
-            >
-              The Member Map
-            </h1>
-            <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl">
-              Where Penn Golf players and alumni come from, and where they are now.
-            </p>
-          </div>
-        </div>
-      </div>
+      <SectionEmblemHeader
+        eyebrow="Penn Men's Golf"
+        title="The Member Map"
+        subtitle="Where Penn Golf players and alumni come from, and where they are now."
+        emblemSrc="/emblems/member-map.png"
+        emblemAlt="Penn Golf member map emblem"
+        maxWidth="1280px"
+      />
 
       <div className="max-w-[1280px] mx-auto px-6 sm:px-8 py-10">
         <MemberMapClient

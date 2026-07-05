@@ -16,6 +16,7 @@ import { auth } from '@/auth'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
 import HeroCrest from '@/components/HeroCrest'
+import SectionEmblemHeader from '@/components/SectionEmblemHeader'
 import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
@@ -135,37 +136,26 @@ export default async function MomentsPage({ searchParams }: PageProps) {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14 relative overflow-hidden">
-        <div className="max-w-[820px] mx-auto relative flex items-center gap-5 sm:gap-7">
-          <HeroCrest src={crestImage} alt="Moments crest" />
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
-              Penn Men&rsquo;s Golf · The Wall
-            </p>
-            <h1
-              className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight font-heading"
-            >
-              Moments
-            </h1>
-            <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed whitespace-pre-line mt-5">
-              {subtitle}
-            </p>
-            <div className="mt-7">
-              <Link
-                href={isLockerView ? '/moments/new?audience=locker-room' : '/moments/new'}
-                className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors ${
-                  isLockerView
-                    ? 'bg-[#0a1628] hover:bg-[#112240] text-[#c8a84b] border border-[#c8a84b]/55'
-                    : 'bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628]'
-                }`}
-              >
-                {isLockerView ? <Lock className="w-4 h-4" /> : <Camera className="w-4 h-4" />}
-                {isLockerView ? 'Post to the Locker Room' : 'Post a moment'}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      <SectionEmblemHeader
+        eyebrow="Penn Men's Golf · The Wall"
+        title="Moments"
+        subtitle={subtitle}
+        emblemSrc={isLockerView ? '/emblems/locker-room.png' : '/emblems/moments.png'}
+        emblemAlt={isLockerView ? 'Penn Golf locker room emblem' : 'Penn Golf moments emblem'}
+        maxWidth="820px"
+      >
+        <Link
+          href={isLockerView ? '/moments/new?audience=locker-room' : '/moments/new'}
+          className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors ${
+            isLockerView
+              ? 'bg-[#0a1628] hover:bg-[#112240] text-[#c8a84b] border border-[#c8a84b]/55'
+              : 'bg-[#c8a84b] hover:bg-[#b69740] text-[#0a1628]'
+          }`}
+        >
+          {isLockerView ? <Lock className="w-4 h-4" /> : <Camera className="w-4 h-4" />}
+          {isLockerView ? 'Post to the Locker Room' : 'Post a moment'}
+        </Link>
+      </SectionEmblemHeader>
 
       {/* Subtab segmented control. Sits on a navy strip so the bar reads
           as a continuation of the hero. The active pill is a solid block,

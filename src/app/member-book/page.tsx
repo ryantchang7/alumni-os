@@ -12,7 +12,7 @@ import FoundersWall from '@/components/FoundersWall'
 import type { FounderEntry, FamilySupporterEntry } from '@/lib/founders'
 import type { BadgeId } from '@/lib/badges'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
-import HeroCrest from '@/components/HeroCrest'
+import SectionEmblemHeader from '@/components/SectionEmblemHeader'
 import MemberAvatar from '@/components/MemberAvatar'
 import {
   filterPublicMembers,
@@ -195,7 +195,6 @@ function BookHeader({
   earliestYear: number | null
   latestYear: number | null
 }) {
-  const crestImage = useSiteContent('member-book.crest-image', '')
   const subtitle = useSiteContent(
     'member-book.subtitle',
     'A registry of Penn Men’s Golf members, across generations.',
@@ -207,42 +206,29 @@ function BookHeader({
   const rangeLabel =
     earliestYear && latestYear ? `${earliestYear} — ${latestYear}` : null
   return (
-    <div className="bg-[#0a1628] px-5 sm:px-8 pt-12 pb-16">
-      <div className="max-w-[1280px] mx-auto flex items-center gap-5 sm:gap-7">
-        <HeroCrest src={crestImage} alt="Member Book crest" />
-        <div className="min-w-0 flex-1">
-          <p className="eyebrow text-gold mb-4">
-            Penn Men&rsquo;s Golf
+    <SectionEmblemHeader
+      eyebrow="Penn Men's Golf"
+      title="The Member Book"
+      subtitle={subtitle}
+      emblemSrc="/emblems/member-book.png"
+      emblemAlt="Penn Golf member book emblem"
+      maxWidth="1280px"
+      titleTestId="member-book-title"
+    >
+      {scopeNote && (
+        <p className="text-white/40 text-[12.5px] sm:text-[13px] max-w-xl italic -mt-1">
+          {scopeNote}
+        </p>
+      )}
+      <div className="mt-4" data-testid="member-book-stats">
+        <HeroPlaque value={members} label="Members" />
+        {rangeLabel && (
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/40 mt-2">
+            {rangeLabel}
           </p>
-          <h1
-            className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium leading-tight tracking-tight font-heading"
-            data-testid="member-book-title"
-          >
-            The Member Book
-          </h1>
-          <p className="text-white/55 text-sm sm:text-base max-w-xl mt-3">
-            {subtitle}
-          </p>
-          {scopeNote && (
-            <p className="text-white/40 text-[12.5px] sm:text-[13px] max-w-xl mt-2 italic">
-              {scopeNote}
-            </p>
-          )}
-
-          <div
-            className="mt-5"
-            data-testid="member-book-stats"
-          >
-            <HeroPlaque value={members} label="Members" />
-            {rangeLabel && (
-              <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/40 mt-2">
-                {rangeLabel}
-              </p>
-            )}
-          </div>
-        </div>
+        )}
       </div>
-    </div>
+    </SectionEmblemHeader>
   )
 }
 
