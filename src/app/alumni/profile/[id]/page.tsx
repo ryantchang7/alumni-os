@@ -51,6 +51,7 @@ interface SelfProfile {
   homeCourse?: string
   noHomeCourse?: boolean
   handicap?: string
+  ghin?: string
   favoriteCourses?: string
   favoritePennGolfMemory?: string
   interests?: string
@@ -119,6 +120,7 @@ function AlumniProfileInner() {
   const [visibleToPlayers, setVisibleToPlayers] = useState(true)
   const [homeCourse, setHomeCourse] = useState('')
   const [handicap, setHandicap] = useState('')
+  const [ghin, setGhin] = useState('')
   const [favoriteCourses, setFavoriteCourses] = useState('')
   const [favoritePennGolfMemory, setFavoritePennGolfMemory] = useState('')
   /** "I'm not a member at a course" — opt-out for players and parents who
@@ -163,6 +165,7 @@ function AlumniProfileInner() {
         setVisibleToPlayers(data.visibleToPlayers ?? true)
         setHomeCourse(data.homeCourse ?? '')
         setHandicap(data.handicap ?? '')
+        setGhin(data.ghin ?? '')
         setFavoriteCourses(data.favoriteCourses ?? '')
         setFavoritePennGolfMemory(data.favoritePennGolfMemory ?? '')
         setNoHomeCourse(data.noHomeCourse === true)
@@ -252,6 +255,7 @@ function AlumniProfileInner() {
           homeCourse,
           noHomeCourse,
           handicap,
+          ghin,
           favoriteCourses,
           favoritePennGolfMemory,
           interests,
@@ -697,23 +701,34 @@ function AlumniProfileInner() {
                   </span>
                 </label>
               </div>
-              {/* Handicap — required for non-parents. Chip presets for
-                  "Scratch" and "Beginner / Learning", plus a free-form
-                  input for an actual index ("12.4"). The presets just
-                  set the input value; nothing fancy needed. */}
+              {/* Handicap — required for non-parents. Numeric index is the
+                  primary input (most members have one); the two chips are a
+                  fallback for those who don't play to an index yet. GHIN #
+                  below is an optional credential — display only, no auto-sync
+                  (there's no free public GHIN API). */}
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">
-                  Handicap
+                  Handicap index
                   {!isParent && <span className="text-[#990000]"> *</span>}
                 </label>
-                <div className="flex flex-wrap gap-1.5 mb-2">
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={handicap}
+                  onChange={e => setHandicap(e.target.value.slice(0, 32))}
+                  placeholder="e.g. 12.4  ·  +2 for a plus handicap"
+                  required={!isParent}
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+                <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                  <span className="text-[11px] text-ink-muted">No index?</span>
                   {(['Scratch', 'Beginner / Learning'] as const).map(preset => {
                     const active = handicap.trim() === preset
                     return (
                       <button
                         key={preset}
                         type="button"
-                        onClick={() => setHandicap(preset)}
+                        onClick={() => setHandicap(active ? '' : preset)}
                         className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
                           active
                             ? 'bg-[#0a1628] text-white border-[#0a1628]'
@@ -725,14 +740,23 @@ function AlumniProfileInner() {
                     )
                   })}
                 </div>
-                <input
-                  type="text"
-                  value={handicap}
-                  onChange={e => setHandicap(e.target.value.slice(0, 32))}
-                  placeholder="Enter your index (e.g. 12.4) or pick above"
-                  required={!isParent}
-                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                />
+                <div className="mt-3">
+                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                    GHIN number <span className="text-ink-muted font-normal">(optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={ghin}
+                    onChange={e => setGhin(e.target.value.replace(/\D/g, '').slice(0, 12))}
+                    placeholder="e.g. 1234567"
+                    className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                  <p className="text-[11px] text-ink-muted mt-1 leading-snug">
+                    Shown on your card as a verified GHIN credential. We can&rsquo;t pull your
+                    live index automatically &mdash; enter it above.
+                  </p>
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#4a5568] mb-1">

@@ -93,6 +93,7 @@ export async function GET(request: Request) {
     homeCourse: enrichment?.homeCourse,
     noHomeCourse: enrichment?.noHomeCourse === true,
     handicap: enrichment?.handicap,
+    ghin: enrichment?.ghin,
     favoriteCourses: enrichment?.favoriteCourses,
     favoritePennGolfMemory: enrichment?.favoritePennGolfMemory,
     interests: enrichment?.interests,
@@ -218,6 +219,9 @@ export async function POST(request: Request) {
   if (typeof body.homeCourse === 'string') safeUpdate.homeCourse = body.homeCourse.trim().slice(0, 160)
   if (typeof body.noHomeCourse === 'boolean') safeUpdate.noHomeCourse = body.noHomeCourse
   if (typeof body.handicap === 'string') safeUpdate.handicap = body.handicap.trim().slice(0, 32)
+  // GHIN is digits only (7-10 in practice). Strip non-digits and cap; an
+  // empty result clears the field.
+  if (typeof body.ghin === 'string') safeUpdate.ghin = body.ghin.replace(/\D/g, '').slice(0, 12)
   if (typeof body.favoriteCourses === 'string') safeUpdate.favoriteCourses = body.favoriteCourses.trim().slice(0, 400)
   if (typeof body.favoritePennGolfMemory === 'string') safeUpdate.favoritePennGolfMemory = body.favoritePennGolfMemory.trim().slice(0, 800)
   if (typeof body.interests === 'string') safeUpdate.interests = body.interests.trim().slice(0, 400)

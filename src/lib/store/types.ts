@@ -184,6 +184,11 @@ export interface PersonEnrichment {
    *  enters it so we can hold both numeric indexes ("12.4") and the
    *  preset categories "Scratch" and "Beginner / Learning". */
   handicap?: string
+  /** GHIN number (USGA Golf Handicap and Information Network). Display +
+   *  credential only — there is no free public API to auto-sync the live
+   *  index from it, so members still enter `handicap` themselves. Digits
+   *  only, stored as a string to preserve any leading zeros. */
+  ghin?: string
   interests?: string
   memberSince?: string
   visibleToPlayers?: boolean

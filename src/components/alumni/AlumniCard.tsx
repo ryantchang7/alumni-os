@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, MapPin } from 'lucide-react'
+import { ArrowRight, Check, MapPin } from 'lucide-react'
 import MemberAvatar from '@/components/MemberAvatar'
 import MemberBadges from '@/components/MemberBadges'
 import type { BadgeId } from '@/lib/badges'
@@ -30,6 +30,9 @@ interface AlumniCardProps {
   relationship?: string | null
   location?: string | null
   handicap?: string | null
+  /** GHIN number — renders a small "GHIN" credential next to the handicap
+   *  when present, so a typed index reads as verified. */
+  ghin?: string | null
   /** Career line — "Analyst · Goldman Sachs". */
   careerLine?: string | null
   /** Favorite-courses quote — the-course only. */
@@ -53,6 +56,7 @@ export default function AlumniCard({
   relationship,
   location,
   handicap,
+  ghin,
   careerLine,
   quote,
   showOpenBadge,
@@ -117,6 +121,14 @@ export default function AlumniCard({
                       style={{ color: accentColor, backgroundColor: `${accentColor}14`, border: `1px solid ${accentColor}40` }}
                     >
                       HCP {handicap}
+                    </span>
+                  )}
+                  {ghin && (
+                    <span
+                      className="inline-flex items-center gap-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] px-1.5 py-0.5 rounded-full whitespace-nowrap text-gold-ink bg-gold/12 border border-gold/40"
+                      title={`GHIN #${ghin}`}
+                    >
+                      <Check className="w-2.5 h-2.5" /> GHIN
                     </span>
                   )}
                 </div>

@@ -1045,7 +1045,7 @@ export type AlumniSafeFields = Pick<
   'currentRole' | 'currentCompany' | 'industry' | 'city' | 'state' | 'country' |
   'additionalLocations' | 'inTown' |
   'alumniBio' | 'helpTopics' | 'contactPreference' | 'visibleToPlayers' |
-  'homeCourse' | 'noHomeCourse' | 'handicap' | 'favoriteCourses' | 'favoritePennGolfMemory' | 'interests' |
+  'homeCourse' | 'noHomeCourse' | 'handicap' | 'ghin' | 'favoriteCourses' | 'favoritePennGolfMemory' | 'interests' |
   'email' | 'phone' | 'linkedinUrl' | 'photoUrl' |
   'openToGolfRounds' | 'openToCoffee' | 'openToMentorship' | 'openToWarmIntroductions'
 >
@@ -1081,6 +1081,7 @@ export async function updatePersonEnrichmentSafeFields(
       ...(fields.homeCourse !== undefined ? { homeCourse: fields.homeCourse } : {}),
       ...(fields.noHomeCourse !== undefined ? { noHomeCourse: fields.noHomeCourse } : {}),
       ...(fields.handicap !== undefined ? { handicap: fields.handicap } : {}),
+      ...(fields.ghin !== undefined ? { ghin: fields.ghin } : {}),
       ...(fields.favoriteCourses !== undefined ? { favoriteCourses: fields.favoriteCourses } : {}),
       ...(fields.favoritePennGolfMemory !== undefined ? { favoritePennGolfMemory: fields.favoritePennGolfMemory } : {}),
       ...(fields.interests !== undefined ? { interests: fields.interests } : {}),
@@ -1116,6 +1117,7 @@ export async function updatePersonEnrichmentSafeFields(
     homeCourse: fields.homeCourse,
     noHomeCourse: fields.noHomeCourse,
     handicap: fields.handicap,
+    ghin: fields.ghin,
     favoriteCourses: fields.favoriteCourses,
     favoritePennGolfMemory: fields.favoritePennGolfMemory,
     interests: fields.interests,

@@ -498,6 +498,7 @@ export default async function TheCoursePage() {
                               subline={entry.membership.classLabel}
                               location={alumniLocation(entry)}
                               handicap={entry.enrichment.handicap}
+                              ghin={entry.enrichment.ghin}
                               quote={entry.enrichment.favoriteCourses}
                               showOpenBadge
                               accentColor="#2d6a4f"
@@ -554,6 +555,7 @@ export default async function TheCoursePage() {
                   subline={entry.membership.classLabel}
                   location={alumniLocation(entry)}
                   handicap={entry.enrichment.handicap}
+                  ghin={entry.enrichment.ghin}
                   quote={entry.enrichment.favoriteCourses}
                   showOpenBadge
                   accentColor="#2d6a4f"
