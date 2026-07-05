@@ -13,7 +13,7 @@ export default async function CurrentRosterEditorPage() {
 
   if (!team) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] p-8">
+      <div className="min-h-screen bg-[#fbf9f6] p-8">
         <p className="text-sm text-red-600">Team not found: {TEAM_SLUG}</p>
       </div>
     )
@@ -40,7 +40,7 @@ export default async function CurrentRosterEditorPage() {
     })
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
         <div className="max-w-[1320px] mx-auto">
           <div className="flex items-center gap-2 mb-4 text-xs">

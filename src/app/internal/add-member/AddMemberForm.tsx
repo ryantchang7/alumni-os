@@ -55,7 +55,7 @@ export default function AddMemberForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="px-5 sm:px-8 py-5 border-b border-[rgba(180,168,150,0.35)]">
         <div className="max-w-[820px] mx-auto flex items-center justify-between">
           <Link
@@ -76,7 +76,7 @@ export default function AddMemberForm() {
           className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl overflow-hidden"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
         >
-          <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
+          <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#fdfcf9]">
             <span className="block w-10 h-[2px] bg-[#0a1628] mb-5" />
             <h1
               className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"

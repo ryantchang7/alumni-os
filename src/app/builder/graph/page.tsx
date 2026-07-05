@@ -44,7 +44,7 @@ export default async function BuilderGraphPage({ searchParams }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Navy header band */}
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[1320px] mx-auto">

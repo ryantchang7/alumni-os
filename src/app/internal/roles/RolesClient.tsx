@@ -126,7 +126,7 @@ export default function RolesClient({ initialAccounts }: Props) {
               return (
                 <tr
                   key={row.id}
-                  className="border-b border-[rgba(180,168,150,0.2)] hover:bg-[#faf7f2]/60"
+                  className="border-b border-[rgba(180,168,150,0.2)] hover:bg-[#fdfcf9]/60"
                 >
                   <td className="py-2.5 px-2">
                     <p className="font-medium text-[#0a1628]">{display}</p>

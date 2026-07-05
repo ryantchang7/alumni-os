@@ -109,7 +109,7 @@ export default function InstallAppBanner() {
         <button
           onClick={dismiss}
           aria-label="Dismiss"
-          className="flex-shrink-0 p-1 text-white/50 transition-colors hover:text-white"
+          className="flex-shrink-0 p-1 text-white/75 transition-colors hover:text-white"
         >
           <X className="h-4 w-4" />
         </button>

@@ -132,11 +132,11 @@ export default function LaunchKitClient() {
   const accessOk = ACCESS_AFFIRMATION.appears
 
   return (
-    <div className="min-h-[calc(100dvh-60px)] bg-[#f8f5f0] pb-32">
+    <div className="min-h-[calc(100dvh-60px)] bg-[#fbf9f6] pb-32">
       {/* Header */}
       <div className="bg-[#0a1628] text-white px-5 sm:px-8 py-10 sm:py-14">
         <div className="max-w-[1180px] mx-auto">
-          <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/55 mb-3">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/70 mb-3">
             Internal · Launch Kit
           </p>
           <h1
@@ -144,11 +144,11 @@ export default function LaunchKitClient() {
           >
             Ship the launch.
           </h1>
-          <p className="text-white/65 text-sm sm:text-base max-w-2xl mt-3">
+          <p className="text-white/75 text-sm sm:text-base max-w-2xl mt-3">
             Script, storyboard, recording checklist, social copy, and asset
             references. Everything you need to record and share, one page.
           </p>
-          <p className="mt-5 inline-block text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/55 px-3 py-1.5 border border-white/15 rounded-full">
+          <p className="mt-5 inline-block text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/70 px-3 py-1.5 border border-white/15 rounded-full">
             {TAGLINE}
           </p>
 

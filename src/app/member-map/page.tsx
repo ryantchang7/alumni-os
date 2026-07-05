@@ -250,7 +250,7 @@ export default async function MemberMapPage() {
   )
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <SectionEmblemHeader
         eyebrow="Penn Men's Golf"
         title="The Member Map"

@@ -49,7 +49,7 @@ export default async function SpotlightPage() {
   const past: AlumniSpotlight[] = spotlights.slice(1)
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-16">
         <div className="max-w-[1320px] mx-auto">
@@ -61,7 +61,7 @@ export default async function SpotlightPage() {
           >
             Alumni Spotlight
           </h1>
-          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
+          <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
             Every week we feature someone from the Penn Golf family.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -133,14 +133,14 @@ export default async function SpotlightPage() {
                   This week&rsquo;s spotlight
                 </p>
                 <p
-                  className="text-white/60 text-2xl font-medium font-heading"
+                  className="text-white/70 text-2xl font-medium font-heading"
                 >
                   Coming soon
                 </p>
               </div>
               <div className="h-[3px] bg-gradient-to-r from-[#c8a84b] via-[#d4b75a] to-[#c8a84b]" />
               <div className="px-6 sm:px-10 py-8 text-center">
-                <p className="text-sm text-[#4a5568] leading-relaxed mb-6">
+                <p className="text-sm text-[#3a4657] leading-relaxed mb-6">
                   Know someone from the Penn Golf family who deserves a moment in the spotlight?
                   Nominate them &mdash; we pick from submissions each week.
                 </p>
@@ -182,7 +182,7 @@ export default async function SpotlightPage() {
                       <p className="text-[10px] text-ink-muted mt-1">{formatDate(s.featuredAt)}</p>
                     </div>
                   </div>
-                  <p className="text-xs text-[#4a5568] leading-relaxed line-clamp-3">{s.blurb}</p>
+                  <p className="text-xs text-[#3a4657] leading-relaxed line-clamp-3">{s.blurb}</p>
                 </div>
               ))}
             </div>

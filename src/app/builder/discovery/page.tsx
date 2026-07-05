@@ -72,7 +72,7 @@ export default function BuilderDiscoveryPage() {
   const nonRobotsWarnings = result?.warnings?.filter(w => !w.toLowerCase().includes('robot')) ?? []
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Navy header */}
       <div className="bg-[#0a1628] px-8 py-10">
         <div className="max-w-[1320px] mx-auto">
@@ -261,7 +261,7 @@ export default function BuilderDiscoveryPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-[rgba(180,168,150,0.35)] bg-[#f8f5f0]">
+                      <tr className="border-b border-[rgba(180,168,150,0.35)] bg-[#fbf9f6]">
                         <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Page</th>
                         <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Type</th>
                         <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Confidence</th>
@@ -354,7 +354,7 @@ export default function BuilderDiscoveryPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="border-b border-[rgba(180,168,150,0.35)] bg-[#f8f5f0]">
+                          <tr className="border-b border-[rgba(180,168,150,0.35)] bg-[#fbf9f6]">
                             <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Name</th>
                             <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Class</th>
                             <th className="text-left px-4 py-2.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Hometown</th>

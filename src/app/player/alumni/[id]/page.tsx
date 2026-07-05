@@ -87,7 +87,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
   )
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
 
       {/* ── Header ── */}
       <div className="bg-[#0a1628] px-5 sm:px-8 pt-8 pb-14">
@@ -102,7 +102,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               Member Book
             </Link>
             <span className="text-white/20">/</span>
-            <span className="text-white/55">{person.canonicalName}</span>
+            <span className="text-white/70">{person.canonicalName}</span>
           </div>
 
           {/* Main header row */}
@@ -125,13 +125,13 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               >
                 {person.canonicalName}
               </h1>
-              <p className="text-white/50 text-sm mt-2">{subtitle}</p>
+              <p className="text-white/75 text-sm mt-2">{subtitle}</p>
               {hasCareer && (
                 <p className="text-white/75 text-sm mt-2">
                   {[enrichment?.currentRole, enrichment?.currentCompany].filter(Boolean).join(', ')}
                 </p>
               )}
-              {location && <p className="text-white/40 text-sm mt-1">{location}</p>}
+              {location && <p className="text-white/70 text-sm mt-1">{location}</p>}
               </div>
             </div>
 
@@ -166,7 +166,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
               style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
             >
-              <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+              <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#fdfcf9]">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                   Penn Golf
                 </p>
@@ -202,7 +202,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             {/* Unclaimed — direct visitors to the Member Book / sign-in flow */}
             {unclaimed && (
               <div
-                className="bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] rounded-xl p-5"
+                className="bg-[#fdfcf9] border border-[rgba(180,168,150,0.4)] rounded-xl p-5"
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
               >
                 <p
@@ -232,7 +232,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
-                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#fdfcf9]">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                     How I Can Help
                   </p>
@@ -273,7 +273,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
-                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#fdfcf9]">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">Career</p>
                 </div>
                 <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">
@@ -311,7 +311,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
-                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#fdfcf9]">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">Golf</p>
                 </div>
                 <div className="px-5 py-4 space-y-3">
@@ -336,7 +336,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
-                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2]">
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#fdfcf9]">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">About</p>
                 </div>
                 <p className="px-5 py-4 text-sm text-[#0a1628] leading-relaxed">{enrichment.alumniBio}</p>
@@ -350,7 +350,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
                 style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
               >
-                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#faf7f2] flex items-center justify-between">
+                <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#fdfcf9] flex items-center justify-between">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                     Contact
                   </p>

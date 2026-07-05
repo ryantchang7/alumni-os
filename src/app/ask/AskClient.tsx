@@ -160,7 +160,7 @@ function MemberCard({
             </p>
           )}
           {careerLine && (
-            <p className="text-xs text-[#4a5568] mt-0.5">{careerLine}</p>
+            <p className="text-xs text-[#3a4657] mt-0.5">{careerLine}</p>
           )}
           <p className="text-xs text-ink-muted italic mt-1.5">{profile.whyLine}</p>
         </div>
@@ -287,12 +287,12 @@ export default function AskClient() {
   if (submitted) {
     const first = selectedProfile?.firstName ?? selectedProfile?.canonicalName.split(' ')[0] ?? 'them'
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
           <div className="max-w-[680px] mx-auto">
             <p className="eyebrow text-gold mb-3">Penn Golf · Clubhouse</p>
             <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Request sent.</h1>
-            <p className="text-white/55 text-sm mt-2">Your message is in {first}&rsquo;s Clubhouse inbox.</p>
+            <p className="text-white/70 text-sm mt-2">Your message is in {first}&rsquo;s Clubhouse inbox.</p>
           </div>
         </div>
         <div className="max-w-[680px] mx-auto px-6 sm:px-8 py-10">
@@ -323,15 +323,15 @@ export default function AskClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Header */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
         <div className="max-w-[680px] mx-auto">
-          <Link href="/player" className="text-xs text-white/55 hover:text-gray-200 mb-3 inline-block">
+          <Link href="/player" className="text-xs text-white/70 hover:text-gray-200 mb-3 inline-block">
             &larr; Clubhouse
           </Link>
           <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight mt-1">Send a request</h1>
-          <p className="text-white/55 text-sm mt-2">
+          <p className="text-white/70 text-sm mt-2">
             Find an alum. Ask for what you need. Four quick steps. We&rsquo;ll draft the note for you.
           </p>
         </div>
@@ -403,7 +403,7 @@ export default function AskClient() {
                     maxLength={1500}
                     placeholder={'E.g. "Saw you started a podcast on real estate. Would love to know how you got going and whether you\'d be open to me helping out this summer."'}
                     autoFocus
-                    className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-y focus:outline-none focus:border-[#0a1628] transition-colors leading-relaxed"
+                    className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-y focus:outline-none focus:border-[#0a1628] transition-colors leading-relaxed"
                   />
                   <p className="text-[11px] text-ink-muted mt-1.5">
                     You can tweak the whole note in the next step before sending.
@@ -442,7 +442,7 @@ export default function AskClient() {
                       rows={3}
                       maxLength={1000}
                       placeholder={'"Applying to Goldman summer roles." / "I\'ll be in NYC in July." / "Coach said you\'d be a good person to ask."'}
-                      className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
+                      className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
                     />
                     <p className="text-[11px] text-ink-muted mt-1">
                       Whatever you put here goes into the note naturally.
@@ -538,7 +538,7 @@ export default function AskClient() {
                   onChange={e => setDraft(e.target.value)}
                   rows={10}
                   maxLength={2000}
-                  className="w-full text-sm text-[#0a1628] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-y focus:outline-none focus:border-[#0a1628] transition-colors font-[inherit] leading-relaxed"
+                  className="w-full text-sm text-[#0a1628] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-y focus:outline-none focus:border-[#0a1628] transition-colors font-[inherit] leading-relaxed"
                 />
                 <p className="text-[11px] text-ink-muted mt-1 text-right">{draft.length}/2000</p>
               </div>
@@ -554,7 +554,7 @@ export default function AskClient() {
                   onChange={e => setFromName(e.target.value)}
                   placeholder="Your name"
                   maxLength={100}
-                  className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 focus:outline-none focus:border-[#0a1628] transition-colors"
+                  className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 focus:outline-none focus:border-[#0a1628] transition-colors"
                 />
               </div>
 

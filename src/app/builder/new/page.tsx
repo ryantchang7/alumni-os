@@ -51,7 +51,7 @@ export default function BuilderNewPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] flex flex-col">
+    <div className="min-h-screen bg-[#fbf9f6] flex flex-col">
       {/* Navy top strip */}
       <div className="bg-[#0a1628] py-10 px-8">
         <div className="max-w-xl mx-auto">

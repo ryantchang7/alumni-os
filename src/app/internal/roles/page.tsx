@@ -13,7 +13,7 @@ export default async function RolesPage() {
   const email = session.user.email.toLowerCase().trim()
   if (!FOUNDER_EMAILS.has(email)) {
     return (
-      <div className="min-h-[calc(100dvh-60px)] bg-[#f8f5f0] flex items-center justify-center px-6">
+      <div className="min-h-[calc(100dvh-60px)] bg-[#fbf9f6] flex items-center justify-center px-6">
         <div className="max-w-md text-center bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-10">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-3">
             Restricted
@@ -73,7 +73,7 @@ export default async function RolesPage() {
     })
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[1320px] mx-auto">
           <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">

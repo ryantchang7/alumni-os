@@ -131,7 +131,7 @@ export default async function MemberDetailPage({
   const claimLabel = storeMatch ? 'Update Profile' : 'Claim & Update'
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Header strip */}
       <div className="bg-[#0a1628] px-5 sm:px-8 py-5">
         <div className="max-w-[820px] mx-auto flex items-center justify-between">
@@ -142,7 +142,7 @@ export default async function MemberDetailPage({
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to the Member Book</span>
           </Link>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/70">
             Penn Men&rsquo;s Golf
           </p>
         </div>
@@ -424,7 +424,7 @@ export default async function MemberDetailPage({
 
           {/* Reach out (signed-in non-owner) or Claim Profile */}
           {isOwner ? (
-            <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="px-7 sm:px-10 py-8 bg-[#fdfcf9] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <p
                   className="text-[#0a1628] text-base font-medium font-heading"
@@ -468,14 +468,14 @@ export default async function MemberDetailPage({
                 </Link>
                 <Link
                   href="/player/requests"
-                  className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-white/55 hover:text-white transition-colors"
+                  className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-white/70 hover:text-white transition-colors"
                 >
                   Track your requests &rarr;
                 </Link>
               </div>
             </div>
           ) : (
-            <div className="px-7 sm:px-10 py-8 bg-[#faf7f2] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="px-7 sm:px-10 py-8 bg-[#fdfcf9] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <p
                   className="text-[#0a1628] text-base font-medium font-heading"
@@ -530,7 +530,7 @@ function Section({
 
 function Stat({ value, label }: { value: number; label: string }) {
   return (
-    <div className="bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] rounded-lg px-4 py-3">
+    <div className="bg-[#fdfcf9] border border-[rgba(180,168,150,0.4)] rounded-lg px-4 py-3">
       <p
         className="text-2xl text-[#0a1628] font-medium leading-none font-heading"
       >

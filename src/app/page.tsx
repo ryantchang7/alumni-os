@@ -150,7 +150,7 @@ export default function LandingPage() {
 
         {scopeNote && (
           <motion.p
-            className="mt-6 sm:mt-7 text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.28em] text-white/65 max-w-md"
+            className="mt-6 sm:mt-7 text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.28em] text-white/75 max-w-md"
             style={{ textShadow: '0 1px 8px rgba(10,22,40,0.45)' }}
             initial={{ opacity: 0 }}
             animate={ready ? { opacity: 1 } : { opacity: 0 }}

@@ -77,7 +77,7 @@ export default function AccountSetupClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-5 sm:px-8 pt-12 pb-14 relative overflow-hidden">
         <div
           aria-hidden
@@ -118,7 +118,7 @@ export default function AccountSetupClient({
               . Find your card to be found.
             </p>
           )}
-          <p className="text-white/60 text-[13px] mt-4 max-w-xl leading-relaxed">
+          <p className="text-white/70 text-[13px] mt-4 max-w-xl leading-relaxed">
             {signedInEmail ? <>Signed in as {signedInEmail}. </> : null}
             Search by name, hometown, or class year. Once you claim, edit your role and how you can help.
           </p>
@@ -143,7 +143,7 @@ export default function AccountSetupClient({
               aria-label="Search the Member Book"
               placeholder="Search by name, hometown, or class year..."
               autoFocus
-              className="w-full bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg px-4 py-2.5 pl-10 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors"
+              className="w-full bg-[#fbf9f6] border border-[rgba(180,168,150,0.4)] rounded-lg px-4 py-2.5 pl-10 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors"
             />
             {query && (
               <button

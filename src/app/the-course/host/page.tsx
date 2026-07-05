@@ -165,7 +165,7 @@ export default function HostRoundPage() {
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
         >
           {/* Form header — scorecard motif */}
-          <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
+          <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#fdfcf9]">
             <span className="block w-10 h-[2px] bg-[#5a7a3e] mb-5" />
             <h1
               className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
@@ -179,7 +179,7 @@ export default function HostRoundPage() {
           </div>
 
           {!approved && sessionStatus !== 'loading' && (
-            <div className="px-7 sm:px-10 py-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
+            <div className="px-7 sm:px-10 py-6 border-b border-[rgba(180,168,150,0.3)] bg-[#fdfcf9]">
               <p className="text-[13px] text-[#3d4a5c]">
                 {signedIn
                   ? 'Claim your Member Book card to host. The captain approves new members within a day or two. '

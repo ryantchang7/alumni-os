@@ -47,7 +47,7 @@ export default async function TeamUpdatesPage() {
   void readStore
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
@@ -59,7 +59,7 @@ export default async function TeamUpdatesPage() {
           >
             Team Updates
           </h1>
-          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mb-8">
+          <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mb-8">
             Results, qualifiers, and news from the current team. Follow to get notified.
           </p>
           <FollowTeamButton initialFollowing={initialFollowing} signedIn={signedIn} />
@@ -75,7 +75,7 @@ export default async function TeamUpdatesPage() {
           <ol className="relative border-l border-[rgba(180,168,150,0.45)] pl-6 space-y-5">
             {updates.map(u => (
               <li key={u.id} className="relative">
-                <span className="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full bg-[#990000] ring-4 ring-[#f8f5f0]" />
+                <span className="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full bg-[#990000] ring-4 ring-[#fbf9f6]" />
                 <div
                   className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
@@ -102,7 +102,7 @@ export default async function TeamUpdatesPage() {
                       >
                         <LinkPreviewImage
                           src={u.previewImageUrl}
-                          className="w-full h-40 object-cover bg-[#faf7f2]"
+                          className="w-full h-40 object-cover bg-[#fdfcf9]"
                         />
                         <div className="px-3.5 py-3">
                           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">

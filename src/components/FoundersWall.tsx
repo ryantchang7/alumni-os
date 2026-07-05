@@ -133,7 +133,7 @@ export default function FoundersWall({
             className={`inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] px-3 py-1.5 rounded-full transition-colors ${
               effectiveTab === 'family'
                 ? 'bg-[#990000] text-white'
-                : 'text-white/55 border border-[#990000]/45 hover:text-white hover:bg-[#990000]/15'
+                : 'text-white/70 border border-[#990000]/45 hover:text-white hover:bg-[#990000]/15'
             }`}
           >
             <Heart className="w-3 h-3" />
@@ -151,7 +151,7 @@ export default function FoundersWall({
 
       {effectiveTab === 'founders' && hasFounders && (
         <>
-          <p className="text-[13px] text-white/65 leading-relaxed mb-5 max-w-md">
+          <p className="text-[13px] text-white/75 leading-relaxed mb-5 max-w-md">
             Members who stood up early to support Penn Men&rsquo;s Golf and the
             Clubhouse. Founding Members and the program Founder.
           </p>
@@ -177,7 +177,7 @@ export default function FoundersWall({
                   <span className="text-white">{f.name}</span>
                 )}
                 {f.classLabel && (
-                  <span className="text-[12px] text-white/60">{f.classLabel}</span>
+                  <span className="text-[12px] text-white/70">{f.classLabel}</span>
                 )}
                 {f.isProgramFounder && (
                   <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#c8a84b] ml-1">
@@ -202,7 +202,7 @@ export default function FoundersWall({
 
       {effectiveTab === 'family' && hasFamily && (
         <>
-          <p className="text-[13px] text-white/65 leading-relaxed mb-5 max-w-md">
+          <p className="text-[13px] text-white/75 leading-relaxed mb-5 max-w-md">
             Family, parents, and longtime affiliates who support the program
             through the Family &amp; Affiliate tier.
           </p>
@@ -224,7 +224,7 @@ export default function FoundersWall({
                   <span className="text-white">{f.name}</span>
                 )}
                 {f.parentRelationship && (
-                  <span className="text-[12px] text-white/60 truncate">
+                  <span className="text-[12px] text-white/70 truncate">
                     {f.parentRelationship}
                   </span>
                 )}

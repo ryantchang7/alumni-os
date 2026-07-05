@@ -82,7 +82,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#f8f5f0]">
+      <body className="min-h-full flex flex-col bg-[#fbf9f6]">
         <MotionConfig reducedMotion="user">
           <SessionProviderWrapper>
             <TooltipProvider>

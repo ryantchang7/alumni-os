@@ -198,13 +198,13 @@ export default function ChatThreadClient({
   }
 
   return (
-    <div className="bg-[#f8f5f0] flex flex-col" style={{ height: 'calc(100dvh - 60px)' }}>
+    <div className="bg-[#fbf9f6] flex flex-col" style={{ height: 'calc(100dvh - 60px)' }}>
       {/* Header */}
       <div className="bg-[#0a1628] px-5 sm:px-8 py-4 sticky top-[60px] z-10">
         <div className="max-w-[820px] mx-auto flex items-center justify-between gap-3">
           <Link
             href="/chat"
-            className="inline-flex items-center gap-1.5 text-[12px] text-white/60 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 text-[12px] text-white/70 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Chats
@@ -215,7 +215,7 @@ export default function ChatThreadClient({
             >
               {title}
             </p>
-            <p className="text-[10px] text-white/50 uppercase tracking-[0.16em]">{subtitle}</p>
+            <p className="text-[10px] text-white/75 uppercase tracking-[0.16em]">{subtitle}</p>
           </div>
           <div className="w-12" />
         </div>
@@ -243,7 +243,7 @@ export default function ChatThreadClient({
                 {showDay && (
                   <div className="flex items-center gap-3 my-5">
                     <div className="flex-1 h-px bg-[rgba(180,168,150,0.3)]" />
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted bg-[#faf7f2] border border-[rgba(180,168,150,0.4)] px-2.5 py-0.5 rounded-full">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted bg-[#fdfcf9] border border-[rgba(180,168,150,0.4)] px-2.5 py-0.5 rounded-full">
                       {fmtDay(m.createdAt)}
                     </span>
                     <div className="flex-1 h-px bg-[rgba(180,168,150,0.3)]" />
@@ -302,7 +302,7 @@ export default function ChatThreadClient({
             rows={1}
             maxLength={4000}
             placeholder="Type a message…"
-            className="flex-1 bg-[#faf7f2] border border-[rgba(180,168,150,0.5)] rounded-2xl px-4 py-3 text-[14px] text-[#0a1628] placeholder-[#b5ad9e] resize-none focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0a1628]/15 focus:border-[#0a1628]/30 transition-colors"
+            className="flex-1 bg-[#fdfcf9] border border-[rgba(180,168,150,0.5)] rounded-2xl px-4 py-3 text-[14px] text-[#0a1628] placeholder-[#b5ad9e] resize-none focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0a1628]/15 focus:border-[#0a1628]/30 transition-colors"
             style={{ maxHeight: 160 }}
           />
           <button

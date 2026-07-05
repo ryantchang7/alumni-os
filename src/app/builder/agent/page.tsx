@@ -243,7 +243,7 @@ function AgentInner() {
   // ── No teamSlug ────────────────────────────────────────────────────────────
   if (!teamSlug) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center">
         <div className="text-center space-y-4 max-w-sm px-6">
           <p className="text-base font-semibold text-[#0a1628]">No team selected</p>
           <p className="text-sm text-ink-muted">Add a teamSlug query parameter to continue.</p>
@@ -258,7 +258,7 @@ function AgentInner() {
   // ── Loading ────────────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <div className="bg-[#0a1628] px-6 py-10">
           <div className="max-w-4xl mx-auto space-y-3">
             <div className="h-3 w-20 bg-white/20 rounded animate-pulse" />
@@ -280,10 +280,10 @@ function AgentInner() {
     const msg = loadError ?? 'Failed to load agent summary'
     const isNotFound = msg.toLowerCase().includes('not found')
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <div className="bg-[#0a1628] px-6 py-10">
           <div className="max-w-4xl mx-auto">
-            <Link href="/builder" className="text-white/60 hover:text-white text-sm transition-colors inline-block mb-4">
+            <Link href="/builder" className="text-white/70 hover:text-white text-sm transition-colors inline-block mb-4">
               &larr; Builder
             </Link>
             <h1 className="text-white text-2xl font-semibold">Roster Agent</h1>
@@ -336,11 +336,11 @@ function AgentInner() {
   )
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Navy header */}
       <div className="bg-[#0a1628] px-6 pt-8 pb-14">
         <div className="max-w-4xl mx-auto">
-          <Link href="/builder" className="text-white/60 hover:text-white text-sm transition-colors inline-block mb-4">
+          <Link href="/builder" className="text-white/70 hover:text-white text-sm transition-colors inline-block mb-4">
             &larr; Builder
           </Link>
           <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -351,8 +351,8 @@ function AgentInner() {
               </p>
               <div className="mt-3 inline-flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
                 <span className="text-white/80 text-xs font-medium">{team.teamName}</span>
-                <span className="text-white/40 text-xs">/</span>
-                <span className="text-white/50 text-xs font-mono">{team.slug}</span>
+                <span className="text-white/70 text-xs">/</span>
+                <span className="text-white/75 text-xs font-mono">{team.slug}</span>
               </div>
             </div>
             <Link
@@ -573,7 +573,7 @@ export default function AgentPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#f8f5f0]">
+        <div className="min-h-screen bg-[#fbf9f6]">
           <div className="bg-[#0a1628] px-6 py-10">
             <div className="max-w-4xl mx-auto space-y-3">
               <div className="h-3 w-20 bg-white/20 rounded animate-pulse" />

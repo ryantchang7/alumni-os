@@ -16,7 +16,7 @@ function LoginInner() {
   )
 
   return (
-    <div className="min-h-[calc(100dvh-60px)] flex items-center justify-center px-6 py-16 bg-[#f8f5f0]">
+    <div className="min-h-[calc(100dvh-60px)] flex items-center justify-center px-6 py-16 bg-[#fbf9f6]">
       <div
         className="w-full max-w-md bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-8 py-10 text-center"
         style={{

@@ -81,7 +81,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
   if (!approval.approved) {
     const uniquePosters = new Set(moments.map((m) => m.postedByAccountId)).size
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
           <div className="max-w-[820px] mx-auto flex items-center gap-5 sm:gap-7">
             <HeroCrest src={crestImage} alt="Moments crest" />
@@ -135,7 +135,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
   const isLockerView = view === 'locker-room'
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <SectionEmblemHeader
         eyebrow="Penn Men's Golf · The Wall"
         title="Moments"
@@ -169,7 +169,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
               href="/moments"
               className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.18em] px-5 py-2.5 rounded-lg transition-all ${
                 isLockerView
-                  ? 'text-white/55 hover:text-white border border-transparent'
+                  ? 'text-white/70 hover:text-white border border-transparent'
                   : 'bg-white text-[#0a1628] shadow-[0_2px_10px_rgba(0,0,0,0.25)]'
               }`}
               aria-current={!isLockerView ? 'page' : undefined}
@@ -232,7 +232,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                 >
                   {lockerEmptyHeadline}
                 </p>
-                <p className="text-white/65 text-[13.5px] max-w-md mx-auto mb-7 leading-relaxed whitespace-pre-line">
+                <p className="text-white/75 text-[13.5px] max-w-md mx-auto mb-7 leading-relaxed whitespace-pre-line">
                   {lockerEmptyBlurb}
                 </p>
                 <Link

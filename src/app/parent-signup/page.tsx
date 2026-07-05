@@ -131,7 +131,7 @@ export default function ParentSignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-5 sm:px-8 py-5">
         <div className="max-w-[720px] mx-auto flex items-center justify-between">
           <Link
@@ -165,7 +165,7 @@ export default function ParentSignupPage() {
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
         >
           {!signedIn && sessionStatus !== 'loading' && (
-            <div className="mb-6 px-4 py-3 bg-[#faf7f2] border border-[rgba(180,168,150,0.5)] rounded-lg text-[13.5px] text-[#3d4a5c]">
+            <div className="mb-6 px-4 py-3 bg-[#fdfcf9] border border-[rgba(180,168,150,0.5)] rounded-lg text-[13.5px] text-[#3d4a5c]">
               You&rsquo;ll sign in with Google when you submit so we can attach this
               card to your account.
             </div>

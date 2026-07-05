@@ -137,7 +137,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
                   href="/moments"
                   className="group block"
                 >
-                  <div className="aspect-[4/3] rounded-lg overflow-hidden bg-[#faf7f2] border border-[rgba(180,168,150,0.35)]">
+                  <div className="aspect-[4/3] rounded-lg overflow-hidden bg-[#fdfcf9] border border-[rgba(180,168,150,0.35)]">
                     {m.mediaType === 'video' ? (
                       <video
                         src={m.photoUrl}

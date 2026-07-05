@@ -89,7 +89,7 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
 
             {/* Panel */}
             <div
-              className="relative z-10 w-full max-w-lg bg-[#f8f5f0] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden"
+              className="relative z-10 w-full max-w-lg bg-[#fbf9f6] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden"
               style={{ boxShadow: '0 8px 32px rgba(10,22,40,0.22), 0 2px 8px rgba(10,22,40,0.12)' }}
             >
               {/* Header */}
@@ -103,12 +103,12 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
                   >
                     Offer to host the team
                   </h2>
-                  <p className="text-white/50 text-xs mt-1">{eventName}</p>
+                  <p className="text-white/75 text-xs mt-1">{eventName}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="text-white/50 hover:text-white transition-colors mt-0.5 flex-shrink-0"
+                  className="text-white/75 hover:text-white transition-colors mt-0.5 flex-shrink-0"
                   aria-label="Close"
                 >
                   <X size={18} />
@@ -121,7 +121,7 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
               {/* Form body */}
               <div className="px-6 py-6">
                 {status === 'success' ? (
-                  <div className="rounded-xl border border-[#d9c8a8] bg-[#faf7f2] px-8 py-10 text-center">
+                  <div className="rounded-xl border border-[#d9c8a8] bg-[#fdfcf9] px-8 py-10 text-center">
                     <div className="flex items-center justify-center mb-4">
                       <span
                         className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-[#c8a84b]/12 border border-[#c8a84b]/30"

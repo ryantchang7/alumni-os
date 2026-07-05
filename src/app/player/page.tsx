@@ -103,7 +103,7 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
               </span>
               {g.isExample && (
                 <span
-                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted bg-[#faf7f2] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
+                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted bg-[#fdfcf9] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
                   title="Sample gathering — host a real one to replace it."
                 >
                   Example
@@ -112,7 +112,7 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
             </div>
             <p className="font-semibold text-[#0a1628] text-sm leading-snug mb-1.5">{g.title}</p>
             <div className="space-y-0.5">
-              <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">
+              <div className="flex items-center gap-1.5 text-xs text-[#3a4657]">
                 <Calendar className="w-3 h-3 text-ink-muted" />
                 <span>{g.dateText}</span>
               </div>
@@ -202,7 +202,7 @@ function SpotlightCard({ spotlight }: { spotlight: AlumniSpotlight }) {
             {spotlight.headline && (
               <p className="text-xs text-[#c8a84b] mt-0.5 leading-snug">{spotlight.headline}</p>
             )}
-            <p className="text-xs text-[#4a5568] mt-1.5 leading-relaxed line-clamp-2">{spotlight.blurb}</p>
+            <p className="text-xs text-[#3a4657] mt-1.5 leading-relaxed line-clamp-2">{spotlight.blurb}</p>
             <span className="text-xs font-semibold text-[#990000] group-hover:underline mt-2 inline-block">
               Read the spotlight &rarr;
             </span>
@@ -279,13 +279,13 @@ function TraditionSection() {
             >
               {PENN_GOLF_TRADITION.title}
             </h2>
-            <p className="text-[11px] text-white/60 max-w-lg leading-relaxed">{PENN_GOLF_TRADITION.subtitle}</p>
+            <p className="text-[11px] text-white/70 max-w-lg leading-relaxed">{PENN_GOLF_TRADITION.subtitle}</p>
           </div>
         </div>
         {/* Penn red ribbon */}
         <div className="h-[3px] bg-gradient-to-r from-[#990000] via-[#bb0000] to-[#990000]" />
         {/* Plaque grid on parchment — NUMBER FIRST */}
-        <div className="bg-[#faf7f2] grid grid-cols-2 sm:grid-cols-3 divide-x divide-y divide-[rgba(180,168,150,0.3)]">
+        <div className="bg-[#fdfcf9] grid grid-cols-2 sm:grid-cols-3 divide-x divide-y divide-[rgba(180,168,150,0.3)]">
           {PENN_GOLF_TRADITION.achievements.map((a) => (
             <div key={a.label} className="px-5 sm:px-6 py-6 sm:py-7 hover:-translate-y-px hover:bg-white transition-all duration-150 cursor-default">
               <CountUpValue
@@ -298,7 +298,7 @@ function TraditionSection() {
             </div>
           ))}
         </div>
-        <div className="bg-[#faf7f2] px-5 sm:px-6 py-3 border-t border-[rgba(180,168,150,0.3)] flex items-center justify-end">
+        <div className="bg-[#fdfcf9] px-5 sm:px-6 py-3 border-t border-[rgba(180,168,150,0.3)] flex items-center justify-end">
           <Link
             href="/hall-of-fame"
             className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline"
@@ -474,7 +474,7 @@ function ClubhouseInner() {
   }, [teamSlug])
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Header — the foyer. The clubhouse hero photo carries the visual
           weight; a navy gradient keeps the headline legible over it. */}
       <div className="relative overflow-hidden px-6 sm:px-8 pt-16 pb-16 sm:pt-24 sm:pb-20">
@@ -567,7 +567,7 @@ function ClubhouseInner() {
                 >
                   Membership keeps the Clubhouse running and 70% goes to Penn Men&rsquo;s Golf.
                 </p>
-                <p className="text-[12.5px] text-white/65 mt-1">
+                <p className="text-[12.5px] text-white/75 mt-1">
                   Founding Members get a place on the Founders Wall.
                 </p>
               </div>
@@ -607,7 +607,7 @@ function ClubhouseInner() {
               <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[rgba(180,168,150,0.25)]">
                 <Link
                   href="/member-book"
-                  className="group px-5 py-4 flex items-start gap-3 hover:bg-[#f8f5f0] transition-colors"
+                  className="group px-5 py-4 flex items-start gap-3 hover:bg-[#fbf9f6] transition-colors"
                 >
                   <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#0a1628]/8 flex items-center justify-center mt-0.5">
                     <BookOpen className="w-3.5 h-3.5 text-[#0a1628]" />
@@ -620,7 +620,7 @@ function ClubhouseInner() {
                 </Link>
                 <Link
                   href="/member-map"
-                  className="group px-5 py-4 flex items-start gap-3 hover:bg-[#f8f5f0] transition-colors"
+                  className="group px-5 py-4 flex items-start gap-3 hover:bg-[#fbf9f6] transition-colors"
                 >
                   <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#0a1628]/8 flex items-center justify-center mt-0.5">
                     <MapPin className="w-3.5 h-3.5 text-[#0a1628]" />
@@ -633,7 +633,7 @@ function ClubhouseInner() {
                 </Link>
                 <Link
                   href="/meet-the-team"
-                  className="group px-5 py-4 flex items-start gap-3 hover:bg-[#f8f5f0] transition-colors"
+                  className="group px-5 py-4 flex items-start gap-3 hover:bg-[#fbf9f6] transition-colors"
                 >
                   <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#0a1628]/8 flex items-center justify-center mt-0.5">
                     <Users className="w-3.5 h-3.5 text-[#0a1628]" />
@@ -701,7 +701,7 @@ function ClubhouseInner() {
                       <Icon className="w-4 h-4 text-gold-ink" />
                     </div>
                     <p className="relative font-semibold text-[#0a1628] text-base mb-1.5">{room.label}</p>
-                    <p className="relative text-xs text-[#6b7280] leading-relaxed mb-4">{room.description}</p>
+                    <p className="relative text-xs text-[#48505e] leading-relaxed mb-4">{room.description}</p>
                     <span className="relative text-xs font-semibold text-[#990000] group-hover:underline">
                       {room.cta} &rarr;
                     </span>
@@ -797,7 +797,7 @@ function ClubhouseInner() {
                         {alumni.length > 12 && (
                           <Link
                             href="/member-book"
-                            className="flex-shrink-0 w-[140px] bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 flex flex-col items-center justify-center hover:bg-white transition-colors"
+                            className="flex-shrink-0 w-[140px] bg-[#fbf9f6] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 flex flex-col items-center justify-center hover:bg-white transition-colors"
                           >
                             <p className="text-xs font-semibold text-[#0a1628]">All {TOTAL_MEMBERS} members</p>
                             <p className="text-[10px] text-[#990000] mt-1">Open Member Book &rarr;</p>
@@ -843,7 +843,7 @@ function ClubhouseInner() {
                 Grow the network
               </p>
               <p className="text-sm font-semibold text-white">Invite your teammates</p>
-              <p className="text-xs text-white/50 mt-0.5">
+              <p className="text-xs text-white/75 mt-0.5">
                 The Clubhouse is better at full density. Pull in the guys who aren&rsquo;t here yet.
               </p>
             </div>
@@ -862,7 +862,7 @@ function ClubhouseInner() {
 
 function ClubhouseSkeleton() {
   return (
-    <div className="min-h-screen bg-[#f8f5f0] animate-pulse">
+    <div className="min-h-screen bg-[#fbf9f6] animate-pulse">
       {/* Header skeleton */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
         <div className="max-w-[1320px] mx-auto flex items-center gap-5">

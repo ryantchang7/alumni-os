@@ -22,7 +22,7 @@ export default async function AccountProfilePage() {
   const team = await getTeamBySlug(TEAM_SLUG)
   if (!team) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] py-20 px-6 text-center">
+      <div className="min-h-screen bg-[#fbf9f6] py-20 px-6 text-center">
         <p className="text-[#990000] text-sm">Team not found.</p>
       </div>
     )
@@ -111,7 +111,7 @@ export default async function AccountProfilePage() {
   const totalCount = completeness.length
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-5 sm:px-8 pt-12 pb-14">
         <div className="max-w-[820px] mx-auto">
           <p className="eyebrow text-gold mb-4">
@@ -122,7 +122,7 @@ export default async function AccountProfilePage() {
           >
             Your Profile
           </h1>
-          <p className="text-white/55 text-sm sm:text-base mt-3 max-w-xl">
+          <p className="text-white/70 text-sm sm:text-base mt-3 max-w-xl">
             Signed in as {session.user?.email}.
           </p>
         </div>
@@ -157,7 +157,7 @@ export default async function AccountProfilePage() {
           </div>
 
           {doneCount < totalCount && (
-            <div className="px-7 sm:px-10 py-7 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
+            <div className="px-7 sm:px-10 py-7 border-b border-[rgba(180,168,150,0.3)] bg-[#fdfcf9]">
               <div className="flex items-baseline justify-between mb-3">
                 <p
                   className="text-[#0a1628] text-base font-medium font-heading"
@@ -287,7 +287,7 @@ export default async function AccountProfilePage() {
                 <li key={a.personId}>
                   <Link
                     href={a.bookId ? `/member-book/${encodeURIComponent(a.bookId)}` : '#'}
-                    className="block px-7 sm:px-10 py-3.5 border-b border-[rgba(180,168,150,0.22)] last:border-b-0 hover:bg-[#faf7f2] transition-colors"
+                    className="block px-7 sm:px-10 py-3.5 border-b border-[rgba(180,168,150,0.22)] last:border-b-0 hover:bg-[#fdfcf9] transition-colors"
                   >
                     <p
                       className="text-[#0a1628] text-[15px] font-medium font-heading"

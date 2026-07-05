@@ -69,7 +69,7 @@ export default function AlumniCard({
     return (
       <Link
         href={href}
-        className="block bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 hover:bg-white hover:shadow-sm transition-all group flex-shrink-0 w-[200px]"
+        className="block bg-[#fbf9f6] border border-[rgba(180,168,150,0.4)] rounded-lg p-3 hover:bg-white hover:shadow-sm transition-all group flex-shrink-0 w-[200px]"
       >
         <div className="flex items-start gap-2">
           <MemberAvatar photoUrl={photoUrl} name={name} size={32} tone={avatarTone} />
@@ -88,7 +88,7 @@ export default function AlumniCard({
               </div>
             )}
             {subline && <p className="text-[10px] text-ink-muted">{subline}</p>}
-            {careerLine && <p className="text-[10px] text-[#4a5568] mt-0.5 truncate">{careerLine}</p>}
+            {careerLine && <p className="text-[10px] text-[#3a4657] mt-0.5 truncate">{careerLine}</p>}
           </div>
         </div>
       </Link>
@@ -145,13 +145,13 @@ export default function AlumniCard({
           )}
         </div>
         {location && (
-          <div className="flex items-center gap-1.5 text-[12px] text-[#4a5568] mt-1">
+          <div className="flex items-center gap-1.5 text-[12px] text-[#3a4657] mt-1">
             <MapPin className="w-3 h-3 text-ink-muted" />
             <span>{location}</span>
           </div>
         )}
         {careerLine && (
-          <p className="text-[12px] text-[#4a5568] mt-1">{careerLine}</p>
+          <p className="text-[12px] text-[#3a4657] mt-1">{careerLine}</p>
         )}
         {quote && (
           <p className="text-[12px] text-[#3d4a5c] mt-2 italic leading-relaxed">&ldquo;{quote}&rdquo;</p>

@@ -76,7 +76,7 @@ export default function ConfirmDialog({
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
         aria-describedby="confirm-dialog-message"
-        className="relative w-full max-w-sm rounded-2xl bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] px-6 py-6"
+        className="relative w-full max-w-sm rounded-2xl bg-[#fbf9f6] border border-[rgba(180,168,150,0.4)] px-6 py-6"
         style={{
           boxShadow: '0 4px 16px rgba(10,22,40,0.18), 0 24px 48px rgba(10,22,40,0.14)',
         }}
@@ -93,7 +93,7 @@ export default function ConfirmDialog({
         </h2>
         <p
           id="confirm-dialog-message"
-          className="mt-2 text-[13.5px] text-[#4a5568] leading-relaxed"
+          className="mt-2 text-[13.5px] text-[#3a4657] leading-relaxed"
         >
           {message}
         </p>

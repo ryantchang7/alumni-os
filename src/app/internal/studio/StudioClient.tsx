@@ -99,7 +99,7 @@ export default function StudioClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-5 sm:px-8 py-5">
         <div className="max-w-[920px] mx-auto flex items-center justify-between">
           <Link

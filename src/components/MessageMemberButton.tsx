@@ -47,7 +47,7 @@ export default function MessageMemberButton({ targetAccountId, targetFirstName }
     return (
       <Link
         href={sessionStatus === 'authenticated' ? '/account/setup' : '/login?next=/member-book'}
-        className="inline-flex items-center gap-2 bg-[#f8f5f0] border border-[rgba(180,168,150,0.55)] text-[#3d4a5c] hover:bg-white hover:border-[#0a1628]/30 text-[12.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded-lg transition-colors"
+        className="inline-flex items-center gap-2 bg-[#fbf9f6] border border-[rgba(180,168,150,0.55)] text-[#3d4a5c] hover:bg-white hover:border-[#0a1628]/30 text-[12.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded-lg transition-colors"
       >
         <MessageSquare className="w-3.5 h-3.5" />
         Sign in to message

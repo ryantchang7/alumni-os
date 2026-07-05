@@ -60,12 +60,12 @@ export default function LaunchPage() {
   }
 
   return (
-    <div className="bg-[#f8f5f0] min-h-[calc(100dvh-60px)]">
+    <div className="bg-[#fbf9f6] min-h-[calc(100dvh-60px)]">
       {/* Hero */}
       <section className="bg-[#0a1628] text-white px-5 sm:px-8 pt-20 pb-24 sm:pt-28 sm:pb-32 relative overflow-hidden">
         <div className="max-w-[1180px] mx-auto relative z-10">
           <motion.p
-            className="text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.32em] text-white/55 mb-5"
+            className="text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.32em] text-white/70 mb-5"
             initial={{ opacity: 0, y: 8 }}
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
             transition={{ delay: 0.1, duration: 0.7, ease }}
@@ -90,7 +90,7 @@ export default function LaunchPage() {
             {heroSubtitle}
           </motion.p>
           <motion.p
-            className="text-white/65 text-[14.5px] sm:text-base max-w-2xl leading-relaxed mb-9"
+            className="text-white/75 text-[14.5px] sm:text-base max-w-2xl leading-relaxed mb-9"
             initial={{ opacity: 0, y: 8 }}
             animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
             transition={{ delay: 0.6, duration: 0.7, ease }}
@@ -124,7 +124,7 @@ export default function LaunchPage() {
           </motion.div>
 
           <motion.p
-            className="mt-10 inline-flex items-center text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/55 px-3 py-1.5 border border-white/15 rounded-full"
+            className="mt-10 inline-flex items-center text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/70 px-3 py-1.5 border border-white/15 rounded-full"
             initial={{ opacity: 0 }}
             animate={ready ? { opacity: 1 } : { opacity: 0 }}
             transition={{ delay: 1.05, duration: 0.7, ease }}
@@ -312,7 +312,7 @@ export default function LaunchPage() {
       {/* Closing CTA */}
       <section className="bg-[#0a1628] text-white px-5 sm:px-8 py-20 sm:py-24">
         <div className="max-w-[860px] mx-auto text-center">
-          <p className="text-[10.5px] font-semibold uppercase tracking-[0.32em] text-white/55 mb-4">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.32em] text-white/70 mb-4">
             For the Penn Golf family
           </p>
           <h2

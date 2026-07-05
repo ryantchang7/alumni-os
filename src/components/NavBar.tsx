@@ -92,8 +92,8 @@ function NavMenu({
             <Link
               key={l.href}
               href={l.href}
-              className={`block px-4 py-2 text-[13px] hover:bg-[#faf7f2] ${
-                isActive(pathname, l.href) ? 'bg-[#faf7f2] font-medium' : ''
+              className={`block px-4 py-2 text-[13px] hover:bg-[#fdfcf9] ${
+                isActive(pathname, l.href) ? 'bg-[#fdfcf9] font-medium' : ''
               }`}
             >
               {l.label}
@@ -181,38 +181,38 @@ function AccountAffordance() {
         >
           <Link
             href="/account/profile"
-            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+            className="block px-4 py-2 text-[13px] hover:bg-[#fdfcf9]"
           >
             Your Profile
           </Link>
           <Link
             href="/chat"
-            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+            className="block px-4 py-2 text-[13px] hover:bg-[#fdfcf9]"
           >
             Messages
           </Link>
           <Link
             href="/requests/new"
-            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+            className="block px-4 py-2 text-[13px] hover:bg-[#fdfcf9]"
           >
             Post an Open Request
           </Link>
           <Link
             href="/player/requests"
-            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+            className="block px-4 py-2 text-[13px] hover:bg-[#fdfcf9]"
           >
             Your Requests
           </Link>
           <Link
             href="/member-book"
-            className="block px-4 py-2 text-[13px] hover:bg-[#faf7f2]"
+            className="block px-4 py-2 text-[13px] hover:bg-[#fdfcf9]"
           >
             Member Book
           </Link>
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: '/' })}
-            className="block w-full text-left px-4 py-2 text-[13px] text-[#990000] hover:bg-[#faf7f2] border-t border-[rgba(180,168,150,0.25)]"
+            className="block w-full text-left px-4 py-2 text-[13px] text-[#990000] hover:bg-[#fdfcf9] border-t border-[rgba(180,168,150,0.25)]"
           >
             Sign out
           </button>

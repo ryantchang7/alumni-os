@@ -44,7 +44,7 @@ export default async function PersonDetailPage({ params, searchParams }: Props) 
         : null
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] py-10 px-8">
         <div className="max-w-3xl mx-auto">
           <Link

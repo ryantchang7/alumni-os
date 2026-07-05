@@ -42,7 +42,7 @@ export default async function LockerRoomPage() {
 
   if (!signedIn || !canSee) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <LockerRoomHero crestImage={crestImage} showPostCta={false} />
         <GatedPreview
           signedIn={signedIn}
@@ -78,7 +78,7 @@ export default async function LockerRoomPage() {
   const canPost = !!session?.linkedPersonId
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <LockerRoomHero crestImage={crestImage} showPostCta />
 
       <div className="max-w-[820px] mx-auto px-5 sm:px-8 py-10 sm:py-14">
@@ -112,7 +112,7 @@ export default async function LockerRoomPage() {
               >
                 {emptyHeadline}
               </p>
-              <p className="text-white/65 text-[13.5px] max-w-md mx-auto mb-7 leading-relaxed whitespace-pre-line">
+              <p className="text-white/75 text-[13.5px] max-w-md mx-auto mb-7 leading-relaxed whitespace-pre-line">
                 {emptyBlurb}
               </p>
               <Link

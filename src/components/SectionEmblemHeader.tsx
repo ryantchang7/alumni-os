@@ -68,7 +68,7 @@ export default function SectionEmblemHeader({
           />
           {subtitle && (
             <motion.p
-              className="text-white/60 text-sm sm:text-base mt-3 max-w-xl leading-relaxed whitespace-pre-line"
+              className="text-white/70 text-sm sm:text-base mt-3 max-w-xl leading-relaxed whitespace-pre-line"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.14, duration: 0.3 }}

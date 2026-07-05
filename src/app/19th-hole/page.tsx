@@ -158,7 +158,7 @@ export default async function NineteenthHolePage() {
 
   if (!approval.approved) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <NineteenthHoleHero />
         <GatedPreview
           signedIn={approval.signedIn}
@@ -176,7 +176,7 @@ export default async function NineteenthHolePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <NineteenthHoleHero />
 
       <NineteenthHoleClient

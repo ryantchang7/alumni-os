@@ -73,7 +73,7 @@ function SentRequestCard({ req }: { req: SentRequest }) {
             </span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-medium text-[#4a5568] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
+            <span className="text-xs font-medium text-[#3a4657] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
               {req.purposeLabel}
             </span>
             {req.contextLabel && (
@@ -178,7 +178,7 @@ export default function SentRequestsClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
         <div className="max-w-[860px] mx-auto">
           <Link href="/player" className="text-xs text-gray-400 hover:text-gray-200 mb-3 inline-block">
@@ -208,7 +208,7 @@ export default function SentRequestsClient() {
                   value={nameInput}
                   onChange={e => setNameInput(e.target.value)}
                   placeholder="Your name"
-                  className="flex-1 text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#0a1628] transition-colors"
+                  className="flex-1 text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#0a1628] transition-colors"
                 />
                 <button
                   type="submit"

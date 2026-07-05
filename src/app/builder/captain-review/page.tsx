@@ -106,7 +106,7 @@ function CaptainReviewInner() {
   const totalCount = profiles.length
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[1320px] mx-auto">
           <div className="flex items-center gap-3 mb-3 text-xs">
@@ -234,7 +234,7 @@ function CaptainReviewInner() {
 
 export default function CaptainReviewPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center"><p className="text-sm text-ink-muted">Loading...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center"><p className="text-sm text-ink-muted">Loading...</p></div>}>
       <CaptainReviewInner />
     </Suspense>
   )

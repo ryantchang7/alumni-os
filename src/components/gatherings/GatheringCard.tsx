@@ -252,7 +252,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
               <GatheringStatusPill status={gathering.status} />
               {gathering.isExample && (
                 <span
-                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted bg-[#faf7f2] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
+                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted bg-[#fdfcf9] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
                   title="Sample gathering — host a real one to replace it."
                 >
                   Example
@@ -274,7 +274,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
 
         {/* Meta */}
         <div className="space-y-1 mb-3">
-          <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">
+          <div className="flex items-center gap-1.5 text-xs text-[#3a4657]">
             <Calendar className="w-3 h-3 text-ink-muted flex-shrink-0" />
             <span>{gathering.dateText}{gathering.timeText ? ` · ${gathering.timeText}` : ''}</span>
           </div>
@@ -289,14 +289,14 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                   href={mapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs text-[#4a5568] hover:text-[#0a1628] group/map"
+                  className="flex items-center gap-1.5 text-xs text-[#3a4657] hover:text-[#0a1628] group/map"
                 >
                   <MapPin className="w-3 h-3 text-ink-muted flex-shrink-0" />
                   <span className="group-hover/map:underline">{locationText}</span>
                   <span className="text-[#990000] text-[11px] font-medium">· Map</span>
                 </a>
               ) : (
-                <div className="flex items-center gap-1.5 text-xs text-[#4a5568]">
+                <div className="flex items-center gap-1.5 text-xs text-[#3a4657]">
                   <MapPin className="w-3 h-3 text-ink-muted flex-shrink-0" />
                   <span>{locationText}</span>
                 </div>
@@ -343,7 +343,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
 
         {/* Description */}
         {gathering.description && (
-          <p className="text-xs text-[#4a5568] leading-relaxed mb-4">{gathering.description}</p>
+          <p className="text-xs text-[#3a4657] leading-relaxed mb-4">{gathering.description}</p>
         )}
 
         {/* Add to calendar — instant Google Cal link + .ics download, right
@@ -450,7 +450,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                   placeholder="Anything to add? (optional)"
                   maxLength={500}
                   rows={2}
-                  className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 focus:outline-none focus:border-[#0a1628] transition-colors resize-none"
+                  className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 focus:outline-none focus:border-[#0a1628] transition-colors resize-none"
                 />
                 {error && <p className="text-xs text-[#990000]">{error}</p>}
                 <button

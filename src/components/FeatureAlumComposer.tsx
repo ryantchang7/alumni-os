@@ -104,7 +104,7 @@ export default function FeatureAlumComposer({ members }: Props) {
 
             {/* Panel */}
             <div
-              className="relative z-10 w-full max-w-lg bg-[#f8f5f0] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden"
+              className="relative z-10 w-full max-w-lg bg-[#fbf9f6] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden"
               style={{ boxShadow: '0 8px 32px rgba(10,22,40,0.22), 0 2px 8px rgba(10,22,40,0.12)' }}
             >
               {/* Header */}
@@ -122,7 +122,7 @@ export default function FeatureAlumComposer({ members }: Props) {
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="text-white/50 hover:text-white transition-colors mt-0.5 flex-shrink-0"
+                  className="text-white/75 hover:text-white transition-colors mt-0.5 flex-shrink-0"
                   aria-label="Close"
                 >
                   <X size={18} />
@@ -152,7 +152,7 @@ export default function FeatureAlumComposer({ members }: Props) {
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-white hover:bg-[#f8f5f0] px-5 py-2.5 rounded-lg transition-colors"
+                      className="text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-white hover:bg-[#fbf9f6] px-5 py-2.5 rounded-lg transition-colors"
                     >
                       Close
                     </button>
@@ -196,7 +196,7 @@ export default function FeatureAlumComposer({ members }: Props) {
                                   <button
                                     type="button"
                                     onClick={() => { setSelected(m); setQuery('') }}
-                                    className="w-full text-left px-4 py-2.5 text-sm text-[#0a1628] hover:bg-[#faf7f2] transition-colors"
+                                    className="w-full text-left px-4 py-2.5 text-sm text-[#0a1628] hover:bg-[#fdfcf9] transition-colors"
                                   >
                                     {m.name}
                                   </button>

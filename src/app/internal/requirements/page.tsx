@@ -13,7 +13,7 @@ export default async function RequirementsPage() {
   await requireFounderOr404()
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-12">
         <div className="max-w-[1080px] mx-auto">
           <Link
@@ -44,7 +44,7 @@ export default async function RequirementsPage() {
                 '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)',
             }}
           >
-            <div className="px-7 sm:px-9 pt-8 pb-5 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
+            <div className="px-7 sm:px-9 pt-8 pb-5 border-b border-[rgba(180,168,150,0.3)] bg-[#fdfcf9]">
               <h2
                 className="text-[#0a1628] text-2xl font-medium leading-tight font-heading"
               >

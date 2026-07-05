@@ -63,7 +63,7 @@ export default function GatedPreview({
             {stats.map((s) => (
               <div
                 key={s.label}
-                className="bg-[#faf7f2] border border-[rgba(180,168,150,0.35)] rounded-lg py-3 px-2"
+                className="bg-[#fdfcf9] border border-[rgba(180,168,150,0.35)] rounded-lg py-3 px-2"
               >
                 <p
                   className="text-[#0a1628] text-xl font-medium leading-none mb-1 font-heading"

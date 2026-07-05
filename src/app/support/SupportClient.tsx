@@ -194,7 +194,7 @@ export default function SupportClient({ status }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Hero — clean navy, no radial glow, no gold underline. Matches
           the Locker Room / Member Book pattern. */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16">

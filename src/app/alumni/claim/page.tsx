@@ -133,7 +133,7 @@ export default async function ClaimRedirectPage({
   }
   if (!bookId) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] py-20 px-6 text-center">
+      <div className="min-h-screen bg-[#fbf9f6] py-20 px-6 text-center">
         <h1
           className="text-2xl text-[#0a1628] font-medium font-heading"
         >

@@ -113,7 +113,7 @@ function OpenQuestionCard({
       <div className="flex items-center gap-2 flex-wrap mb-2">
         <span className="font-semibold text-[#0a1628] text-sm">{q.askerName}</span>
         {q.askerGradYear && (
-          <span className="text-[10px] font-medium text-ink-muted bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-medium text-ink-muted bg-[#fbf9f6] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded-full">
             &apos;{String(q.askerGradYear).slice(-2)}
           </span>
         )}
@@ -128,7 +128,7 @@ function OpenQuestionCard({
           rows={3}
           placeholder="Your answer…"
           disabled={status === 'submitting'}
-          className="w-full rounded-lg border border-[#d9c8a8] bg-[#faf7f2] px-4 py-3 text-sm text-[#0a1628] placeholder:text-[#b0a898] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b] disabled:opacity-60"
+          className="w-full rounded-lg border border-[#d9c8a8] bg-[#fdfcf9] px-4 py-3 text-sm text-[#0a1628] placeholder:text-[#b0a898] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b] disabled:opacity-60"
         />
         {status === 'error' && (
           <p className="text-xs text-[#990000]">{error}</p>
@@ -156,7 +156,7 @@ function AnsweredCard({ q }: { q: TeamQuestion }) {
       <div className="flex items-center gap-2 flex-wrap mb-1.5">
         <span className="font-semibold text-[#0a1628] text-sm">{q.askerName}</span>
         {q.askerGradYear && (
-          <span className="text-[10px] font-medium text-ink-muted bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-medium text-ink-muted bg-[#fbf9f6] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded-full">
             &apos;{String(q.askerGradYear).slice(-2)}
           </span>
         )}
@@ -166,7 +166,7 @@ function AnsweredCard({ q }: { q: TeamQuestion }) {
       {q.answers.map(a => (
         <div key={a.id} className="mt-3 pl-4 border-l-2 border-[#c8a84b]/40">
           <p className="text-xs font-semibold text-[#0a1628] mb-0.5">{a.responderName}</p>
-          <p className="text-sm text-[#4a5568] leading-relaxed">{a.body}</p>
+          <p className="text-sm text-[#3a4657] leading-relaxed">{a.body}</p>
         </div>
       ))}
     </div>
@@ -185,7 +185,7 @@ function MemberQuestionCard({ q }: { q: TeamQuestion }) {
           'text-[10px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full',
           q.status === 'answered'
             ? 'text-[#2d6a4f] bg-[#2d6a4f]/10'
-            : 'text-ink-muted bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)]',
+            : 'text-ink-muted bg-[#fbf9f6] border border-[rgba(180,168,150,0.35)]',
         ].join(' ')}>
           {q.status === 'answered' ? 'Answered' : 'Pending'}
         </span>
@@ -199,7 +199,7 @@ function MemberQuestionCard({ q }: { q: TeamQuestion }) {
           {q.answers.map(a => (
             <div key={a.id} className="pl-4 border-l-2 border-[#c8a84b]/40">
               <p className="text-xs font-semibold text-[#0a1628] mb-0.5">{a.responderName}</p>
-              <p className="text-sm text-[#4a5568] leading-relaxed">{a.body}</p>
+              <p className="text-sm text-[#3a4657] leading-relaxed">{a.body}</p>
               <p className="text-[10px] text-[#b0a898] mt-1">{relativeTime(a.createdAt)}</p>
             </div>
           ))}
@@ -288,7 +288,7 @@ export default function TeamQuestionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
@@ -301,7 +301,7 @@ export default function TeamQuestionsPage() {
             {data?.role === 'player' ? 'Answer the Team’s Questions' : 'Your Questions'}
           </h1>
           {data?.role === 'player' && (
-            <p className="text-white/55 text-sm max-w-xl leading-relaxed mt-4">
+            <p className="text-white/70 text-sm max-w-xl leading-relaxed mt-4">
               Alumni ask &mdash; you answer. Keeps the community tight and gives guys real access to the program.
             </p>
           )}

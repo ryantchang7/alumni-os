@@ -101,7 +101,7 @@ export default function NewOpenRequestPage() {
     const seeItHref = intent === 'round' ? '/the-course#open-to-rounds' : '/19th-hole'
     const seeItLabel = intent === 'round' ? 'See it on The Course' : 'See it on the 19th Hole'
     return (
-      <div className="min-h-[calc(100dvh-60px)] bg-[#f8f5f0] px-6 py-20 flex items-center justify-center">
+      <div className="min-h-[calc(100dvh-60px)] bg-[#fbf9f6] px-6 py-20 flex items-center justify-center">
         <div
           className="w-full max-w-md bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-8 py-10 text-center"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
@@ -147,7 +147,7 @@ export default function NewOpenRequestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-5 sm:px-8 py-5">
         <div className="max-w-[720px] mx-auto flex items-center justify-between">
           <Link
@@ -168,7 +168,7 @@ export default function NewOpenRequestPage() {
           className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl overflow-hidden"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
         >
-          <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
+          <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#fdfcf9]">
             <span className="block w-10 h-[2px] bg-[#c8a84b] mb-5" />
             <h1
               className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
@@ -183,7 +183,7 @@ export default function NewOpenRequestPage() {
           </div>
 
           {!approved && sessionStatus !== 'loading' && (
-            <div className="px-7 sm:px-10 py-6 bg-[#faf7f2] border-b border-[rgba(180,168,150,0.3)]">
+            <div className="px-7 sm:px-10 py-6 bg-[#fdfcf9] border-b border-[rgba(180,168,150,0.3)]">
               <p className="text-[13px] text-[#3d4a5c]">
                 {signedIn
                   ? 'Claim your Member Book card to post a request. '

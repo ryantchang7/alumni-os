@@ -132,7 +132,7 @@ function RequestCard({
             </span>
           </div>
           <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-            <span className="text-xs font-medium text-[#4a5568] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
+            <span className="text-xs font-medium text-[#3a4657] bg-[#f5f2ee] border border-[rgba(180,168,150,0.4)] px-2 py-0.5 rounded-full">
               {req.purposeLabel}
             </span>
             {req.contextLabel && (
@@ -147,7 +147,7 @@ function RequestCard({
 
       {/* Additional context note */}
       {req.additionalContext && (
-        <div className="mt-3 px-3 py-2.5 bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] rounded-lg">
+        <div className="mt-3 px-3 py-2.5 bg-[#fbf9f6] border border-[rgba(180,168,150,0.35)] rounded-lg">
           <p className="text-xs text-ink-muted font-medium mb-0.5 uppercase tracking-wide">Additional context</p>
           <p className="text-xs text-[#2d3748] leading-relaxed">{req.additionalContext}</p>
         </div>
@@ -182,7 +182,7 @@ function RequestCard({
         </div>
       )}
       {req.suggestedPersonName && !req.responseMessage && (
-        <div className="mt-3 px-3 py-2.5 bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] rounded-lg">
+        <div className="mt-3 px-3 py-2.5 bg-[#fbf9f6] border border-[rgba(180,168,150,0.35)] rounded-lg">
           <p className="text-xs text-ink-muted font-medium mb-0.5">Suggested:</p>
           <p className="text-xs text-[#0a1628] font-semibold">{req.suggestedPersonName}</p>
         </div>
@@ -201,7 +201,7 @@ function RequestCard({
                 onChange={e => setResponseText(e.target.value)}
                 rows={3}
                 maxLength={1000}
-                className="w-full text-sm text-[#0a1628] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
+                className="w-full text-sm text-[#0a1628] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-3 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
               />
               <p className="text-[11px] text-ink-muted mt-1">{responseText.length}/1000</p>
             </>
@@ -213,7 +213,7 @@ function RequestCard({
                 <select
                   value={suggestId}
                   onChange={e => setSuggestId(e.target.value)}
-                  className="w-full text-sm text-[#0a1628] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 mb-2 focus:outline-none focus:border-[#0a1628] transition-colors"
+                  className="w-full text-sm text-[#0a1628] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 mb-2 focus:outline-none focus:border-[#0a1628] transition-colors"
                 >
                   <option value="">Select a member…</option>
                   {otherProfiles.map(p => (
@@ -231,7 +231,7 @@ function RequestCard({
                 placeholder={suggestId
                   ? `${DEFAULT_SUGGEST_PREFIX} ${profiles.find(p => p.personId === suggestId)?.canonicalName ?? '…'}.`
                   : 'Optional note to the player…'}
-                className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
+                className="w-full text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 resize-none focus:outline-none focus:border-[#0a1628] transition-colors"
               />
             </>
           )}
@@ -416,7 +416,7 @@ function AlumniRequestsInner() {
   const selectedProfile = profiles.find(p => p.personId === personId)
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[860px] mx-auto">
           <Link
@@ -538,7 +538,7 @@ export default function AlumniRequestsPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#f8f5f0] py-20 text-center">
+        <div className="min-h-screen bg-[#fbf9f6] py-20 text-center">
           <p className="text-sm text-ink-muted">Loading…</p>
         </div>
       }

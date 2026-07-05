@@ -280,7 +280,7 @@ function AlumniProfileInner() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] py-20 text-center">
+      <div className="min-h-screen bg-[#fbf9f6] py-20 text-center">
         <p className="text-sm text-ink-muted">Loading profile...</p>
       </div>
     )
@@ -288,7 +288,7 @@ function AlumniProfileInner() {
 
   if (error && !profile) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] py-20 text-center">
+      <div className="min-h-screen bg-[#fbf9f6] py-20 text-center">
         <p className="text-base font-semibold text-[#990000] mb-2">Profile not found</p>
         <p className="text-sm text-ink-muted mb-6">{error}</p>
         <Link href="/alumni" className="text-sm font-medium text-[#990000] hover:underline">
@@ -308,7 +308,7 @@ function AlumniProfileInner() {
         : null
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[860px] mx-auto">
           <Link
@@ -421,7 +421,7 @@ function AlumniProfileInner() {
             <div className="space-y-4">
               {!isParent && (
                 <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  <label className="block text-xs font-medium text-[#3a4657] mb-1">
                     Hometown <span className="text-[#990000]">*</span>
                   </label>
                   <HometownInput
@@ -434,7 +434,7 @@ function AlumniProfileInner() {
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  <label className="block text-xs font-medium text-[#3a4657] mb-1">
                     Current role <span className="text-[#990000]">*</span>
                   </label>
                   <input
@@ -447,7 +447,7 @@ function AlumniProfileInner() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  <label className="block text-xs font-medium text-[#3a4657] mb-1">
                     Company <span className="text-[#990000]">*</span>
                   </label>
                   <input
@@ -461,7 +461,7 @@ function AlumniProfileInner() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   Industries <span className="text-[#990000]">*</span>
                 </label>
                 <p className="text-[11px] text-ink-muted mb-2">Pick any that apply.</p>
@@ -495,7 +495,7 @@ function AlumniProfileInner() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   Where you live now <span className="text-[#990000]">*</span>
                 </label>
                 <CityStateInput
@@ -536,7 +536,7 @@ function AlumniProfileInner() {
                         setAdditionalLocations(additionalLocations.filter((_, i) => i !== idx))
                       }
                       aria-label="Remove location"
-                      className="w-7 h-7 rounded-full text-ink-muted hover:bg-[#faf7f2] hover:text-[#990000] text-base leading-none"
+                      className="w-7 h-7 rounded-full text-ink-muted hover:bg-[#fdfcf9] hover:text-[#990000] text-base leading-none"
                     >
                       ×
                     </button>
@@ -568,7 +568,7 @@ function AlumniProfileInner() {
                   only renders when you actually fill in a trip window. */}
               <div className="border-t border-[rgba(180,168,150,0.35)] pt-5 mt-1">
                 <div className="flex items-baseline justify-between mb-1">
-                  <label className="block text-xs font-medium text-[#4a5568]">
+                  <label className="block text-xs font-medium text-[#3a4657]">
                     On the loop <span className="text-ink-muted font-normal italic">— passing through somewhere?</span>
                   </label>
                   {(inTownCity || inTownState || inTownStart || inTownEnd || inTownNote) && (
@@ -622,7 +622,7 @@ function AlumniProfileInner() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   Short bio (optional)
                 </label>
                 <textarea
@@ -634,7 +634,7 @@ function AlumniProfileInner() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   Other interests
                 </label>
                 <input
@@ -666,7 +666,7 @@ function AlumniProfileInner() {
             </p>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   Home club(s)
                   {!isParent && !noHomeCourse && (
                     <span className="text-[#990000]"> *</span>
@@ -707,7 +707,7 @@ function AlumniProfileInner() {
                   below is an optional credential — display only, no auto-sync
                   (there's no free public GHIN API). */}
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   Handicap index
                   {!isParent && <span className="text-[#990000]"> *</span>}
                 </label>
@@ -741,7 +741,7 @@ function AlumniProfileInner() {
                   })}
                 </div>
                 <div className="mt-3">
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  <label className="block text-xs font-medium text-[#3a4657] mb-1">
                     GHIN number <span className="text-ink-muted font-normal">(optional)</span>
                   </label>
                   <input
@@ -759,7 +759,7 @@ function AlumniProfileInner() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   Favorite courses (comma-separated)
                 </label>
                 <input
@@ -780,7 +780,7 @@ function AlumniProfileInner() {
               </div>
               {!isParent && (
                 <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  <label className="block text-xs font-medium text-[#3a4657] mb-1">
                     Favorite Penn Golf memory (optional)
                   </label>
                   <textarea
@@ -842,7 +842,7 @@ function AlumniProfileInner() {
             </p>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   Public email
                 </label>
                 <input
@@ -854,7 +854,7 @@ function AlumniProfileInner() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   Phone
                 </label>
                 <input
@@ -866,7 +866,7 @@ function AlumniProfileInner() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                <label className="block text-xs font-medium text-[#3a4657] mb-1">
                   LinkedIn URL
                 </label>
                 <input

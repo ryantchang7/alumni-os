@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function BuilderRunPage() {
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Navy header band */}
       <div className="bg-[#0a1628] py-10 px-8">
         <div className="max-w-[1320px] mx-auto">

@@ -72,7 +72,7 @@ export default async function MeetTheTeamPage() {
   }))
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
@@ -84,7 +84,7 @@ export default async function MeetTheTeamPage() {
           >
             Ask the Team
           </h1>
-          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
+          <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
             Meet this year&rsquo;s squad below. Ask the whole team &mdash; or tap
             a guy to ask him directly. You&rsquo;ll get a real answer from one of
             the guys on the team.
@@ -166,7 +166,7 @@ export default async function MeetTheTeamPage() {
 
                   {/* Bio */}
                   {enrichment?.alumniBio && (
-                    <p className="text-xs text-[#4a5568] leading-relaxed line-clamp-3">
+                    <p className="text-xs text-[#3a4657] leading-relaxed line-clamp-3">
                       {enrichment.alumniBio}
                     </p>
                   )}
@@ -188,14 +188,14 @@ export default async function MeetTheTeamPage() {
                     {account ? (
                       <Link
                         href={`/member-book/${account.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-[#f8f5f0] hover:bg-white hover:border-[#0a1628]/30 px-3 py-2 rounded-lg transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-[#fbf9f6] hover:bg-white hover:border-[#0a1628]/30 px-3 py-2 rounded-lg transition-colors"
                       >
                         View Profile
                       </Link>
                     ) : (
                       <Link
                         href={`/player/alumni/${person.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-[#f8f5f0] hover:bg-white hover:border-[#0a1628]/30 px-3 py-2 rounded-lg transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-[#fbf9f6] hover:bg-white hover:border-[#0a1628]/30 px-3 py-2 rounded-lg transition-colors"
                       >
                         View Profile
                       </Link>

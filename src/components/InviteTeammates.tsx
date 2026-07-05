@@ -169,7 +169,7 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
             {joined.map(t => (
               <div
                 key={t.name}
-                className="flex items-center justify-between gap-3 bg-[#faf7f2] border border-[rgba(180,168,150,0.25)] rounded-xl px-4 py-3"
+                className="flex items-center justify-between gap-3 bg-[#fdfcf9] border border-[rgba(180,168,150,0.25)] rounded-xl px-4 py-3"
               >
                 <span className="text-sm text-ink-muted">{t.name}</span>
                 <span className="flex items-center gap-1.5 text-[11px] text-[#2d6a4f] font-semibold">

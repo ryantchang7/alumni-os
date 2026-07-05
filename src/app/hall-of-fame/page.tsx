@@ -32,7 +32,7 @@ export default function HallOfFamePage() {
   const ncaaRosters = NCAA_TEAM_YEARS.map((year) => ({ year, members: membersForYear(year) }))
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16 relative overflow-hidden">
         {/* Soft gold spotlight on the title */}
@@ -58,7 +58,7 @@ export default function HallOfFamePage() {
             Hall of Fame
           </h1>
           <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5 mb-5" />
-          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed">
+          <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed">
             Championships, postseason appearances, and individual honors from the
             Penn Golf record book — from the first NCAA appearance in 1947 to today.
           </p>

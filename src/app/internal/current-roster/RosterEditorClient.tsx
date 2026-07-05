@@ -77,7 +77,7 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
       >
         <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-4' : ''}`} />
       </button>
-      <span className="text-xs text-[#4a5568]">{label}</span>
+      <span className="text-xs text-[#3a4657]">{label}</span>
     </label>
   )
 }
@@ -164,7 +164,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
               {classShort}
             </span>
           )}
-          <span className="text-[10px] font-medium text-ink-muted bg-[#f8f5f0] px-2 py-0.5 rounded-full border border-[rgba(180,168,150,0.4)]">
+          <span className="text-[10px] font-medium text-ink-muted bg-[#fbf9f6] px-2 py-0.5 rounded-full border border-[rgba(180,168,150,0.4)]">
             Current Player
           </span>
         </div>
@@ -213,7 +213,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
                     .trim()
                 }
                 readOnly
-                className="w-full border border-[rgba(180,168,150,0.3)] rounded-lg px-3 py-2 text-sm text-ink-muted bg-[#f8f5f0] cursor-not-allowed"
+                className="w-full border border-[rgba(180,168,150,0.3)] rounded-lg px-3 py-2 text-sm text-ink-muted bg-[#fbf9f6] cursor-not-allowed"
               />
             </div>
           </div>

@@ -6,7 +6,7 @@ export default async function InternalGatheringsPage() {
   await requireFounderOr404()
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[1320px] mx-auto">
           <Link href="/internal" className="text-xs text-gray-400 hover:text-gray-200 mb-3 inline-block">

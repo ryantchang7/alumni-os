@@ -64,7 +64,7 @@ export default function PhotoCropper({ file, shape = 'square', onComplete, onCan
       className="fixed inset-0 z-50 bg-[#0a1628]/85 flex items-center justify-center p-4"
     >
       <div className="bg-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-xl">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-[rgba(180,168,150,0.35)] bg-[#faf7f2]">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-[rgba(180,168,150,0.35)] bg-[#fdfcf9]">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
             Crop your photo
           </p>

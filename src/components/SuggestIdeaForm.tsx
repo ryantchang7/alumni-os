@@ -81,7 +81,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
 
   if (status === 'success') {
     return (
-      <div className="rounded-xl border border-[#d9c8a8] bg-[#faf7f2] px-8 py-10 text-center">
+      <div className="rounded-xl border border-[#d9c8a8] bg-[#fdfcf9] px-8 py-10 text-center">
         {/* Checkmark */}
         <div className="flex items-center justify-center mb-4">
           <span

@@ -115,7 +115,7 @@ export default function ClubhouseChecklist({
               className={`inline-flex items-center justify-center w-6 h-6 rounded-full flex-shrink-0 ${
                 step.done
                   ? 'bg-[#2d6a4f] text-white'
-                  : 'bg-[#f8f5f0] border border-[rgba(180,168,150,0.45)] text-ink-muted'
+                  : 'bg-[#fbf9f6] border border-[rgba(180,168,150,0.45)] text-ink-muted'
               }`}
               aria-hidden
             >

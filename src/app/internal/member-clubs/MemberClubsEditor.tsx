@@ -104,7 +104,7 @@ function MemberRowCard({ row }: { row: MemberRow }) {
           />
         </div>
 
-        <label className="flex items-center gap-1.5 text-xs text-[#4a5568] flex-shrink-0 cursor-pointer select-none whitespace-nowrap">
+        <label className="flex items-center gap-1.5 text-xs text-[#3a4657] flex-shrink-0 cursor-pointer select-none whitespace-nowrap">
           <input
             type="checkbox"
             checked={noHomeCourse}

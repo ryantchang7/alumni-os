@@ -154,7 +154,7 @@ export default async function TeamRoomPage() {
   coaches = dedupeByName(coaches)
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14 overflow-hidden">
         <div className="max-w-[1320px] mx-auto flex items-center gap-5 sm:gap-7">
           <HeroCrest src={crestImage} alt="Team Room crest" />
@@ -167,7 +167,7 @@ export default async function TeamRoomPage() {
             >
               Team Room
             </h1>
-            <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
+            <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
               The current roster, the season as it unfolds, and the people behind the program.
             </p>
           </div>
@@ -255,7 +255,7 @@ export default async function TeamRoomPage() {
             <ol className="relative border-l border-[rgba(180,168,150,0.45)] pl-6 space-y-5">
               {seasonUpdates.map(u => (
                 <li key={u.id} className="relative">
-                  <span className="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full bg-[#990000] ring-4 ring-[#f8f5f0]" />
+                  <span className="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full bg-[#990000] ring-4 ring-[#fbf9f6]" />
                   <div
                     className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
                     style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
@@ -280,7 +280,7 @@ export default async function TeamRoomPage() {
                         >
                           <LinkPreviewImage
                             src={u.previewImageUrl}
-                            className="w-full h-40 object-cover bg-[#faf7f2]"
+                            className="w-full h-40 object-cover bg-[#fdfcf9]"
                           />
                           <div className="px-3.5 py-3">
                             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
@@ -413,7 +413,7 @@ export default async function TeamRoomPage() {
                         </div>
                       </div>
                       {membership.rosterEndYear && (
-                        <span className="text-[10px] font-medium text-ink-muted bg-[#f8f5f0] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border border-[rgba(180,168,150,0.35)]">
+                        <span className="text-[10px] font-medium text-ink-muted bg-[#fbf9f6] px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 border border-[rgba(180,168,150,0.35)]">
                           &apos;{String(membership.rosterEndYear).slice(2)}
                         </span>
                       )}
@@ -442,7 +442,7 @@ export default async function TeamRoomPage() {
                 style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
               >
                 <p className="font-semibold text-[#0a1628] text-sm mb-1">{card.title}</p>
-                <p className="text-xs text-[#4a5568] mb-4 leading-relaxed flex-1">{card.description}</p>
+                <p className="text-xs text-[#3a4657] mb-4 leading-relaxed flex-1">{card.description}</p>
                 <Link
                   href={card.href}
                   className="text-xs font-semibold text-[#990000] hover:underline"
@@ -473,7 +473,7 @@ export default async function TeamRoomPage() {
         >
           <div>
             <p className="font-semibold text-white text-sm">Ask the Team &mdash; and meet this year&rsquo;s squad</p>
-            <p className="text-xs text-white/55 mt-0.5">
+            <p className="text-xs text-white/70 mt-0.5">
               Get a real answer from a current player, usually within a couple days.
             </p>
           </div>

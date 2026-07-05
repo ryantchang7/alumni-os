@@ -92,7 +92,7 @@ export default function CourseAutocomplete({
         autoComplete="off"
         required={required && !disabled}
         disabled={disabled}
-        className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 disabled:bg-[#faf7f2] disabled:text-ink-muted disabled:cursor-not-allowed"
+        className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20 disabled:bg-[#fdfcf9] disabled:text-ink-muted disabled:cursor-not-allowed"
       />
       {open && suggestions.length > 0 && (
         <ul
@@ -111,7 +111,7 @@ export default function CourseAutocomplete({
                   }}
                   onMouseEnter={() => setHighlightIdx(idx)}
                   className={`w-full text-left px-3 py-2 text-sm transition-colors ${
-                    highlighted ? 'bg-[#faf7f2] text-[#0a1628]' : 'text-[#0a1628] hover:bg-[#faf7f2]'
+                    highlighted ? 'bg-[#fdfcf9] text-[#0a1628]' : 'text-[#0a1628] hover:bg-[#fdfcf9]'
                   }`}
                 >
                   <span className="font-medium">{s.name}</span>

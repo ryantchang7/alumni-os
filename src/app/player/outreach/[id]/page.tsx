@@ -218,7 +218,7 @@ function OutreachPageInner() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center">
         <p className="text-sm text-ink-muted">Loading profile…</p>
       </div>
     )
@@ -226,7 +226,7 @@ function OutreachPageInner() {
 
   if (notFoundState || !profile) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center">
         <div className="text-center">
           <p className="text-lg font-semibold text-[#0a1628] mb-2">Profile not found</p>
           <Link href="/member-book" className="text-sm text-[#990000] hover:underline">
@@ -247,7 +247,7 @@ function OutreachPageInner() {
 
   if (requestSent) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <div className="bg-[#0a1628] border-b border-white/10">
           <div className="max-w-[680px] mx-auto px-6 py-5">
             <div className="flex items-center gap-3 mb-3 text-xs">
@@ -265,7 +265,7 @@ function OutreachPageInner() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-base font-semibold text-[#0a1628] mb-2">Request sent.</p>
-            <p className="text-sm text-[#4a5568] leading-relaxed max-w-sm mx-auto">
+            <p className="text-sm text-[#3a4657] leading-relaxed max-w-sm mx-auto">
               Your request has been saved. {first} will see it in their Clubhouse inbox. Give it a few days &mdash; Penn Golf members have day jobs.
             </p>
             <Link
@@ -281,7 +281,7 @@ function OutreachPageInner() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Header */}
       <div className="bg-[#0a1628] border-b border-white/10">
         <div className="max-w-[680px] mx-auto px-6 py-5">
@@ -477,7 +477,7 @@ function OutreachPageInner() {
               {/* Sender info + submit */}
               <div className="border-t border-[rgba(180,168,150,0.25)] pt-5 mt-2 space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  <label className="block text-xs font-medium text-[#3a4657] mb-1">
                     Your name <span className="text-[#990000]">*</span>
                   </label>
                   <input
@@ -489,7 +489,7 @@ function OutreachPageInner() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#4a5568] mb-1">
+                  <label className="block text-xs font-medium text-[#3a4657] mb-1">
                     Your email <span className="text-ink-muted">(optional — for the alum to reply to)</span>
                   </label>
                   <input
@@ -530,7 +530,7 @@ function OutreachPageInner() {
 
 export default function PlayerOutreachPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center"><p className="text-sm text-ink-muted">Loading…</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center"><p className="text-sm text-ink-muted">Loading…</p></div>}>
       <OutreachPageInner />
     </Suspense>
   )

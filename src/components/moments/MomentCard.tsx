@@ -259,7 +259,7 @@ export default function MomentCard({
       }}
     >
       {/* Media */}
-      <div className={`relative ${moment.audience === 'locker-room' ? 'bg-[#0a1628]' : 'bg-[#faf7f2]'}`}>
+      <div className={`relative ${moment.audience === 'locker-room' ? 'bg-[#0a1628]' : 'bg-[#fdfcf9]'}`}>
         {moment.mediaType === 'video' ? (
           <video
             src={moment.photoUrl}
@@ -366,7 +366,7 @@ export default function MomentCard({
               className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12.5px] border transition-colors ${
                 r.viewerReacted
                   ? 'bg-[#c8a84b]/15 border-[#c8a84b]/55 text-[#7a6420]'
-                  : 'bg-[#faf7f2] border-[rgba(180,168,150,0.45)] text-[#3d4a5c] hover:border-[#0a1628]/40'
+                  : 'bg-[#fdfcf9] border-[rgba(180,168,150,0.45)] text-[#3d4a5c] hover:border-[#0a1628]/40'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
               aria-label={`React with ${r.emoji} (${r.count})`}
             >

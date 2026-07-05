@@ -75,7 +75,7 @@ interface HistoricalRunsData {
 
 function LoadingSkeleton() {
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-6 py-8">
         <div className="max-w-5xl mx-auto space-y-3">
           <div className="h-4 w-20 bg-white/20 rounded animate-pulse" />
@@ -153,7 +153,7 @@ function WorkspaceInner() {
 
   if (!teamSlug) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center">
         <div className="text-center space-y-4">
           <p className="text-gray-600">No team selected.</p>
           <Link
@@ -171,7 +171,7 @@ function WorkspaceInner() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center">
         <div className="text-center space-y-4">
           <p className="text-gray-700 font-medium">Failed to load workspace</p>
           <p className="text-gray-500 text-sm">{error}</p>
@@ -251,12 +251,12 @@ function WorkspaceInner() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-6 py-8">
         <div className="max-w-5xl mx-auto">
           <Link
             href="/builder"
-            className="text-white/60 hover:text-white text-sm transition-colors inline-block mb-4"
+            className="text-white/70 hover:text-white text-sm transition-colors inline-block mb-4"
           >
             &larr; Builder
           </Link>
@@ -270,7 +270,7 @@ function WorkspaceInner() {
                 href={team.websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white/50 text-xs font-mono hover:text-white/80 transition-colors mt-1 inline-block"
+                className="text-white/75 text-xs font-mono hover:text-white/80 transition-colors mt-1 inline-block"
               >
                 {team.websiteUrl}
               </a>
@@ -285,7 +285,7 @@ function WorkspaceInner() {
       <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
         {/* Three-layer path banner */}
         <div className="bg-[#0a1628] rounded-lg p-5">
-          <p className="text-white/60 text-xs uppercase tracking-widest font-medium mb-3">Recommended path</p>
+          <p className="text-white/70 text-xs uppercase tracking-widest font-medium mb-3">Recommended path</p>
           <div className="flex items-center gap-2 flex-wrap">
             <Link
               href={`/builder/agent?teamSlug=${teamSlug}`}
@@ -308,7 +308,7 @@ function WorkspaceInner() {
               3. Player Network
             </Link>
           </div>
-          <p className="text-white/50 text-xs mt-3">
+          <p className="text-white/75 text-xs mt-3">
             Extract rows with the AI Builder, approve for graph, then publish to the Player Network via Captain Review.
           </p>
         </div>

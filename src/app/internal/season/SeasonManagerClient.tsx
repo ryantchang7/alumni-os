@@ -145,8 +145,8 @@ export default function SeasonManagerClient() {
   }
 
   const inputCls =
-    'text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#f8f5f0] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 focus:outline-none focus:border-[#0a1628] transition-colors w-full'
-  const labelCls = 'block text-xs font-medium text-[#4a5568] mb-1'
+    'text-sm text-[#0a1628] placeholder-[#b5ad9e] bg-[#fbf9f6] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 focus:outline-none focus:border-[#0a1628] transition-colors w-full'
+  const labelCls = 'block text-xs font-medium text-[#3a4657] mb-1'
 
   return (
     <div>

@@ -265,7 +265,7 @@ function EnrichPersonInner() {
 
   if (!teamSlug || !personId) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm p-8">
+      <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center text-ink-muted text-sm p-8">
         Missing teamSlug or personId.
       </div>
     )
@@ -273,7 +273,7 @@ function EnrichPersonInner() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">
+      <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center text-ink-muted text-sm">
         <span className="w-5 h-5 border-2 border-[#8a7f70]/30 border-t-[#8a7f70] rounded-full animate-spin mr-3" />
         Loading profile…
       </div>
@@ -282,7 +282,7 @@ function EnrichPersonInner() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center p-8">
+      <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center p-8">
         <div className="bg-red-50 border border-red-200 rounded-lg p-5 text-red-700 text-sm max-w-lg">
           {error}
         </div>
@@ -295,7 +295,7 @@ function EnrichPersonInner() {
   const statusInfo = enrichmentStatusLabel(form.verificationStatus)
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] flex flex-col">
+    <div className="min-h-screen bg-[#fbf9f6] flex flex-col">
       {/* Navy header */}
       <div className="bg-[#0a1628] py-10 px-8">
         <div className="max-w-[1320px] mx-auto">
@@ -687,7 +687,7 @@ export default function EnrichPersonPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">
+        <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center text-ink-muted text-sm">
           Loading…
         </div>
       }

@@ -61,7 +61,7 @@ export default function CourseRoll({ entries }: Props) {
             onChange={e => setQuery(e.target.value)}
             placeholder="Search courses…"
             aria-label="Search the Course Roll"
-            className="w-full bg-[#faf7f2] border border-[rgba(180,168,150,0.45)] rounded-md pl-8 pr-7 py-1.5 text-[12.5px] text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors"
+            className="w-full bg-[#fdfcf9] border border-[rgba(180,168,150,0.45)] rounded-md pl-8 pr-7 py-1.5 text-[12.5px] text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors"
           />
           {query && (
             <button
@@ -100,7 +100,7 @@ export default function CourseRoll({ entries }: Props) {
                 <button
                   type="button"
                   onClick={() => setOpen(isOpen ? null : entry.course)}
-                  className="w-full text-left px-5 py-3 flex items-center justify-between gap-3 hover:bg-[#faf7f2] transition-colors"
+                  className="w-full text-left px-5 py-3 flex items-center justify-between gap-3 hover:bg-[#fdfcf9] transition-colors"
                   aria-expanded={isOpen}
                 >
                   <span className="flex items-center gap-2 min-w-0">
@@ -126,7 +126,7 @@ export default function CourseRoll({ entries }: Props) {
                   </span>
                 </button>
                 {isOpen && (
-                  <ul className="bg-[#faf7f2] border-t border-[rgba(180,168,150,0.22)]">
+                  <ul className="bg-[#fdfcf9] border-t border-[rgba(180,168,150,0.22)]">
                     {sortedMembers.map(m => (
                       <li
                         key={`${entry.course}:${m.personId}`}

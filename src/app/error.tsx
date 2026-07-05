@@ -10,7 +10,7 @@ interface Props {
 
 export default function GlobalError({ error, reset }: Props) {
   return (
-    <div className="min-h-screen bg-[#f8f5f0] flex flex-col items-center justify-center px-6 text-center">
+    <div className="min-h-screen bg-[#fbf9f6] flex flex-col items-center justify-center px-6 text-center">
       {/* Penn red accent bar at the very top */}
       <div className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#990000] via-[#bb0000] to-[#990000]" />
 

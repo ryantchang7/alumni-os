@@ -59,7 +59,7 @@ function HeroPlaque({ value, label }: { value: number | string; label: string })
       >
         {value}
       </p>
-      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/50">
+      <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/75">
         {label}
       </p>
     </div>
@@ -216,14 +216,14 @@ function BookHeader({
       titleTestId="member-book-title"
     >
       {scopeNote && (
-        <p className="text-white/40 text-[12.5px] sm:text-[13px] max-w-xl italic -mt-1">
+        <p className="text-white/70 text-[12.5px] sm:text-[13px] max-w-xl italic -mt-1">
           {scopeNote}
         </p>
       )}
       <div className="mt-4" data-testid="member-book-stats">
         <HeroPlaque value={members} label="Members" />
         {rangeLabel && (
-          <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/40 mt-2">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/70 mt-2">
             {rangeLabel}
           </p>
         )}
@@ -370,7 +370,7 @@ function MemberBookPageInner() {
     filters.search !== '' || filters.era !== 'all'
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <BookHeader
         members={stats.members + parents.length}
         earliestYear={stats.earliestYear}
@@ -416,7 +416,7 @@ function MemberBookPageInner() {
             className={`inline-flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.18em] px-5 py-2.5 rounded-lg transition-all ${
               view === 'all'
                 ? 'bg-white text-[#0a1628] shadow-[0_2px_10px_rgba(0,0,0,0.25)]'
-                : 'text-white/55 hover:text-white border border-transparent'
+                : 'text-white/70 hover:text-white border border-transparent'
             }`}
           >
             All Members
@@ -424,7 +424,7 @@ function MemberBookPageInner() {
               className={`text-[10.5px] tabular-nums px-1.5 py-0.5 rounded-full ${
                 view === 'all'
                   ? 'bg-[#0a1628]/10 text-[#0a1628]'
-                  : 'bg-white/10 text-white/65'
+                  : 'bg-white/10 text-white/75'
               }`}
             >
               {stats.members + parents.length}
@@ -474,7 +474,7 @@ function MemberBookPageInner() {
                   onChange={(e) => update('search', e.target.value)}
                   aria-label="Search the Member Book"
                   placeholder="Search by name, year, or hometown..."
-                  className="w-full bg-[#f8f5f0] border border-[rgba(180,168,150,0.4)] rounded-lg px-4 py-2.5 pl-10 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors"
+                  className="w-full bg-[#fbf9f6] border border-[rgba(180,168,150,0.4)] rounded-lg px-4 py-2.5 pl-10 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25 transition-colors"
                 />
                 {filters.search && (
                   <button
@@ -515,7 +515,7 @@ function MemberBookPageInner() {
                         className={`px-3 py-1 text-[11px] font-medium rounded-full border transition-colors ${
                           active
                             ? 'bg-[#0a1628] text-white border-[#0a1628]'
-                            : 'bg-[#faf7f2] text-[#3d4a5c] border-[rgba(180,168,150,0.45)] hover:border-[#0a1628]/40'
+                            : 'bg-[#fdfcf9] text-[#3d4a5c] border-[rgba(180,168,150,0.45)] hover:border-[#0a1628]/40'
                         }`}
                       >
                         {o.label}
@@ -530,7 +530,7 @@ function MemberBookPageInner() {
                       value={filters.sort}
                       onChange={(e) => update('sort', e.target.value as SortMode)}
                       aria-label="Sort the Member Book"
-                      className="bg-[#faf7f2] border border-[rgba(180,168,150,0.45)] rounded-md px-2 py-1 text-[11px] text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]/20 transition-colors"
+                      className="bg-[#fdfcf9] border border-[rgba(180,168,150,0.45)] rounded-md px-2 py-1 text-[11px] text-[#0a1628] focus:outline-none focus:ring-1 focus:ring-[#0a1628]/20 transition-colors"
                     >
                       {SORT_OPTIONS.map((o) => (
                         <option key={o.value} value={o.value}>
@@ -673,7 +673,7 @@ function MemberBookPageInner() {
 // it to live inside a <Suspense> boundary in Next 16.
 function MemberBookSkeleton() {
   return (
-    <div className="min-h-screen bg-[#f8f5f0] animate-pulse">
+    <div className="min-h-screen bg-[#fbf9f6] animate-pulse">
       {/* Header */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-16">
         <div className="max-w-5xl mx-auto space-y-4">

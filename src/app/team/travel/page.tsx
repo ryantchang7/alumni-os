@@ -51,7 +51,7 @@ export default async function TeamTravelPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
@@ -63,7 +63,7 @@ export default async function TeamTravelPage() {
           >
             Team Travel
           </h1>
-          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
+          <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
             Where the team is headed &mdash; offer to host them when they&rsquo;re near you.
           </p>
         </div>
@@ -115,7 +115,7 @@ export default async function TeamTravelPage() {
                         >
                           {stop.eventName}
                         </h2>
-                        <p className="text-sm text-[#4a5568] mt-1">{stop.locationText}</p>
+                        <p className="text-sm text-[#3a4657] mt-1">{stop.locationText}</p>
                         {stop.note && (
                           <p className="text-xs text-ink-muted mt-2.5 leading-relaxed max-w-xl border-l-2 border-[rgba(180,168,150,0.5)] pl-3">
                             {stop.note}
@@ -136,7 +136,7 @@ export default async function TeamTravelPage() {
 
                   {/* Host offers (founder-only) */}
                   {isFounder && (
-                    <div className="border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2] px-5 sm:px-6 py-4">
+                    <div className="border-t border-[rgba(180,168,150,0.25)] bg-[#fdfcf9] px-5 sm:px-6 py-4">
                       <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted mb-3">
                         Host offers ({offers.length})
                       </p>
@@ -164,7 +164,7 @@ export default async function TeamTravelPage() {
                                   </span>
                                 </div>
                                 {offer.message && (
-                                  <p className="text-xs text-[#4a5568] mt-0.5 leading-relaxed">
+                                  <p className="text-xs text-[#3a4657] mt-0.5 leading-relaxed">
                                     {offer.message}
                                   </p>
                                 )}

@@ -53,7 +53,7 @@ export default async function InvitePage() {
   const notJoinedCount = teammates.filter(t => !t.joined).length
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[860px] mx-auto">
@@ -65,7 +65,7 @@ export default async function InvitePage() {
           >
             Invite the guys
           </h1>
-          <p className="text-white/55 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
+          <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
             The Clubhouse is better the more of us are on it. Pull in the teammates who
             aren&rsquo;t here yet &mdash; it takes them 30 seconds.
           </p>

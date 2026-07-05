@@ -59,7 +59,7 @@ function PostCard({ post }: { post: CareerPost }) {
         >
           {isAsk ? 'Ask' : 'Offer'}
         </span>
-        <span className="text-[10px] font-mono uppercase tracking-[0.14em] text-ink-muted bg-[#f8f5f0] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded">
+        <span className="text-[10px] font-mono uppercase tracking-[0.14em] text-ink-muted bg-[#fbf9f6] border border-[rgba(180,168,150,0.35)] px-2 py-0.5 rounded">
           {SECTOR_LABEL[post.sector]}
         </span>
         <span className="text-[10.5px] text-ink-muted ml-auto">{timeAgo(post.createdAt)}</span>
@@ -119,7 +119,7 @@ function AlumniCard({ entry }: { entry: AlumniEntry }) {
         <div className="min-w-0">
       <p className="font-semibold text-[#0a1628] text-sm">{person.canonicalName}</p>
       {(enrichment.currentRole || enrichment.currentCompany) && (
-        <p className="text-xs text-[#4a5568] mt-0.5">
+        <p className="text-xs text-[#3a4657] mt-0.5">
           {enrichment.currentRole && enrichment.currentCompany
             ? `${enrichment.currentRole} at ${enrichment.currentCompany}`
             : enrichment.currentRole ?? enrichment.currentCompany}
@@ -248,7 +248,7 @@ export default async function CareerRoomPage() {
 
   if (!approval.approved) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <CareerRoomHero />
         <GatedPreview
           signedIn={approval.signedIn}
@@ -267,7 +267,7 @@ export default async function CareerRoomPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <CareerRoomHero />
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">

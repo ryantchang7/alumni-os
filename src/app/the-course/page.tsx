@@ -294,7 +294,7 @@ export default async function TheCoursePage() {
       [...rounds.map((r) => r.city).filter(Boolean), ...openToRounds.map((e) => e.enrichment.city).filter(Boolean)],
     ).size
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <CourseHero rounds={[]} />
         <GatedPreview
           signedIn={approval.signedIn}
@@ -313,7 +313,7 @@ export default async function TheCoursePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <CourseHero rounds={rounds} />
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-12 space-y-14">

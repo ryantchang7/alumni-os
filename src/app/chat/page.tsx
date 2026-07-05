@@ -7,7 +7,7 @@ export default async function ChatIndexPage() {
 
   if (!approval.approved) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
           <div className="max-w-[820px] mx-auto">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-3">
@@ -31,7 +31,7 @@ export default async function ChatIndexPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-12">
         <div className="max-w-[820px] mx-auto">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-3">
@@ -42,7 +42,7 @@ export default async function ChatIndexPage() {
           >
             Chat
           </h1>
-          <p className="text-white/55 text-sm sm:text-base mt-2 max-w-md">
+          <p className="text-white/70 text-sm sm:text-base mt-2 max-w-md">
             Private messages with Penn Golf alumni. Direct or group.
           </p>
         </div>

@@ -68,7 +68,7 @@ export default async function InternalPage() {
   await requireFounderOr404()
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[1320px] mx-auto">
           <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Founder</p>

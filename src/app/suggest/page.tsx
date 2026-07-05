@@ -21,7 +21,7 @@ export default async function SuggestPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#faf7f2]">
+    <main className="min-h-screen bg-[#fdfcf9]">
       <div className="max-w-2xl mx-auto px-6 sm:px-10 py-16 sm:py-24">
         {/* Header */}
         <div className="mb-10">
@@ -34,7 +34,7 @@ export default async function SuggestPage() {
           >
             Suggest an idea
           </h1>
-          <p className="text-base text-[#4a5568] leading-relaxed">
+          <p className="text-base text-[#3a4657] leading-relaxed">
             Got an idea to make the Clubhouse more useful? Send it directly to
             Ryan &mdash; every suggestion is read.
           </p>

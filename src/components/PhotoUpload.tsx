@@ -116,12 +116,12 @@ export default function PhotoUpload({
 
   return (
     <div className="space-y-2">
-      <label className="block text-xs font-medium text-[#4a5568]">{label}</label>
+      <label className="block text-xs font-medium text-[#3a4657]">{label}</label>
 
       <div className="flex items-start gap-4 flex-wrap">
         {/* Preview */}
         <div
-          className={`${previewClass} rounded-lg overflow-hidden bg-[#faf7f2] border border-dashed border-[rgba(180,168,150,0.55)] flex items-center justify-center`}
+          className={`${previewClass} rounded-lg overflow-hidden bg-[#fdfcf9] border border-dashed border-[rgba(180,168,150,0.55)] flex items-center justify-center`}
         >
           {value ? (
             isVideoValue ? (

@@ -99,7 +99,7 @@ export default function HometownInput({
                   }}
                   onMouseEnter={() => setHighlightIdx(idx)}
                   className={`w-full text-left px-3 py-2 text-sm transition-colors ${
-                    highlighted ? 'bg-[#faf7f2] text-[#0a1628]' : 'text-[#0a1628] hover:bg-[#faf7f2]'
+                    highlighted ? 'bg-[#fdfcf9] text-[#0a1628]' : 'text-[#0a1628] hover:bg-[#fdfcf9]'
                   }`}
                 >
                   <span className="font-medium">{s.city}</span>

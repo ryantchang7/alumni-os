@@ -96,7 +96,7 @@ export default function FollowTeamButton({ initialFollowing, signedIn }: Props) 
           </>
         )}
       </button>
-      <p className="text-xs text-white/40">
+      <p className="text-xs text-white/70">
         {following
           ? "You'll get notified when new results are posted."
           : 'Get notified when the team posts results.'}

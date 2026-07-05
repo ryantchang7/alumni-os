@@ -235,9 +235,9 @@ export default async function MasterListPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-[#4a5568] whitespace-nowrap">{row.years}</td>
-                      <td className="px-4 py-3 text-[#4a5568] whitespace-nowrap">{row.classLabel}</td>
-                      <td className="px-4 py-3 text-[#4a5568] whitespace-nowrap max-w-[160px] truncate">{row.hometown}</td>
+                      <td className="px-4 py-3 text-[#3a4657] whitespace-nowrap">{row.years}</td>
+                      <td className="px-4 py-3 text-[#3a4657] whitespace-nowrap">{row.classLabel}</td>
+                      <td className="px-4 py-3 text-[#3a4657] whitespace-nowrap max-w-[160px] truncate">{row.hometown}</td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span className={`text-xs font-medium ${row.published ? 'text-emerald-700' : 'text-ink-muted'}`}>
                           {row.published ? 'Yes' : 'No'}

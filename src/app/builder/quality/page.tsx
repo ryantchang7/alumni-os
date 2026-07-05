@@ -54,7 +54,7 @@ function QualityInner() {
   const colors = quality ? scoreColor(quality.score) : null
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] flex flex-col">
+    <div className="min-h-screen bg-[#fbf9f6] flex flex-col">
       <div className="bg-[#0a1628] py-10 px-8">
         <div className="max-w-[1320px] mx-auto">
           <Link
@@ -337,7 +337,7 @@ function QualityInner() {
 
 export default function QualityPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">Loading…</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center text-ink-muted text-sm">Loading…</div>}>
       <QualityInner />
     </Suspense>
   )

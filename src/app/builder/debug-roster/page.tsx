@@ -124,7 +124,7 @@ function DebugRosterInner() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] px-6 py-12">
+    <div className="min-h-screen bg-[#fbf9f6] px-6 py-12">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-8">
@@ -417,7 +417,7 @@ function DebugRosterInner() {
 
 export default function DebugRosterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">Loading…</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center text-ink-muted text-sm">Loading…</div>}>
       <DebugRosterInner />
     </Suspense>
   )

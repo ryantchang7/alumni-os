@@ -32,9 +32,9 @@ export default function TeleprompterClient() {
     setCopied(false)
   }, [length])
 
-  const bgClass = dark ? 'bg-[#0a1628]' : 'bg-[#f8f5f0]'
+  const bgClass = dark ? 'bg-[#0a1628]' : 'bg-[#fbf9f6]'
   const textClass = dark ? 'text-white' : 'text-[#0a1628]'
-  const mutedClass = dark ? 'text-white/55' : 'text-ink-muted'
+  const mutedClass = dark ? 'text-white/70' : 'text-ink-muted'
   const borderClass = dark ? 'border-white/20' : 'border-[#0a1628]/20'
   const chipActive = dark
     ? 'bg-white text-[#0a1628]'

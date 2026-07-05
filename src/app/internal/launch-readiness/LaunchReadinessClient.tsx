@@ -286,11 +286,11 @@ export default function LaunchReadinessClient({
   ]
 
   return (
-    <div className="min-h-[calc(100dvh-60px)] bg-[#f8f5f0] pb-24">
+    <div className="min-h-[calc(100dvh-60px)] bg-[#fbf9f6] pb-24">
       {/* Header */}
       <div className="bg-[#0a1628] text-white px-5 sm:px-8 py-10 sm:py-12">
         <div className="max-w-[1180px] mx-auto">
-          <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/55 mb-3">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/70 mb-3">
             Captain Checklist
           </p>
           <h1
@@ -298,7 +298,7 @@ export default function LaunchReadinessClient({
           >
             Launch Readiness
           </h1>
-          <p className="text-white/65 text-sm max-w-2xl mt-3">
+          <p className="text-white/75 text-sm max-w-2xl mt-3">
             One page to confirm everything is wired before you share the
             Clubhouse with the Penn Golf family. Run the checks, fix
             anything red, and ship.

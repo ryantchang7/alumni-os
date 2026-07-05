@@ -136,7 +136,7 @@ function EnrichListInner() {
   })
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] flex flex-col">
+    <div className="min-h-screen bg-[#fbf9f6] flex flex-col">
       {/* Navy header */}
       <div className="bg-[#0a1628] py-10 px-8">
         <div className="max-w-[1320px] mx-auto">
@@ -331,7 +331,7 @@ export default function EnrichPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center text-ink-muted text-sm">
+        <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center text-ink-muted text-sm">
           Loading…
         </div>
       }

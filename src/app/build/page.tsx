@@ -234,7 +234,7 @@ function BuildPageInner() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-8 pt-10 pb-14">
         <div className="max-w-[860px] mx-auto">
           <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Build</p>
@@ -258,7 +258,7 @@ function BuildPageInner() {
                 <p className={`font-semibold text-sm leading-snug mb-1 ${step1Done || activeStep === 1 ? 'text-[#0a1628]' : 'text-ink-muted'}`}>
                   Penn Golf confirmed
                 </p>
-                <p className={`text-xs leading-relaxed ${step1Done || activeStep === 1 ? 'text-[#4a5568]' : 'text-ink-muted'}`}>
+                <p className={`text-xs leading-relaxed ${step1Done || activeStep === 1 ? 'text-[#3a4657]' : 'text-ink-muted'}`}>
                   {loading
                     ? 'Checking...'
                     : step1Done
@@ -278,15 +278,15 @@ function BuildPageInner() {
                   Find alumni
                 </p>
                 {step2Done ? (
-                  <p className="text-xs text-[#4a5568] leading-relaxed">
+                  <p className="text-xs text-[#3a4657] leading-relaxed">
                     {people.length} {people.length === 1 ? 'person' : 'people'} found from Penn Golf rosters.
                   </p>
                 ) : importStatus === 'idle' ? (
-                  <p className={`text-xs leading-relaxed ${activeStep === 2 ? 'text-[#4a5568]' : 'text-ink-muted'}`}>
+                  <p className={`text-xs leading-relaxed ${activeStep === 2 ? 'text-[#3a4657]' : 'text-ink-muted'}`}>
                     Pull verified Penn Golf rosters from 2000 through today.
                   </p>
                 ) : importStatus === 'running' ? (
-                  <p className="text-xs text-[#4a5568] leading-relaxed">
+                  <p className="text-xs text-[#3a4657] leading-relaxed">
                     {importProgress
                       ? `Processing season ${importProgress.done} of ${importProgress.total}...`
                       : 'Starting import...'}
@@ -310,7 +310,7 @@ function BuildPageInner() {
                     Find Historical Alumni
                   </button>
                 ) : importStatus === 'running' ? (
-                  <div className="flex items-center gap-2 text-sm text-[#4a5568]">
+                  <div className="flex items-center gap-2 text-sm text-[#3a4657]">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span>
                       {importProgress
@@ -343,7 +343,7 @@ function BuildPageInner() {
                 <p className={`font-semibold text-sm leading-snug mb-1 ${step3Done || activeStep === 3 ? 'text-[#0a1628]' : 'text-ink-muted'}`}>
                   Review and publish
                 </p>
-                <p className={`text-xs leading-relaxed ${step3Done || activeStep === 3 ? 'text-[#4a5568]' : 'text-ink-muted'}`}>
+                <p className={`text-xs leading-relaxed ${step3Done || activeStep === 3 ? 'text-[#3a4657]' : 'text-ink-muted'}`}>
                   {step3Done
                     ? `${publishedCount} ${publishedCount === 1 ? 'profile' : 'profiles'} visible to players.`
                     : 'Choose who appears in the clubhouse. Nothing is visible until you publish.'}
@@ -385,7 +385,7 @@ function BuildPageInner() {
                 <p className={`font-semibold text-sm leading-snug mb-1 ${activeStep === 4 ? 'text-[#0a1628]' : 'text-ink-muted'}`}>
                   Open Player Clubhouse
                 </p>
-                <p className={`text-xs leading-relaxed ${activeStep === 4 ? 'text-[#4a5568]' : 'text-ink-muted'}`}>
+                <p className={`text-xs leading-relaxed ${activeStep === 4 ? 'text-[#3a4657]' : 'text-ink-muted'}`}>
                   {hasPublished ? (
                     <>
                       Players can now browse and reach out to alumni.{' '}

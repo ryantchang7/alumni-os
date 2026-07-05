@@ -72,7 +72,7 @@ function NewMomentForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-5 sm:px-8 py-5">
         <div className="max-w-[820px] mx-auto flex items-center justify-between">
           <Link
@@ -115,14 +115,14 @@ function NewMomentForm() {
               >
                 Just for the team.
               </h1>
-              <p className="text-white/60 text-[13px] mt-3 max-w-lg leading-relaxed">
+              <p className="text-white/70 text-[13px] mt-3 max-w-lg leading-relaxed">
                 Current players and alumni see this. Coaches and family
                 don&rsquo;t. Drop a road trip dinner, a pre-round shot, a
                 Penn-Princeton afterparty.
               </p>
             </div>
           ) : (
-            <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#faf7f2]">
+            <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#fdfcf9]">
               <span className="block w-10 h-[2px] bg-[#c8a84b] mb-5" />
               <h1
                 className="text-[#0a1628] text-3xl sm:text-4xl font-medium leading-tight font-heading"
@@ -137,7 +137,7 @@ function NewMomentForm() {
           )}
 
           {!approved && sessionStatus !== 'loading' && (
-            <div className="px-7 sm:px-10 py-6 bg-[#faf7f2] border-b border-[rgba(180,168,150,0.3)]">
+            <div className="px-7 sm:px-10 py-6 bg-[#fdfcf9] border-b border-[rgba(180,168,150,0.3)]">
               <p className="text-[13px] text-[#3d4a5c]">
                 {signedIn
                   ? 'Claim your Member Book card to post a Moment. The captain approves new members within a day or two. '
@@ -190,7 +190,7 @@ function NewMomentForm() {
                 className={`rounded-lg p-4 transition-colors border ${
                   lockerMode
                     ? 'bg-[#0a1628] border-[#c8a84b]/55 text-white'
-                    : 'bg-[#faf7f2] border-[rgba(180,168,150,0.5)]'
+                    : 'bg-[#fdfcf9] border-[rgba(180,168,150,0.5)]'
                 }`}
               >
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -213,7 +213,7 @@ function NewMomentForm() {
                     </span>
                     <span
                       className={`block text-[12px] mt-1 leading-relaxed ${
-                        lockerMode ? 'text-white/65' : 'text-ink-muted'
+                        lockerMode ? 'text-white/75' : 'text-ink-muted'
                       }`}
                     >
                       Visible to current players and alumni. Hidden from
@@ -263,7 +263,7 @@ function NewMomentForm() {
 
 export default function NewMomentPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8f5f0]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#fbf9f6]" />}>
       <NewMomentForm />
     </Suspense>
   )

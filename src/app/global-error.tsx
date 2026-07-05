@@ -24,7 +24,7 @@ export default function GlobalError({ error, reset }: Props) {
           justifyContent: 'center',
           padding: '24px',
           textAlign: 'center',
-          backgroundColor: '#f8f5f0', // cream
+          backgroundColor: '#fbf9f6', // cream
           color: '#0a1628', // navy
           fontFamily:
             'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',

@@ -143,7 +143,7 @@ function ContextualRow({ member }: { member: MapMember }) {
     <Link
       href={memberHref(member)}
       data-testid="map-contextual-row"
-      className="group block border-b border-[rgba(180,168,150,0.25)] last:border-b-0 px-4 py-3 hover:bg-[#faf7f2] transition-colors"
+      className="group block border-b border-[rgba(180,168,150,0.25)] last:border-b-0 px-4 py-3 hover:bg-[#fdfcf9] transition-colors"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 min-w-0">
@@ -437,7 +437,7 @@ export default function MemberMapClient({
                     className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
                       roleFilter === f
                         ? 'bg-[#0a1628] text-white border-[#0a1628]'
-                        : 'bg-[#faf7f2] text-[#3d4a5c] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
+                        : 'bg-[#fdfcf9] text-[#3d4a5c] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
                     }`}
                   >
                     {ROLE_LABELS[f]}
@@ -459,7 +459,7 @@ export default function MemberMapClient({
                     className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
                       eraFilter === e
                         ? 'bg-[#0a1628] text-white border-[#0a1628]'
-                        : 'bg-[#faf7f2] text-[#3d4a5c] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
+                        : 'bg-[#fdfcf9] text-[#3d4a5c] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
                     }`}
                   >
                     {ERA_LABELS[e]}
@@ -479,7 +479,7 @@ export default function MemberMapClient({
               data-testid="state-filter"
               value={selected ?? ''}
               onChange={handleStateSelect}
-              className="text-xs text-[#0a1628] bg-[#faf7f2] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#0a1628]/20 focus:border-[#0a1628]/30 pr-8"
+              className="text-xs text-[#0a1628] bg-[#fdfcf9] border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#0a1628]/20 focus:border-[#0a1628]/30 pr-8"
             >
               <option value="">All States</option>
               {stateOptions.map((st) => (
@@ -634,7 +634,7 @@ export default function MemberMapClient({
                   >
                     {selectedState.stateName}
                   </p>
-                  <p className="text-[11px] text-white/55 mt-0.5">
+                  <p className="text-[11px] text-white/70 mt-0.5">
                     {filteredMembers.length} Penn Golf member
                     {filteredMembers.length !== 1 ? 's' : ''}
                   </p>
@@ -643,7 +643,7 @@ export default function MemberMapClient({
                   type="button"
                   onClick={() => setSelected(null)}
                   aria-label="Clear selection"
-                  className="text-white/55 hover:text-white text-lg leading-none mt-0.5 flex-shrink-0"
+                  className="text-white/70 hover:text-white text-lg leading-none mt-0.5 flex-shrink-0"
                 >
                   &times;
                 </button>
@@ -659,7 +659,7 @@ export default function MemberMapClient({
                       <ContextualRow key={m.personId} member={m} />
                     ))}
                     {filteredMembers.length > 24 && (
-                      <div className="px-4 py-3 border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2]">
+                      <div className="px-4 py-3 border-t border-[rgba(180,168,150,0.25)] bg-[#fdfcf9]">
                         <Link
                           href="/member-book"
                           className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"

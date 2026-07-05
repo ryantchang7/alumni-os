@@ -233,7 +233,7 @@ export default function NotificationBell() {
       {open && (
         <div className="absolute right-0 mt-2 w-[340px] max-w-[calc(100vw-1.5rem)] bg-white border border-[rgba(180,168,150,0.4)] rounded-xl shadow-[0_8px_30px_rgba(10,22,40,0.25)] overflow-hidden text-[#0a1628] z-50">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(180,168,150,0.25)] bg-[#faf7f2]">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(180,168,150,0.25)] bg-[#fdfcf9]">
             <span
               className="text-[14px] font-semibold font-heading"
             >
@@ -262,7 +262,7 @@ export default function NotificationBell() {
                   key={n.id}
                   type="button"
                   onClick={() => onItemClick(n)}
-                  className={`w-full text-left px-4 py-3 border-b border-[rgba(180,168,150,0.18)] last:border-0 hover:bg-[#faf7f2] transition-colors ${
+                  className={`w-full text-left px-4 py-3 border-b border-[rgba(180,168,150,0.18)] last:border-0 hover:bg-[#fdfcf9] transition-colors ${
                     n.readAt ? '' : 'bg-[#fcfaf6]'
                   }`}
                 >
@@ -284,7 +284,7 @@ export default function NotificationBell() {
           </div>
 
           {/* Footer: enable-push + community mute */}
-          <div className="border-t border-[rgba(180,168,150,0.25)] bg-[#faf7f2] px-4 py-3 space-y-2.5">
+          <div className="border-t border-[rgba(180,168,150,0.25)] bg-[#fdfcf9] px-4 py-3 space-y-2.5">
             {showEnablePush && (
               <button
                 type="button"

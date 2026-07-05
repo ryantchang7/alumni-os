@@ -93,7 +93,7 @@ export default function SpotlightNominate() {
 
             {/* Panel */}
             <div
-              className="relative z-10 w-full max-w-lg bg-[#f8f5f0] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden"
+              className="relative z-10 w-full max-w-lg bg-[#fbf9f6] rounded-2xl shadow-2xl border border-[rgba(180,168,150,0.4)] overflow-hidden"
               style={{ boxShadow: '0 8px 32px rgba(10,22,40,0.22), 0 2px 8px rgba(10,22,40,0.12)' }}
             >
               {/* Header */}
@@ -111,7 +111,7 @@ export default function SpotlightNominate() {
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="text-white/50 hover:text-white transition-colors mt-0.5 flex-shrink-0"
+                  className="text-white/75 hover:text-white transition-colors mt-0.5 flex-shrink-0"
                   aria-label="Close"
                 >
                   <X size={18} />
@@ -141,7 +141,7 @@ export default function SpotlightNominate() {
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="mt-6 text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-white hover:bg-[#f8f5f0] px-5 py-2.5 rounded-lg transition-colors"
+                      className="mt-6 text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-white hover:bg-[#fbf9f6] px-5 py-2.5 rounded-lg transition-colors"
                     >
                       Done
                     </button>
@@ -153,14 +153,14 @@ export default function SpotlightNominate() {
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="mt-6 text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-white hover:bg-[#f8f5f0] px-5 py-2.5 rounded-lg transition-colors"
+                      className="mt-6 text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-white hover:bg-[#fbf9f6] px-5 py-2.5 rounded-lg transition-colors"
                     >
                       Close
                     </button>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
-                    <p className="text-sm text-[#4a5568] leading-relaxed">
+                    <p className="text-sm text-[#3a4657] leading-relaxed">
                       Know someone from the Penn Golf family who deserves a spotlight? Let us know and we&rsquo;ll consider featuring them.
                     </p>
 
@@ -231,7 +231,7 @@ export default function SpotlightNominate() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-white hover:bg-[#f8f5f0] hover:border-[#0a1628]/30 px-4 py-2.5 rounded-lg transition-colors"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-white hover:bg-[#fbf9f6] hover:border-[#0a1628]/30 px-4 py-2.5 rounded-lg transition-colors"
       >
         Nominate someone
       </button>

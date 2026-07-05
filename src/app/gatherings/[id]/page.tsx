@@ -25,12 +25,12 @@ export default async function GatheringDetailPage({ params }: Props) {
 
   if (!gathering || !available) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0]">
+      <div className="min-h-screen bg-[#fbf9f6]">
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-12">
           <div className="max-w-[640px] mx-auto">
             <Link
               href="/player"
-              className="inline-flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors mb-3"
+              className="inline-flex items-center gap-1.5 text-xs text-white/70 hover:text-white transition-colors mb-3"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back to the Clubhouse
             </Link>
@@ -66,12 +66,12 @@ export default async function GatheringDetailPage({ params }: Props) {
   const backLabel = isRound ? 'The Course' : 'the 19th Hole'
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0]">
+    <div className="min-h-screen bg-[#fbf9f6]">
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-14">
         <div className="max-w-[640px] mx-auto">
           <Link
             href={backHref}
-            className="inline-flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors mb-3"
+            className="inline-flex items-center gap-1.5 text-xs text-white/70 hover:text-white transition-colors mb-3"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to {backLabel}
           </Link>

@@ -6,7 +6,7 @@ export const metadata = {
 
 export default function SubscriptionTermsPage() {
   return (
-    <div className="bg-[#f8f5f0] min-h-[calc(100dvh-60px)] px-5 sm:px-8 py-14 sm:py-20">
+    <div className="bg-[#fbf9f6] min-h-[calc(100dvh-60px)] px-5 sm:px-8 py-14 sm:py-20">
       <article className="max-w-[760px] mx-auto bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-10 sm:px-12 sm:py-14">
         <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-4">
           Penn Golf Clubhouse
