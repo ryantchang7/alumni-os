@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Sparkles, Camera, ArrowUpRight, UserPlus, Calendar } from 'lucide-react'
+import { Sparkles, Camera, UserPlus } from 'lucide-react'
 import MemberOnlyTease from './MemberOnlyTease'
 
 interface RecentClaim {
@@ -11,15 +11,6 @@ interface RecentClaim {
   personId: string | null
   bookId: string | null
   createdAt: string
-}
-interface UpcomingGathering {
-  id: string
-  type: 'round' | 'coffee' | 'drinks' | 'dinner' | 'event'
-  title: string
-  dateText: string
-  city?: string
-  state?: string
-  interestedCount: number
 }
 interface RecentMoment {
   id: string
@@ -30,31 +21,15 @@ interface RecentMoment {
   postedByBookId: string | null
   createdAt: string
 }
-interface NewsItem {
-  id: string
-  title: string
-  sourceUrl: string
-  publishedAt?: string
-}
 interface ActivityResponse {
   recentClaims: RecentClaim[]
-  upcoming: UpcomingGathering[]
   recentMoments?: RecentMoment[]
-  newsItems?: NewsItem[]
   totals: {
     membersClaimed?: number
     openGatherings?: number
     upcomingRsvps?: number
     publishedMoments?: number
   }
-}
-
-const GATHERING_HREF: Record<UpcomingGathering['type'], string> = {
-  round: '/the-course',
-  coffee: '/19th-hole',
-  drinks: '/19th-hole',
-  dinner: '/19th-hole',
-  event: '/19th-hole',
 }
 
 function timeAgo(iso: string): string {
@@ -69,8 +44,11 @@ function timeAgo(iso: string): string {
 
 interface ClubhouseActivityFeedProps {
   /** True if the viewer is signed in + captain-approved. Non-approved viewers
-   * see teased counts in place of Latest Moments / Recently Joined / Upcoming
-   * Gatherings. The Pulse and From the Box stay visible to everyone. */
+   * see teased counts in place of Latest Moments / Recently Joined. The Pulse
+   * (aggregate totals) stays visible to everyone.
+   *
+   * News lives in TeamNewsStrip and gatherings in ThisWeekPanel, both higher
+   * on /player — this feed deliberately does NOT repeat them. */
   approved: boolean
 }
 
@@ -92,16 +70,16 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
   if (!data) return null
 
   const hasClaims = data.recentClaims.length > 0
-  const hasUpcoming = data.upcoming.length > 0
   const hasMoments = (data.recentMoments?.length ?? 0) > 0
-  const hasNews = (data.newsItems?.length ?? 0) > 0
-  if (!hasClaims && !hasUpcoming && !hasMoments && !hasNews) return null
+  const hasPulse = (data.totals.membersClaimed ?? 0) > 0
+  if (!hasClaims && !hasMoments && !hasPulse) return null
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay: 0.4 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '0px 0px -8% 0px' }}
+      transition={{ duration: 0.4 }}
       className="pb-8"
       data-testid="clubhouse-activity-feed"
     >
@@ -184,7 +162,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
         )
       )}
 
-      {/* Non-approved: stack the two member-only teases above the public grid. */}
+      {/* Non-approved: tease who just joined above the public Pulse. */}
       {!approved && hasClaims && (
         <div className="mb-4">
           <MemberOnlyTease
@@ -200,69 +178,14 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
           />
         </div>
       )}
-      {!approved && hasUpcoming && (
-        <div className="mb-4">
-          <MemberOnlyTease
-            icon={Calendar}
-            title="Upcoming Gatherings"
-            count={data.upcoming.length}
-            countLabel={
-              data.upcoming.length === 1
-                ? 'gathering on the books'
-                : 'gatherings on the books'
-            }
-            valueProp="Members see hosts, cities, and can RSVP."
-          />
-        </div>
-      )}
 
-      {/* Public grid: From the Box + The Pulse always; Recently Joined +
-          Upcoming Gatherings only when approved. */}
+      {/* Public grid: Recently Joined (approved) + The Pulse. */}
       <div
-        className={`bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 grid grid-cols-1 md:grid-cols-2 ${
-          approved
-            ? hasNews
-              ? 'lg:grid-cols-4'
-              : 'lg:grid-cols-3'
-            : hasNews
-              ? 'lg:grid-cols-2'
-              : 'lg:grid-cols-1'
+        className={`bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 grid grid-cols-1 ${
+          approved ? 'md:grid-cols-2' : ''
         } gap-6`}
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
       >
-        {/* From the box — latest Penn Athletics news (public) */}
-        {hasNews && (
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#990000] mb-2.5">
-              From the Box
-            </p>
-            <ul className="space-y-2">
-              {data.newsItems!.map((n) => (
-                <li key={n.id}>
-                  <a
-                    href={n.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block group"
-                  >
-                    <p
-                      className="text-[13px] text-[#0a1628] group-hover:text-[#990000] leading-snug transition-colors line-clamp-3 font-heading"
-                    >
-                      {n.title}
-                      <ArrowUpRight className="inline w-3 h-3 ml-1 opacity-60 align-middle" />
-                    </p>
-                    {n.publishedAt && (
-                      <p className="text-[11px] text-ink-muted mt-0.5">
-                        {timeAgo(n.publishedAt)} · Penn Athletics
-                      </p>
-                    )}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         {/* Recently joined — approved only */}
         {approved && (
           <div>
@@ -290,40 +213,6 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
                   sign in
                 </Link>
                 .
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Upcoming gatherings — approved only */}
-        {approved && (
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2.5">
-              Upcoming Gatherings
-            </p>
-            {hasUpcoming ? (
-              <ul className="space-y-2">
-                {data.upcoming.map((g) => (
-                  <li key={g.id}>
-                    <Link
-                      href={GATHERING_HREF[g.type]}
-                      className="block group"
-                    >
-                      <p className="text-[13px] text-[#0a1628] group-hover:underline leading-snug">
-                        {g.title}
-                      </p>
-                      <p className="text-[12px] text-ink-muted">
-                        {g.dateText}
-                        {g.city ? ` · ${g.city}${g.state ? `, ${g.state}` : ''}` : ''}
-                        {g.interestedCount > 0 ? ` · ${g.interestedCount} interested` : ''}
-                      </p>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-[12.5px] text-ink-muted italic">
-                No gatherings scheduled yet. Captains and hosts add them anytime.
               </p>
             )}
           </div>
