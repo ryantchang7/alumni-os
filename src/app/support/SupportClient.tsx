@@ -91,7 +91,7 @@ const MERCH: { name: string; svg: React.ReactNode }[] = [
   {
     name: 'Quaker Hoodie',
     svg: (
-      <svg viewBox="0 0 120 120" className="w-24 h-24" fill="currentColor" aria-hidden="true">
+      <svg viewBox="0 0 120 120" className="w-40 h-40" fill="currentColor" aria-hidden="true">
         <path d="M44 22 Q60 12 76 22 L80 34 Q60 44 40 34 Z" />
         <path d="M40 34 L28 42 L18 62 L32 70 L40 54 L40 102 L80 102 L80 54 L88 70 L102 62 L92 42 L80 34 Q60 46 40 34 Z" />
         <rect x="49" y="72" width="22" height="18" rx="3" fill="none" stroke="currentColor" strokeWidth="2.5" />
@@ -101,7 +101,7 @@ const MERCH: { name: string; svg: React.ReactNode }[] = [
   {
     name: 'Clubhouse Cap',
     svg: (
-      <svg viewBox="0 0 120 120" className="w-24 h-24" fill="currentColor" aria-hidden="true">
+      <svg viewBox="0 0 120 120" className="w-40 h-40" fill="currentColor" aria-hidden="true">
         <path d="M30 72 Q30 36 60 36 Q90 36 90 72 Z" />
         <path d="M28 72 Q8 74 6 84 Q42 88 92 80 L90 72 Z" />
         <circle cx="60" cy="38" r="4" />
@@ -111,7 +111,7 @@ const MERCH: { name: string; svg: React.ReactNode }[] = [
   {
     name: 'Driver Headcover',
     svg: (
-      <svg viewBox="0 0 120 120" className="w-20 h-24" fill="currentColor" aria-hidden="true">
+      <svg viewBox="0 0 120 120" className="w-32 h-40" fill="currentColor" aria-hidden="true">
         <path d="M44 30 Q60 18 76 30 L76 74 Q76 98 60 98 Q44 98 44 74 Z" />
         <circle cx="60" cy="46" r="9" fill="none" stroke="currentColor" strokeWidth="3" />
       </svg>
@@ -536,19 +536,22 @@ export default function SupportClient({ status }: Props) {
                 key={item.name}
                 className="relative rounded-xl bg-[#0f1f38] border border-white/10 aspect-square overflow-hidden"
               >
-                {/* blurred product silhouette — the "not revealed yet" tease */}
+                {/* blurred product silhouette — the "not revealed yet" tease.
+                    Big + fairly opaque so you can clearly make out the shape
+                    through the blur. */}
                 <div
-                  className="absolute inset-0 flex items-center justify-center text-[#c8a84b]/55"
-                  style={{ filter: 'blur(7px)' }}
+                  className="absolute inset-0 flex items-center justify-center text-[#c8a84b]/75"
+                  style={{ filter: 'blur(5px)' }}
                   aria-hidden="true"
                 >
                   {item.svg}
                 </div>
-                {/* lock + label over the blur */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-[#0a1628]/25">
-                  <Lock className="w-4 h-4 text-[#c8a84b]/80" />
+                {/* lock + label, on a soft scrim near the bottom so the shape
+                    stays visible above it */}
+                <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end gap-1 pb-4 pt-10 bg-gradient-to-t from-[#0a1628] via-[#0a1628]/80 to-transparent">
+                  <Lock className="w-4 h-4 text-[#c8a84b]/90" />
                   <span className="eyebrow text-gold">Coming soon</span>
-                  <span className="text-[11px] text-white/55">{item.name}</span>
+                  <span className="text-[11px] text-white/60">{item.name}</span>
                 </div>
               </div>
             ))}
