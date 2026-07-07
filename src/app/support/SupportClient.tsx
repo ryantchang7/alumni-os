@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { Check, Heart, ShieldCheck, Crown, Lock } from 'lucide-react'
+import { settle } from '@/lib/motion'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import MemberBadges from '@/components/MemberBadges'
 import type { BadgeId } from '@/lib/badges'
@@ -497,59 +499,86 @@ export default function SupportClient({ status }: Props) {
         )}
 
         {/* Merch — coming-soon teaser. Sits below the money content. Products
-            are blurred so it reads as "reveal coming," not a live offer;
-            copy is soft pending the compliance check on member merch. */}
-        <div className="bg-[#0a1628] rounded-2xl px-7 py-9 sm:px-10 sm:py-11 relative overflow-hidden">
+            are blurred + locked so it reads as "reveal coming," not a live
+            offer; copy is soft pending the compliance check on member merch.
+            The gold sheen + spotlight + hover-to-peek make it feel like an
+            unreleased drop. */}
+        <div className="relative overflow-hidden rounded-2xl px-7 py-9 sm:px-10 sm:py-11 bg-gradient-to-br from-[#0b1a30] to-[#060e1a]">
           <div className="absolute inset-0 opacity-[0.04] pointer-events-none texture-engraved" />
-          <div className="relative flex items-start justify-between gap-6">
-            <div className="min-w-0">
-              <p className="eyebrow text-gold mb-3">In the works</p>
-              <h2 className="font-heading text-white text-2xl sm:text-3xl font-medium leading-tight mb-2">
-                Clubhouse merch is coming.
-              </h2>
-              <p className="text-[13.5px] text-white/70 leading-relaxed max-w-md">
-                Member gear stamped with the Quaker &mdash; a hat and a hoodie to
-                start. We&rsquo;re checking it with compliance first, then getting
-                it made.
-              </p>
-              <p className="text-[11.5px] text-white/60 italic mt-2">
-                Pending compliance review &mdash; nothing&rsquo;s locked in yet.
-              </p>
-            </div>
+          {/* gold top hairline */}
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#c8a84b]/60 to-transparent" />
+          {/* atmospheric spotlit Quaker, right side (desktop) */}
+          <div aria-hidden="true" className="hidden md:block absolute right-2 lg:right-8 top-1/2 -translate-y-1/2 pointer-events-none">
+            <div
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full animate-merch-glow"
+              style={{ background: 'radial-gradient(circle, rgba(200,168,75,0.30) 0%, transparent 68%)', filter: 'blur(18px)' }}
+            />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/mascot.png"
               alt=""
-              aria-hidden="true"
-              className="hidden md:block flex-shrink-0 h-32 w-auto -mt-2 -mb-4 opacity-90"
-              style={{ filter: 'blur(3px) drop-shadow(0 10px 24px rgba(0,0,0,0.4))' }}
+              className="relative h-52 lg:h-64 w-auto opacity-90"
+              style={{ filter: 'blur(3px) drop-shadow(0 14px 34px rgba(0,0,0,0.55))' }}
             />
           </div>
-          <div className="relative grid grid-cols-2 gap-4 mt-7 max-w-lg">
-            {MERCH.map(item => (
-              <div
-                key={item.name}
-                className="relative rounded-xl bg-[#0f1f38] border border-white/10 aspect-square overflow-hidden"
-              >
-                {/* blurred product silhouette — the "not revealed yet" tease.
-                    Big + fairly opaque so you can clearly make out the shape
-                    through the blur. */}
-                <div
-                  className="absolute inset-0 flex items-center justify-center text-[#c8a84b]/75"
-                  style={{ filter: 'blur(5px)' }}
-                  aria-hidden="true"
+
+          <div className="relative max-w-xl">
+            <p className="eyebrow text-gold mb-3">In the works</p>
+            <h2 className="font-heading text-white text-2xl sm:text-3xl font-medium leading-tight mb-2">
+              Clubhouse merch is coming.
+            </h2>
+            <p className="text-[13.5px] text-white/70 leading-relaxed max-w-md">
+              Member gear stamped with the Quaker &mdash; a hat and a hoodie to
+              start. We&rsquo;re checking it with compliance first, then getting
+              it made.
+            </p>
+            <p className="text-[11.5px] text-white/60 italic mt-2">
+              Pending compliance review &mdash; nothing&rsquo;s locked in yet.
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 mt-7 max-w-md">
+              {MERCH.map((item, i) => (
+                <motion.div
+                  key={item.name}
+                  className="group relative rounded-xl bg-gradient-to-b from-[#14264480] to-[#0b1a3080] border border-white/10 aspect-square overflow-hidden cursor-default"
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '0px 0px -8% 0px' }}
+                  transition={{ ...settle, delay: i * 0.09 }}
+                  whileHover={{ y: -5 }}
                 >
-                  {item.svg}
-                </div>
-                {/* lock + label, on a soft scrim near the bottom so the shape
-                    stays visible above it */}
-                <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end gap-1 pb-4 pt-10 bg-gradient-to-t from-[#0a1628] via-[#0a1628]/80 to-transparent">
-                  <Lock className="w-4 h-4 text-[#c8a84b]/90" />
-                  <span className="eyebrow text-gold">Coming soon</span>
-                  <span className="text-[11px] text-white/60">{item.name}</span>
-                </div>
-              </div>
-            ))}
+                  {/* spotlight glow behind the product */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div
+                      className="w-2/3 h-2/3 rounded-full animate-merch-glow group-hover:opacity-90"
+                      style={{ background: 'radial-gradient(circle, rgba(200,168,75,0.45) 0%, transparent 70%)', filter: 'blur(14px)' }}
+                    />
+                  </div>
+                  {/* blurred product silhouette — eases toward a peek on hover */}
+                  <div
+                    className="absolute inset-0 flex items-center justify-center text-[#c8a84b]/80 group-hover:text-[#e6cf8a] [filter:blur(5px)] group-hover:[filter:blur(2px)] transition-[filter,color] duration-500"
+                    aria-hidden="true"
+                  >
+                    {item.svg}
+                  </div>
+                  {/* gold sheen sweeping across, staggered per card */}
+                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div
+                      className="animate-merch-sheen absolute inset-y-0 -left-1/4 w-1/4 bg-gradient-to-r from-transparent via-white/25 to-transparent"
+                      style={{ animationDelay: `${i * 1.4}s` }}
+                    />
+                  </div>
+                  {/* lock + label on a bottom scrim */}
+                  <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end gap-1 pb-4 pt-10 bg-gradient-to-t from-[#0a1628] via-[#0a1628]/85 to-transparent">
+                    <Lock className="w-4 h-4 text-[#c8a84b]/90 group-hover:scale-110 transition-transform" />
+                    <span className="eyebrow text-gold">Coming soon</span>
+                    <span className="text-[11px] text-white/60">{item.name}</span>
+                  </div>
+                  {/* gold ring on hover */}
+                  <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-transparent group-hover:ring-[#c8a84b]/40 transition-colors duration-300" />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
 
