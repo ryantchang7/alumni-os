@@ -243,7 +243,7 @@ export default function NavBar() {
         </Link>
 
         {/* Center nav (desktop) */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden xl:flex items-center gap-1">
           {navEntries.map(entry =>
             entry.type === 'menu' ? (
               <NavMenu key={entry.label} label={entry.label} links={entry.links} pathname={pathname} />
@@ -260,7 +260,7 @@ export default function NavBar() {
         </nav>
 
         {/* Right side */}
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden xl:flex items-center gap-3">
           <SuggestTrigger />
           <NotificationBell />
           <AccountAffordance />
@@ -275,7 +275,7 @@ export default function NavBar() {
         </div>
 
         {/* Mobile: bell + hamburger */}
-        <div className="lg:hidden flex items-center gap-1 -mr-2">
+        <div className="xl:hidden flex items-center gap-1 -mr-2">
           <NotificationBell />
           <button
             type="button"
@@ -297,7 +297,7 @@ export default function NavBar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="lg:hidden bg-[#0a1628] border-t border-white/[0.08] px-6 pb-4 max-h-[calc(100dvh-60px)] overflow-y-auto"
+            className="xl:hidden bg-[#0a1628] border-t border-white/[0.08] px-6 pb-4 max-h-[calc(100dvh-60px)] overflow-y-auto"
           >
             <div className="flex flex-col gap-1 pt-3">
               {navEntries.map(entry =>
