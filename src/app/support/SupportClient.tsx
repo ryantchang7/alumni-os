@@ -512,7 +512,7 @@ export default function SupportClient({ status }: Props) {
                 start. We&rsquo;re checking it with compliance first, then getting
                 it made.
               </p>
-              <p className="text-[11.5px] text-white/45 italic mt-2">
+              <p className="text-[11.5px] text-white/60 italic mt-2">
                 Pending compliance review &mdash; nothing&rsquo;s locked in yet.
               </p>
             </div>
