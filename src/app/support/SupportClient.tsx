@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Check, Heart, ShieldCheck, Crown } from 'lucide-react'
+import { Check, Heart, ShieldCheck, Crown, Lock } from 'lucide-react'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import MemberBadges from '@/components/MemberBadges'
 import type { BadgeId } from '@/lib/badges'
@@ -81,6 +81,41 @@ const TIERS: TierConfig[] = [
     cta: 'Support the program',
     ctaActive: 'Family & Affiliate',
     accent: false,
+  },
+]
+
+// Rough product silhouettes for the "merch coming soon" tease. They're
+// heavily blurred behind a lock, so simple shapes read fine — the point is
+// the shape hint, not the detail.
+const MERCH: { name: string; svg: React.ReactNode }[] = [
+  {
+    name: 'Quaker Hoodie',
+    svg: (
+      <svg viewBox="0 0 120 120" className="w-24 h-24" fill="currentColor" aria-hidden="true">
+        <path d="M44 22 Q60 12 76 22 L80 34 Q60 44 40 34 Z" />
+        <path d="M40 34 L28 42 L18 62 L32 70 L40 54 L40 102 L80 102 L80 54 L88 70 L102 62 L92 42 L80 34 Q60 46 40 34 Z" />
+        <rect x="49" y="72" width="22" height="18" rx="3" fill="none" stroke="currentColor" strokeWidth="2.5" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Clubhouse Cap',
+    svg: (
+      <svg viewBox="0 0 120 120" className="w-24 h-24" fill="currentColor" aria-hidden="true">
+        <path d="M30 72 Q30 36 60 36 Q90 36 90 72 Z" />
+        <path d="M28 72 Q8 74 6 84 Q42 88 92 80 L90 72 Z" />
+        <circle cx="60" cy="38" r="4" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Driver Headcover',
+    svg: (
+      <svg viewBox="0 0 120 120" className="w-20 h-24" fill="currentColor" aria-hidden="true">
+        <path d="M44 30 Q60 18 76 30 L76 74 Q76 98 60 98 Q44 98 44 74 Z" />
+        <circle cx="60" cy="46" r="9" fill="none" stroke="currentColor" strokeWidth="3" />
+      </svg>
+    ),
   },
 ]
 
@@ -195,36 +230,21 @@ export default function SupportClient({ status }: Props) {
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
-      {/* Hero — clean navy. The Quaker mascot stands beside the title as
-          the support page's character (the sections have emblems; this one
-          gets the mascot). The "in the works" line is a deliberately soft,
-          non-committal tease — no perk is promised or tied to payment,
-          pending the compliance check on member merch. */}
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16 relative overflow-hidden">
-        <div className="max-w-[920px] mx-auto relative flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-6">
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-4">
-              Optional support
-            </p>
-            <h1
-              className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight font-heading"
-            >
-              Support Penn Men&rsquo;s Golf.
-            </h1>
-            <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line mt-6">
-              {heroBlurb}
-            </p>
-            <p className="text-[12.5px] text-[#c8a84b]/90 mt-5 italic">
-              The Quaker&rsquo;s cooking up something for the members &mdash; more soon.
-            </p>
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/mascot.png"
-            alt="The Penn Golf Quaker"
-            className="flex-shrink-0 h-28 sm:h-44 lg:h-56 w-auto self-center sm:self-end mt-2 sm:mt-0"
-            style={{ filter: 'drop-shadow(0 12px 30px rgba(0,0,0,0.4))' }}
-          />
+      {/* Hero — clean navy, no radial glow, no gold underline. Matches
+          the Locker Room / Member Book pattern. */}
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16">
+        <div className="max-w-[920px] mx-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-4">
+            Optional support
+          </p>
+          <h1
+            className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight font-heading"
+          >
+            Support Penn Men&rsquo;s Golf.
+          </h1>
+          <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line mt-6">
+            {heroBlurb}
+          </p>
         </div>
       </div>
 
@@ -484,6 +504,56 @@ export default function SupportClient({ status }: Props) {
             </div>
           </div>
         )}
+
+        {/* Merch — coming-soon teaser. Sits below the money content. Products
+            are blurred so it reads as "reveal coming," not a live offer;
+            copy is soft pending the compliance check on member merch. */}
+        <div className="bg-[#0a1628] rounded-2xl px-7 py-9 sm:px-10 sm:py-11 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-[0.04] pointer-events-none texture-engraved" />
+          <div className="relative flex items-start justify-between gap-6">
+            <div className="min-w-0">
+              <p className="eyebrow text-gold mb-3">In the works</p>
+              <h2 className="font-heading text-white text-2xl sm:text-3xl font-medium leading-tight mb-2">
+                Clubhouse merch is coming.
+              </h2>
+              <p className="text-[13.5px] text-white/70 leading-relaxed max-w-md">
+                Member gear stamped with the Quaker &mdash; hats, hoodies, and
+                headcovers. We&rsquo;re getting it made. More soon.
+              </p>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/mascot.png"
+              alt=""
+              aria-hidden="true"
+              className="hidden md:block flex-shrink-0 h-32 w-auto -mt-2 -mb-4 opacity-95"
+              style={{ filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.4))' }}
+            />
+          </div>
+          <div className="relative grid grid-cols-2 sm:grid-cols-3 gap-4 mt-7">
+            {MERCH.map(item => (
+              <div
+                key={item.name}
+                className="relative rounded-xl bg-[#0f1f38] border border-white/10 aspect-square overflow-hidden"
+              >
+                {/* blurred product silhouette — the "not revealed yet" tease */}
+                <div
+                  className="absolute inset-0 flex items-center justify-center text-[#c8a84b]/55"
+                  style={{ filter: 'blur(7px)' }}
+                  aria-hidden="true"
+                >
+                  {item.svg}
+                </div>
+                {/* lock + label over the blur */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-[#0a1628]/25">
+                  <Lock className="w-4 h-4 text-[#c8a84b]/80" />
+                  <span className="eyebrow text-gold">Coming soon</span>
+                  <span className="text-[11px] text-white/55">{item.name}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Footer note */}
         <div className="text-center pt-2">
