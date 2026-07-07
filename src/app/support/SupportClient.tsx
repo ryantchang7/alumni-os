@@ -201,7 +201,7 @@ export default function SupportClient({ status }: Props) {
           non-committal tease — no perk is promised or tied to payment,
           pending the compliance check on member merch. */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16 relative overflow-hidden">
-        <div className="max-w-[920px] mx-auto relative flex items-center justify-between gap-6">
+        <div className="max-w-[920px] mx-auto relative flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-6">
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-4">
               Optional support
@@ -222,7 +222,7 @@ export default function SupportClient({ status }: Props) {
           <img
             src="/mascot.png"
             alt="The Penn Golf Quaker"
-            className="hidden sm:block flex-shrink-0 h-44 lg:h-56 w-auto self-end"
+            className="flex-shrink-0 h-28 sm:h-44 lg:h-56 w-auto self-center sm:self-end mt-2 sm:mt-0"
             style={{ filter: 'drop-shadow(0 12px 30px rgba(0,0,0,0.4))' }}
           />
         </div>
