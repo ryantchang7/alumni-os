@@ -195,21 +195,36 @@ export default function SupportClient({ status }: Props) {
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
-      {/* Hero — clean navy, no radial glow, no gold underline. Matches
-          the Locker Room / Member Book pattern. */}
-      <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16">
-        <div className="max-w-[920px] mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-4">
-            Optional support
-          </p>
-          <h1
-            className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight font-heading"
-          >
-            Support Penn Men&rsquo;s Golf.
-          </h1>
-          <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line mt-6">
-            {heroBlurb}
-          </p>
+      {/* Hero — clean navy. The Quaker mascot stands beside the title as
+          the support page's character (the sections have emblems; this one
+          gets the mascot). The "in the works" line is a deliberately soft,
+          non-committal tease — no perk is promised or tied to payment,
+          pending the compliance check on member merch. */}
+      <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16 relative overflow-hidden">
+        <div className="max-w-[920px] mx-auto relative flex items-center justify-between gap-6">
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] mb-4">
+              Optional support
+            </p>
+            <h1
+              className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight font-heading"
+            >
+              Support Penn Men&rsquo;s Golf.
+            </h1>
+            <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line mt-6">
+              {heroBlurb}
+            </p>
+            <p className="text-[12.5px] text-[#c8a84b]/90 mt-5 italic">
+              The Quaker&rsquo;s cooking up something for the members &mdash; more soon.
+            </p>
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/mascot.png"
+            alt="The Penn Golf Quaker"
+            className="hidden sm:block flex-shrink-0 h-44 lg:h-56 w-auto self-end"
+            style={{ filter: 'drop-shadow(0 12px 30px rgba(0,0,0,0.4))' }}
+          />
         </div>
       </div>
 
