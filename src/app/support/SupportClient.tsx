@@ -108,15 +108,6 @@ const MERCH: { name: string; svg: React.ReactNode }[] = [
       </svg>
     ),
   },
-  {
-    name: 'Driver Headcover',
-    svg: (
-      <svg viewBox="0 0 120 120" className="w-32 h-40" fill="currentColor" aria-hidden="true">
-        <path d="M44 30 Q60 18 76 30 L76 74 Q76 98 60 98 Q44 98 44 74 Z" />
-        <circle cx="60" cy="46" r="9" fill="none" stroke="currentColor" strokeWidth="3" />
-      </svg>
-    ),
-  },
 ]
 
 export default function SupportClient({ status }: Props) {
@@ -517,8 +508,12 @@ export default function SupportClient({ status }: Props) {
                 Clubhouse merch is coming.
               </h2>
               <p className="text-[13.5px] text-white/70 leading-relaxed max-w-md">
-                Member gear stamped with the Quaker &mdash; hats, hoodies, and
-                headcovers. We&rsquo;re getting it made. More soon.
+                Member gear stamped with the Quaker &mdash; a hat and a hoodie to
+                start. We&rsquo;re checking it with compliance first, then getting
+                it made.
+              </p>
+              <p className="text-[11.5px] text-white/45 italic mt-2">
+                Pending compliance review &mdash; nothing&rsquo;s locked in yet.
               </p>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -526,11 +521,11 @@ export default function SupportClient({ status }: Props) {
               src="/mascot.png"
               alt=""
               aria-hidden="true"
-              className="hidden md:block flex-shrink-0 h-32 w-auto -mt-2 -mb-4 opacity-95"
-              style={{ filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.4))' }}
+              className="hidden md:block flex-shrink-0 h-32 w-auto -mt-2 -mb-4 opacity-90"
+              style={{ filter: 'blur(3px) drop-shadow(0 10px 24px rgba(0,0,0,0.4))' }}
             />
           </div>
-          <div className="relative grid grid-cols-2 sm:grid-cols-3 gap-4 mt-7">
+          <div className="relative grid grid-cols-2 gap-4 mt-7 max-w-lg">
             {MERCH.map(item => (
               <div
                 key={item.name}
