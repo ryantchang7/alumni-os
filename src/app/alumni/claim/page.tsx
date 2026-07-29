@@ -153,15 +153,9 @@ export default async function ClaimRedirectPage({
     )
   }
 
-  const personId = await bootstrapFromBookEntry(bookId)
-  if (!personId) notFound()
-
-  // Bind the signed-in account to the resolved personId. If another account
-  // already owns this profile, send the user to their own setup instead.
-  const linked = await linkAccountToPerson(session.accountId, personId)
-  if (!linked) {
-    redirect('/account/setup?error=already-claimed')
-  }
-
-  redirect(`/alumni/profile/${personId}?teamSlug=${TEAM_SLUG}&claimed=1`)
+  // Every claim goes through the captain's queue — no auto-linking. This
+  // route used to bind the account directly, which let any Google account
+  // claim any unclaimed name with no review. All claims now start at
+  // /account/setup, which files a claim for hand approval.
+  redirect('/account/setup')
 }

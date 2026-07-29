@@ -400,6 +400,8 @@ function WelcomeBanner({ name }: { name: string }) {
 
 interface OnboardingStatus {
   linked: boolean
+  signedIn?: boolean
+  pendingClaim?: boolean
   hasCity?: boolean
   hasAvailability?: boolean
   hasFirstPost?: boolean
@@ -534,6 +536,50 @@ function ClubhouseInner() {
         {welcomeName && (
           <div className="-mt-5 relative z-10">
             <WelcomeBanner name={welcomeName} />
+          </div>
+        )}
+
+        {/* Signed in but not yet approved: one clear line about where they
+            stand, instead of a wall of locked panels. */}
+        {onboarding && !onboarding.linked && onboarding.signedIn && (
+          <div className="-mt-5 relative z-10 mb-6 bg-[#0a1628] text-white rounded-2xl px-6 py-5 border border-[#c8a84b]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            {onboarding.pendingClaim ? (
+              <>
+                <div>
+                  <p className="text-sm font-semibold text-[#c8a84b] uppercase tracking-[0.14em]">
+                    Claim pending
+                  </p>
+                  <p className="text-sm text-white/80 mt-1">
+                    You&rsquo;re in the captain&rsquo;s queue — approved by hand, usually
+                    within a day or two. You&rsquo;ll get an email the moment you&rsquo;re in.
+                  </p>
+                </div>
+                <Link
+                  href="/member-book"
+                  className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#c8a84b] hover:underline"
+                >
+                  Browse the Member Book &rarr;
+                </Link>
+              </>
+            ) : (
+              <>
+                <div>
+                  <p className="text-sm font-semibold text-[#c8a84b] uppercase tracking-[0.14em]">
+                    One step left
+                  </p>
+                  <p className="text-sm text-white/80 mt-1">
+                    Find your name and claim your card — the captain approves every
+                    member by hand.
+                  </p>
+                </div>
+                <Link
+                  href="/account/setup"
+                  className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#c8a84b] hover:underline"
+                >
+                  Claim your card &rarr;
+                </Link>
+              </>
+            )}
           </div>
         )}
 

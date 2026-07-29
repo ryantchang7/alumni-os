@@ -10,7 +10,18 @@ import { auth } from '@/auth'
 export async function GET() {
   const session = await auth()
   if (!session?.accountId || !session.linkedPersonId) {
-    return NextResponse.json({ linked: false })
+    // Signed in but not linked: tell the client whether a claim is pending so
+    // /player can show "you're in the captain's queue" instead of a wall of
+    // locked panels.
+    if (session?.accountId) {
+      const { readStore } = await import('@/lib/store/local-store')
+      const store = await readStore()
+      const pendingClaim = store.profileClaimRequests.some(
+        r => r.requesterAccountId === session.accountId && r.status === 'pending',
+      )
+      return NextResponse.json({ linked: false, signedIn: true, pendingClaim })
+    }
+    return NextResponse.json({ linked: false, signedIn: false })
   }
 
   const teamSlug = 'penn-mens-golf'

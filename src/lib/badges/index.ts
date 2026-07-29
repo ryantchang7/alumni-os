@@ -110,6 +110,7 @@ const PRIORITY: BadgeId[] = ['founder', 'captain', 'founding-member', 'member', 
 
 export const FOUNDER_EMAILS = new Set<string>([
   'rtchang@sas.upenn.edu',
+  'rtchang@upenn.edu',
   'ryan.taylor.chang@gmail.com',
 ])
 

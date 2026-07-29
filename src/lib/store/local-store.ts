@@ -1404,25 +1404,26 @@ export async function createProfileClaimRequest(input: {
   pennGolfYears?: string
   note?: string
 }): Promise<ClubhouseProfileClaimRequest> {
-  const store = await readStore()
-  const now = new Date().toISOString()
-  const claim: ClubhouseProfileClaimRequest = {
-    id: crypto.randomUUID(),
-    teamId: input.teamId,
-    memberId: input.memberId,
-    personId: input.personId,
-    requesterName: input.requesterName.trim(),
-    requesterEmail: input.requesterEmail.trim().toLowerCase(),
-    requesterAccountId: input.requesterAccountId,
-    pennGolfYears: input.pennGolfYears?.trim() || undefined,
-    note: input.note?.trim() || undefined,
-    status: 'pending',
-    createdAt: now,
-    updatedAt: now,
-  }
-  store.profileClaimRequests.push(claim)
-  await writeStore(store)
-  return claim
+  // CAS-guarded: launch traffic can file claims concurrently.
+  return mutateStore(store => {
+    const now = new Date().toISOString()
+    const claim: ClubhouseProfileClaimRequest = {
+      id: crypto.randomUUID(),
+      teamId: input.teamId,
+      memberId: input.memberId,
+      personId: input.personId,
+      requesterName: input.requesterName.trim(),
+      requesterEmail: input.requesterEmail.trim().toLowerCase(),
+      requesterAccountId: input.requesterAccountId,
+      pennGolfYears: input.pennGolfYears?.trim() || undefined,
+      note: input.note?.trim() || undefined,
+      status: 'pending',
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.profileClaimRequests.push(claim)
+    return claim
+  })
 }
 
 export async function getProfileClaimRequestById(
@@ -1494,33 +1495,34 @@ export async function upsertAccount(input: {
   image?: string
   teamId: string
 }): Promise<Account> {
-  const store = await readStore()
-  const now = new Date().toISOString()
-  const idx = store.accounts.findIndex((a) => a.googleSub === input.googleSub)
-  if (idx !== -1) {
-    store.accounts[idx] = {
-      ...store.accounts[idx],
+  // CAS-guarded: hundreds of first sign-ins can land in the same minute on
+  // launch day; unguarded writes here silently dropped Account rows.
+  return mutateStore(store => {
+    const now = new Date().toISOString()
+    const idx = store.accounts.findIndex((a) => a.googleSub === input.googleSub)
+    if (idx !== -1) {
+      store.accounts[idx] = {
+        ...store.accounts[idx],
+        email: input.email,
+        name: input.name ?? store.accounts[idx].name,
+        image: input.image ?? store.accounts[idx].image,
+        updatedAt: now,
+      }
+      return store.accounts[idx]
+    }
+    const account: Account = {
+      id: crypto.randomUUID(),
       email: input.email,
-      name: input.name ?? store.accounts[idx].name,
-      image: input.image ?? store.accounts[idx].image,
+      googleSub: input.googleSub,
+      name: input.name,
+      image: input.image,
+      teamId: input.teamId,
+      createdAt: now,
       updatedAt: now,
     }
-    await writeStore(store)
-    return store.accounts[idx]
-  }
-  const account: Account = {
-    id: crypto.randomUUID(),
-    email: input.email,
-    googleSub: input.googleSub,
-    name: input.name,
-    image: input.image,
-    teamId: input.teamId,
-    createdAt: now,
-    updatedAt: now,
-  }
-  store.accounts.push(account)
-  await writeStore(store)
-  return account
+    store.accounts.push(account)
+    return account
+  })
 }
 
 /** Flip publishedToNetwork=true on every membership for this person on the
@@ -1530,43 +1532,43 @@ export async function publishMembershipsForPerson(
   personId: string,
   teamId: string,
 ): Promise<void> {
-  const store = await readStore()
-  let touched = false
-  for (let i = 0; i < store.teamMemberships.length; i++) {
-    const m = store.teamMemberships[i]
-    if (m.personId !== personId || m.teamId !== teamId) continue
-    if (m.publishedToNetwork) continue
-    store.teamMemberships[i] = {
-      ...m,
-      publishedToNetwork: true,
-      publishedAt: new Date().toISOString(),
-      publishedByRole: 'captain',
-      updatedAt: new Date().toISOString(),
+  // CAS-guarded: runs during claim approval, concurrent with member sign-ins.
+  await mutateStore(store => {
+    for (let i = 0; i < store.teamMemberships.length; i++) {
+      const m = store.teamMemberships[i]
+      if (m.personId !== personId || m.teamId !== teamId) continue
+      if (m.publishedToNetwork) continue
+      store.teamMemberships[i] = {
+        ...m,
+        publishedToNetwork: true,
+        publishedAt: new Date().toISOString(),
+        publishedByRole: 'captain',
+        updatedAt: new Date().toISOString(),
+      }
     }
-    touched = true
-  }
-  if (touched) await writeStore(store)
+  })
 }
 
 export async function linkAccountToPerson(
   accountId: string,
   personId: string,
 ): Promise<Account | null> {
-  const store = await readStore()
-  // Disallow linking the same personId to two different accounts.
-  const conflict = store.accounts.find(
-    (a) => a.linkedPersonId === personId && a.id !== accountId,
-  )
-  if (conflict) return null
-  const idx = store.accounts.findIndex((a) => a.id === accountId)
-  if (idx === -1) return null
-  store.accounts[idx] = {
-    ...store.accounts[idx],
-    linkedPersonId: personId,
-    updatedAt: new Date().toISOString(),
-  }
-  await writeStore(store)
-  return store.accounts[idx]
+  // CAS-guarded: the conflict check and the link must be atomic, or two
+  // accounts claiming the same person concurrently could both "win".
+  return mutateStore(store => {
+    const conflict = store.accounts.find(
+      (a) => a.linkedPersonId === personId && a.id !== accountId,
+    )
+    if (conflict) return null
+    const idx = store.accounts.findIndex((a) => a.id === accountId)
+    if (idx === -1) return null
+    store.accounts[idx] = {
+      ...store.accounts[idx],
+      linkedPersonId: personId,
+      updatedAt: new Date().toISOString(),
+    }
+    return store.accounts[idx]
+  })
 }
 
 // ── Clubhouse Moments ────────────────────────────────────────────────────────

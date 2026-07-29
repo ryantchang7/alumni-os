@@ -124,11 +124,12 @@ export default async function MemberDetailPage({
   const hasGolfDetails = homeCourse || favoriteCourses || favoritePennGolfMemory
   const hasContact = contactEmail || contactPhone || linkedinUrl
 
-  // Claim CTA destination depends on whether a store record exists.
+  // Claim CTA destination depends on whether a store record exists. Unclaimed
+  // cards route through /account/setup so every claim is approved by hand.
   const claimHref = storeMatch
     ? `/alumni/profile/${storeMatch.personId}?teamSlug=${TEAM_SLUG}`
-    : `/alumni/claim?bookId=${encodeURIComponent(member.id)}`
-  const claimLabel = storeMatch ? 'Update Profile' : 'Claim & Update'
+    : '/account/setup'
+  const claimLabel = storeMatch ? 'Update Profile' : 'Claim your card'
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">

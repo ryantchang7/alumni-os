@@ -35,7 +35,12 @@ export default function AccountSetupClient({
   )
   const [query, setQuery] = useState(signedInName ?? '')
   const [claiming, setClaiming] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(() =>
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('error') === 'already-claimed'
+      ? 'That card is already linked to another account. If it should be yours, email rtchang@sas.upenn.edu and the captain will sort it out.'
+      : null,
+  )
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -172,10 +177,16 @@ export default function AccountSetupClient({
               Try just a first or last name. The Member Book holds every Penn Men&rsquo;s Golf player from 1948 onward.
             </p>
             {womensNote && (
-              <p className="text-[12.5px] text-ink-muted italic mb-6 leading-relaxed max-w-sm mx-auto">
+              <p className="text-[12.5px] text-ink-muted italic mb-3 leading-relaxed max-w-sm mx-auto">
                 {womensNote}
               </p>
             )}
+            <p className="text-sm text-[#0a1628] mb-6">
+              Family or affiliate of a player?{' '}
+              <Link href="/parent-signup" className="text-[#990000] font-medium hover:underline">
+                Join here &rarr;
+              </Link>
+            </p>
             <div
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-5 text-left"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 6px 16px rgba(10,22,40,0.04)' }}
