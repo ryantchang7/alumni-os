@@ -208,9 +208,9 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
               </ul>
             ) : (
               <p className="text-[12.5px] text-ink-muted italic">
-                Be one of the first to claim a card &mdash;{' '}
-                <Link href="/login?next=/account/setup" className="text-[#990000] hover:underline">
-                  sign in
+                Be one of the first to{' '}
+                <Link href="/account/setup" className="text-[#990000] hover:underline">
+                  claim a card
                 </Link>
                 .
               </p>

@@ -1244,9 +1244,20 @@ export async function getClubhouseGatheringsForTeam(
   type?: ClubhouseGathering['type'],
 ): Promise<ClubhouseGathering[]> {
   const store = await readStore()
-  return store.clubhouseGatherings.filter(
-    g => g.teamId === teamId && (type === undefined || g.type === type) && g.status !== 'closed',
-  )
+  // Seeded EXAMPLE gatherings age out once their date passes — a sample from
+  // last month labeled "Upcoming" reads like a dead site. Real gatherings are
+  // never auto-hidden (hosts close them). Unparseable dateText = keep.
+  const cutoff = Date.now() - 24 * 60 * 60 * 1000
+  return store.clubhouseGatherings.filter(g => {
+    if (g.teamId !== teamId) return false
+    if (type !== undefined && g.type !== type) return false
+    if (g.status === 'closed') return false
+    if (g.isExample) {
+      const t = Date.parse(g.dateText)
+      if (!Number.isNaN(t) && t < cutoff) return false
+    }
+    return true
+  })
 }
 
 export async function getClubhouseGatheringById(id: string): Promise<ClubhouseGathering | undefined> {

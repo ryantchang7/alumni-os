@@ -864,8 +864,8 @@ function ClubhouseInner() {
             content (history), not timely. */}
         <TraditionSection />
 
-        {/* Your Requests */}
-        <div className="pb-10">
+        {/* Your Requests — members only; anonymous visitors have none to see */}
+        <div className="pb-10" hidden={!onboarding?.linked}>
           <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4 flex items-center justify-between"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}>
             <div>

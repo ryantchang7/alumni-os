@@ -177,7 +177,7 @@ export default function FoundersWall({
                   <span className="text-white">{f.name}</span>
                 )}
                 {f.classLabel && (
-                  <span className="text-[12px] text-white/70">{f.classLabel}</span>
+                  <span className="text-[12px] text-white/70">&middot; {f.classLabel}</span>
                 )}
                 {f.isProgramFounder && (
                   <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#c8a84b] ml-1">

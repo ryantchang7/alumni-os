@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         >
           Privacy Policy
         </h1>
-        <p className="text-[12.5px] text-ink-muted mb-8">Last updated 2026-06-27</p>
+        <p className="text-[12.5px] text-ink-muted mb-8">Last updated June 27, 2026</p>
 
         <section className="space-y-5 text-[14.5px] text-[#0a1628] leading-relaxed">
           <p>
@@ -25,10 +25,6 @@ export default function PrivacyPage() {
           <p>
             You stay in control of your information: you can edit or delete it any time by contacting us, we never sell it, and we don&rsquo;t run ads or trackers.
           </p>
-          <p className="text-[13px] text-ink-muted italic">
-            This policy was prepared for informational purposes. It does not constitute legal advice. A qualified attorney should review it before formal public launch.
-          </p>
-
           <h2 className="text-xl font-medium pt-2 font-heading">
             Who we are
           </h2>

@@ -16,16 +16,12 @@ export default function TermsPage() {
         >
           Terms of Use
         </h1>
-        <p className="text-[12.5px] text-ink-muted mb-8">Last updated 2026-06-27</p>
+        <p className="text-[12.5px] text-ink-muted mb-8">Last updated June 27, 2026</p>
 
         <section className="space-y-5 text-[14.5px] text-[#0a1628] leading-relaxed">
           <p>
             These Terms of Use (&ldquo;Terms&rdquo;) govern your access to and use of the Penn Golf Clubhouse (&ldquo;the Clubhouse&rdquo;), operated by Ryan Chang (&ldquo;the Operator,&rdquo; &ldquo;we,&rdquo; &ldquo;us&rdquo;). By creating an account, claiming a profile, or otherwise using the Clubhouse you agree to be bound by these Terms. If you do not agree, do not use the Clubhouse.
           </p>
-          <p className="text-[13px] text-ink-muted italic">
-            These Terms were prepared for informational purposes. They do not constitute legal advice. A qualified attorney should review them before formal public launch.
-          </p>
-
           <h2 className="text-xl font-medium pt-2 font-heading">
             Eligibility &amp; age
           </h2>

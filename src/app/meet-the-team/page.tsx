@@ -3,6 +3,7 @@ import MemberAvatar from '@/components/MemberAvatar'
 import MemberBadges from '@/components/MemberBadges'
 import { badgesForPerson } from '@/lib/badges'
 import AskTheTeam, { type AskTarget } from '@/components/AskTheTeam'
+import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import Link from 'next/link'
 
 interface PlayerEntry {
@@ -14,8 +15,13 @@ const CLASS_ORDER: Record<string, number> = { 'Sr.': 0, 'Jr.': 1, 'So.': 2, 'Fr.
 
 export default async function MeetTheTeamPage() {
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
+  const { auth } = await import('@/auth')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
+  // Member-entered bios are approved-members-only (privacy policy); public
+  // visitors see roster facts (hometown, high school) only.
+  const session = await auth()
+  const isApprovedViewer = !!session?.linkedPersonId
 
   let currentPlayers: PlayerEntry[] = []
 
@@ -165,14 +171,14 @@ export default async function MeetTheTeamPage() {
                   </div>
 
                   {/* Bio */}
-                  {enrichment?.alumniBio && (
+                  {isApprovedViewer && enrichment?.alumniBio && (
                     <p className="text-xs text-[#3a4657] leading-relaxed line-clamp-3">
                       {enrichment.alumniBio}
                     </p>
                   )}
 
                   {/* Hometown / high school */}
-                  {(membership.hometown || membership.highSchool) && !enrichment?.alumniBio && (
+                  {(membership.hometown || membership.highSchool) && !(isApprovedViewer && enrichment?.alumniBio) && (
                     <div className="space-y-0.5">
                       {membership.hometown && (
                         <p className="text-xs text-ink-muted">{membership.hometown}</p>
@@ -185,21 +191,25 @@ export default async function MeetTheTeamPage() {
 
                   {/* Actions */}
                   <div className="flex flex-wrap items-center gap-2 mt-auto pt-1">
-                    {account ? (
-                      <Link
-                        href={`/member-book/${account.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-[#fbf9f6] hover:bg-white hover:border-[#0a1628]/30 px-3 py-2 rounded-lg transition-colors"
-                      >
-                        View Profile
-                      </Link>
-                    ) : (
-                      <Link
-                        href={`/player/alumni/${person.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-[#fbf9f6] hover:bg-white hover:border-[#0a1628]/30 px-3 py-2 rounded-lg transition-colors"
-                      >
-                        View Profile
-                      </Link>
-                    )}
+                    {(() => {
+                      // Claimed players link to their public Member Book card
+                      // by BOOK slug (account UUIDs 404 here); fall back to the
+                      // network profile when no book entry matches the name.
+                      const bookEntry = account
+                        ? findBookEntryForTeamStorePerson(person.canonicalName)
+                        : null
+                      const profileHref = bookEntry
+                        ? `/member-book/${encodeURIComponent(bookEntry.id)}`
+                        : `/player/alumni/${person.id}`
+                      return (
+                        <Link
+                          href={profileHref}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.55)] bg-[#fbf9f6] hover:bg-white hover:border-[#0a1628]/30 px-3 py-2 rounded-lg transition-colors"
+                        >
+                          View Profile
+                        </Link>
+                      )
+                    })()}
                     <AskTheTeam
                       players={askTargets}
                       variant="card"

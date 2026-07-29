@@ -52,6 +52,9 @@ function parseRss(xml: string): FetchedNewsItem[] {
     const title = pickTag(block, 'title')
     const link = pickTag(block, 'link')
     if (!title || !link) continue
+    // Penn Athletics leaks multi-sport items (e.g. fencing academic honors)
+    // into the mgolf feed — keep only stories that are actually about golf.
+    if (!/golf/i.test(title + link)) continue
     const pubDate = pickTag(block, 'pubDate')
     const description = pickTag(block, 'description')
     // Prefer media:content (rp_primary, article-hero size) over

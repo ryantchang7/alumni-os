@@ -294,7 +294,7 @@ I compiled our Member Book through online research and Penn historical data — 
 
 For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
 
-— Ryan Chang, Penn Men's Golf '27, Brookline, MA`,
+— Ryan Chang, Penn Men's Golf '28, Brookline, MA`,
   },
   {
     id: 'launch.ask-blurb',

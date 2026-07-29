@@ -493,9 +493,13 @@ function MemberBookPageInner() {
                 >
                   {view === 'family' ? filteredParents.length : filtered.length}
                 </span>{' '}
-                {(view === 'family' ? filteredParents.length : filtered.length) === 1
-                  ? 'member'
-                  : 'members'}
+                {view === 'family'
+                  ? filteredParents.length === 1
+                    ? 'family & affiliate'
+                    : 'family & affiliates'
+                  : filtered.length === 1
+                    ? 'player'
+                    : 'players'}
               </span>
             </div>
 

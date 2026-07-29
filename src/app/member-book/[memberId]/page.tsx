@@ -96,7 +96,12 @@ export default async function MemberDetailPage({
       : member.career.inferredLetterSeasons.length
 
   // Bridged enrichment (team-store) takes precedence over book profile fields.
-  const enr = storeMatch?.enrichment
+  // Member-ENTERED details are approved-members-only (the privacy policy
+  // promises "member content is restricted to approved members"); logged-out
+  // visitors see only the pre-claim book record.
+  const isApprovedViewer = isOwner || !!session?.linkedPersonId
+  const enr = isApprovedViewer ? storeMatch?.enrichment : undefined
+  const detailsGated = !isApprovedViewer && !!storeMatch?.enrichment
   const role = enr?.currentRole ?? member.profile.currentRole ?? null
   const company = enr?.currentCompany ?? member.profile.currentCompany ?? null
   const industry = enr?.industry ?? null
@@ -344,6 +349,13 @@ export default async function MemberDetailPage({
                   </p>
                 )}
               </div>
+            ) : detailsGated ? (
+              <p className="text-[14px] text-ink-muted italic">
+                This member&rsquo;s full card is visible to approved members.{' '}
+                <Link href="/account/setup" className="text-[#990000] not-italic font-medium hover:underline">
+                  Claim yours &rarr;
+                </Link>
+              </p>
             ) : (
               <p className="text-[14px] text-ink-muted italic">
                 This member hasn&rsquo;t added details yet.
