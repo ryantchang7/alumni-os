@@ -1632,6 +1632,7 @@ export async function createMoment(input: {
   caption: string
   photoUrl: string
   mediaType?: 'image' | 'video'
+  media?: { url: string; type: 'image' | 'video' }[]
   audience?: 'public' | 'locker-room'
   taggedPersonIds?: string[]
   taggedBookIds?: string[]
@@ -1646,6 +1647,7 @@ export async function createMoment(input: {
     caption: input.caption.trim(),
     photoUrl: input.photoUrl.trim(),
     mediaType: input.mediaType ?? 'image',
+    media: input.media,
     audience: input.audience ?? 'public',
     taggedPersonIds: input.taggedPersonIds ?? [],
     taggedBookIds: input.taggedBookIds ?? [],

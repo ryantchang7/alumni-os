@@ -13,7 +13,7 @@
 import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Lock, Reply, SmilePlus, Star, Trash2 } from 'lucide-react'
+import { Lock, Reply, SmilePlus, Star, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { ClubhouseMoment, MomentComment, MomentReaction } from '@/lib/store/types'
 import type { BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
@@ -79,6 +79,10 @@ export default function MomentCard({
   isCaptain = false,
   taggedMembers,
 }: Props) {
+  const mediaItems = moment.media?.length
+    ? moment.media
+    : [{ url: moment.photoUrl, type: moment.mediaType ?? ('image' as const) }]
+  const [mediaIdx, setMediaIdx] = useState(0)
   const [reactions, setReactions] = useState<MomentReaction[]>(initialReactions)
   const [comments, setComments] = useState<MomentComment[]>(initialComments)
   const [pickerOpen, setPickerOpen] = useState(false)
@@ -261,11 +265,12 @@ export default function MomentCard({
         boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)',
       }}
     >
-      {/* Media */}
+      {/* Media — single item renders plain; multiple items get a carousel */}
       <div className={`relative ${moment.audience === 'locker-room' ? 'bg-[#0a1628]' : 'bg-[#fdfcf9]'}`}>
-        {moment.mediaType === 'video' ? (
+        {mediaItems[mediaIdx].type === 'video' ? (
           <video
-            src={moment.photoUrl}
+            key={mediaItems[mediaIdx].url}
+            src={mediaItems[mediaIdx].url}
             controls
             playsInline
             preload="metadata"
@@ -274,12 +279,48 @@ export default function MomentCard({
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={moment.photoUrl}
+            src={mediaItems[mediaIdx].url}
             alt={moment.caption}
             loading="lazy"
             decoding="async"
             className="w-full max-h-[640px] object-cover"
           />
+        )}
+        {mediaItems.length > 1 && (
+          <>
+            <button
+              type="button"
+              aria-label="Previous photo"
+              onClick={() => setMediaIdx(i => (i - 1 + mediaItems.length) % mediaItems.length)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#0a1628]/70 hover:bg-[#0a1628] text-white flex items-center justify-center backdrop-blur-sm transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              aria-label="Next photo"
+              onClick={() => setMediaIdx(i => (i + 1) % mediaItems.length)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#0a1628]/70 hover:bg-[#0a1628] text-white flex items-center justify-center backdrop-blur-sm transition-colors"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+              {mediaItems.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Go to item ${i + 1}`}
+                  onClick={() => setMediaIdx(i)}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    i === mediaIdx ? 'bg-[#c8a84b]' : 'bg-white/60 hover:bg-white'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="absolute top-3 left-1/2 -translate-x-1/2 bg-[#0a1628]/70 text-white text-[11px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm">
+              {mediaIdx + 1} / {mediaItems.length}
+            </span>
+          </>
         )}
         {showLockerPill && moment.audience === 'locker-room' ? (
           <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#0a1628]/90 backdrop-blur-sm text-[#c8a84b] text-[11px] font-semibold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full border border-[#c8a84b]/55">

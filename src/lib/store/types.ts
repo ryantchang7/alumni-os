@@ -466,6 +466,9 @@ export interface ClubhouseMoment {
    *  a video — `mediaType` disambiguates. Kept as `photoUrl` for backwards
    *  compatibility with seed data. */
   photoUrl: string
+  /** Multi-media support: every photo/video in the post, in order. When
+   *  present, photoUrl/mediaType mirror media[0] for backwards compat. */
+  media?: { url: string; type: 'image' | 'video' }[]
   /** 'image' (default) or 'video'. Older records without this field are
    *  treated as 'image' by the UI. */
   mediaType?: 'image' | 'video'

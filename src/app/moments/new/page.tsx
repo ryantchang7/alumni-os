@@ -17,6 +17,7 @@ function NewMomentForm() {
   const searchParams = useSearchParams()
 
   const [photoUrl, setPhotoUrl] = useState('')
+  const [mediaList, setMediaList] = useState<Array<{ url: string; type: 'image' | 'video' }>>([])
   const [mediaType, setMediaType] = useState<'image' | 'video'>('image')
   const [caption, setCaption] = useState('')
   const [audience, setAudience] = useState<'public' | 'locker-room'>('public')
@@ -70,8 +71,7 @@ function NewMomentForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          photoUrl,
-          mediaType,
+          media: mediaList,
           caption,
           audience,
           taggedBookIds: tagged.map(t => t.bookId),
@@ -171,19 +171,51 @@ function NewMomentForm() {
           )}
 
           <form onSubmit={handleSubmit} className="px-7 sm:px-10 py-8 space-y-6">
-            <PhotoUpload
-              value={photoUrl}
-              onChange={(url) => {
-                setPhotoUrl(url)
-                // Re-sniff in case the user pasted a URL directly.
-                if (/\.(mp4|mov|m4v|webm)(\?|$)/i.test(url)) setMediaType('video')
-                else if (url) setMediaType('image')
-              }}
-              onMediaTypeChange={setMediaType}
-              label="Photo or video"
-              shape="wide"
-              allowVideo
-            />
+            {mediaList.length > 0 && (
+              <div>
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
+                  In this moment ({mediaList.length}/8)
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {mediaList.map((m, i) => (
+                    <div key={m.url + i} className="relative w-24 h-24 rounded-lg overflow-hidden border border-[rgba(180,168,150,0.5)] bg-[#0a1628]">
+                      {m.type === 'video' ? (
+                        <video src={m.url} muted playsInline preload="metadata" className="w-full h-full object-cover" />
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={m.url} alt="" className="w-full h-full object-cover" />
+                      )}
+                      {m.type === 'video' && (
+                        <span className="absolute bottom-1 left-1 text-[9px] font-bold uppercase bg-black/70 text-white px-1 rounded">Video</span>
+                      )}
+                      <button
+                        type="button"
+                        aria-label="Remove"
+                        onClick={() => setMediaList(prev => prev.filter((_, j) => j !== i))}
+                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/70 hover:bg-[#990000] text-white text-[11px] leading-none flex items-center justify-center"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {mediaList.length < 8 && (
+              <PhotoUpload
+                value={photoUrl}
+                onChange={(url) => {
+                  if (!url) { setPhotoUrl(''); return }
+                  const type: 'image' | 'video' = /\.(mp4|mov|m4v|webm)(\?|$)/i.test(url) ? 'video' : 'image'
+                  setMediaList(prev => (prev.some(m => m.url === url) ? prev : [...prev, { url, type }]))
+                  setPhotoUrl('')
+                }}
+                onMediaTypeChange={setMediaType}
+                label={mediaList.length === 0 ? 'Photo or video' : 'Add another photo or video'}
+                shape="wide"
+                allowVideo
+              />
+            )}
 
             <div>
               <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
@@ -305,7 +337,7 @@ function NewMomentForm() {
             <div className="flex items-center gap-4 pt-2">
               <button
                 type="submit"
-                disabled={submitting || !approved || !photoUrl || !caption.trim()}
+                disabled={submitting || !approved || mediaList.length === 0 || !caption.trim()}
                 className={`inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.14em] px-6 py-3 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
                   lockerMode
                     ? 'bg-[#0a1628] hover:bg-[#112240] text-[#c8a84b] border border-[#c8a84b]/55 hover:shadow-[0_0_22px_rgba(200,168,75,0.35)]'

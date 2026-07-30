@@ -75,25 +75,49 @@ export async function POST(request: Request) {
   }
 
   const caption = typeof body.caption === 'string' ? body.caption.trim() : ''
-  const photoUrl = typeof body.photoUrl === 'string' ? body.photoUrl.trim() : ''
   if (!caption) {
     return NextResponse.json({ error: 'caption required' }, { status: 400 })
-  }
-  if (!photoUrl || !isValidMediaUrl(photoUrl)) {
-    return NextResponse.json({ error: 'photoUrl must be a valid http(s) URL' }, { status: 400 })
   }
   if (caption.length > 800) {
     return NextResponse.json({ error: 'caption too long' }, { status: 400 })
   }
 
-  // Resolve mediaType from the body, falling back to URL extension sniffing
-  // so pasted video URLs still render as video without an explicit flag.
-  let mediaType: 'image' | 'video' = 'image'
-  if (body.mediaType === 'video' || body.mediaType === 'image') {
-    mediaType = body.mediaType
-  } else if (VIDEO_EXT_RE.test(photoUrl)) {
-    mediaType = 'video'
+  // Media: preferred form is `media: [{url, type}]` (multi photo/video, max 8).
+  // Legacy single `photoUrl` (+ optional mediaType) still accepted. photoUrl/
+  // mediaType always mirror media[0] for older readers.
+  const sniffType = (url: string): 'image' | 'video' =>
+    VIDEO_EXT_RE.test(url) ? 'video' : 'image'
+  let media: { url: string; type: 'image' | 'video' }[] = []
+  if (Array.isArray(body.media)) {
+    media = (body.media as unknown[])
+      .map((m) => {
+        if (!m || typeof m !== 'object') return null
+        const url = typeof (m as { url?: unknown }).url === 'string' ? (m as { url: string }).url.trim() : ''
+        if (!url || !isValidMediaUrl(url)) return null
+        const rawType = (m as { type?: unknown }).type
+        const type: 'image' | 'video' =
+          rawType === 'video' || rawType === 'image' ? rawType : sniffType(url)
+        return { url, type }
+      })
+      .filter((m): m is { url: string; type: 'image' | 'video' } => m !== null)
+      .slice(0, 8)
   }
+  const legacyUrl = typeof body.photoUrl === 'string' ? body.photoUrl.trim() : ''
+  if (media.length === 0 && legacyUrl && isValidMediaUrl(legacyUrl)) {
+    const legacyType: 'image' | 'video' =
+      body.mediaType === 'video' || body.mediaType === 'image'
+        ? body.mediaType
+        : sniffType(legacyUrl)
+    media = [{ url: legacyUrl, type: legacyType }]
+  }
+  if (media.length === 0) {
+    return NextResponse.json(
+      { error: 'At least one photo or video is required.' },
+      { status: 400 },
+    )
+  }
+  const photoUrl = media[0].url
+  const mediaType = media[0].type
 
   const team = await getTeamBySlug(TEAM_SLUG)
   if (!team) return NextResponse.json({ error: 'Team not found' }, { status: 404 })
@@ -126,6 +150,7 @@ export async function POST(request: Request) {
     caption,
     photoUrl,
     mediaType,
+    media,
     audience,
     taggedPersonIds: Array.isArray(body.taggedPersonIds)
       ? (body.taggedPersonIds as unknown[]).filter((x): x is string => typeof x === 'string')
