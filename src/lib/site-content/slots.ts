@@ -278,16 +278,18 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   {
     id: 'launch.video-url',
     label: '/launch — film URL (mp4)',
-    hint: 'Direct mp4 URL for the launch film. Leave empty to hide the video section. Set once uploaded to Blob; replacing the file at the same pathname updates it everywhere.',
+    hint: 'Direct mp4 URL for the launch film. Empty hides the video section. When the VO version is ready, upload the new file and paste its URL here (or update this default).',
     kind: 'text',
-    default: '',
+    default:
+      'https://67u0teziiyoxeaeo.public.blob.vercel-storage.com/launch/film-era167UiprZacFODr0o2ahhGhIuE31.mp4',
   },
   {
     id: 'launch.video-poster',
     label: '/launch — film poster image URL',
     hint: 'Poster frame shown before the film plays. Usually the clubhouse photo frame.',
     kind: 'text',
-    default: '',
+    default:
+      'https://67u0teziiyoxeaeo.public.blob.vercel-storage.com/launch/poster-gCESEzj4wVvskrcBOJtUtQpBEtDBci.jpg',
   },
   {
     id: 'launch.founder-note',
