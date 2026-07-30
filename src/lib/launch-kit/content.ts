@@ -185,7 +185,7 @@ Golf has given me so much: opportunities, friendships, mentors, doors that opene
 
 So I built Penn Golf Clubhouse.
 
-I compiled our Member Book through online research and Penn historical data. Every player and manager I could find from 1948 onward, by name, year, and hometown. Then I built a private space for everyone who's carried the Penn Golf bag.
+I compiled our Member Book through online research and Penn historical data. Every player and manager I could find from 1930 onward, by name, year, and hometown. Then I built a private space for everyone who's carried the Penn Golf bag.
 
 Inside, you can find members across generations, see where everyone is on the map, ask for career advice without the awkwardness, set up coffee or drinks in any city, host or join a round at your home course, follow the current team, post moments from the road, and support the program if you choose.
 
@@ -342,7 +342,7 @@ This spring at Ivy Champs at Baltusrol, with Patrick Cooper hosting and so many 
 So I built Penn Golf Clubhouse. A private home for the program.
 
 Inside:
-• The Member Book — every player I could find from 1948 onward
+• The Member Book — every player I could find from 1930 onward
 • The Member Map — where everyone is now
 • The Course — host or join a round wherever you're traveling
 • The 19th Hole — coffee, drinks, dinners
@@ -383,7 +383,7 @@ The idea came at Ivy Champs at Baltusrol this spring, watching generations of Pe
 
 So we built one.
 
-Inside: the full Member Book (every player I could find from 1948 onward), a map of where everyone is now, a guided way to ask for career advice without the awkwardness, coffee and rounds in any city, and a place to follow the current team.
+Inside: the full Member Book (every player I could find from 1930 onward), a map of where everyone is now, a guided way to ask for career advice without the awkwardness, coffee and rounds in any city, and a place to follow the current team.
 
 Approval-based, not paywalled. The point is connection first.
 
