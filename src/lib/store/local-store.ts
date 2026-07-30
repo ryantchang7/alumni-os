@@ -469,6 +469,31 @@ export async function mutateStore<T>(
   )
 }
 
+// ── Backups ──────────────────────────────────────────────────────────────────
+// Daily snapshot of the entire store, kept INSIDE Redis (private by nature —
+// this is all member PII, so it must never live on the public blob store).
+// Rolling window of the newest BACKUP_KEEP snapshots.
+const BACKUP_PREFIX = `${REDIS_KEY}:backup:`
+const BACKUP_KEEP = 14
+
+export async function writeBackupSnapshot(): Promise<
+  { key: string; sizeBytes: number; savedAt: string } | null
+> {
+  const redis = getRedis()
+  // File-backed dev store: the file itself is the copy — nothing to snapshot.
+  if (!redis) return null
+  const store = await readStore()
+  const json = JSON.stringify(store)
+  const savedAt = new Date().toISOString()
+  const key = `${BACKUP_PREFIX}${savedAt}`
+  await redis.set(key, json)
+  const keys = (await redis.keys(`${BACKUP_PREFIX}*`)).sort()
+  for (let i = 0; i < keys.length - BACKUP_KEEP; i++) {
+    await redis.del(keys[i])
+  }
+  return { key, sizeBytes: Buffer.byteLength(json), savedAt }
+}
+
 export async function createTeam(
   input: Omit<Team, 'id' | 'slug' | 'createdAt'> & { slug?: string },
 ): Promise<Team> {
