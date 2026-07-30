@@ -66,6 +66,18 @@ export default async function LockerRoomPage() {
     return entry?.id ?? null
   }
 
+  function taggedMembersFor(personIds: string[] | undefined) {
+    if (!personIds?.length || !store) return undefined
+    const out = personIds
+      .map(id => {
+        const person = store.people.find(p => p.id === id)
+        if (!person) return null
+        return { personId: id, name: person.canonicalName, bookId: bookIdForPerson(id) }
+      })
+      .filter((x): x is { personId: string; name: string; bookId: string | null } => x !== null)
+    return out.length ? out : undefined
+  }
+
   function badgesForPoster(accountId: string): BadgeId[] {
     if (!store) return []
     const account = store.accounts.find(a => a.id === accountId)
@@ -139,6 +151,7 @@ export default async function LockerRoomPage() {
                 viewerAccountId={viewerAccountId}
                 canPost={canPost}
                 showLockerPill
+                taggedMembers={taggedMembersFor(m.taggedPersonIds)}
               />
             ))}
           </div>

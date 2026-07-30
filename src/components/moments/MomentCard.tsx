@@ -45,6 +45,8 @@ interface Props {
   /** True when the current viewer is a captain or founder — shows the
    *  Feature/Unfeature toggle. Never exposed to regular members. */
   isCaptain?: boolean
+  /** Members tagged in this moment, hydrated server-side (name + book link). */
+  taggedMembers?: Array<{ personId: string; name: string; bookId: string | null }>
 }
 
 function timeAgo(iso: string): string {
@@ -75,6 +77,7 @@ export default function MomentCard({
   canPost,
   showLockerPill,
   isCaptain = false,
+  taggedMembers,
 }: Props) {
   const [reactions, setReactions] = useState<MomentReaction[]>(initialReactions)
   const [comments, setComments] = useState<MomentComment[]>(initialComments)
@@ -299,6 +302,26 @@ export default function MomentCard({
         <p className="text-[14.5px] text-[#0a1628] leading-relaxed whitespace-pre-wrap">
           {moment.caption}
         </p>
+        {taggedMembers && taggedMembers.length > 0 && (
+          <p className="mt-2 text-[13px] text-ink-muted">
+            With{' '}
+            {taggedMembers.map((t, i) => (
+              <span key={t.personId}>
+                {i > 0 && (i === taggedMembers.length - 1 ? ' and ' : ', ')}
+                {t.bookId ? (
+                  <Link
+                    href={`/member-book/${encodeURIComponent(t.bookId)}`}
+                    className="text-[#0a1628] font-medium hover:underline"
+                  >
+                    {t.name}
+                  </Link>
+                ) : (
+                  <span className="text-[#0a1628] font-medium">{t.name}</span>
+                )}
+              </span>
+            ))}
+          </p>
+        )}
         <div className="mt-4 flex items-baseline justify-between gap-3 text-[12px]">
           <div className="flex items-baseline gap-2 flex-wrap min-w-0">
             <p className="text-ink-muted">

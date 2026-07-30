@@ -23,6 +23,9 @@ function NewMomentForm() {
   const [canSeeLockerRoom, setCanSeeLockerRoom] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [members, setMembers] = useState<Array<{ personId: string; name: string }>>([])
+  const [tagQuery, setTagQuery] = useState('')
+  const [tagged, setTagged] = useState<Array<{ personId: string; name: string }>>([])
 
   const signedIn = sessionStatus === 'authenticated'
   const approved = signedIn && !!session?.linkedPersonId
@@ -45,6 +48,20 @@ function NewMomentForm() {
       .catch(() => {})
   }, [approved, searchParams])
 
+  // Approved members for the tag picker (same source as the chat picker).
+  useEffect(() => {
+    if (!approved) return
+    fetch('/api/chat/members')
+      .then(r => (r.ok ? r.json() : { members: [] }))
+      .then(d => {
+        const opts = ((d.members ?? []) as Array<{ personId?: string; name: string }>)
+          .filter((m): m is { personId: string; name: string } => !!m.personId)
+          .map(m => ({ personId: m.personId, name: m.name }))
+        setMembers(opts)
+      })
+      .catch(() => {})
+  }, [approved])
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!approved) {
@@ -57,7 +74,13 @@ function NewMomentForm() {
       const res = await fetch('/api/moments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ photoUrl, mediaType, caption, audience }),
+        body: JSON.stringify({
+          photoUrl,
+          mediaType,
+          caption,
+          audience,
+          taggedPersonIds: tagged.map(t => t.personId),
+        }),
       })
       if (!res.ok) {
         const j = await res.json().catch(() => ({}))
@@ -183,6 +206,60 @@ function NewMomentForm() {
               <p className="text-[11px] text-ink-muted mt-1 text-right">
                 {caption.length} / 800
               </p>
+            </div>
+
+            {/* Tag members */}
+            <div>
+              <label className="block text-[13px] font-semibold text-[#0a1628] mb-1.5">
+                Tag who&rsquo;s in it <span className="font-normal text-ink-muted">(optional)</span>
+              </label>
+              {tagged.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {tagged.map(t => (
+                    <button
+                      key={t.personId}
+                      type="button"
+                      onClick={() => setTagged(prev => prev.filter(x => x.personId !== t.personId))}
+                      className="inline-flex items-center gap-1.5 text-[12px] font-medium bg-[#0a1628] text-white px-2.5 py-1 rounded-full hover:bg-[#990000] transition-colors"
+                      title="Remove tag"
+                    >
+                      {t.name}
+                      <span aria-hidden>&times;</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              <input
+                type="text"
+                value={tagQuery}
+                onChange={e => setTagQuery(e.target.value)}
+                placeholder="Search members to tag..."
+                className="w-full bg-[#fdfcf9] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25"
+              />
+              {tagQuery.trim() && (
+                <div className="mt-1.5 border border-[rgba(180,168,150,0.4)] rounded-lg bg-white divide-y divide-[rgba(180,168,150,0.2)] overflow-hidden">
+                  {members
+                    .filter(
+                      m =>
+                        !tagged.some(t => t.personId === m.personId) &&
+                        m.name.toLowerCase().includes(tagQuery.trim().toLowerCase()),
+                    )
+                    .slice(0, 6)
+                    .map(m => (
+                      <button
+                        key={m.personId}
+                        type="button"
+                        onClick={() => {
+                          setTagged(prev => [...prev, m])
+                          setTagQuery('')
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-[#0a1628] hover:bg-[#fbf9f6]"
+                      >
+                        {m.name}
+                      </button>
+                    ))}
+                </div>
+              )}
             </div>
 
             {canSeeLockerRoom && (

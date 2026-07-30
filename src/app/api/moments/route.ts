@@ -138,8 +138,27 @@ export async function POST(request: Request) {
     try {
       const fresh = await readStore()
       const posterFirst = (account.name ?? session.user?.name ?? 'A member').split(/\s+/)[0]
+      // Tagged members get a personal "you were tagged" ping instead of the
+      // community broadcast.
+      const taggedAccountIds = new Set(
+        fresh.accounts
+          .filter(a => a.linkedPersonId && moment.taggedPersonIds.includes(a.linkedPersonId))
+          .map(a => a.id),
+      )
+      if (taggedAccountIds.size > 0) {
+        await notifyMany(
+          [...taggedAccountIds],
+          {
+            type: 'new_moment',
+            title: `${posterFirst} tagged you in a Moment`,
+            body: caption.slice(0, 120),
+            href: '/moments',
+          },
+          { excludeAccountId: account.id },
+        )
+      }
       const recipients = fresh.accounts
-        .filter(a => a.teamId === team.id && a.linkedPersonId)
+        .filter(a => a.teamId === team.id && a.linkedPersonId && !taggedAccountIds.has(a.id))
         .map(a => a.id)
       await notifyMany(
         recipients,

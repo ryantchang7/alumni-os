@@ -120,6 +120,19 @@ export default async function MomentsPage({ searchParams }: PageProps) {
     return entry?.id ?? null
   }
 
+  // Hydrate tagged personIds into name + book link for the card.
+  function taggedMembersFor(personIds: string[] | undefined) {
+    if (!personIds?.length || !store) return undefined
+    const out = personIds
+      .map((id) => {
+        const person = store.people.find((p) => p.id === id)
+        if (!person) return null
+        return { personId: id, name: person.canonicalName, bookId: bookIdForPerson(id) }
+      })
+      .filter((x): x is { personId: string; name: string; bookId: string | null } => x !== null)
+    return out.length ? out : undefined
+  }
+
   // Resolve poster -> tier/captain/founder badges for the inline pin.
   function badgesForPoster(accountId: string): BadgeId[] {
     if (!store) return []
@@ -282,6 +295,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                 canPost={canPost}
                 showLockerPill={isLockerView}
                 isCaptain={viewerIsCaptain}
+                taggedMembers={taggedMembersFor(m.taggedPersonIds)}
               />
             ))}
           </div>
