@@ -13,8 +13,10 @@ import { notifyMany } from '@/lib/notifications/notify'
 import { requireApprovedMember, requireCaptain } from '@/lib/auth/guards'
 
 export async function GET() {
+  // Anonymous visitors get an empty 200, not a 401 — the homepage calls this
+  // for everyone, and a red 401 in the console reads as breakage.
   const gate = await requireApprovedMember()
-  if (!gate.ok) return gate.response
+  if (!gate.ok) return NextResponse.json({ spotlight: null })
   const spotlights = await getSpotlights()
   const current = spotlights[0] ?? null
   return NextResponse.json({ spotlight: current })

@@ -13,7 +13,9 @@ const TEAM_SLUG = 'penn-mens-golf'
 export async function GET() {
   const session = await auth()
   if (!session?.accountId || !session.linkedPersonId) {
-    return NextResponse.json({ error: 'Approved members only' }, { status: 403 })
+    // Empty 200 for non-members: the /chat/new picker calls this on load and
+    // a red 403 in the console reads as breakage. No member data leaks.
+    return NextResponse.json({ members: [] })
   }
   const team = await getTeamBySlug(TEAM_SLUG)
   if (!team) return NextResponse.json({ members: [] })
