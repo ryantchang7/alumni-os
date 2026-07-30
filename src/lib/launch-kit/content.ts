@@ -37,7 +37,7 @@ Golf has given me so much: opportunities, friendships, mentors, doors that opene
 
 So I built Penn Golf Clubhouse.
 
-I compiled our Member Book through online research and Penn historical data — every player and manager I could find from 1948 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
+I compiled our Member Book through online research and Penn historical data — every player and manager I could find from 1930 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
 
 For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
 
@@ -88,7 +88,7 @@ export interface FeatureRow {
 }
 
 export const FEATURE_WALKTHROUGH: FeatureRow[] = [
-  { label: 'Member Book', href: '/member-book', blurb: 'Every Penn Men\'s Golf player from 1948 onward, by name, year, and hometown.' },
+  { label: 'Member Book', href: '/member-book', blurb: 'Every Penn Men\'s Golf player from 1930 onward, by name, year, and hometown.' },
   { label: 'Member Map', href: '/member-map', blurb: 'See where the Penn Golf family lives, travels, and gathers.' },
   { label: 'Guided Ask', href: '/ask', blurb: 'A respectful framework for career advice, intros, and coffee chats.' },
   { label: 'The Course', href: '/the-course', blurb: 'Host or join a round at your home course. Open round requests for visiting members.' },

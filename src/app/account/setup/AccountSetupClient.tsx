@@ -174,7 +174,7 @@ export default function AccountSetupClient({
               No match found.
             </p>
             <p className="text-sm text-ink-muted mt-2 mb-3">
-              Try just a first or last name. The Member Book holds every Penn Men&rsquo;s Golf player from 1948 onward.
+              Try just a first or last name. The Member Book holds every Penn Men&rsquo;s Golf player from 1930 onward.
             </p>
             {womensNote && (
               <p className="text-[12.5px] text-ink-muted italic mb-3 leading-relaxed max-w-sm mx-auto">

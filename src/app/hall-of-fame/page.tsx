@@ -216,7 +216,7 @@ export default function HallOfFamePage() {
             <p
               className="text-[#0a1628] text-base font-medium font-heading"
             >
-              Every Penn Golf member, 1948–present
+              Every Penn Golf member, 1930–present
             </p>
             <p className="text-[12.5px] text-ink-muted mt-1">
               The full registry, beyond championship rosters.

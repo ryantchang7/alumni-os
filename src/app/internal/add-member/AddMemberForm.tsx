@@ -181,7 +181,7 @@ export default function AddMemberForm() {
                   value={rosterStartYear}
                   onChange={(e) => setRosterStartYear(e.target.value)}
                   placeholder="2014"
-                  min={1948}
+                  min={1900}
                   max={2030}
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/30 focus:border-[#0a1628]"
                 />
@@ -195,7 +195,7 @@ export default function AddMemberForm() {
                   value={rosterEndYear}
                   onChange={(e) => setRosterEndYear(e.target.value)}
                   placeholder="2018"
-                  min={1948}
+                  min={1900}
                   max={2030}
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/30 focus:border-[#0a1628]"
                 />
