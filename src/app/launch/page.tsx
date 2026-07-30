@@ -48,6 +48,8 @@ export default function LaunchPage() {
   const founderNote = useSiteContent('launch.founder-note', FOUNDER_NOTE)
   const accessLine = useSiteContent('launch.access-line', ACCESS_LINE)
   const closingLine = useSiteContent('launch.closing-line', CLOSING_LINE)
+  const videoUrl = useSiteContent('launch.video-url', '')
+  const videoPoster = useSiteContent('launch.video-poster', '')
   const askBlurb = useSiteContent('launch.ask-blurb', ROOM_CARDS[0].blurb)
   const meetBlurb = useSiteContent('launch.meet-blurb', ROOM_CARDS[1].blurb)
   const playBlurb = useSiteContent('launch.play-blurb', ROOM_CARDS[2].blurb)
@@ -145,6 +147,28 @@ export default function LaunchPage() {
           }}
         />
       </section>
+
+      {/* The film — appears once launch.video-url is set (Studio-editable).
+          Swapping the file at the same Blob pathname updates it in place. */}
+      {videoUrl && (
+        <section className="px-5 sm:px-8 py-16 sm:py-20 bg-[#0a1628]">
+          <div className="max-w-4xl mx-auto">
+            <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#c8a84b] mb-5 text-center">
+              Watch the film · 3 minutes
+            </p>
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              poster={videoPoster || undefined}
+              className="w-full rounded-2xl border border-white/10"
+              style={{ boxShadow: '0 24px 60px rgba(0,0,0,0.45)' }}
+            >
+              <source src={videoUrl} type="video/mp4" />
+            </video>
+          </div>
+        </section>
+      )}
 
       {/* Founder note */}
       <section className="px-5 sm:px-8 py-20 sm:py-24">

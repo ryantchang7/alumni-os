@@ -276,6 +276,20 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     default: 'Ask. Meet. Play. Gather.',
   },
   {
+    id: 'launch.video-url',
+    label: '/launch — film URL (mp4)',
+    hint: 'Direct mp4 URL for the launch film. Leave empty to hide the video section. Set once uploaded to Blob; replacing the file at the same pathname updates it everywhere.',
+    kind: 'text',
+    default: '',
+  },
+  {
+    id: 'launch.video-poster',
+    label: '/launch — film poster image URL',
+    hint: 'Poster frame shown before the film plays. Usually the clubhouse photo frame.',
+    kind: 'text',
+    default: '',
+  },
+  {
     id: 'launch.founder-note',
     label: '/launch — founder note (long)',
     hint: 'The full personal note from Ryan that lives in the parchment card. Paragraphs separated by a blank line. The line that starts with — is treated as the signature.',
