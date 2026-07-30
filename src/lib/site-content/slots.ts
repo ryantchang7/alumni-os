@@ -290,7 +290,7 @@ Golf has given me so much: opportunities, friendships, mentors, doors that opene
 
 So I built Penn Golf Clubhouse.
 
-I compiled our Member Book through online research and Penn historical data — every player and manager I could find from 1948 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
+I compiled our Member Book through online research and Penn historical data — every player and manager I could find from 1930 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
 
 For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
 
