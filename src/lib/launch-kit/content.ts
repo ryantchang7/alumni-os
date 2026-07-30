@@ -332,26 +332,22 @@ export const COPY_BLOCKS: CopyBlock[] = [
   {
     id: 'alumni-email',
     label: 'Alumni email',
-    surface: 'Send to the full Member Book once. Personalize the first name.',
+    surface: 'Send to the full Member Book once, BCC batches of ~50 from Gmail. Personalize the first name. The GIF of the map lighting up goes right above the watch link.',
     body: `Subject: Penn Golf Clubhouse — a place for everyone who carried the bag.
 
 Hey [first name],
 
 This spring at Ivy Champs at Baltusrol, with Patrick Cooper hosting and so many of you on the property, I felt something Penn Golf has always had but never quite captured in one place. A family.
 
-So I built Penn Golf Clubhouse. A private home for the program.
+So I spent the summer building Penn Golf Clubhouse — a private home for the program. I made a 3-minute film that shows the whole thing:
 
-Inside:
-• The Member Book — every player I could find from 1930 onward
-• The Member Map — where everyone is now
-• The Course — host or join a round wherever you're traveling
-• The 19th Hole — coffee, drinks, dinners
-• Career Room + Guided Ask — advice and intros without the awkwardness
-• Moments + Team Room — stay close to the current team
+▶ Watch the film → penngolfclubhouse.com/launch
 
-Joining is approval-based, not paywalled. The optional support tiers are there if you want to back the Clubhouse and the program, but that's never the gate.
+The short version: every player I could find from 1930 onward is already in the Member Book. There's a map of where everyone is, a way to host or join a round in any city, career advice and intros without the awkwardness, and a direct line to the current team.
 
-Come claim your member card → penngolfclubhouse.com
+Joining is approval-based, not paywalled — I approve every member myself. The optional support tiers are there if you want to back the Clubhouse and the program, but that's never the gate.
+
+Watch the film, then come claim your member card.
 
 For the Penn Golf family,
 Ryan Chang
