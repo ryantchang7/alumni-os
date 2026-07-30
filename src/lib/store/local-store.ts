@@ -1702,6 +1702,25 @@ export async function deleteMoment(
   return true
 }
 
+/** Edit your own moment — caption and/or tags. CAS-guarded; poster-only. */
+export async function updateMoment(
+  momentId: string,
+  byAccountId: string,
+  patch: { caption?: string; taggedBookIds?: string[] },
+): Promise<ClubhouseMoment | null> {
+  return mutateStore(store => {
+    const idx = store.moments.findIndex(m => m.id === momentId)
+    if (idx === -1) return null
+    if (store.moments[idx].postedByAccountId !== byAccountId) return null
+    store.moments[idx] = {
+      ...store.moments[idx],
+      ...(patch.caption !== undefined ? { caption: patch.caption } : {}),
+      ...(patch.taggedBookIds !== undefined ? { taggedBookIds: patch.taggedBookIds } : {}),
+    }
+    return store.moments[idx]
+  })
+}
+
 // ── Moment Comments ─────────────────────────────────────────────────────────
 
 export async function getCommentsForMoment(

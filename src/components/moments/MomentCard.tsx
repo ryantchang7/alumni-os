@@ -13,7 +13,7 @@
 import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Lock, Reply, SmilePlus, Star, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Lock, Pencil, Reply, SmilePlus, Star, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { ClubhouseMoment, MomentComment, MomentReaction } from '@/lib/store/types'
 import type { BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
@@ -83,6 +83,10 @@ export default function MomentCard({
     ? moment.media
     : [{ url: moment.photoUrl, type: moment.mediaType ?? ('image' as const) }]
   const [mediaIdx, setMediaIdx] = useState(0)
+  const [caption, setCaption] = useState(moment.caption)
+  const [editing, setEditing] = useState(false)
+  const [editDraft, setEditDraft] = useState('')
+  const [savingEdit, setSavingEdit] = useState(false)
   const [reactions, setReactions] = useState<MomentReaction[]>(initialReactions)
   const [comments, setComments] = useState<MomentComment[]>(initialComments)
   const [pickerOpen, setPickerOpen] = useState(false)
@@ -340,9 +344,53 @@ export default function MomentCard({
       </div>
 
       <div className="px-6 sm:px-8 py-5">
-        <p className="text-[14.5px] text-[#0a1628] leading-relaxed whitespace-pre-wrap">
-          {moment.caption}
-        </p>
+        {editing ? (
+          <div>
+            <textarea
+              value={editDraft}
+              onChange={e => setEditDraft(e.target.value)}
+              rows={3}
+              maxLength={800}
+              className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-[14px] text-[#0a1628] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30"
+            />
+            <div className="flex gap-3 mt-2">
+              <button
+                type="button"
+                disabled={savingEdit || !editDraft.trim()}
+                onClick={async () => {
+                  setSavingEdit(true)
+                  try {
+                    const res = await fetch(`/api/moments/${encodeURIComponent(moment.id)}`, {
+                      method: 'PATCH',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ caption: editDraft.trim() }),
+                    })
+                    if (res.ok) {
+                      setCaption(editDraft.trim())
+                      setEditing(false)
+                    }
+                  } finally {
+                    setSavingEdit(false)
+                  }
+                }}
+                className="text-[11.5px] font-semibold uppercase tracking-[0.14em] bg-[#0a1628] text-white px-3 py-1.5 rounded-lg disabled:opacity-40"
+              >
+                {savingEdit ? 'Saving…' : 'Save'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditing(false)}
+                className="text-[11.5px] text-ink-muted hover:text-[#0a1628]"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="text-[14.5px] text-[#0a1628] leading-relaxed whitespace-pre-wrap">
+            {caption}
+          </p>
+        )}
         {taggedMembers && taggedMembers.length > 0 && (
           <p className="mt-2 text-[13px] text-ink-muted">
             With{' '}
@@ -403,16 +451,31 @@ export default function MomentCard({
               </button>
             )}
             {isOwn && (
-              <button
-                type="button"
-                onClick={() => setConfirmRemoveOpen(true)}
-                disabled={removing}
-                title="Take down this moment"
-                className="inline-flex items-center gap-1 text-[#990000]/70 hover:text-[#990000] disabled:opacity-40 transition-colors"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span className="text-[11px] font-medium">{removing ? 'Removing…' : 'Remove'}</span>
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditDraft(caption)
+                    setEditing(true)
+                  }}
+                  disabled={editing}
+                  title="Edit this moment's caption"
+                  className="inline-flex items-center gap-1 text-ink-muted hover:text-[#0a1628] disabled:opacity-40 transition-colors"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span className="text-[11px] font-medium">Edit</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmRemoveOpen(true)}
+                  disabled={removing}
+                  title="Take down this moment"
+                  className="inline-flex items-center gap-1 text-[#990000]/70 hover:text-[#990000] disabled:opacity-40 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="text-[11px] font-medium">{removing ? 'Removing…' : 'Remove'}</span>
+                </button>
+              </>
             )}
             <span className="text-[#b0a898]">{timeAgo(moment.createdAt)}</span>
           </div>
