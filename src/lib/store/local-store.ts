@@ -2111,6 +2111,22 @@ export async function getChatConversationById(
   return store.chatConversations.find(c => c.id === id)
 }
 
+/** Delete a conversation and all of its messages, for everyone in it. Only a
+ * participant may delete. Returns false when the conversation doesn't exist
+ * or the caller isn't in it. */
+export async function deleteChatConversation(
+  conversationId: string,
+  accountId: string,
+): Promise<boolean> {
+  return mutateStore(store => {
+    const convo = store.chatConversations.find(c => c.id === conversationId)
+    if (!convo || !convo.memberAccountIds.includes(accountId)) return false
+    store.chatConversations = store.chatConversations.filter(c => c.id !== conversationId)
+    store.chatMessages = store.chatMessages.filter(m => m.conversationId !== conversationId)
+    return true
+  })
+}
+
 export async function listChatMessages(
   conversationId: string,
   since?: string,

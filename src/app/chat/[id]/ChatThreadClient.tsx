@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Send, AlertCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Send, AlertCircle, Trash2 } from 'lucide-react'
 
 interface ChatMessage {
   id: string
@@ -53,6 +54,25 @@ export default function ChatThreadClient({
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
   const [reconnecting, setReconnecting] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const router = useRouter()
+
+  const handleDelete = useCallback(async () => {
+    const sure = window.confirm(
+      'Delete this conversation for everyone in it? This cannot be undone.',
+    )
+    if (!sure) return
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/chat/conversations/${conversationId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('delete failed')
+      router.push('/chat')
+      router.refresh()
+    } catch {
+      setDeleting(false)
+      window.alert('Could not delete the conversation — try again.')
+    }
+  }, [conversationId, router])
 
   const lastSeenAt = useRef<string | null>(
     initialMessages.length > 0
@@ -217,7 +237,18 @@ export default function ChatThreadClient({
             </p>
             <p className="text-[10px] text-white/75 uppercase tracking-[0.16em]">{subtitle}</p>
           </div>
-          <div className="w-12" />
+          <div className="w-12 flex justify-end">
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              aria-label="Delete this conversation"
+              title="Delete this conversation"
+              className="text-white/60 hover:text-[#ff6b6b] transition-colors disabled:opacity-40 p-1.5"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
