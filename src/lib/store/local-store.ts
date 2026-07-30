@@ -1634,6 +1634,7 @@ export async function createMoment(input: {
   mediaType?: 'image' | 'video'
   audience?: 'public' | 'locker-room'
   taggedPersonIds?: string[]
+  taggedBookIds?: string[]
 }): Promise<ClubhouseMoment> {
   const store = await readStore()
   const moment: ClubhouseMoment = {
@@ -1647,6 +1648,7 @@ export async function createMoment(input: {
     mediaType: input.mediaType ?? 'image',
     audience: input.audience ?? 'public',
     taggedPersonIds: input.taggedPersonIds ?? [],
+    taggedBookIds: input.taggedBookIds ?? [],
     status: 'published',
     createdAt: new Date().toISOString(),
   }

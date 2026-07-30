@@ -13,6 +13,8 @@ import {
 } from '@/lib/store/local-store'
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
 import { notifyMany } from '@/lib/notifications/notify'
+import { getMemberById } from '@/lib/member-book/data'
+import { findTeamStorePersonForBookEntry } from '@/lib/member-book/bridge'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -128,6 +130,12 @@ export async function POST(request: Request) {
     taggedPersonIds: Array.isArray(body.taggedPersonIds)
       ? (body.taggedPersonIds as unknown[]).filter((x): x is string => typeof x === 'string')
       : [],
+    // Book-id tags cover the whole Member Book, claimed or not. Cap at 20.
+    taggedBookIds: Array.isArray(body.taggedBookIds)
+      ? (body.taggedBookIds as unknown[])
+          .filter((x): x is string => typeof x === 'string')
+          .slice(0, 20)
+      : [],
   })
 
   // Broadcast new PUBLIC moments to the rest of the members (community type —
@@ -139,10 +147,24 @@ export async function POST(request: Request) {
       const fresh = await readStore()
       const posterFirst = (account.name ?? session.user?.name ?? 'A member').split(/\s+/)[0]
       // Tagged members get a personal "you were tagged" ping instead of the
-      // community broadcast.
+      // community broadcast. Book-id tags resolve to accounts only when that
+      // member has claimed (bridge by normalized name) — unclaimed tags still
+      // display on the card, they just have no inbox yet.
+      const taggedViaBook = new Set<string>()
+      for (const bookId of moment.taggedBookIds ?? []) {
+        const entry = getMemberById(bookId)
+        if (!entry) continue
+        const person = findTeamStorePersonForBookEntry(entry, fresh.people)
+        if (person) taggedViaBook.add(person.id)
+      }
       const taggedAccountIds = new Set(
         fresh.accounts
-          .filter(a => a.linkedPersonId && moment.taggedPersonIds.includes(a.linkedPersonId))
+          .filter(
+            a =>
+              a.linkedPersonId &&
+              (moment.taggedPersonIds.includes(a.linkedPersonId) ||
+                taggedViaBook.has(a.linkedPersonId)),
+          )
           .map(a => a.id),
       )
       if (taggedAccountIds.size > 0) {

@@ -11,6 +11,7 @@ import {
   readStore,
 } from '@/lib/store/local-store'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
+import { getMemberById } from '@/lib/member-book/data'
 import { Camera, Lock } from 'lucide-react'
 import { auth } from '@/auth'
 import { getApprovalState } from '@/lib/access/approval'
@@ -121,15 +122,21 @@ export default async function MomentsPage({ searchParams }: PageProps) {
   }
 
   // Hydrate tagged personIds into name + book link for the card.
-  function taggedMembersFor(personIds: string[] | undefined) {
-    if (!personIds?.length || !store) return undefined
-    const out = personIds
+  function taggedMembersFor(personIds: string[] | undefined, bookIds?: string[]) {
+    if (!store || (!personIds?.length && !bookIds?.length)) return undefined
+    const out = (personIds ?? [])
       .map((id) => {
         const person = store.people.find((p) => p.id === id)
         if (!person) return null
         return { personId: id, name: person.canonicalName, bookId: bookIdForPerson(id) }
       })
       .filter((x): x is { personId: string; name: string; bookId: string | null } => x !== null)
+    for (const bid of bookIds ?? []) {
+      const entry = getMemberById(bid)
+      if (!entry) continue
+      if (out.some(x => x.bookId === bid)) continue
+      out.push({ personId: 'book:' + bid, name: entry.displayName, bookId: bid })
+    }
     return out.length ? out : undefined
   }
 
@@ -295,7 +302,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                 canPost={canPost}
                 showLockerPill={isLockerView}
                 isCaptain={viewerIsCaptain}
-                taggedMembers={taggedMembersFor(m.taggedPersonIds)}
+                taggedMembers={taggedMembersFor(m.taggedPersonIds, m.taggedBookIds)}
               />
             ))}
           </div>

@@ -474,6 +474,9 @@ export interface ClubhouseMoment {
    *  family. Older records without this field default to 'public'. */
   audience?: 'public' | 'locker-room'
   taggedPersonIds: string[]
+  /** Tags by Member Book id — works for ALL 340 members, claimed or not.
+   *  Preferred over taggedPersonIds (kept for compatibility). */
+  taggedBookIds?: string[]
   status: 'published' | 'pending' | 'removed'
   /** ISO timestamp when a captain featured this moment. Undefined = not featured. */
   featuredAt?: string

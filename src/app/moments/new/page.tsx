@@ -23,9 +23,9 @@ function NewMomentForm() {
   const [canSeeLockerRoom, setCanSeeLockerRoom] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [members, setMembers] = useState<Array<{ personId: string; name: string }>>([])
+  const [members, setMembers] = useState<Array<{ bookId: string; name: string }>>([])
   const [tagQuery, setTagQuery] = useState('')
-  const [tagged, setTagged] = useState<Array<{ personId: string; name: string }>>([])
+  const [tagged, setTagged] = useState<Array<{ bookId: string; name: string }>>([])
 
   const signedIn = sessionStatus === 'authenticated'
   const approved = signedIn && !!session?.linkedPersonId
@@ -48,17 +48,12 @@ function NewMomentForm() {
       .catch(() => {})
   }, [approved, searchParams])
 
-  // Approved members for the tag picker (same source as the chat picker).
+  // The whole Member Book for the tag picker — tag anyone, claimed or not.
   useEffect(() => {
     if (!approved) return
-    fetch('/api/chat/members')
+    fetch('/api/member-book/options')
       .then(r => (r.ok ? r.json() : { members: [] }))
-      .then(d => {
-        const opts = ((d.members ?? []) as Array<{ personId?: string; name: string }>)
-          .filter((m): m is { personId: string; name: string } => !!m.personId)
-          .map(m => ({ personId: m.personId, name: m.name }))
-        setMembers(opts)
-      })
+      .then(d => setMembers((d.members ?? []) as Array<{ bookId: string; name: string }>))
       .catch(() => {})
   }, [approved])
 
@@ -79,7 +74,7 @@ function NewMomentForm() {
           mediaType,
           caption,
           audience,
-          taggedPersonIds: tagged.map(t => t.personId),
+          taggedBookIds: tagged.map(t => t.bookId),
         }),
       })
       if (!res.ok) {
@@ -217,9 +212,9 @@ function NewMomentForm() {
                 <div className="flex flex-wrap gap-1.5 mb-2">
                   {tagged.map(t => (
                     <button
-                      key={t.personId}
+                      key={t.bookId}
                       type="button"
-                      onClick={() => setTagged(prev => prev.filter(x => x.personId !== t.personId))}
+                      onClick={() => setTagged(prev => prev.filter(x => x.bookId !== t.bookId))}
                       className="inline-flex items-center gap-1.5 text-[12px] font-medium bg-[#0a1628] text-white px-2.5 py-1 rounded-full hover:bg-[#990000] transition-colors"
                       title="Remove tag"
                     >
@@ -241,13 +236,13 @@ function NewMomentForm() {
                   {members
                     .filter(
                       m =>
-                        !tagged.some(t => t.personId === m.personId) &&
+                        !tagged.some(t => t.bookId === m.bookId) &&
                         m.name.toLowerCase().includes(tagQuery.trim().toLowerCase()),
                     )
                     .slice(0, 6)
                     .map(m => (
                       <button
-                        key={m.personId}
+                        key={m.bookId}
                         type="button"
                         onClick={() => {
                           setTagged(prev => [...prev, m])
