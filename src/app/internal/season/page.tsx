@@ -1,9 +1,11 @@
 import Link from 'next/link'
-import { requireFounderOr404 } from '@/lib/auth/founder-page-gate'
+import { notFound } from 'next/navigation'
+import { canPostSeasonUpdates } from '@/lib/auth/season-posters'
 import SeasonManagerClient from './SeasonManagerClient'
 
 export default async function InternalSeasonPage() {
-  await requireFounderOr404()
+  const gate = await canPostSeasonUpdates()
+  if (!gate.ok) notFound()
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">

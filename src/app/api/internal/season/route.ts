@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { requireFounder } from '@/lib/auth/guards'
+import { canPostSeasonUpdates } from '@/lib/auth/season-posters'
 import {
   getTeamBySlug,
   getSeasonUpdatesForTeam,
@@ -41,8 +42,8 @@ function cleanUrl(raw: unknown): string | undefined {
 }
 
 export async function GET(request: Request) {
-  const gate = await requireFounder()
-  if (!gate.ok) return gate.response
+  const gate = await canPostSeasonUpdates()
+  if (!gate.ok) return NextResponse.json({ error: 'Not authorized' }, { status: 404 })
 
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
@@ -57,8 +58,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const gate = await requireFounder()
-  if (!gate.ok) return gate.response
+  const gate = await canPostSeasonUpdates()
+  if (!gate.ok) return NextResponse.json({ error: 'Not authorized' }, { status: 404 })
 
   let body: Record<string, unknown>
   try {
@@ -112,7 +113,7 @@ export async function POST(request: Request) {
         },
         // Don't notify the founder for their own post (consistent with the
         // other fan-outs). Safe if accountId is undefined — exclusion no-ops.
-        { excludeAccountId: gate.session.accountId ?? undefined },
+        { excludeAccountId: gate.accountId ?? undefined },
       )
     }
   } catch (err) {

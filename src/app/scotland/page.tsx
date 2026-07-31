@@ -109,23 +109,40 @@ export default async function ScotlandPage() {
       <section className="px-5 sm:px-8 py-14 sm:py-16">
         <div className="max-w-[1080px] mx-auto">
           <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#990000] mb-3">
-            The Tournament
+            The Tournament · Oct 12–14
           </p>
           <h2 className="text-[#0a1628] text-3xl sm:text-4xl font-medium font-heading mb-4">
             St Andrews Links Collegiate
           </h2>
-          <p className="text-[#3d4a5c] text-[15px] leading-relaxed max-w-2xl mb-4">
-            54 holes in the home of golf, October 12–14, 2026 — one of the most
-            prestigious events on the schedule. The extended trip means alumni,
-            parents, and friends get to watch the team compete, then play the same
-            coast themselves.
-          </p>
-          <Link
-            href="/team-room"
-            className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors"
-          >
-            See the full 2026–27 schedule in the Team Room →
-          </Link>
+          <div className="text-[#3d4a5c] text-[15px] leading-relaxed max-w-2xl space-y-3 mb-5">
+            <p>
+              The fourth annual St Andrews Links Collegiate — a four-team field of
+              Penn, Texas, Washington, and St Andrews, with both Penn&rsquo;s
+              men&rsquo;s and women&rsquo;s teams competing in the home of golf.
+            </p>
+            <p>
+              Two rounds of stroke play on the Jubilee Course set the individual
+              championships and the seeding. Then the final day is match play —
+              Championship and Consolation matches — <strong className="text-[#0a1628]">on the Old Course itself</strong>.
+              All three days are televised on Golf Channel.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <Link
+              href="/team-room"
+              className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors"
+            >
+              See the full 2026–27 schedule in the Team Room →
+            </Link>
+            <a
+              href="https://pennathletics.com/news/2025/10/15/general-golf-teams-to-compete-in-2026-st-andrews-links-collegiate.aspx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#990000] hover:underline"
+            >
+              Read the announcement on pennathletics.com ↗
+            </a>
+          </div>
         </div>
       </section>
 
@@ -135,9 +152,17 @@ export default async function ScotlandPage() {
           <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#990000] mb-3">
             The Tour · Oct 14–17
           </p>
-          <h2 className="text-[#0a1628] text-3xl sm:text-4xl font-medium font-heading mb-8">
+          <h2 className="text-[#0a1628] text-3xl sm:text-4xl font-medium font-heading mb-6">
             Four days on the links.
           </h2>
+          <div className="rounded-2xl overflow-hidden mb-6 border border-[rgba(180,168,150,0.4)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://67u0teziiyoxeaeo.public.blob.vercel-storage.com/a7e59dec-f335-4c98-8e33-3e7b050b58df/1785519877069-4UvITXlalATQ3Ap8xNy8uv68khjkmK.jpg"
+              alt="Aerial view of Kingsbarns Golf Links on the coast"
+              className="w-full max-h-[420px] object-cover"
+            />
+          </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {ITINERARY.map(d => (
               <div
@@ -230,6 +255,9 @@ export default async function ScotlandPage() {
               Moments
             </Link>{' '}
             when we&rsquo;re back — the whole clubhouse will want to see it.
+          </p>
+          <p className="text-[11px] text-[#b0a898] mt-3">
+            Photos: Kohjiro Kinno / St Andrews Links Trust · College Links Golf
           </p>
         </div>
       </section>

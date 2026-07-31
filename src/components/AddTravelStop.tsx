@@ -55,6 +55,7 @@ export default function AddTravelStop() {
   const [endDate, setEndDate] = useState('')
   const [note, setNote] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
+  const [courseUrl, setCourseUrl] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -85,6 +86,7 @@ export default function AddTravelStop() {
     setEndDate('')
     setNote('')
     setLinkUrl('')
+    setCourseUrl('')
     setImageUrl('')
     setStatus('idle')
     setErrorMsg('')
@@ -107,6 +109,7 @@ export default function AddTravelStop() {
           endDate: endDate.trim() || undefined,
           note: note.trim() || undefined,
           linkUrl: linkUrl.trim() || undefined,
+          courseUrl: courseUrl.trim() || undefined,
           imageUrl: imageUrl.trim() || undefined,
         }),
       })
@@ -270,6 +273,21 @@ export default function AddTravelStop() {
                         disabled={status === 'submitting'}
                       />
                     </div>
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>
+                      Course link{' '}
+                      <span className="normal-case font-normal tracking-normal">(optional — website, or a Google Maps link)</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={courseUrl}
+                      onChange={e => setCourseUrl(e.target.value.slice(0, 1024))}
+                      placeholder="https://..."
+                      className={inputClass}
+                      disabled={status === 'submitting'}
+                    />
                   </div>
 
                   {status === 'error' && (

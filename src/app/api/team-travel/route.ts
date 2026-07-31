@@ -4,7 +4,7 @@
  * POST   — founder posts a team travel/tournament stop.
  * DELETE — founder removes a stop (?id=).
  *
- * POST body: { eventName, locationText, startDate, endDate?, note?, linkUrl? (leaderboard/results), imageUrl? (crest) }.
+ * POST body: { eventName, locationText, startDate, endDate?, note?, linkUrl? (leaderboard/results), courseUrl? (course site or maps), imageUrl? (crest) }.
  * GET    — founder lists stops (ids included, for admin tooling).
  */
 
@@ -64,6 +64,7 @@ export async function POST(request: Request) {
     endDate: typeof body.endDate === 'string' && body.endDate.trim() ? body.endDate.trim() : undefined,
     note: typeof body.note === 'string' && body.note.trim() ? body.note.trim() : undefined,
     linkUrl: cleanHttpUrl(body.linkUrl),
+    courseUrl: cleanHttpUrl(body.courseUrl),
     imageUrl: cleanHttpUrl(body.imageUrl),
   })
 

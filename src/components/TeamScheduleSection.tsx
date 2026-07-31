@@ -36,14 +36,8 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
   const nextUpId = sorted.find(s => (s.endDate ?? s.startDate) >= todayISO)?.id ?? null
 
   return (
-    <section>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#990000] mb-1.5">
-        The Season Ahead
-      </p>
-      <h2 className="text-base font-semibold text-[#0a1628] mb-1">2026–27 Schedule</h2>
-      <p className="text-sm text-ink-muted mb-6">
-        Where the team plays this year — follow along, or come out to a stop near you.
-      </p>
+    <div>
+      <h3 className="text-sm font-semibold text-[#0a1628] mb-4 uppercase tracking-[0.1em]">2026–27 Schedule</h3>
       <ol className="space-y-3">
         {sorted.map(s => {
           const isScotland = SCOTLAND_RE.test(`${s.eventName} ${s.locationText}`)
@@ -87,6 +81,19 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                     <p className={`text-[13px] ${isScotland ? 'text-white/70' : 'text-ink-muted'}`}>
                       {s.locationText}
                       {s.note ? ` · ${s.note}` : ''}
+                      {s.courseUrl && (
+                        <>
+                          {' · '}
+                          <a
+                            href={s.courseUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`font-medium hover:underline ${isScotland ? 'text-[#c8a84b]' : 'text-[#0a1628]'}`}
+                          >
+                            {/maps\.google|google\.com\/maps/.test(s.courseUrl) ? 'Map ↗' : 'Course ↗'}
+                          </a>
+                        </>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -111,7 +118,7 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                   ) : (
                     !isPast && (
                       <span className={`text-[11.5px] whitespace-nowrap ${isScotland ? 'text-white/45' : 'text-[#b0a898]'}`}>
-                        Leaderboard closer to the event
+                        Leaderboard coming soon
                       </span>
                     )
                   )}
@@ -134,6 +141,6 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
           Near a stop? Offer to host the team →
         </Link>
       </div>
-    </section>
+    </div>
   )
 }

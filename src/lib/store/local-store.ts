@@ -2714,6 +2714,7 @@ export async function createTravelStop(input: {
   endDate?: string
   note?: string
   linkUrl?: string
+  courseUrl?: string
   imageUrl?: string
 }): Promise<TeamTravelStop> {
   const stop: TeamTravelStop = {
@@ -2725,6 +2726,7 @@ export async function createTravelStop(input: {
     endDate: input.endDate?.trim() || undefined,
     note: input.note?.trim() || undefined,
     linkUrl: input.linkUrl?.trim() || undefined,
+    courseUrl: input.courseUrl?.trim() || undefined,
     imageUrl: input.imageUrl?.trim() || undefined,
     createdAt: new Date().toISOString(),
   }
