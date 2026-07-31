@@ -54,6 +54,8 @@ export default function AddTravelStop() {
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [note, setNote] = useState('')
+  const [linkUrl, setLinkUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const router = useRouter()
@@ -82,6 +84,8 @@ export default function AddTravelStop() {
     setStartDate('')
     setEndDate('')
     setNote('')
+    setLinkUrl('')
+    setImageUrl('')
     setStatus('idle')
     setErrorMsg('')
     setOpen(false)
@@ -102,6 +106,8 @@ export default function AddTravelStop() {
           startDate: startDate.trim(),
           endDate: endDate.trim() || undefined,
           note: note.trim() || undefined,
+          linkUrl: linkUrl.trim() || undefined,
+          imageUrl: imageUrl.trim() || undefined,
         }),
       })
       if (res.ok) {
@@ -233,6 +239,37 @@ export default function AddTravelStop() {
                       className={`${inputClass} resize-none`}
                       disabled={status === 'submitting'}
                     />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className={labelClass}>
+                        Event / course link{' '}
+                        <span className="normal-case font-normal tracking-normal">(optional)</span>
+                      </label>
+                      <input
+                        type="url"
+                        value={linkUrl}
+                        onChange={e => setLinkUrl(e.target.value.slice(0, 1024))}
+                        placeholder="https://..."
+                        className={inputClass}
+                        disabled={status === 'submitting'}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>
+                        Crest / image URL{' '}
+                        <span className="normal-case font-normal tracking-normal">(optional)</span>
+                      </label>
+                      <input
+                        type="url"
+                        value={imageUrl}
+                        onChange={e => setImageUrl(e.target.value.slice(0, 1024))}
+                        placeholder="https://... (host school crest or course photo)"
+                        className={inputClass}
+                        disabled={status === 'submitting'}
+                      />
+                    </div>
                   </div>
 
                   {status === 'error' && (

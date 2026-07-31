@@ -58,23 +58,47 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                   : `bg-white border-[rgba(180,168,150,0.35)] ${isPast ? 'opacity-55' : ''}`
               }`}
             >
-              <div className="flex items-baseline justify-between gap-3 flex-wrap">
-                <div className="min-w-0">
-                  <p className={`text-[11px] font-semibold uppercase tracking-[0.16em] mb-0.5 ${isScotland ? 'text-[#c8a84b]' : 'text-[#990000]'}`}>
-                    {formatRange(s.startDate, s.endDate)}
-                    {isNextUp && (
-                      <span className="ml-2 inline-block bg-[#c8a84b] text-[#0a1628] text-[9.5px] font-bold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full align-middle">
-                        Next up
-                      </span>
-                    )}
-                  </p>
-                  <h3 className={`text-[15px] font-semibold ${isScotland ? 'text-white' : 'text-[#0a1628]'}`}>
-                    {s.eventName}
-                  </h3>
-                  <p className={`text-[13px] ${isScotland ? 'text-white/70' : 'text-ink-muted'}`}>
-                    {s.locationText}
-                    {s.note ? ` · ${s.note}` : ''}
-                  </p>
+              <div className="flex items-start justify-between gap-3 flex-wrap">
+                <div className="flex items-start gap-3.5 min-w-0">
+                  {s.imageUrl && (
+                    <span className={`flex-shrink-0 w-12 h-12 rounded-lg border flex items-center justify-center overflow-hidden ${isScotland ? 'bg-white/95 border-[#c8a84b]/40' : 'bg-[#fdfcf9] border-[rgba(180,168,150,0.4)]'}`}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={s.imageUrl} alt="" className="w-9 h-9 object-contain" loading="lazy" />
+                    </span>
+                  )}
+                  <div className="min-w-0">
+                    <p className={`text-[11px] font-semibold uppercase tracking-[0.16em] mb-0.5 ${isScotland ? 'text-[#c8a84b]' : 'text-[#990000]'}`}>
+                      {formatRange(s.startDate, s.endDate)}
+                      {isNextUp && (
+                        <span className="ml-2 inline-block bg-[#c8a84b] text-[#0a1628] text-[9.5px] font-bold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full align-middle">
+                          Next up
+                        </span>
+                      )}
+                    </p>
+                    <h3 className={`text-[15px] font-semibold ${isScotland ? 'text-white' : 'text-[#0a1628]'}`}>
+                      {isScotland ? (
+                        <Link href="/scotland" className="hover:underline">
+                          {s.eventName}
+                        </Link>
+                      ) : s.linkUrl ? (
+                        <a
+                          href={s.linkUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline"
+                        >
+                          {s.eventName}
+                          <span className="text-[11px] text-ink-muted font-normal ml-1.5">↗</span>
+                        </a>
+                      ) : (
+                        s.eventName
+                      )}
+                    </h3>
+                    <p className={`text-[13px] ${isScotland ? 'text-white/70' : 'text-ink-muted'}`}>
+                      {s.locationText}
+                      {s.note ? ` · ${s.note}` : ''}
+                    </p>
+                  </div>
                 </div>
                 {isScotland && (
                   <Link

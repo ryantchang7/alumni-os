@@ -106,7 +106,14 @@ export default async function TeamTravelPage() {
                   {/* Stop header — itinerary layout */}
                   <div className="p-5 sm:p-6">
                     <div className="flex items-start justify-between gap-4 flex-wrap">
-                      <div className="min-w-0 flex-1">
+                      <div className="min-w-0 flex-1 flex items-start gap-4">
+                        {stop.imageUrl && (
+                          <span className="flex-shrink-0 w-14 h-14 rounded-lg bg-[#fdfcf9] border border-[rgba(180,168,150,0.4)] flex items-center justify-center overflow-hidden mt-0.5">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={stop.imageUrl} alt="" className="w-11 h-11 object-contain" loading="lazy" />
+                          </span>
+                        )}
+                        <div className="min-w-0">
                         {/* Date badge */}
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-1.5">
                           {formatDate(stop.startDate)}
@@ -115,7 +122,14 @@ export default async function TeamTravelPage() {
                         <h2
                           className="text-[#0a1628] text-xl font-medium leading-snug font-heading"
                         >
-                          {stop.eventName}
+                          {stop.linkUrl ? (
+                            <a href={stop.linkUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                              {stop.eventName}
+                              <span className="text-[12px] text-ink-muted font-normal ml-1.5">↗</span>
+                            </a>
+                          ) : (
+                            stop.eventName
+                          )}
                         </h2>
                         <p className="text-sm text-[#3a4657] mt-1">{stop.locationText}</p>
                         {stop.note && (
@@ -123,6 +137,7 @@ export default async function TeamTravelPage() {
                             {stop.note}
                           </p>
                         )}
+                        </div>
                       </div>
 
                       <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">

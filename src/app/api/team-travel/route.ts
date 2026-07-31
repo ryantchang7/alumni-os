@@ -4,14 +4,36 @@
  * POST   — founder posts a team travel/tournament stop.
  * DELETE — founder removes a stop (?id=).
  *
- * POST body: { eventName, locationText, startDate, endDate?, note? }.
+ * POST body: { eventName, locationText, startDate, endDate?, note?, linkUrl?, imageUrl? }.
+ * GET    — founder lists stops (ids included, for admin tooling).
  */
 
 import { NextResponse } from 'next/server'
 import { requireFounder } from '@/lib/auth/guards'
-import { createTravelStop, deleteTravelStop, getTeamBySlug } from '@/lib/store/local-store'
+import { createTravelStop, deleteTravelStop, getTeamBySlug, getTravelStops } from '@/lib/store/local-store'
 
 const TEAM_SLUG = 'penn-mens-golf'
+
+function cleanHttpUrl(v: unknown): string | undefined {
+  if (typeof v !== 'string') return undefined
+  const url = v.trim()
+  if (!url || url.length > 1024) return undefined
+  try {
+    const u = new URL(url)
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return undefined
+    return url
+  } catch {
+    return undefined
+  }
+}
+
+export async function GET() {
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+  const team = await getTeamBySlug(TEAM_SLUG)
+  if (!team) return NextResponse.json({ stops: [] })
+  return NextResponse.json({ stops: await getTravelStops(team.id) })
+}
 
 export async function POST(request: Request) {
   const gate = await requireFounder()
@@ -41,6 +63,8 @@ export async function POST(request: Request) {
     startDate,
     endDate: typeof body.endDate === 'string' && body.endDate.trim() ? body.endDate.trim() : undefined,
     note: typeof body.note === 'string' && body.note.trim() ? body.note.trim() : undefined,
+    linkUrl: cleanHttpUrl(body.linkUrl),
+    imageUrl: cleanHttpUrl(body.imageUrl),
   })
 
   return NextResponse.json({ ok: true, stop }, { status: 201 })

@@ -2713,6 +2713,8 @@ export async function createTravelStop(input: {
   startDate: string
   endDate?: string
   note?: string
+  linkUrl?: string
+  imageUrl?: string
 }): Promise<TeamTravelStop> {
   const stop: TeamTravelStop = {
     id: `trip_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
@@ -2722,6 +2724,8 @@ export async function createTravelStop(input: {
     startDate: input.startDate.trim(),
     endDate: input.endDate?.trim() || undefined,
     note: input.note?.trim() || undefined,
+    linkUrl: input.linkUrl?.trim() || undefined,
+    imageUrl: input.imageUrl?.trim() || undefined,
     createdAt: new Date().toISOString(),
   }
   return mutateStore(store => {
