@@ -22,6 +22,7 @@ import GatedPreview from '@/components/GatedPreview'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import LockerRoomHero from './LockerRoomHero'
 import MomentCard from '@/components/moments/MomentCard'
+import { FOUNDER_EMAILS } from '@/lib/badges'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -94,6 +95,7 @@ export default async function LockerRoomPage() {
   const allComments = store?.momentComments.filter(c => c.status === 'published') ?? []
   const allReactions = store?.momentReactions ?? []
   const viewerAccountId = session?.accountId ?? null
+  const viewerIsFounder = FOUNDER_EMAILS.has((session?.user?.email ?? '').toLowerCase().trim())
   const canPost = !!session?.linkedPersonId
 
   return (
@@ -158,6 +160,7 @@ export default async function LockerRoomPage() {
                 viewerAccountId={viewerAccountId}
                 canPost={canPost}
                 showLockerPill
+                isFounder={viewerIsFounder}
                 taggedMembers={taggedMembersFor(m.taggedPersonIds, m.taggedBookIds)}
               />
             ))}

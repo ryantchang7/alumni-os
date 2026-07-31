@@ -1702,20 +1702,30 @@ export async function deleteMoment(
   return true
 }
 
-/** Edit your own moment — caption and/or tags. CAS-guarded; poster-only. */
+/** Edit your own moment — caption, tags, and/or media. CAS-guarded;
+ *  poster-only, unless `allowAnyPoster` (founder moderation) is set.
+ *  When media changes, photoUrl/mediaType mirror media[0] for old readers. */
 export async function updateMoment(
   momentId: string,
   byAccountId: string,
-  patch: { caption?: string; taggedBookIds?: string[] },
+  patch: {
+    caption?: string
+    taggedBookIds?: string[]
+    media?: { url: string; type: 'image' | 'video' }[]
+  },
+  allowAnyPoster = false,
 ): Promise<ClubhouseMoment | null> {
   return mutateStore(store => {
     const idx = store.moments.findIndex(m => m.id === momentId)
     if (idx === -1) return null
-    if (store.moments[idx].postedByAccountId !== byAccountId) return null
+    if (!allowAnyPoster && store.moments[idx].postedByAccountId !== byAccountId) return null
     store.moments[idx] = {
       ...store.moments[idx],
       ...(patch.caption !== undefined ? { caption: patch.caption } : {}),
       ...(patch.taggedBookIds !== undefined ? { taggedBookIds: patch.taggedBookIds } : {}),
+      ...(patch.media !== undefined
+        ? { media: patch.media, photoUrl: patch.media[0].url, mediaType: patch.media[0].type }
+        : {}),
     }
     return store.moments[idx]
   })

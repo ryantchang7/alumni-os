@@ -18,14 +18,13 @@ import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
 import HeroCrest from '@/components/HeroCrest'
 import SectionEmblemHeader from '@/components/SectionEmblemHeader'
-import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
+import { getBadgesForAccount, FOUNDER_EMAILS, type BadgeId } from '@/lib/badges'
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import MomentCard from '@/components/moments/MomentCard'
 import { isCaptainEmailWithOverrides } from '@/lib/captains-runtime'
 
 const TEAM_SLUG = 'penn-mens-golf'
-const FOUNDER_EMAILS_SET = new Set(['rtchang@sas.upenn.edu', 'ryan.taylor.chang@gmail.com'])
 
 type View = 'all' | 'locker-room'
 
@@ -52,12 +51,14 @@ export default async function MomentsPage({ searchParams }: PageProps) {
   const session = await auth()
   let canSeeLockerRoom = false
   let viewerIsCaptain = false
+  let viewerIsFounder = false
   if (session?.accountId && team && store) {
     const account = await getAccountById(session.accountId)
     canSeeLockerRoom = canSeeLockerRoomForAccount(account, store, team.id)
     const viewerEmail = (session.user?.email ?? '').toLowerCase().trim()
+    viewerIsFounder = FOUNDER_EMAILS.has(viewerEmail)
     viewerIsCaptain =
-      FOUNDER_EMAILS_SET.has(viewerEmail) ||
+      FOUNDER_EMAILS.has(viewerEmail) ||
       isCaptainEmailWithOverrides(viewerEmail, 'penn-mens-golf', store.accounts)
   }
 
@@ -302,6 +303,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                 canPost={canPost}
                 showLockerPill={isLockerView}
                 isCaptain={viewerIsCaptain}
+                isFounder={viewerIsFounder}
                 taggedMembers={taggedMembersFor(m.taggedPersonIds, m.taggedBookIds)}
               />
             ))}

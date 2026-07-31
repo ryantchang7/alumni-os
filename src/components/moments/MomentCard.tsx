@@ -18,6 +18,7 @@ import type { ClubhouseMoment, MomentComment, MomentReaction } from '@/lib/store
 import type { BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import PhotoUpload from '@/components/PhotoUpload'
 
 // emoji-picker-react is browser-only and large; load it lazily so it
 // doesn't bloat the initial bundle. The picker only mounts after the
@@ -47,6 +48,8 @@ interface Props {
   isCaptain?: boolean
   /** Members tagged in this moment, hydrated server-side (name + book link). */
   taggedMembers?: Array<{ personId: string; name: string; bookId: string | null }>
+  /** True for the founder — can edit any post (site-creator moderation). */
+  isFounder?: boolean
 }
 
 function timeAgo(iso: string): string {
@@ -78,14 +81,19 @@ export default function MomentCard({
   showLockerPill,
   isCaptain = false,
   taggedMembers,
+  isFounder = false,
 }: Props) {
-  const mediaItems = moment.media?.length
+  const initialMedia = moment.media?.length
     ? moment.media
     : [{ url: moment.photoUrl, type: moment.mediaType ?? ('image' as const) }]
+  const [media, setMedia] = useState<{ url: string; type: 'image' | 'video' }[]>(initialMedia)
   const [mediaIdx, setMediaIdx] = useState(0)
   const [caption, setCaption] = useState(moment.caption)
   const [editing, setEditing] = useState(false)
   const [editDraft, setEditDraft] = useState('')
+  const [editMedia, setEditMedia] = useState<{ url: string; type: 'image' | 'video' }[]>([])
+  const [editUpload, setEditUpload] = useState('')
+  const [editError, setEditError] = useState<string | null>(null)
   const [savingEdit, setSavingEdit] = useState(false)
   const [reactions, setReactions] = useState<MomentReaction[]>(initialReactions)
   const [comments, setComments] = useState<MomentComment[]>(initialComments)
@@ -271,10 +279,10 @@ export default function MomentCard({
     >
       {/* Media — single item renders plain; multiple items get a carousel */}
       <div className={`relative ${moment.audience === 'locker-room' ? 'bg-[#0a1628]' : 'bg-[#fdfcf9]'}`}>
-        {mediaItems[mediaIdx].type === 'video' ? (
+        {media[mediaIdx].type === 'video' ? (
           <video
-            key={mediaItems[mediaIdx].url}
-            src={mediaItems[mediaIdx].url}
+            key={media[mediaIdx].url}
+            src={media[mediaIdx].url}
             controls
             playsInline
             preload="metadata"
@@ -283,19 +291,19 @@ export default function MomentCard({
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={mediaItems[mediaIdx].url}
+            src={media[mediaIdx].url}
             alt={moment.caption}
             loading="lazy"
             decoding="async"
             className="w-full max-h-[640px] object-cover"
           />
         )}
-        {mediaItems.length > 1 && (
+        {media.length > 1 && (
           <>
             <button
               type="button"
               aria-label="Previous photo"
-              onClick={() => setMediaIdx(i => (i - 1 + mediaItems.length) % mediaItems.length)}
+              onClick={() => setMediaIdx(i => (i - 1 + media.length) % media.length)}
               className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#0a1628]/70 hover:bg-[#0a1628] text-white flex items-center justify-center backdrop-blur-sm transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -303,13 +311,13 @@ export default function MomentCard({
             <button
               type="button"
               aria-label="Next photo"
-              onClick={() => setMediaIdx(i => (i + 1) % mediaItems.length)}
+              onClick={() => setMediaIdx(i => (i + 1) % media.length)}
               className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#0a1628]/70 hover:bg-[#0a1628] text-white flex items-center justify-center backdrop-blur-sm transition-colors"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
-              {mediaItems.map((_, i) => (
+              {media.map((_, i) => (
                 <button
                   key={i}
                   type="button"
@@ -322,7 +330,7 @@ export default function MomentCard({
               ))}
             </div>
             <span className="absolute top-3 left-1/2 -translate-x-1/2 bg-[#0a1628]/70 text-white text-[11px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm">
-              {mediaIdx + 1} / {mediaItems.length}
+              {mediaIdx + 1} / {media.length}
             </span>
           </>
         )}
@@ -353,22 +361,76 @@ export default function MomentCard({
               maxLength={800}
               className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-[14px] text-[#0a1628] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30"
             />
-            <div className="flex gap-3 mt-2">
+            {/* Media editor — remove ✕ per item, add more up to 8 */}
+            <div className="mt-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
+                Photos &amp; videos ({editMedia.length}/8)
+              </p>
+              {editMedia.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {editMedia.map((m, i) => (
+                    <div key={`${m.url}-${i}`} className="relative w-16 h-16 rounded-lg overflow-hidden border border-[rgba(180,168,150,0.5)] bg-[#fdfcf9]">
+                      {m.type === 'video' ? (
+                        <video src={m.url} muted playsInline preload="metadata" className="w-full h-full object-cover" />
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={m.url} alt="" className="w-full h-full object-cover" />
+                      )}
+                      <button
+                        type="button"
+                        aria-label="Remove this photo or video"
+                        onClick={() => setEditMedia(prev => prev.filter((_, j) => j !== i))}
+                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/70 hover:bg-[#990000] text-white text-[11px] leading-none flex items-center justify-center"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {editMedia.length < 8 && (
+                <PhotoUpload
+                  value={editUpload}
+                  onChange={(url) => {
+                    if (!url) { setEditUpload(''); return }
+                    const type: 'image' | 'video' = /\.(mp4|mov|m4v|webm)(\?|$)/i.test(url) ? 'video' : 'image'
+                    setEditMedia(prev => (prev.some(m => m.url === url) ? prev : [...prev, { url, type }]))
+                    setEditUpload('')
+                  }}
+                  label="Add a photo or video"
+                  shape="wide"
+                  allowVideo
+                />
+              )}
+              {editMedia.length === 0 && (
+                <p className="text-[11.5px] text-[#990000] mt-1">A moment needs at least one photo or video.</p>
+              )}
+            </div>
+            {editError && <p className="text-[11.5px] text-[#990000] mt-2">{editError}</p>}
+            <div className="flex gap-3 mt-3">
               <button
                 type="button"
-                disabled={savingEdit || !editDraft.trim()}
+                disabled={savingEdit || !editDraft.trim() || editMedia.length === 0}
                 onClick={async () => {
                   setSavingEdit(true)
+                  setEditError(null)
                   try {
                     const res = await fetch(`/api/moments/${encodeURIComponent(moment.id)}`, {
                       method: 'PATCH',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ caption: editDraft.trim() }),
+                      body: JSON.stringify({ caption: editDraft.trim(), media: editMedia }),
                     })
                     if (res.ok) {
                       setCaption(editDraft.trim())
+                      setMedia(editMedia)
+                      setMediaIdx(0)
                       setEditing(false)
+                    } else {
+                      const d = await res.json().catch(() => ({}))
+                      setEditError(d.error ?? 'Could not save. Try again.')
                     }
+                  } catch {
+                    setEditError('Could not connect. Try again.')
                   } finally {
                     setSavingEdit(false)
                   }
@@ -379,7 +441,7 @@ export default function MomentCard({
               </button>
               <button
                 type="button"
-                onClick={() => setEditing(false)}
+                onClick={() => { setEditing(false); setEditError(null) }}
                 className="text-[11.5px] text-ink-muted hover:text-[#0a1628]"
               >
                 Cancel
@@ -450,21 +512,25 @@ export default function MomentCard({
                 <span>{featuring ? '…' : featured ? 'Unfeature' : 'Feature'}</span>
               </button>
             )}
+            {(isOwn || isFounder) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditDraft(caption)
+                  setEditMedia(media)
+                  setEditError(null)
+                  setEditing(true)
+                }}
+                disabled={editing}
+                title="Edit this moment's caption, photos and videos"
+                className="inline-flex items-center gap-1 text-ink-muted hover:text-[#0a1628] disabled:opacity-40 transition-colors"
+              >
+                <Pencil className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-medium">Edit</span>
+              </button>
+            )}
             {isOwn && (
               <>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditDraft(caption)
-                    setEditing(true)
-                  }}
-                  disabled={editing}
-                  title="Edit this moment's caption"
-                  className="inline-flex items-center gap-1 text-ink-muted hover:text-[#0a1628] disabled:opacity-40 transition-colors"
-                >
-                  <Pencil className="w-3.5 h-3.5" />
-                  <span className="text-[11px] font-medium">Edit</span>
-                </button>
                 <button
                   type="button"
                   onClick={() => setConfirmRemoveOpen(true)}
