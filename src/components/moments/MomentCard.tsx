@@ -18,8 +18,7 @@ import type { ClubhouseMoment, MomentComment, MomentReaction } from '@/lib/store
 import type { BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
 import ConfirmDialog from '@/components/ConfirmDialog'
-import PhotoUpload from '@/components/PhotoUpload'
-import MediaThumbStrip from '@/components/moments/MediaThumbStrip'
+import MomentEditForm from '@/components/moments/MomentEditForm'
 
 // emoji-picker-react is browser-only and large; load it lazily so it
 // doesn't bloat the initial bundle. The picker only mounts after the
@@ -91,11 +90,8 @@ export default function MomentCard({
   const [mediaIdx, setMediaIdx] = useState(0)
   const [caption, setCaption] = useState(moment.caption)
   const [editing, setEditing] = useState(false)
-  const [editDraft, setEditDraft] = useState('')
-  const [editMedia, setEditMedia] = useState<{ url: string; type: 'image' | 'video' }[]>([])
-  const [editUpload, setEditUpload] = useState('')
-  const [editError, setEditError] = useState<string | null>(null)
-  const [savingEdit, setSavingEdit] = useState(false)
+  const [tags, setTags] = useState(taggedMembers ?? [])
+  const [postAudience, setPostAudience] = useState<'public' | 'locker-room'>(moment.audience ?? 'public')
   const [reactions, setReactions] = useState<MomentReaction[]>(initialReactions)
   const [comments, setComments] = useState<MomentComment[]>(initialComments)
   const [pickerOpen, setPickerOpen] = useState(false)
@@ -279,7 +275,7 @@ export default function MomentCard({
       }}
     >
       {/* Media — single item renders plain; multiple items get a carousel */}
-      <div className={`relative ${moment.audience === 'locker-room' ? 'bg-[#0a1628]' : 'bg-[#fdfcf9]'}`}>
+      <div className={`relative ${postAudience === 'locker-room' ? 'bg-[#0a1628]' : 'bg-[#fdfcf9]'}`}>
         {media[mediaIdx].type === 'video' ? (
           <video
             key={media[mediaIdx].url}
@@ -335,7 +331,7 @@ export default function MomentCard({
             </span>
           </>
         )}
-        {showLockerPill && moment.audience === 'locker-room' ? (
+        {showLockerPill && postAudience === 'locker-room' ? (
           <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#0a1628]/90 backdrop-blur-sm text-[#c8a84b] text-[11px] font-semibold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full border border-[#c8a84b]/55">
             <Lock className="w-2.5 h-2.5" />
             Locker Room
@@ -354,97 +350,33 @@ export default function MomentCard({
 
       <div className="px-6 sm:px-8 py-5">
         {editing ? (
-          <div>
-            <textarea
-              value={editDraft}
-              onChange={e => setEditDraft(e.target.value)}
-              rows={3}
-              maxLength={800}
-              className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-[14px] text-[#0a1628] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30"
-            />
-            {/* Media editor — remove ✕ per item, add more up to 8 */}
-            <div className="mt-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
-                Photos &amp; videos ({editMedia.length}/8)
-              </p>
-              {editMedia.length > 0 && (
-                <div className="mb-2">
-                  <MediaThumbStrip items={editMedia} onChange={setEditMedia} />
-                </div>
-              )}
-              {editMedia.length < 8 && (
-                <PhotoUpload
-                  value={editUpload}
-                  onChange={(url) => {
-                    if (!url) { setEditUpload(''); return }
-                    const type: 'image' | 'video' = /\.(mp4|mov|m4v|webm)(\?|$)/i.test(url) ? 'video' : 'image'
-                    setEditMedia(prev => (prev.length >= 8 || prev.some(m => m.url === url) ? prev : [...prev, { url, type }]))
-                    setEditUpload('')
-                  }}
-                  label="Add photos or videos"
-                  shape="wide"
-                  allowVideo
-                  multiple
-                  maxFiles={8 - editMedia.length}
-                />
-              )}
-              {editMedia.length === 0 && (
-                <p className="text-[11.5px] text-[#990000] mt-1">A moment needs at least one photo or video.</p>
-              )}
-            </div>
-            {editError && <p className="text-[11.5px] text-[#990000] mt-2">{editError}</p>}
-            <div className="flex gap-3 mt-3">
-              <button
-                type="button"
-                disabled={savingEdit || !editDraft.trim() || editMedia.length === 0}
-                onClick={async () => {
-                  setSavingEdit(true)
-                  setEditError(null)
-                  try {
-                    const res = await fetch(`/api/moments/${encodeURIComponent(moment.id)}`, {
-                      method: 'PATCH',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ caption: editDraft.trim(), media: editMedia }),
-                    })
-                    if (res.ok) {
-                      setCaption(editDraft.trim())
-                      setMedia(editMedia)
-                      setMediaIdx(0)
-                      setEditing(false)
-                    } else {
-                      const d = await res.json().catch(() => ({}))
-                      setEditError(d.error ?? 'Could not save. Try again.')
-                    }
-                  } catch {
-                    setEditError('Could not connect. Try again.')
-                  } finally {
-                    setSavingEdit(false)
-                  }
-                }}
-                className="text-[11.5px] font-semibold uppercase tracking-[0.14em] bg-[#0a1628] text-white px-3 py-1.5 rounded-lg disabled:opacity-40"
-              >
-                {savingEdit ? 'Saving…' : 'Save'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setEditing(false); setEditError(null) }}
-                className="text-[11.5px] text-ink-muted hover:text-[#0a1628]"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
+          <MomentEditForm
+            moment={moment}
+            caption={caption}
+            media={media}
+            taggedMembers={tags}
+            audience={postAudience}
+            onSaved={(next) => {
+              setCaption(next.caption)
+              setMedia(next.media)
+              setMediaIdx(0)
+              setTags(next.taggedMembers)
+              setPostAudience(next.audience)
+              setEditing(false)
+            }}
+            onCancel={() => setEditing(false)}
+          />
         ) : (
           <p className="text-[14.5px] text-[#0a1628] leading-relaxed whitespace-pre-wrap">
             {caption}
           </p>
         )}
-        {taggedMembers && taggedMembers.length > 0 && (
+        {!editing && tags.length > 0 && (
           <p className="mt-2 text-[13px] text-ink-muted">
             With{' '}
-            {taggedMembers.map((t, i) => (
+            {tags.map((t, i) => (
               <span key={t.personId}>
-                {i > 0 && (i === taggedMembers.length - 1 ? ' and ' : ', ')}
+                {i > 0 && (i === tags.length - 1 ? ' and ' : ', ')}
                 {t.bookId ? (
                   <Link
                     href={`/member-book/${encodeURIComponent(t.bookId)}`}
@@ -501,14 +433,9 @@ export default function MomentCard({
             {(isOwn || isFounder) && (
               <button
                 type="button"
-                onClick={() => {
-                  setEditDraft(caption)
-                  setEditMedia(media)
-                  setEditError(null)
-                  setEditing(true)
-                }}
+                onClick={() => setEditing(true)}
                 disabled={editing}
-                title="Edit this moment's caption, photos and videos"
+                title="Edit this moment's caption, photos, videos, tags and audience"
                 className="inline-flex items-center gap-1 text-ink-muted hover:text-[#0a1628] disabled:opacity-40 transition-colors"
               >
                 <Pencil className="w-3.5 h-3.5" />

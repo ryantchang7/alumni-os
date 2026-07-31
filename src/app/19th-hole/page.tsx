@@ -7,6 +7,7 @@ import OpenRequestStrip from '@/components/OpenRequestStrip'
 import { auth } from '@/auth'
 import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 import type { OpenRequest } from '@/lib/store/types'
+import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 
 export default async function NineteenthHolePage() {
   const approval = await getApprovalState()
@@ -178,6 +179,10 @@ export default async function NineteenthHolePage() {
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
       <NineteenthHoleHero />
+
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-8 mt-6">
+        <ScotlandTourBanner variant="slim" />
+      </div>
 
       <NineteenthHoleClient
         gatherings={socialGatherings}

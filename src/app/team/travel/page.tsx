@@ -38,7 +38,9 @@ export default async function TeamTravelPage() {
   const isFounder = FOUNDER_EMAILS.has(email)
 
   const team = await getTeamBySlug('penn-mens-golf')
-  const stops = team ? await getTravelStops(team.id) : []
+  const stops = (team ? await getTravelStops(team.id) : []).sort((a, b) =>
+    a.startDate.localeCompare(b.startDate),
+  )
 
   // Founder: pre-load host offers for all stops server-side
   const offersByStop: Record<string, TravelHostOffer[]> = {}
@@ -61,10 +63,10 @@ export default async function TeamTravelPage() {
           <h1
             className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight font-heading"
           >
-            Team Travel
+            Schedule &amp; Travel
           </h1>
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-            Where the team is headed &mdash; offer to host them when they&rsquo;re near you.
+            The 2026&ndash;27 season, stop by stop &mdash; and offer to host the team when they&rsquo;re near you.
           </p>
         </div>
       </div>

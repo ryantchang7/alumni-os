@@ -441,6 +441,13 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
     kind: 'text',
     default: 'Family or affiliate? Join here →',
   },
+  {
+    id: 'scotland.hero-image',
+    label: '/scotland — hero image',
+    hint: 'Course photo behind the Scotland Tour hero. Empty = text-led hero.',
+    kind: 'image',
+    default: '',
+  },
 ]
 
 export function getSlotById(id: string): ContentSlot | undefined {

@@ -14,6 +14,8 @@ import {
   computeFamilySupportersForTeam,
 } from '@/lib/founders'
 import type { FounderEntry, FamilySupporterEntry } from '@/lib/founders'
+import TeamScheduleSection from '@/components/TeamScheduleSection'
+import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 
 interface PlayerEntry {
   person: Person
@@ -65,7 +67,7 @@ const SUPPORT_CARDS = [
 export default async function TeamRoomPage() {
   const y = new Date().getFullYear()
   const rosterLabel = `${y}–${String(y + 1).slice(2)} Roster`
-  const { readStore, getTeamBySlug, getRecentTeamNewsItems, getSeasonUpdatesForTeam } = await import('@/lib/store/local-store')
+  const { readStore, getTeamBySlug, getRecentTeamNewsItems, getSeasonUpdatesForTeam, getTravelStops } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
 
@@ -73,6 +75,7 @@ export default async function TeamRoomPage() {
   let coaches: PlayerEntry[] = []
   let recentAlumni: PlayerEntry[] = []
   let newsItems: TeamNewsItem[] = []
+  let travelStops: Awaited<ReturnType<typeof getTravelStops>> = []
   let seasonUpdates: SeasonUpdate[] = []
   let founders: FounderEntry[] = []
   let familySupporters: FamilySupporterEntry[] = []
@@ -92,6 +95,7 @@ export default async function TeamRoomPage() {
       .sort((a, b) => a.person.canonicalName.localeCompare(b.person.canonicalName))
     newsItems = await getRecentTeamNewsItems(team.id, 4)
     seasonUpdates = await getSeasonUpdatesForTeam(team.id)
+    travelStops = await getTravelStops(team.id)
     currentPlayers = store.teamMemberships
       .filter(m => m.teamId === team.id && m.memberRole === 'current_player')
       .map(m => {
@@ -233,6 +237,10 @@ export default async function TeamRoomPage() {
             </div>
           )}
         </section>
+
+        <TeamScheduleSection stops={travelStops} />
+
+        <ScotlandTourBanner variant="featured" />
 
         {/* Season Tracker — founder-authored qualifying/tournament/stat
             updates from /internal/season. Falls back to a "work in progress"
@@ -491,9 +499,9 @@ export default async function TeamRoomPage() {
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
         >
           <div>
-            <p className="font-semibold text-[#0a1628] text-sm">Team Travel</p>
+            <p className="font-semibold text-[#0a1628] text-sm">Schedule &amp; Travel</p>
             <p className="text-xs text-ink-muted mt-0.5">
-              Where the team is headed &mdash; offer to host them when they&rsquo;re near you.
+              The full 2026&ndash;27 slate &mdash; and offer to host the team when they&rsquo;re near you.
             </p>
           </div>
           <Link

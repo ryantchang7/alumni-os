@@ -1711,7 +1711,9 @@ export async function updateMoment(
   patch: {
     caption?: string
     taggedBookIds?: string[]
+    taggedPersonIds?: string[]
     media?: { url: string; type: 'image' | 'video' }[]
+    audience?: 'public' | 'locker-room'
   },
   allowAnyPoster = false,
 ): Promise<ClubhouseMoment | null> {
@@ -1723,9 +1725,11 @@ export async function updateMoment(
       ...store.moments[idx],
       ...(patch.caption !== undefined ? { caption: patch.caption } : {}),
       ...(patch.taggedBookIds !== undefined ? { taggedBookIds: patch.taggedBookIds } : {}),
+      ...(patch.taggedPersonIds !== undefined ? { taggedPersonIds: patch.taggedPersonIds } : {}),
       ...(patch.media !== undefined
         ? { media: patch.media, photoUrl: patch.media[0].url, mediaType: patch.media[0].type }
         : {}),
+      ...(patch.audience !== undefined ? { audience: patch.audience } : {}),
     }
     return store.moments[idx]
   })

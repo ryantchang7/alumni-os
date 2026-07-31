@@ -13,8 +13,7 @@ import {
 } from '@/lib/store/local-store'
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
 import { notifyMany } from '@/lib/notifications/notify'
-import { getMemberById } from '@/lib/member-book/data'
-import { findTeamStorePersonForBookEntry } from '@/lib/member-book/bridge'
+import { resolveTaggedAccountIds } from '@/lib/moments/tagging'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -172,25 +171,11 @@ export async function POST(request: Request) {
       const fresh = await readStore()
       const posterFirst = (account.name ?? session.user?.name ?? 'A member').split(/\s+/)[0]
       // Tagged members get a personal "you were tagged" ping instead of the
-      // community broadcast. Book-id tags resolve to accounts only when that
-      // member has claimed (bridge by normalized name) — unclaimed tags still
-      // display on the card, they just have no inbox yet.
-      const taggedViaBook = new Set<string>()
-      for (const bookId of moment.taggedBookIds ?? []) {
-        const entry = getMemberById(bookId)
-        if (!entry) continue
-        const person = findTeamStorePersonForBookEntry(entry, fresh.people)
-        if (person) taggedViaBook.add(person.id)
-      }
-      const taggedAccountIds = new Set(
-        fresh.accounts
-          .filter(
-            a =>
-              a.linkedPersonId &&
-              (moment.taggedPersonIds.includes(a.linkedPersonId) ||
-                taggedViaBook.has(a.linkedPersonId)),
-          )
-          .map(a => a.id),
+      // community broadcast.
+      const taggedAccountIds = resolveTaggedAccountIds(
+        fresh,
+        moment.taggedPersonIds ?? [],
+        moment.taggedBookIds ?? [],
       )
       if (taggedAccountIds.size > 0) {
         await notifyMany(

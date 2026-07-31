@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react'
 import { ArrowLeft, Camera, Lock } from 'lucide-react'
 import PhotoUpload from '@/components/PhotoUpload'
 import MediaThumbStrip from '@/components/moments/MediaThumbStrip'
+import TagPicker, { type TagChip } from '@/components/moments/TagPicker'
 
 // Next.js requires any component that reads useSearchParams() to live
 // inside a <Suspense> boundary so the static prerender pass can bail out
@@ -26,8 +27,7 @@ function NewMomentForm() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [members, setMembers] = useState<Array<{ bookId: string; name: string }>>([])
-  const [tagQuery, setTagQuery] = useState('')
-  const [tagged, setTagged] = useState<Array<{ bookId: string; name: string }>>([])
+  const [tagged, setTagged] = useState<TagChip[]>([])
 
   const signedIn = sessionStatus === 'authenticated'
   const approved = signedIn && !!session?.linkedPersonId
@@ -75,7 +75,7 @@ function NewMomentForm() {
           media: mediaList,
           caption,
           audience,
-          taggedBookIds: tagged.map(t => t.bookId),
+          taggedBookIds: tagged.map(t => t.bookId as string),
         }),
       })
       if (!res.ok) {
@@ -216,59 +216,7 @@ function NewMomentForm() {
               </p>
             </div>
 
-            {/* Tag members */}
-            <div>
-              <label className="block text-[13px] font-semibold text-[#0a1628] mb-1.5">
-                Tag who&rsquo;s in it <span className="font-normal text-ink-muted">(optional)</span>
-              </label>
-              {tagged.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mb-2">
-                  {tagged.map(t => (
-                    <button
-                      key={t.bookId}
-                      type="button"
-                      onClick={() => setTagged(prev => prev.filter(x => x.bookId !== t.bookId))}
-                      className="inline-flex items-center gap-1.5 text-[12px] font-medium bg-[#0a1628] text-white px-2.5 py-1 rounded-full hover:bg-[#990000] transition-colors"
-                      title="Remove tag"
-                    >
-                      {t.name}
-                      <span aria-hidden>&times;</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-              <input
-                type="text"
-                value={tagQuery}
-                onChange={e => setTagQuery(e.target.value)}
-                placeholder="Search members to tag..."
-                className="w-full bg-[#fdfcf9] border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-sm text-[#0a1628] placeholder-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/10 focus:border-[#0a1628]/25"
-              />
-              {tagQuery.trim() && (
-                <div className="mt-1.5 border border-[rgba(180,168,150,0.4)] rounded-lg bg-white divide-y divide-[rgba(180,168,150,0.2)] overflow-hidden">
-                  {members
-                    .filter(
-                      m =>
-                        !tagged.some(t => t.bookId === m.bookId) &&
-                        m.name.toLowerCase().includes(tagQuery.trim().toLowerCase()),
-                    )
-                    .slice(0, 6)
-                    .map(m => (
-                      <button
-                        key={m.bookId}
-                        type="button"
-                        onClick={() => {
-                          setTagged(prev => [...prev, m])
-                          setTagQuery('')
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm text-[#0a1628] hover:bg-[#fbf9f6]"
-                      >
-                        {m.name}
-                      </button>
-                    ))}
-                </div>
-              )}
-            </div>
+            <TagPicker options={members} tagged={tagged} onChange={setTagged} />
 
             {canSeeLockerRoom && (
               <div
