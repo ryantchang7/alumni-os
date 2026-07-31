@@ -19,6 +19,7 @@ import type { BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import PhotoUpload from '@/components/PhotoUpload'
+import MediaThumbStrip from '@/components/moments/MediaThumbStrip'
 
 // emoji-picker-react is browser-only and large; load it lazily so it
 // doesn't bloat the initial bundle. The picker only mounts after the
@@ -367,25 +368,8 @@ export default function MomentCard({
                 Photos &amp; videos ({editMedia.length}/8)
               </p>
               {editMedia.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {editMedia.map((m, i) => (
-                    <div key={`${m.url}-${i}`} className="relative w-16 h-16 rounded-lg overflow-hidden border border-[rgba(180,168,150,0.5)] bg-[#fdfcf9]">
-                      {m.type === 'video' ? (
-                        <video src={m.url} muted playsInline preload="metadata" className="w-full h-full object-cover" />
-                      ) : (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={m.url} alt="" className="w-full h-full object-cover" />
-                      )}
-                      <button
-                        type="button"
-                        aria-label="Remove this photo or video"
-                        onClick={() => setEditMedia(prev => prev.filter((_, j) => j !== i))}
-                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/70 hover:bg-[#990000] text-white text-[11px] leading-none flex items-center justify-center"
-                      >
-                        &times;
-                      </button>
-                    </div>
-                  ))}
+                <div className="mb-2">
+                  <MediaThumbStrip items={editMedia} onChange={setEditMedia} />
                 </div>
               )}
               {editMedia.length < 8 && (
@@ -394,12 +378,14 @@ export default function MomentCard({
                   onChange={(url) => {
                     if (!url) { setEditUpload(''); return }
                     const type: 'image' | 'video' = /\.(mp4|mov|m4v|webm)(\?|$)/i.test(url) ? 'video' : 'image'
-                    setEditMedia(prev => (prev.some(m => m.url === url) ? prev : [...prev, { url, type }]))
+                    setEditMedia(prev => (prev.length >= 8 || prev.some(m => m.url === url) ? prev : [...prev, { url, type }]))
                     setEditUpload('')
                   }}
-                  label="Add a photo or video"
+                  label="Add photos or videos"
                   shape="wide"
                   allowVideo
+                  multiple
+                  maxFiles={8 - editMedia.length}
                 />
               )}
               {editMedia.length === 0 && (

@@ -21,6 +21,13 @@ interface Props {
    * pre-designed artwork (badges, logos) where the cropper's fixed aspect
    * ratio would distort the source. */
   skipCropper?: boolean
+  /** If true, the picker accepts many files at once (and drag & drop), all
+   * uploaded in parallel — onChange fires once per uploaded URL, in pick
+   * order. Skips the cropper (images are auto-downscaled client-side). */
+  multiple?: boolean
+  /** Cap on how many files one batch may add (multiple mode). Extra picks
+   * are dropped with a note. */
+  maxFiles?: number
 }
 
 const VIDEO_EXT_RE = /\.(mp4|mov|m4v|webm)(\?|$)/i
@@ -41,35 +48,130 @@ export default function PhotoUpload({
   allowVideo = false,
   onMediaTypeChange,
   skipCropper = false,
+  multiple = false,
+  maxFiles,
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
   const captureRef = useRef<HTMLInputElement>(null)
   const [pickedFile, setPickedFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const isVideoValue = !!value && VIDEO_EXT_RE.test(value)
+
+  async function postFile(file: File): Promise<{ url: string; mediaType?: 'image' | 'video' }> {
+    const form = new FormData()
+    form.append('file', file)
+    const res = await fetch('/api/upload/image', { method: 'POST', body: form })
+    const j = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      throw new Error(j.error ?? `Upload failed (${res.status})`)
+    }
+    return { url: j.url as string, mediaType: j.mediaType as 'image' | 'video' | undefined }
+  }
 
   async function uploadFile(file: File) {
     setUploading(true)
     setError(null)
     try {
-      const form = new FormData()
-      form.append('file', file)
-      const res = await fetch('/api/upload/image', { method: 'POST', body: form })
-      const j = await res.json().catch(() => ({}))
-      if (!res.ok) {
-        throw new Error(j.error ?? `Upload failed (${res.status})`)
-      }
-      onChange(j.url as string)
-      if (j.mediaType && onMediaTypeChange) {
-        onMediaTypeChange(j.mediaType as 'image' | 'video')
-      }
+      const { url, mediaType } = await postFile(file)
+      onChange(url)
+      if (mediaType && onMediaTypeChange) onMediaTypeChange(mediaType)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Upload failed')
     } finally {
       setUploading(false)
     }
+  }
+
+  /** Shrink a big photo client-side before uploading (max edge 2000px,
+   * JPEG q0.85) — batch picks skip the cropper, and raw 8 MB phone shots
+   * would make uploads AND the feed slow. Falls back to the original file
+   * when the browser can't decode it (e.g. HEIC on Chrome). */
+  async function downscaleImage(file: File): Promise<File> {
+    try {
+      const bmp = await createImageBitmap(file)
+      const MAX_EDGE = 2000
+      const scale = Math.min(1, MAX_EDGE / Math.max(bmp.width, bmp.height))
+      if (scale === 1 && file.type === 'image/jpeg' && file.size <= 2.5 * 1024 * 1024) {
+        bmp.close()
+        return file
+      }
+      const w = Math.max(1, Math.round(bmp.width * scale))
+      const h = Math.max(1, Math.round(bmp.height * scale))
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return file
+      ctx.drawImage(bmp, 0, 0, w, h)
+      bmp.close()
+      const blob = await new Promise<Blob | null>(resolve =>
+        canvas.toBlob(resolve, 'image/jpeg', 0.85),
+      )
+      if (!blob) return file
+      return new File([blob], `photo-${Date.now()}.jpg`, { type: 'image/jpeg' })
+    } catch {
+      return file
+    }
+  }
+
+  async function uploadBatch(files: File[]) {
+    const accepted = files.filter(
+      f => f.type.startsWith('image/') || (allowVideo && f.type.startsWith('video/')),
+    )
+    if (accepted.length === 0) return
+    const cap = maxFiles !== undefined ? Math.max(0, maxFiles) : accepted.length
+    const batch = accepted.slice(0, cap)
+    if (batch.length === 0) {
+      setError('This moment is full — remove something first (max 8).')
+      return
+    }
+    setError(accepted.length > batch.length ? `Only the first ${batch.length} fit (max 8 per moment).` : null)
+    setUploading(true)
+    setProgress({ done: 0, total: batch.length })
+    try {
+      const prepared = await Promise.all(
+        batch.map(f => (f.type.startsWith('video/') ? Promise.resolve(f) : downscaleImage(f))),
+      )
+      const results = await Promise.all(
+        prepared.map(async (f) => {
+          try {
+            const r = await postFile(f)
+            setProgress(p => (p ? { ...p, done: p.done + 1 } : p))
+            return { ...r, err: null as string | null }
+          } catch (e) {
+            setProgress(p => (p ? { ...p, done: p.done + 1 } : p))
+            return { url: '', mediaType: undefined, err: e instanceof Error ? e.message : 'Upload failed' }
+          }
+        }),
+      )
+      // Hand URLs to the caller in pick order so the strip matches the picker.
+      for (const r of results) {
+        if (r.url) {
+          onChange(r.url)
+          if (r.mediaType && onMediaTypeChange) onMediaTypeChange(r.mediaType)
+        }
+      }
+      const failed = results.filter(r => r.err)
+      if (failed.length > 0) {
+        setError(`${failed.length} of ${results.length} failed — ${failed[0].err}`)
+      }
+    } finally {
+      setUploading(false)
+      setProgress(null)
+    }
+  }
+
+  function onFilesPicked(files: File[]) {
+    if (files.length === 0) return
+    if (multiple) {
+      void uploadBatch(files)
+      clearInputs()
+      return
+    }
+    onFilePicked(files[0])
   }
 
   function onFilePicked(file: File) {
@@ -118,8 +220,19 @@ export default function PhotoUpload({
     <div className="space-y-2">
       <label className="block text-xs font-medium text-[#3a4657]">{label}</label>
 
-      <div className="flex items-start gap-4 flex-wrap">
-        {/* Preview */}
+      <div
+        className="flex items-start gap-4 flex-wrap"
+        onDragOver={multiple ? (e) => e.preventDefault() : undefined}
+        onDrop={
+          multiple
+            ? (e) => {
+                e.preventDefault()
+                onFilesPicked(Array.from(e.dataTransfer.files))
+              }
+            : undefined
+        }
+      >
+        {/* Preview (doubles as the drop target in multiple mode) */}
         <div
           className={`${previewClass} rounded-lg overflow-hidden bg-[#fdfcf9] border border-dashed border-[rgba(180,168,150,0.55)] flex items-center justify-center`}
         >
@@ -152,11 +265,9 @@ export default function PhotoUpload({
             ref={fileRef}
             type="file"
             accept={allowVideo ? 'image/*,video/*' : 'image/*'}
+            multiple={multiple}
             className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0]
-              if (f) onFilePicked(f)
-            }}
+            onChange={(e) => onFilesPicked(Array.from(e.target.files ?? []))}
           />
           {/* Separate input with `capture` so mobile opens the camera directly.
              On desktop `capture` is ignored and this falls back to the file
@@ -167,10 +278,7 @@ export default function PhotoUpload({
             accept={allowVideo ? 'image/*,video/*' : 'image/*'}
             capture="environment"
             className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0]
-              if (f) onFilePicked(f)
-            }}
+            onChange={(e) => onFilesPicked(Array.from(e.target.files ?? []))}
           />
           <div className="flex flex-wrap gap-2">
             <button
@@ -181,14 +289,20 @@ export default function PhotoUpload({
             >
               <Upload className="w-3.5 h-3.5" />
               {uploading
-                ? 'Uploading…'
-                : value
+                ? progress
+                  ? `Uploading ${progress.done}/${progress.total}…`
+                  : 'Uploading…'
+                : multiple
                   ? allowVideo
-                    ? 'Replace media'
-                    : 'Replace photo'
-                  : allowVideo
-                    ? 'Upload photo or video'
-                    : 'Upload photo'}
+                    ? 'Upload photos or videos'
+                    : 'Upload photos'
+                  : value
+                    ? allowVideo
+                      ? 'Replace media'
+                      : 'Replace photo'
+                    : allowVideo
+                      ? 'Upload photo or video'
+                      : 'Upload photo'}
             </button>
             <button
               type="button"
@@ -201,9 +315,11 @@ export default function PhotoUpload({
             </button>
           </div>
           <p className="text-[11px] text-ink-muted">
-            {allowVideo
-              ? 'Photo or short video clip from your camera roll. Or paste a URL below.'
-              : 'Pick from your camera roll, crop it, done. Or paste a URL below.'}
+            {multiple
+              ? 'Pick several at once, or drag & drop them here. Or paste a URL below.'
+              : allowVideo
+                ? 'Photo or short video clip from your camera roll. Or paste a URL below.'
+                : 'Pick from your camera roll, crop it, done. Or paste a URL below.'}
           </p>
           <input
             type="url"

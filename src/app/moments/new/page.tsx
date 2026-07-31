@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { ArrowLeft, Camera, Lock } from 'lucide-react'
 import PhotoUpload from '@/components/PhotoUpload'
+import MediaThumbStrip from '@/components/moments/MediaThumbStrip'
 
 // Next.js requires any component that reads useSearchParams() to live
 // inside a <Suspense> boundary so the static prerender pass can bail out
@@ -176,29 +177,7 @@ function NewMomentForm() {
                 <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                   In this moment ({mediaList.length}/8)
                 </label>
-                <div className="flex flex-wrap gap-2">
-                  {mediaList.map((m, i) => (
-                    <div key={m.url + i} className="relative w-24 h-24 rounded-lg overflow-hidden border border-[rgba(180,168,150,0.5)] bg-[#0a1628]">
-                      {m.type === 'video' ? (
-                        <video src={m.url} muted playsInline preload="metadata" className="w-full h-full object-cover" />
-                      ) : (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={m.url} alt="" className="w-full h-full object-cover" />
-                      )}
-                      {m.type === 'video' && (
-                        <span className="absolute bottom-1 left-1 text-[9px] font-bold uppercase bg-black/70 text-white px-1 rounded">Video</span>
-                      )}
-                      <button
-                        type="button"
-                        aria-label="Remove"
-                        onClick={() => setMediaList(prev => prev.filter((_, j) => j !== i))}
-                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/70 hover:bg-[#990000] text-white text-[11px] leading-none flex items-center justify-center"
-                      >
-                        &times;
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                <MediaThumbStrip items={mediaList} onChange={setMediaList} />
               </div>
             )}
             {mediaList.length < 8 && (
@@ -207,13 +186,15 @@ function NewMomentForm() {
                 onChange={(url) => {
                   if (!url) { setPhotoUrl(''); return }
                   const type: 'image' | 'video' = /\.(mp4|mov|m4v|webm)(\?|$)/i.test(url) ? 'video' : 'image'
-                  setMediaList(prev => (prev.some(m => m.url === url) ? prev : [...prev, { url, type }]))
+                  setMediaList(prev => (prev.length >= 8 || prev.some(m => m.url === url) ? prev : [...prev, { url, type }]))
                   setPhotoUrl('')
                 }}
                 onMediaTypeChange={setMediaType}
-                label={mediaList.length === 0 ? 'Photo or video' : 'Add another photo or video'}
+                label={mediaList.length === 0 ? 'Photos or videos' : 'Add more photos or videos'}
                 shape="wide"
                 allowVideo
+                multiple
+                maxFiles={8 - mediaList.length}
               />
             )}
 
