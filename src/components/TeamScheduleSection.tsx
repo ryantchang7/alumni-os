@@ -80,16 +80,6 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                         <Link href="/scotland" className="hover:underline">
                           {s.eventName}
                         </Link>
-                      ) : s.linkUrl ? (
-                        <a
-                          href={s.linkUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline"
-                        >
-                          {s.eventName}
-                          <span className="text-[11px] text-ink-muted font-normal ml-1.5">↗</span>
-                        </a>
                       ) : (
                         s.eventName
                       )}
@@ -100,14 +90,32 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                     </p>
                   </div>
                 </div>
-                {isScotland && (
-                  <Link
-                    href="/scotland"
-                    className="text-[12.5px] font-semibold text-[#c8a84b] hover:underline whitespace-nowrap"
-                  >
-                    Alumni Scotland Tour · Oct 14–17 →
-                  </Link>
-                )}
+                <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                  {isScotland && (
+                    <Link
+                      href="/scotland"
+                      className="text-[12.5px] font-semibold text-[#c8a84b] hover:underline whitespace-nowrap"
+                    >
+                      Alumni Scotland Tour · Oct 14–17 →
+                    </Link>
+                  )}
+                  {s.linkUrl ? (
+                    <a
+                      href={s.linkUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`text-[12.5px] font-semibold whitespace-nowrap hover:underline ${isScotland ? 'text-[#c8a84b]' : 'text-[#990000]'}`}
+                    >
+                      View leaderboard →
+                    </a>
+                  ) : (
+                    !isPast && (
+                      <span className={`text-[11.5px] whitespace-nowrap ${isScotland ? 'text-white/45' : 'text-[#b0a898]'}`}>
+                        Leaderboard closer to the event
+                      </span>
+                    )
+                  )}
+                </div>
               </div>
             </li>
           )

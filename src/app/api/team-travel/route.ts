@@ -4,7 +4,7 @@
  * POST   — founder posts a team travel/tournament stop.
  * DELETE — founder removes a stop (?id=).
  *
- * POST body: { eventName, locationText, startDate, endDate?, note?, linkUrl?, imageUrl? }.
+ * POST body: { eventName, locationText, startDate, endDate?, note?, linkUrl? (leaderboard/results), imageUrl? (crest) }.
  * GET    — founder lists stops (ids included, for admin tooling).
  */
 

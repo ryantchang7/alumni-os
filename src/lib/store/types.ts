@@ -685,7 +685,7 @@ export interface TeamTravelStop {
   startDate: string
   endDate?: string
   note?: string
-  /** Event / host-course website. Optional — some private clubs have none. */
+  /** Leaderboard / live-scoring link — pasted in once scores go live for the event. */
   linkUrl?: string
   /** Small crest / course image for the schedule cards. */
   imageUrl?: string

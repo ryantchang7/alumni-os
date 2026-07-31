@@ -244,14 +244,14 @@ export default function AddTravelStop() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className={labelClass}>
-                        Event / course link{' '}
+                        Leaderboard link{' '}
                         <span className="normal-case font-normal tracking-normal">(optional)</span>
                       </label>
                       <input
                         type="url"
                         value={linkUrl}
                         onChange={e => setLinkUrl(e.target.value.slice(0, 1024))}
-                        placeholder="https://..."
+                        placeholder="https://... (paste when scores go live)"
                         className={inputClass}
                         disabled={status === 'submitting'}
                       />

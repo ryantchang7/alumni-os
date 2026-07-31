@@ -122,14 +122,7 @@ export default async function TeamTravelPage() {
                         <h2
                           className="text-[#0a1628] text-xl font-medium leading-snug font-heading"
                         >
-                          {stop.linkUrl ? (
-                            <a href={stop.linkUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                              {stop.eventName}
-                              <span className="text-[12px] text-ink-muted font-normal ml-1.5">↗</span>
-                            </a>
-                          ) : (
-                            stop.eventName
-                          )}
+{stop.eventName}
                         </h2>
                         <p className="text-sm text-[#3a4657] mt-1">{stop.locationText}</p>
                         {stop.note && (
@@ -141,6 +134,16 @@ export default async function TeamTravelPage() {
                       </div>
 
                       <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
+                        {stop.linkUrl && (
+                          <a
+                            href={stop.linkUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[12.5px] font-semibold text-[#990000] hover:underline whitespace-nowrap"
+                          >
+                            View leaderboard →
+                          </a>
+                        )}
                         <TravelHostOfferButton
                           stopId={stop.id}
                           eventName={stop.eventName}
