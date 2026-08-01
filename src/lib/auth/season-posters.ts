@@ -1,6 +1,6 @@
 /**
  * Who may POST Season Updates (qualifiers, results, notes): the founder,
- * team captains, and coaches. Deleting updates and travel stops stays
+ * team captains, coaches, and current roster players. Deleting updates and travel stops stays
  * founder-only — this guard is for posting.
  */
 
@@ -23,7 +23,7 @@ export async function canPostSeasonUpdates(): Promise<
   if (isCaptainEmailWithOverrides(email, TEAM_SLUG, store.accounts)) {
     return { ok: true, email, accountId: session?.accountId ?? null }
   }
-  // Coach: signed-in account linked to a person with a coach membership.
+  // Coach or current player: account linked to a person with that membership.
   if (session?.accountId) {
     const account = await getAccountById(session.accountId)
     const team = await getTeamBySlug(TEAM_SLUG)
@@ -34,7 +34,7 @@ export async function canPostSeasonUpdates(): Promise<
         m =>
           m.teamId === team.id &&
           m.personId === account.linkedPersonId &&
-          m.memberRole === 'coach',
+          (m.memberRole === 'coach' || m.memberRole === 'current_player'),
       )
     ) {
       return { ok: true, email, accountId: session?.accountId ?? null }

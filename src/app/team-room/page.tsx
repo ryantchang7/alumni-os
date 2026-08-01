@@ -17,6 +17,9 @@ import TeamScheduleSection from '@/components/TeamScheduleSection'
 import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 import { canPostSeasonUpdates } from '@/lib/auth/season-posters'
 import SeasonUpdatesTimeline from '@/components/SeasonUpdatesTimeline'
+import FollowTeamButton from '@/components/FollowTeamButton'
+import { deriveClassLabel } from '@/lib/class-year'
+import { auth } from '@/auth'
 
 interface PlayerEntry {
   person: Person
@@ -53,7 +56,7 @@ const SUPPORT_CARDS = [
 export default async function TeamRoomPage() {
   const y = new Date().getFullYear()
   const rosterLabel = `${y}–${String(y + 1).slice(2)} Roster`
-  const { readStore, getTeamBySlug, getRecentTeamNewsItems, getSeasonUpdatesForTeam, getTravelStops } = await import('@/lib/store/local-store')
+  const { readStore, getTeamBySlug, getRecentTeamNewsItems, getSeasonUpdatesForTeam, getTravelStops, getAccountById } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
 
@@ -63,6 +66,10 @@ export default async function TeamRoomPage() {
   let newsItems: TeamNewsItem[] = []
   let travelStops: Awaited<ReturnType<typeof getTravelStops>> = []
   const seasonPoster = await canPostSeasonUpdates()
+  const session = await auth()
+  const viewerSignedIn = !!session?.accountId
+  const viewerAccount = session?.accountId ? await getAccountById(session.accountId) : null
+  const initialFollowing = viewerAccount?.followsTeam !== false
   let seasonUpdates: SeasonUpdate[] = []
   let founders: FounderEntry[] = []
   let familySupporters: FamilySupporterEntry[] = []
@@ -185,7 +192,7 @@ export default async function TeamRoomPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {currentPlayers.map(({ person, membership }) => {
-                const classShort = membership.classYearEstimate?.split(' / ')[0]
+                const classShort = deriveClassLabel(membership.classYearEstimate)
                 const badges = badgesForPerson(person.id, store.accounts)
                 return (
                   <Link
@@ -247,12 +254,9 @@ export default async function TeamRoomPage() {
               </Link>
             )}
           </div>
-          <Link
-            href="/team/updates"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#990000] hover:underline mb-5"
-          >
-            Follow the team &rarr;
-          </Link>
+          <div className="mb-5">
+            <FollowTeamButton initialFollowing={initialFollowing} signedIn={viewerSignedIn} />
+          </div>
 
           <TeamScheduleSection stops={travelStops} />
 

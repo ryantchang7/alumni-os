@@ -13,6 +13,11 @@ import type { TeamTravelStop } from '@/lib/store/types'
 
 const SCOTLAND_RE = /scotland|st andrews/i
 
+function daysUntilStart(startDate: string): number {
+  const today = new Date().toISOString().slice(0, 10)
+  return Math.round((Date.parse(startDate + 'T00:00:00Z') - Date.parse(today + 'T00:00:00Z')) / 86400000)
+}
+
 function formatRange(startDate: string, endDate?: string): string {
   const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', timeZone: 'UTC' }
   const start = new Date(`${startDate}T00:00:00Z`)
@@ -138,13 +143,22 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                     >
                       View leaderboard →
                     </a>
-                  ) : (
-                    !isPast && (
+                  ) : !isPast ? (
+                    isLive || daysUntilStart(s.startDate) <= 7 ? (
+                      <a
+                        href="https://scoreboard.clippd.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`text-[12.5px] font-semibold whitespace-nowrap hover:underline ${isScotland ? 'text-[#c8a84b]' : 'text-[#990000]'}`}
+                      >
+                        Find scoring on Clippd ↗
+                      </a>
+                    ) : (
                       <span className={`text-[11.5px] whitespace-nowrap ${isScotland ? 'text-white/45' : 'text-[#b0a898]'}`}>
                         Leaderboard coming soon
                       </span>
                     )
-                  )}
+                  ) : null}
                 </div>
               </div>
             </li>
@@ -162,14 +176,6 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
         </a>
         <a href="/api/season-calendar" className="text-[#0a1628] hover:underline">
           Add the season to your calendar →
-        </a>
-        <a
-          href="https://pennathletics.com/sports/mens-golf/stats"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#0a1628] hover:underline"
-        >
-          Season stats ↗
         </a>
         <Link href="/team/travel" className="text-[#0a1628] hover:underline">
           Near a stop? Offer to host the team →
