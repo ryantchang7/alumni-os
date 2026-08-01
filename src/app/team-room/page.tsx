@@ -8,7 +8,6 @@ import MemberBadges from '@/components/MemberBadges'
 import { badgesForPerson } from '@/lib/badges'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import HeroCrest from '@/components/HeroCrest'
-import LinkPreviewImage from '@/components/LinkPreviewImage'
 import {
   computeFoundersForTeam,
   computeFamilySupportersForTeam,
@@ -17,6 +16,7 @@ import type { FounderEntry, FamilySupporterEntry } from '@/lib/founders'
 import TeamScheduleSection from '@/components/TeamScheduleSection'
 import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 import { canPostSeasonUpdates } from '@/lib/auth/season-posters'
+import SeasonUpdatesTimeline from '@/components/SeasonUpdatesTimeline'
 
 interface PlayerEntry {
   person: Person
@@ -25,22 +25,7 @@ interface PlayerEntry {
 
 const CLASS_ORDER: Record<string, number> = { 'Sr.': 0, 'Jr.': 1, 'So.': 2, 'Fr.': 3 }
 
-const SEASON_KIND_LABELS: Record<SeasonUpdate['kind'], string> = {
-  tournament: 'Tournament',
-  qualifying: 'Qualifying',
-  stat: 'Stat',
-  note: 'Note',
-}
-
 /** Bare domain for a link's "source" label, e.g. "golfstat.com". */
-function seasonLinkDomain(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, '')
-  } catch {
-    return 'Link'
-  }
-}
-
 const SUPPORT_CARDS = [
   {
     title: 'Show up',
@@ -272,79 +257,7 @@ export default async function TeamRoomPage() {
           <TeamScheduleSection stops={travelStops} />
 
           <h3 className="text-sm font-semibold text-[#0a1628] mt-8 mb-4 uppercase tracking-[0.1em]">Latest updates</h3>
-          {seasonUpdates.length > 0 ? (
-            <ol className="relative border-l border-[rgba(180,168,150,0.45)] pl-6 space-y-5">
-              {seasonUpdates.map(u => (
-                <li key={u.id} className="relative">
-                  <span className="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full bg-[#990000] ring-4 ring-[#fbf9f6]" />
-                  <div
-                    className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
-                    style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-                  >
-                    <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                      <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0a1628] bg-[#0a1628]/8 px-2 py-0.5 rounded-full">
-                        {SEASON_KIND_LABELS[u.kind]}
-                      </span>
-                      <span className="text-[11px] text-ink-muted">{u.dateText}</span>
-                    </div>
-                    <p className="text-sm font-semibold text-[#0a1628]">{u.title}</p>
-                    {u.body && (
-                      <p className="text-sm text-ink-muted mt-1.5 leading-relaxed whitespace-pre-line">{u.body}</p>
-                    )}
-                    {u.linkUrl && (
-                      u.previewImageUrl ? (
-                        <a
-                          href={u.linkUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block mt-3 rounded-lg overflow-hidden border border-[rgba(180,168,150,0.4)] hover:border-[#0a1628]/30 transition-colors group/link"
-                        >
-                          <LinkPreviewImage
-                            src={u.previewImageUrl}
-                            className="w-full h-40 object-cover bg-[#fdfcf9]"
-                          />
-                          <div className="px-3.5 py-3">
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-                              {seasonLinkDomain(u.linkUrl)}
-                            </p>
-                            {(u.previewTitle || u.linkLabel) && (
-                              <p className="text-[13px] font-semibold text-[#0a1628] mt-1 leading-snug line-clamp-2">
-                                {u.previewTitle || u.linkLabel}
-                              </p>
-                            )}
-                            <span className="text-xs text-[#990000] font-medium mt-1.5 inline-block group-hover/link:underline">
-                              {u.linkLabel || 'View'} &rarr;
-                            </span>
-                          </div>
-                        </a>
-                      ) : (
-                        <a
-                          href={u.linkUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs text-[#990000] hover:underline font-medium mt-2.5 border border-[#990000]/25 rounded-full px-3 py-1.5"
-                        >
-                          {u.linkLabel || seasonLinkDomain(u.linkUrl)} &rarr;
-                        </a>
-                      )
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <div
-              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-12 text-center"
-              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-            >
-              <p className="text-sm font-semibold text-[#0a1628]">
-                Live qualifying, tournament results, and stats are coming soon.
-              </p>
-              <p className="text-xs text-ink-muted mt-2 max-w-md mx-auto">
-                Updates will appear here as the season unfolds.
-              </p>
-            </div>
-          )}
+          <SeasonUpdatesTimeline updates={seasonUpdates} />
         </section>
 
         <ScotlandTourBanner variant="featured" />

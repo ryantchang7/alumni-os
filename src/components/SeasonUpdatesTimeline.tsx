@@ -1,0 +1,138 @@
+'use client'
+
+/**
+ * SeasonUpdatesTimeline — the "Latest updates" feed on the Season hub.
+ * Client component so the kind pills (All / Qualifying / Tournaments /
+ * Stats / Notes) can filter without a round-trip. Pills only render for
+ * kinds that actually have posts, and only once there are 2+ updates.
+ */
+
+import { useState } from 'react'
+import type { SeasonUpdate } from '@/lib/store/types'
+import LinkPreviewImage from '@/components/LinkPreviewImage'
+
+const KIND_LABELS: Record<SeasonUpdate['kind'], string> = {
+  qualifying: 'Qualifying',
+  tournament: 'Tournament',
+  stat: 'Stat',
+  note: 'Note',
+}
+const KIND_FILTERS: Array<{ kind: SeasonUpdate['kind']; label: string }> = [
+  { kind: 'qualifying', label: 'Qualifying' },
+  { kind: 'tournament', label: 'Tournaments' },
+  { kind: 'stat', label: 'Stats' },
+  { kind: 'note', label: 'Notes' },
+]
+
+function linkDomain(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '')
+  } catch {
+    return 'link'
+  }
+}
+
+export default function SeasonUpdatesTimeline({ updates }: { updates: SeasonUpdate[] }) {
+  const [filter, setFilter] = useState<SeasonUpdate['kind'] | 'all'>('all')
+
+  if (updates.length === 0) {
+    return (
+      <div
+        className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-6 py-12 text-center"
+        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+      >
+        <p className="text-sm font-semibold text-[#0a1628]">
+          Live qualifying, tournament results, and stats are coming soon.
+        </p>
+        <p className="text-xs text-ink-muted mt-2 max-w-md mx-auto">
+          Updates will appear here as the season unfolds.
+        </p>
+      </div>
+    )
+  }
+
+  const presentKinds = KIND_FILTERS.filter(f => updates.some(u => u.kind === f.kind))
+  const visible = filter === 'all' ? updates : updates.filter(u => u.kind === filter)
+
+  return (
+    <div>
+      {updates.length >= 2 && presentKinds.length >= 2 && (
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {[{ kind: 'all' as const, label: 'All' }, ...presentKinds].map(f => (
+            <button
+              key={f.kind}
+              type="button"
+              onClick={() => setFilter(f.kind)}
+              className={`text-[11px] font-semibold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full border transition-colors ${
+                filter === f.kind
+                  ? 'bg-[#0a1628] text-white border-[#0a1628]'
+                  : 'bg-white text-[#3d4a5c] border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]/40'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      )}
+      <ol className="relative border-l border-[rgba(180,168,150,0.45)] pl-6 space-y-5">
+        {visible.map(u => (
+          <li key={u.id} className="relative">
+            <span className="absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full bg-[#990000] ring-4 ring-[#fbf9f6]" />
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+            >
+              <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0a1628] bg-[#0a1628]/8 px-2 py-0.5 rounded-full">
+                  {KIND_LABELS[u.kind]}
+                </span>
+                <span className="text-[11px] text-ink-muted">{u.dateText}</span>
+              </div>
+              <p className="text-sm font-semibold text-[#0a1628]">{u.title}</p>
+              {u.body && (
+                <p className="text-sm text-ink-muted mt-1.5 leading-relaxed whitespace-pre-line">{u.body}</p>
+              )}
+              {u.linkUrl && (
+                u.previewImageUrl ? (
+                  <a
+                    href={u.linkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block mt-3 rounded-lg overflow-hidden border border-[rgba(180,168,150,0.4)] hover:border-[#0a1628]/30 transition-colors group/link"
+                  >
+                    <LinkPreviewImage
+                      src={u.previewImageUrl}
+                      className="w-full h-40 object-cover bg-[#fdfcf9]"
+                    />
+                    <div className="px-3.5 py-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
+                        {linkDomain(u.linkUrl)}
+                      </p>
+                      {(u.previewTitle || u.linkLabel) && (
+                        <p className="text-[13px] font-semibold text-[#0a1628] mt-1 leading-snug line-clamp-2">
+                          {u.previewTitle || u.linkLabel}
+                        </p>
+                      )}
+                      <span className="text-xs text-[#990000] font-medium mt-1.5 inline-block group-hover/link:underline">
+                        {u.linkLabel || 'View'} &rarr;
+                      </span>
+                    </div>
+                  </a>
+                ) : (
+                  <a
+                    href={u.linkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-[#990000] hover:underline font-medium mt-2.5 border border-[#990000]/25 rounded-full px-3 py-1.5"
+                  >
+                    {u.linkLabel || linkDomain(u.linkUrl)} &rarr;
+                  </a>
+                )
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}

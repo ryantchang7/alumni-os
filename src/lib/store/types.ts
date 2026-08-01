@@ -691,6 +691,8 @@ export interface TeamTravelStop {
   courseUrl?: string
   /** Small crest / course image for the schedule cards. */
   imageUrl?: string
+  /** Final result, filled in after the event — e.g. 'T-3rd of 12 · 289-285-291'. */
+  resultText?: string
   createdAt: string
 }
 

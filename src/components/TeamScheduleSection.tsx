@@ -33,7 +33,13 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
 
   const sorted = [...stops].sort((a, b) => a.startDate.localeCompare(b.startDate))
   const todayISO = new Date().toISOString().slice(0, 10)
-  const nextUpId = sorted.find(s => (s.endDate ?? s.startDate) >= todayISO)?.id ?? null
+  const nextUp = sorted.find(s => s.startDate > todayISO) ?? null
+  const liveIds = new Set(
+    sorted.filter(s => s.startDate <= todayISO && todayISO <= (s.endDate ?? s.startDate)).map(s => s.id),
+  )
+  const daysToNext = nextUp
+    ? Math.round((Date.parse(nextUp.startDate + 'T00:00:00Z') - Date.parse(todayISO + 'T00:00:00Z')) / 86400000)
+    : null
 
   return (
     <div>
@@ -41,7 +47,8 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
       <ol className="space-y-3">
         {sorted.map(s => {
           const isScotland = SCOTLAND_RE.test(`${s.eventName} ${s.locationText}`)
-          const isNextUp = s.id === nextUpId
+          const isLive = liveIds.has(s.id)
+          const isNextUp = !isLive && liveIds.size === 0 && nextUp?.id === s.id
           const isPast = (s.endDate ?? s.startDate) < todayISO
           return (
             <li
@@ -49,7 +56,7 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
               className={`rounded-xl border p-5 ${
                 isScotland
                   ? 'bg-[#0a1628] border-[#c8a84b]/50 text-white'
-                  : `bg-white border-[rgba(180,168,150,0.35)] ${isPast ? 'opacity-55' : ''}`
+                  : `bg-white border-[rgba(180,168,150,0.35)] ${isPast && !s.resultText ? 'opacity-55' : ''}`
               }`}
             >
               <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -63,9 +70,17 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                   <div className="min-w-0">
                     <p className={`text-[11px] font-semibold uppercase tracking-[0.16em] mb-0.5 ${isScotland ? 'text-[#c8a84b]' : 'text-[#990000]'}`}>
                       {formatRange(s.startDate, s.endDate)}
+                      {isLive && (
+                        <span className="ml-2 inline-flex items-center gap-1 bg-[#990000] text-white text-[9.5px] font-bold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full align-middle">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                          Live
+                        </span>
+                      )}
                       {isNextUp && (
                         <span className="ml-2 inline-block bg-[#c8a84b] text-[#0a1628] text-[9.5px] font-bold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full align-middle">
-                          Next up
+                          Next up{daysToNext !== null && daysToNext > 0
+                            ? ` · ${daysToNext === 1 ? 'tomorrow' : `in ${daysToNext} days`}`
+                            : ''}
                         </span>
                       )}
                     </p>
@@ -106,12 +121,20 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                       Alumni Scotland Tour · Oct 14–17 →
                     </Link>
                   )}
-                  {s.linkUrl ? (
+                  {isPast && s.resultText ? (
+                    <span className={`text-[12.5px] font-semibold whitespace-nowrap ${isScotland ? 'text-[#c8a84b]' : 'text-[#0a1628]'}`}>
+                      Final: {s.resultText}
+                    </span>
+                  ) : s.linkUrl ? (
                     <a
                       href={s.linkUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`text-[12.5px] font-semibold whitespace-nowrap hover:underline ${isScotland ? 'text-[#c8a84b]' : 'text-[#990000]'}`}
+                      className={`whitespace-nowrap hover:underline font-semibold ${
+                        isLive
+                          ? 'text-[13.5px] bg-[#990000] text-white px-3 py-1.5 rounded-lg hover:no-underline hover:bg-[#7a0000] transition-colors'
+                          : `text-[12.5px] ${isScotland ? 'text-[#c8a84b]' : 'text-[#990000]'}`
+                      }`}
                     >
                       View leaderboard →
                     </a>
@@ -136,6 +159,17 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
           className="text-[#990000] hover:underline"
         >
           Full schedule &amp; results on pennathletics.com →
+        </a>
+        <a href="/api/season-calendar" className="text-[#0a1628] hover:underline">
+          Add the season to your calendar →
+        </a>
+        <a
+          href="https://pennathletics.com/sports/mens-golf/stats"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0a1628] hover:underline"
+        >
+          Season stats ↗
         </a>
         <Link href="/team/travel" className="text-[#0a1628] hover:underline">
           Near a stop? Offer to host the team →

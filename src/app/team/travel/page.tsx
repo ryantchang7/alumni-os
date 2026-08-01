@@ -125,6 +125,9 @@ export default async function TeamTravelPage() {
 {stop.eventName}
                         </h2>
                         <p className="text-sm text-[#3a4657] mt-1">{stop.locationText}</p>
+                        {stop.resultText && (
+                          <p className="text-[13px] font-semibold text-[#0a1628] mt-1.5">Final: {stop.resultText}</p>
+                        )}
                         {stop.note && (
                           <p className="text-xs text-ink-muted mt-2.5 leading-relaxed max-w-xl border-l-2 border-[rgba(180,168,150,0.5)] pl-3">
                             {stop.note}
@@ -149,6 +152,7 @@ export default async function TeamTravelPage() {
                           eventName={stop.eventName}
                           signedIn={signedIn}
                         />
+                        {isFounder && <AddTravelStop stop={stop} />}
                         {isFounder && <DeleteTravelStop stopId={stop.id} />}
                       </div>
                     </div>

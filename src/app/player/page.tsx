@@ -19,6 +19,7 @@ import AlumniCard from '@/components/alumni/AlumniCard'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import type { AlumniSpotlight, TeamNewsItem } from '@/lib/store/types'
 import ScotlandTourBanner from '@/components/ScotlandTourBanner'
+import NextEventChip from '@/components/NextEventChip'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
 
@@ -717,7 +718,8 @@ function ClubhouseInner() {
         )}
 
         {/* Scotland Tour — October 2026 */}
-        <div className="mb-10">
+        <div className="mb-10 space-y-3">
+          <NextEventChip />
           <ScotlandTourBanner variant="featured" />
         </div>
 

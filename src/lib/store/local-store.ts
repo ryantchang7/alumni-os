@@ -2739,6 +2739,41 @@ export async function createTravelStop(input: {
   })
 }
 
+/** Founder edits a stop in place — every editable field is overwritten
+ *  (the edit form always submits the full set). CAS-guarded. */
+export async function updateTravelStop(
+  stopId: string,
+  patch: {
+    eventName: string
+    locationText: string
+    startDate: string
+    endDate?: string
+    note?: string
+    linkUrl?: string
+    courseUrl?: string
+    imageUrl?: string
+    resultText?: string
+  },
+): Promise<TeamTravelStop | null> {
+  return mutateStore(store => {
+    const idx = store.teamTravelStops.findIndex(s => s.id === stopId)
+    if (idx === -1) return null
+    store.teamTravelStops[idx] = {
+      ...store.teamTravelStops[idx],
+      eventName: patch.eventName.trim(),
+      locationText: patch.locationText.trim(),
+      startDate: patch.startDate.trim(),
+      endDate: patch.endDate?.trim() || undefined,
+      note: patch.note?.trim() || undefined,
+      linkUrl: patch.linkUrl?.trim() || undefined,
+      courseUrl: patch.courseUrl?.trim() || undefined,
+      imageUrl: patch.imageUrl?.trim() || undefined,
+      resultText: patch.resultText?.trim() || undefined,
+    }
+    return store.teamTravelStops[idx]
+  })
+}
+
 /** All travel stops for a team (newest-created first). */
 export async function getTravelStops(teamId: string): Promise<TeamTravelStop[]> {
   const store = await readStore()

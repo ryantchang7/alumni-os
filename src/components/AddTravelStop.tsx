@@ -3,7 +3,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
-import { Trash2, X } from 'lucide-react'
+import { Pencil, Trash2, X } from 'lucide-react'
+import type { TeamTravelStop } from '@/lib/store/types'
 
 export function DeleteTravelStop({ stopId }: { stopId: string }) {
   const [confirming, setConfirming] = useState(false)
@@ -47,16 +48,18 @@ const labelClass = 'block text-xs font-semibold tracking-widest uppercase text-i
 const inputClass =
   'w-full rounded-lg border border-[#d9c8a8] bg-white px-4 py-2.5 text-sm text-[#0a1628] placeholder:text-[#b0a898] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b] transition-colors'
 
-export default function AddTravelStop() {
+export default function AddTravelStop({ stop }: { stop?: TeamTravelStop }) {
+  const isEdit = !!stop
   const [open, setOpen] = useState(false)
-  const [eventName, setEventName] = useState('')
-  const [locationText, setLocationText] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
-  const [note, setNote] = useState('')
-  const [linkUrl, setLinkUrl] = useState('')
-  const [courseUrl, setCourseUrl] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
+  const [eventName, setEventName] = useState(stop?.eventName ?? '')
+  const [locationText, setLocationText] = useState(stop?.locationText ?? '')
+  const [startDate, setStartDate] = useState(stop?.startDate ?? '')
+  const [endDate, setEndDate] = useState(stop?.endDate ?? '')
+  const [note, setNote] = useState(stop?.note ?? '')
+  const [linkUrl, setLinkUrl] = useState(stop?.linkUrl ?? '')
+  const [courseUrl, setCourseUrl] = useState(stop?.courseUrl ?? '')
+  const [imageUrl, setImageUrl] = useState(stop?.imageUrl ?? '')
+  const [resultText, setResultText] = useState(stop?.resultText ?? '')
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const router = useRouter()
@@ -80,14 +83,15 @@ export default function AddTravelStop() {
   }, [open, handleKeyDown])
 
   function reset() {
-    setEventName('')
-    setLocationText('')
-    setStartDate('')
-    setEndDate('')
-    setNote('')
-    setLinkUrl('')
-    setCourseUrl('')
-    setImageUrl('')
+    setEventName(stop?.eventName ?? '')
+    setLocationText(stop?.locationText ?? '')
+    setStartDate(stop?.startDate ?? '')
+    setEndDate(stop?.endDate ?? '')
+    setNote(stop?.note ?? '')
+    setLinkUrl(stop?.linkUrl ?? '')
+    setCourseUrl(stop?.courseUrl ?? '')
+    setImageUrl(stop?.imageUrl ?? '')
+    setResultText(stop?.resultText ?? '')
     setStatus('idle')
     setErrorMsg('')
     setOpen(false)
@@ -100,9 +104,10 @@ export default function AddTravelStop() {
     setErrorMsg('')
     try {
       const res = await fetch('/api/team-travel', {
-        method: 'POST',
+        method: isEdit ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          ...(isEdit ? { id: stop.id } : {}),
           eventName: eventName.trim(),
           locationText: locationText.trim(),
           startDate: startDate.trim(),
@@ -110,6 +115,7 @@ export default function AddTravelStop() {
           note: note.trim() || undefined,
           linkUrl: linkUrl.trim() || undefined,
           courseUrl: courseUrl.trim() || undefined,
+          resultText: resultText.trim() || undefined,
           imageUrl: imageUrl.trim() || undefined,
         }),
       })
@@ -134,7 +140,7 @@ export default function AddTravelStop() {
             className="fixed inset-0 z-[200] flex items-center justify-center p-4"
             role="dialog"
             aria-modal="true"
-            aria-label="Add a travel stop"
+            aria-label={isEdit ? "Edit travel stop" : "Add a travel stop"}
           >
             {/* Backdrop */}
             <div
@@ -156,7 +162,7 @@ export default function AddTravelStop() {
                   <h2
                     className="text-white text-xl font-medium leading-snug font-heading"
                   >
-                    Add a travel stop
+                    {isEdit ? `Edit: ${stop.eventName}` : "Add a travel stop"}
                   </h2>
                 </div>
                 <button
@@ -290,6 +296,23 @@ export default function AddTravelStop() {
                     />
                   </div>
 
+                  {isEdit && (
+                    <div>
+                      <label className={labelClass}>
+                        Final result{' '}
+                        <span className="normal-case font-normal tracking-normal">(optional — shows on the card once the event is over)</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={resultText}
+                        onChange={e => setResultText(e.target.value.slice(0, 200))}
+                        placeholder="e.g. T-3rd of 12 · 289-285-291"
+                        className={inputClass}
+                        disabled={status === 'submitting'}
+                      />
+                    </div>
+                  )}
+
                   {status === 'error' && (
                     <p className="text-xs text-[#990000] bg-[#990000]/8 border border-[#990000]/20 rounded-lg px-4 py-2.5">
                       {errorMsg}
@@ -309,7 +332,7 @@ export default function AddTravelStop() {
                       disabled={status === 'submitting'}
                       className="bg-[#0a1628] text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-[#152238] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {status === 'submitting' ? 'Adding...' : 'Add stop'}
+                      {status === 'submitting' ? 'Saving...' : isEdit ? 'Save changes' : 'Add stop'}
                     </button>
                   </div>
                 </form>
@@ -322,14 +345,25 @@ export default function AddTravelStop() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] bg-white hover:bg-[#fbf9f6] px-4 py-2.5 rounded-lg transition-colors"
-        style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
-      >
-        <span aria-hidden="true">+</span> Add a travel stop
-      </button>
+      {isEdit ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg border text-ink-muted border-[rgba(180,168,150,0.55)] hover:text-[#0a1628] hover:border-[#0a1628]/40 bg-transparent transition-colors"
+        >
+          <Pencil size={12} />
+          Edit
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] bg-white hover:bg-[#fbf9f6] px-4 py-2.5 rounded-lg transition-colors"
+          style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
+        >
+          <span aria-hidden="true">+</span> Add a travel stop
+        </button>
+      )}
       {modal}
     </>
   )
