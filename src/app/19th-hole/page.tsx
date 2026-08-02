@@ -143,7 +143,7 @@ export default async function NineteenthHolePage() {
       .sort((a, b) => b[1].count - a[1].count)
       .map(([city, s]) => ({ city, ...s }))
 
-    const { isExampleGathering, isHiddenGathering } = await import('@/lib/seed-data/example-gatherings')
+    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } = await import('@/lib/seed-data/example-gatherings')
     socialGatherings = store.clubhouseGatherings
       .filter(
         g =>
@@ -152,7 +152,8 @@ export default async function NineteenthHolePage() {
           g.status !== 'closed' &&
           !isHiddenGathering(g.id),
       )
-      .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) })) as GatheringData[]
+      .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) }))
+      .filter(g => !isExpiredExampleGathering(g)) as GatheringData[]
 
     // Open Requests with social intents — visiting members looking for
     // drinks / coffee / dinner.

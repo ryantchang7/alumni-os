@@ -73,7 +73,7 @@ export default async function TeamTravelPage() {
             Schedule &amp; Travel
           </h1>
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-            The 2026&ndash;27 season, stop by stop &mdash; and offer to host the team when they&rsquo;re near you.
+            The season, stop by stop &mdash; and offer to host the team when they&rsquo;re near you.
           </p>
         </div>
       </div>

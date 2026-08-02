@@ -37,3 +37,12 @@ export function isExampleGathering(id: string, dataFlag?: boolean): boolean {
 export function isHiddenGathering(id: string): boolean {
   return HIDDEN_GATHERING_IDS.has(id)
 }
+
+/** Seeded EXAMPLE gatherings age out once their date passes — a sample from
+ * last month labeled "Upcoming" reads like a dead site. Real gatherings are
+ * never auto-hidden. Unparseable dateText = keep. */
+export function isExpiredExampleGathering(g: { isExample?: boolean; dateText: string }): boolean {
+  if (!g.isExample) return false
+  const t = Date.parse(g.dateText)
+  return !Number.isNaN(t) && t < Date.now() - 24 * 60 * 60 * 1000
+}

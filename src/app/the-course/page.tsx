@@ -195,7 +195,7 @@ export default async function TheCoursePage() {
       }
     }
 
-    const { isExampleGathering, isHiddenGathering } = await import('@/lib/seed-data/example-gatherings')
+    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } = await import('@/lib/seed-data/example-gatherings')
     rounds = store.clubhouseGatherings
       .filter(
         (g) =>
@@ -204,7 +204,8 @@ export default async function TheCoursePage() {
           g.status !== 'closed' &&
           !isHiddenGathering(g.id),
       )
-      .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) })) as GatheringData[]
+      .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) }))
+      .filter(g => !isExpiredExampleGathering(g)) as GatheringData[]
 
     for (const r of store.clubhouseGatheringRequests) {
       if (r.teamId !== team.id) continue

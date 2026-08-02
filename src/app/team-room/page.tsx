@@ -18,7 +18,7 @@ import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 import { canPostSeasonUpdates } from '@/lib/auth/season-posters'
 import SeasonUpdatesTimeline from '@/components/SeasonUpdatesTimeline'
 import FollowTeamButton from '@/components/FollowTeamButton'
-import { deriveClassLabel } from '@/lib/class-year'
+import { deriveClassLabel, classSortOrder } from '@/lib/class-year'
 import { auth } from '@/auth'
 
 import type { Metadata } from 'next'
@@ -32,8 +32,6 @@ interface PlayerEntry {
   person: Person
   membership: TeamMembership
 }
-
-const CLASS_ORDER: Record<string, number> = { 'Sr.': 0, 'Jr.': 1, 'So.': 2, 'Fr.': 3 }
 
 /** Bare domain for a link's "source" label, e.g. "golfstat.com". */
 const SUPPORT_CARDS = [
@@ -105,8 +103,8 @@ export default async function TeamRoomPage() {
       })
       .filter((x): x is PlayerEntry => x !== null)
       .sort((a, b) => {
-        const aOrder = CLASS_ORDER[a.membership.classLabel ?? ''] ?? 99
-        const bOrder = CLASS_ORDER[b.membership.classLabel ?? ''] ?? 99
+        const aOrder = classSortOrder(a.membership.classYearEstimate)
+        const bOrder = classSortOrder(b.membership.classYearEstimate)
         if (aOrder !== bOrder) return aOrder - bOrder
         return a.person.canonicalName.localeCompare(b.person.canonicalName)
       })
@@ -437,7 +435,7 @@ export default async function TeamRoomPage() {
           <div>
             <p className="font-semibold text-[#0a1628] text-sm">Schedule &amp; Travel</p>
             <p className="text-xs text-ink-muted mt-0.5">
-              The full 2026&ndash;27 slate &mdash; and offer to host the team when they&rsquo;re near you.
+              The full season slate &mdash; and offer to host the team when they&rsquo;re near you.
             </p>
           </div>
           <Link

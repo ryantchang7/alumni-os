@@ -23,3 +23,17 @@ export function deriveClassLabel(
   if (idx > 3) return stored
   return LABELS[idx]
 }
+
+/** "2026–27"-style label for the current academic season (Aug 1 cutover). */
+export function currentSeasonLabel(now = new Date()): string {
+  const start = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1
+  return `${start}–${String(start + 1).slice(2)}`
+}
+
+const CLASS_SORT: Record<string, number> = { Senior: 0, Junior: 1, Sophomore: 2, Freshman: 3 }
+
+/** Sort key that matches the DERIVED label, so order and chips agree. */
+export function classSortOrder(classYearEstimate: string | undefined, now = new Date()): number {
+  const label = deriveClassLabel(classYearEstimate, now)
+  return label !== undefined && label in CLASS_SORT ? CLASS_SORT[label] : 99
+}

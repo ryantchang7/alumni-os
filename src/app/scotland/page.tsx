@@ -132,7 +132,7 @@ export default async function ScotlandPage() {
               href="/team-room"
               className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors"
             >
-              See the full 2026–27 schedule in the Team Room →
+              See the full season schedule in the Team Room →
             </Link>
             <a
               href="https://pennathletics.com/news/2025/10/15/general-golf-teams-to-compete-in-2026-st-andrews-links-collegiate.aspx"

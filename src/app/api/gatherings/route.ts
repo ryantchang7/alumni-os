@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { requireApprovedMember } from '@/lib/auth/guards'
 import { FOUNDER_EMAILS } from '@/lib/badges'
-import { isExampleGathering, isHiddenGathering } from '@/lib/seed-data/example-gatherings'
+import { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } from '@/lib/seed-data/example-gatherings'
 
 const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const VALID_AUDIENCES = ['players', 'alumni', 'both'] as const
@@ -38,9 +38,16 @@ export async function GET(request: NextRequest) {
     gatherings = gatherings.filter(g => g.type === typeFilter)
   }
 
+  // Chronological, not alphabetical — parse the human dateText; unparseable
+  // dates sort last (they're usually vague like "Championship Weekend").
+  const sortKey = (d: string) => {
+    const t = Date.parse(d)
+    return Number.isNaN(t) ? Number.MAX_SAFE_INTEGER : t
+  }
   const sorted = gatherings
-    .sort((a, b) => a.dateText.localeCompare(b.dateText))
+    .sort((a, b) => sortKey(a.dateText) - sortKey(b.dateText))
     .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) }))
+    .filter(g => !isExpiredExampleGathering(g))
   return NextResponse.json({ gatherings: sorted })
 }
 

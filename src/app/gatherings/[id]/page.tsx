@@ -29,11 +29,17 @@ export default async function GatheringDetailPage({ params }: Props) {
   const { id } = await params
 
   const { getClubhouseGatheringById, readStore } = await import('@/lib/store/local-store')
-  const { isExampleGathering, isHiddenGathering } = await import('@/lib/seed-data/example-gatherings')
+  const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } = await import('@/lib/seed-data/example-gatherings')
 
   const gathering = await getClubhouseGatheringById(id)
   const available =
-    !!gathering && gathering.status !== 'closed' && !isHiddenGathering(gathering.id)
+    !!gathering &&
+    gathering.status !== 'closed' &&
+    !isHiddenGathering(gathering.id) &&
+    !isExpiredExampleGathering({
+      isExample: isExampleGathering(gathering.id, gathering.isExample),
+      dateText: gathering.dateText,
+    })
 
   if (!gathering || !available) {
     return (

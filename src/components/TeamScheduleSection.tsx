@@ -10,6 +10,7 @@
 
 import Link from 'next/link'
 import type { TeamTravelStop } from '@/lib/store/types'
+import { currentSeasonLabel } from '@/lib/class-year'
 
 const SCOTLAND_RE = /scotland|st andrews/i
 
@@ -48,7 +49,7 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-[#0a1628] mb-4 uppercase tracking-[0.1em]">2026–27 Schedule</h3>
+      <h3 className="text-sm font-semibold text-[#0a1628] mb-4 uppercase tracking-[0.1em]">{currentSeasonLabel()} Schedule</h3>
       <ol className="space-y-3">
         {sorted.map(s => {
           const isScotland = SCOTLAND_RE.test(`${s.eventName} ${s.locationText}`)

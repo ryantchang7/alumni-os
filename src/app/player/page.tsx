@@ -20,6 +20,7 @@ import { useSiteContent } from '@/lib/site-content/use-site-content'
 import type { AlumniSpotlight, TeamNewsItem } from '@/lib/store/types'
 import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 import NextEventChip from '@/components/NextEventChip'
+import { deriveClassLabel } from '@/lib/class-year'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
 
@@ -351,7 +352,7 @@ const rooms = [
 function MiniMemberCard({ profile, teamSlug }: { profile: PlayerProfile; teamSlug: string }) {
   const isCurrentPlayer = profile.memberRole === 'current_player'
   const subline = isCurrentPlayer
-    ? (profile.classYearEstimate?.split(' / ')[0] ?? profile.classLabel ?? null)
+    ? (deriveClassLabel(profile.classYearEstimate) ?? profile.classLabel ?? null)
     : profile.rosterYearsLabel !== '—'
       ? `Penn Golf ${profile.rosterYearsLabel}`
       : null

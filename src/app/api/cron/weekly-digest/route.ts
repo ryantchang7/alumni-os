@@ -14,6 +14,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { checkCronAuth } from '@/lib/cron-auth'
+import { deriveClassLabel } from '@/lib/class-year'
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000
 
@@ -65,7 +66,7 @@ export async function GET(req: NextRequest) {
         : undefined
       return {
         name: person?.canonicalName ?? a.name ?? a.email,
-        classLabel: membership?.classLabel,
+        classLabel: deriveClassLabel(membership?.classYearEstimate) ?? membership?.classLabel,
       }
     })
 

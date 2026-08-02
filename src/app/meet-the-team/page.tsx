@@ -7,6 +7,7 @@ import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import Link from 'next/link'
 
 import type { Metadata } from 'next'
+import { deriveClassLabel, classSortOrder } from '@/lib/class-year'
 
 export const metadata: Metadata = {
   title: 'Ask the Team',
@@ -17,8 +18,6 @@ interface PlayerEntry {
   person: Person
   membership: TeamMembership
 }
-
-const CLASS_ORDER: Record<string, number> = { 'Sr.': 0, 'Jr.': 1, 'So.': 2, 'Fr.': 3 }
 
 export default async function MeetTheTeamPage() {
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
@@ -67,8 +66,8 @@ export default async function MeetTheTeamPage() {
       })
       .filter((x): x is PlayerEntry => x !== null)
       .sort((a, b) => {
-        const aOrder = CLASS_ORDER[a.membership.classLabel ?? ''] ?? 99
-        const bOrder = CLASS_ORDER[b.membership.classLabel ?? ''] ?? 99
+        const aOrder = classSortOrder(a.membership.classYearEstimate)
+        const bOrder = classSortOrder(b.membership.classYearEstimate)
         if (aOrder !== bOrder) return aOrder - bOrder
         return a.person.canonicalName.localeCompare(b.person.canonicalName)
       })
@@ -81,7 +80,7 @@ export default async function MeetTheTeamPage() {
     personId: person.id,
     name: person.canonicalName,
     photoUrl: photoFor(person.id),
-    classShort: membership.classYearEstimate?.split(' / ')[0],
+    classShort: deriveClassLabel(membership.classYearEstimate),
   }))
 
   return (
@@ -133,7 +132,7 @@ export default async function MeetTheTeamPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {currentPlayers.map(({ person, membership }) => {
-              const classShort = membership.classYearEstimate?.split(' / ')[0]
+              const classShort = deriveClassLabel(membership.classYearEstimate)
               const badges = badgesForPerson(person.id, store.accounts)
               const account = store.accounts.find(a => a.linkedPersonId === person.id)
               const enrichment = team
@@ -170,9 +169,9 @@ export default async function MeetTheTeamPage() {
                         )}
                       </div>
                     </div>
-                    {membership.classLabel && (
+                    {deriveClassLabel(membership.classYearEstimate) && (
                       <span className="text-[10px] font-medium text-[#2d6a4f] bg-[#2d6a4f]/10 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
-                        {membership.classLabel}
+                        {deriveClassLabel(membership.classYearEstimate)}
                       </span>
                     )}
                   </div>
