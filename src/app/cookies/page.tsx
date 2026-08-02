@@ -22,10 +22,7 @@ export default function CookiesPage() {
           <p>
             This Cookie Policy explains how the Penn Golf Clubhouse uses cookies and similar technologies. We keep it simple: we use as few cookies as possible and never for advertising or cross-site tracking.
           </p>
-          <p className="text-[13px] text-ink-muted italic">
-            This Cookie Policy was prepared for informational purposes. It does not constitute legal advice. A qualified attorney should review it before formal public launch.
-          </p>
-
+          
           <h2 className="text-xl font-medium pt-2 font-heading">
             Cookies we use
           </h2>

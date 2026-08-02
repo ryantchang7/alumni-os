@@ -73,7 +73,7 @@ export const ROOM_CARDS: RoomCard[] = [
   },
   {
     title: 'Gather',
-    blurb: 'Events, alumni weekends, team updates, and the next generation of Penn Golf.',
+    blurb: 'Events, alumni weekends, the season as it happens, and the next generation of Penn Golf.',
     examples: ['Alumni weekend at the Highlands', 'Team Room news + scores', 'Founders Wall + the current roster'],
     surfaces: ['Team Room', 'Moments', 'Hall of Fame'],
   },

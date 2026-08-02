@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { auth } from '@/auth'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import type { TravelHostOffer } from '@/lib/store/types'
@@ -132,6 +133,14 @@ export default async function TeamTravelPage() {
 {stop.eventName}
                         </h2>
                         <p className="text-sm text-[#3a4657] mt-1">{stop.locationText}</p>
+                        {/scotland|st andrews/i.test(`${stop.eventName} ${stop.locationText}`) && (
+                          <Link
+                            href="/scotland"
+                            className="inline-block text-[12.5px] font-semibold text-[#c8a84b] hover:underline mt-1.5"
+                          >
+                            Alumni Scotland Tour · Oct 14–17 →
+                          </Link>
+                        )}
                         {stop.resultText && (
                           <p className="text-[13px] font-semibold text-[#0a1628] mt-1.5">Final: {stop.resultText}</p>
                         )}

@@ -22,10 +22,7 @@ export default function CommunityGuidelinesPage() {
           <p>
             The Penn Golf Clubhouse is the private network for the Penn Men&rsquo;s Golf family &mdash; players, alumni, coaches, family, and longtime affiliates. This is a community built on shared experience and mutual respect. Treat it that way.
           </p>
-          <p className="text-[13px] text-ink-muted italic">
-            These Community Guidelines were prepared for informational purposes. They do not constitute legal advice. A qualified attorney should review them before formal public launch.
-          </p>
-
+          
           <h2 className="text-xl font-medium pt-2 font-heading">
             Be real
           </h2>

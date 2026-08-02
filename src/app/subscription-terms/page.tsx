@@ -22,10 +22,7 @@ export default function SubscriptionTermsPage() {
           <p>
             Membership and access to the Penn Golf Clubhouse are <strong>free</strong> and approval-based. These Subscription &amp; Billing Terms apply <strong>only</strong> to optional paid support tiers. You are never required to pay to access the Clubhouse.
           </p>
-          <p className="text-[13px] text-ink-muted italic">
-            These Subscription &amp; Billing Terms were prepared for informational purposes. They do not constitute legal advice. A qualified attorney should review them before formal public launch.
-          </p>
-
+          
           <h2 className="text-xl font-medium pt-2 font-heading">
             Support tiers
           </h2>

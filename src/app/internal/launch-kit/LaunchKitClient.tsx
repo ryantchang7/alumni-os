@@ -74,10 +74,10 @@ const PRE_FILM_CHECK: { area: string; items: { text: string; route?: string }[] 
     ],
   },
   {
-    area: 'Season Tracker',
+    area: 'The Season (Team Room hub)',
     items: [
       { text: 'Post an update with a link → it appears', route: '/internal/season' },
-      { text: 'It shows in the Season Tracker timeline — delete the test one after', route: '/team-room' },
+      { text: 'It shows under Latest updates in The Season — delete the test one after', route: '/team-room' },
       { text: 'A pasted link renders a preview card with the link’s image + title; or upload a custom preview image to override it', route: '/internal/season → /team-room' },
     ],
   },
@@ -100,7 +100,7 @@ const PRE_FILM_CHECK: { area: string; items: { text: string; route?: string }[] 
     area: 'Copy & visuals (quick eyeball)',
     items: [
       { text: 'Career Room blurb updated (“Find Penn Golf members by industry…”)', route: '/career-room' },
-      { text: 'Team Room subtitle + Season Tracker section present', route: '/team-room' },
+      { text: 'Team Room shows The Season (schedule + Latest updates) with the countdown pill', route: '/team-room' },
       { text: '“private network” (not “private alumni network”), no approval-based pill', route: '/support' },
       { text: '“Where They Are Now” map loads first; caption “Where Penn Golf members live now”', route: '/member-map' },
       { text: 'Header is tighter but the 3-stage animation still plays', route: '/the-course' },

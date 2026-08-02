@@ -338,7 +338,7 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
     label: '/launch — Gather card blurb',
     hint: 'One-line description of the Gather room.',
     kind: 'longtext',
-    default: 'Events, alumni weekends, team updates, and the next generation of Penn Golf.',
+    default: 'Events, alumni weekends, the season as it happens, and the next generation of Penn Golf.',
   },
   {
     id: 'launch.access-line',

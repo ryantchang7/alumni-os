@@ -22,10 +22,7 @@ export default function CopyrightPage() {
           <p>
             The Penn Golf Clubhouse respects intellectual property rights and responds to valid notices of copyright infringement under the Digital Millennium Copyright Act, 17 U.S.C. &sect;512 (&ldquo;DMCA&rdquo;). If you believe content on the Clubhouse infringes your copyright, please follow the process below.
           </p>
-          <p className="text-[13px] text-ink-muted italic">
-            This Copyright &amp; DMCA Policy was prepared for informational purposes. It does not constitute legal advice. A qualified attorney should review it before formal public launch.
-          </p>
-
+          
           <h2 className="text-xl font-medium pt-2 font-heading">
             Reporting copyright infringement
           </h2>
