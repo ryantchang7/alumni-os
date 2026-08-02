@@ -3,7 +3,7 @@ import { getAccountById } from '@/lib/store/local-store'
 import SuggestIdeaForm from '@/components/SuggestIdeaForm'
 
 export const metadata = {
-  title: 'Suggest an idea · Penn Golf Clubhouse',
+  title: 'Suggest an idea',
 }
 
 export default async function SuggestPage() {

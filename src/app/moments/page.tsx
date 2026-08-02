@@ -24,6 +24,13 @@ import { getSiteContentOrDefault } from '@/lib/site-content/read'
 import MomentCard from '@/components/moments/MomentCard'
 import { isCaptainEmailWithOverrides } from '@/lib/captains-runtime'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Moments',
+  description: 'Photos and clips from the Penn Golf family.',
+}
+
 const TEAM_SLUG = 'penn-mens-golf'
 
 type View = 'all' | 'locker-room'

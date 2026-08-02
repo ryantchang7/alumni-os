@@ -14,6 +14,13 @@ import {
 } from '@/lib/member-book/helpers'
 import SectionEmblemHeader from '@/components/SectionEmblemHeader'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Member Map',
+  description: 'Where the Penn Golf family lives — the member map.',
+}
+
 const TEAM_SLUG = 'penn-mens-golf'
 
 // The map reads enrichments + memberships fresh on every request — alumni

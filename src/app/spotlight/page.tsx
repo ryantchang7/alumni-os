@@ -5,6 +5,13 @@ import SpotlightNominate from '@/components/SpotlightNominate'
 import FeatureAlumComposer from '@/components/FeatureAlumComposer'
 import type { AlumniSpotlight } from '@/lib/store/types'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Spotlight',
+  description: 'The member spotlight — one Penn Golf story at a time.',
+}
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', {
     month: 'long',

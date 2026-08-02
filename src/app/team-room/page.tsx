@@ -21,6 +21,13 @@ import FollowTeamButton from '@/components/FollowTeamButton'
 import { deriveClassLabel } from '@/lib/class-year'
 import { auth } from '@/auth'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Team Room',
+  description: 'The season hub — schedule, results, roster, and updates.',
+}
+
 interface PlayerEntry {
   person: Person
   membership: TeamMembership

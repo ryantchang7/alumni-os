@@ -14,6 +14,13 @@ import { auth } from '@/auth'
 import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 import { bucketHandicap, BUCKET_LABELS, BUCKET_SHORT, type HandicapBucket } from '@/lib/handicap'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'The Course',
+  description: 'Find a round or host one — tee times with the Penn Golf family.',
+}
+
 interface AlumniEntry {
   person: Person
   membership: TeamMembership

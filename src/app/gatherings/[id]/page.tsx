@@ -13,6 +13,18 @@ interface Props {
  * Gracefully handles a removed/closed/unknown gathering with a friendly
  * message instead of a hard 404.
  */
+export async function generateMetadata({ params }: Props) {
+  const { id } = await params
+  const { getClubhouseGatheringById } = await import('@/lib/store/local-store')
+  const gathering = await getClubhouseGatheringById(id)
+  if (!gathering) return { title: 'Gatherings' }
+  const where = [gathering.venue, gathering.city].filter(Boolean).join(', ')
+  return {
+    title: gathering.title,
+    description: [gathering.dateText, where].filter(Boolean).join(' · ') || 'A Penn Golf gathering.',
+  }
+}
+
 export default async function GatheringDetailPage({ params }: Props) {
   const { id } = await params
 

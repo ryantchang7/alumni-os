@@ -7,6 +7,13 @@ import { getPublicMembers, getMemberPennGolfYears } from '@/lib/member-book/help
 import { readStore, getTeamBySlug } from '@/lib/store/local-store'
 import AccountSetupClient from './AccountSetupClient'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Claim your card',
+  description: 'Find your Member Book card and claim it.',
+}
+
 const TEAM_SLUG = 'penn-mens-golf'
 
 export const dynamic = 'force-dynamic'

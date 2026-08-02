@@ -4,6 +4,13 @@ import type { TravelHostOffer } from '@/lib/store/types'
 import AddTravelStop, { DeleteTravelStop } from '@/components/AddTravelStop'
 import TravelHostOfferButton from '@/components/TravelHostOfferButton'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Schedule & Travel',
+  description: 'The full season, stop by stop — and offer to host the team.',
+}
+
 function formatDate(iso: string): string {
   try {
     return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', {

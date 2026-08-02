@@ -9,6 +9,13 @@ import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
 import { memberBookEntries } from '@/lib/member-book/data'
 import { isPublicMember, getMemberStartYear, getMemberEndYear } from '@/lib/member-book/helpers'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Hall of Fame',
+  description: 'Penn Golf program honors and history.',
+}
+
 const IVY_YEARS = [1998, 2007, 2012, 2015]
 const NCAA_TEAM_YEARS = [1947, 1958, 1965, 1973, 1974]
 

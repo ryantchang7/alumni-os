@@ -2,7 +2,7 @@ import InviteTeammates from '@/components/InviteTeammates'
 import type { TeammateEntry } from '@/components/InviteTeammates'
 
 export const metadata = {
-  title: 'Invite Teammates | Penn Golf Clubhouse',
+  title: 'Invite Teammates',
   description: 'Pull your teammates onto the Penn Golf Clubhouse.',
 }
 

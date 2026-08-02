@@ -15,6 +15,13 @@ import { INDUSTRY_OPTIONS, industryToSlug } from '@/lib/industries'
 import { auth } from '@/auth'
 import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Career Room',
+  description: 'Jobs, intros, and advice across the Penn Golf network.',
+}
+
 const SECTOR_LABEL: Record<CareerPostSector, string> = {
   finance: 'Finance',
   consulting: 'Consulting',

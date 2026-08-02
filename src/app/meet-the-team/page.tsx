@@ -6,6 +6,13 @@ import AskTheTeam, { type AskTarget } from '@/components/AskTheTeam'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import Link from 'next/link'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Ask the Team',
+  description: 'Meet the current squad and ask them anything.',
+}
+
 interface PlayerEntry {
   person: Person
   membership: TeamMembership

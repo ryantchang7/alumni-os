@@ -60,6 +60,23 @@ async function lookupStoreMatch(displayName: string): Promise<StoreMatch | null>
   }
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ memberId: string }>
+}) {
+  const { memberId } = await params
+  const member = getMemberById(decodeURIComponent(memberId))
+  if (!member) return { title: 'Member Book' }
+  const { startYear, finishYear } = member.career
+  const years =
+    startYear && finishYear ? ` · Penn Golf ${startYear}–${finishYear}` : ''
+  return {
+    title: member.displayName,
+    description: `${member.displayName}${years} — in the Penn Golf Clubhouse Member Book.`,
+  }
+}
+
 export default async function MemberDetailPage({
   params,
 }: {

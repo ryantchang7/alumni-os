@@ -8,6 +8,13 @@ import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import { isPublicMember, getMemberPennGolfYears } from '@/lib/member-book/helpers'
 import { readStore, getTeamBySlug } from '@/lib/store/local-store'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Your Profile',
+  description: 'Your Penn Golf Clubhouse profile.',
+}
+
 const TEAM_SLUG = 'penn-mens-golf'
 
 export default async function AccountProfilePage() {

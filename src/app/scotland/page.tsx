@@ -15,7 +15,7 @@ import Link from 'next/link'
 import { getSiteContentOrDefault } from '@/lib/site-content/read'
 
 export const metadata: Metadata = {
-  title: 'Scotland Tour · Penn Golf Clubhouse',
+  title: 'Scotland Tour',
   description:
     'Penn Golf is going to Scotland — the St Andrews Links Collegiate, then an alumni & family tour through St Andrews, Kingsbarns, and Carnoustie. October 14–17, 2026.',
 }

@@ -2,6 +2,13 @@ import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
 import ChatListClient from './ChatListClient'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Messages',
+  description: 'Private messages with the Penn Golf family.',
+}
+
 export default async function ChatIndexPage() {
   const approval = await getApprovalState()
 

@@ -9,6 +9,13 @@ import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 import type { OpenRequest } from '@/lib/store/types'
 import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: '19th Hole',
+  description: 'Coffee, drinks, dinners — gatherings of the Penn Golf family.',
+}
+
 export default async function NineteenthHolePage() {
   const approval = await getApprovalState()
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
