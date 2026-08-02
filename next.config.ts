@@ -16,7 +16,6 @@ const nextConfig = {
   async redirects() {
     return [
       // Legacy root redirects
-      { source: '/builder', destination: '/build', permanent: false },
       { source: '/network', destination: '/player', permanent: false },
       { source: '/review', destination: '/internal', permanent: false },
       {
@@ -47,8 +46,6 @@ const nextConfig = {
       { source: '/app', destination: '/', permanent: false },
       { source: '/player/relationships', destination: '/player', permanent: false },
       // Builder sub-paths → internal
-      { source: '/builder', destination: '/internal', permanent: false },
-      { source: '/builder/:path*', destination: '/internal', permanent: false },
     ]
   },
 } as NextConfig;

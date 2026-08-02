@@ -85,12 +85,12 @@ export default async function TeamTravelPage() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-sm font-semibold text-[#0a1628]">
-              {isFounder ? 'No stops yet — add the first one.' : 'No trips posted yet.'}
+              {isFounder ? 'No stops yet — add the first one.' : 'The schedule hasn\'t been posted yet.'}
             </p>
             <p className="text-xs text-ink-muted mt-2 max-w-sm mx-auto">
               {isFounder
                 ? 'Once you add a stop, alumni near that location can offer to host the team.'
-                : 'Check back once the schedule is posted.'}
+                : 'Check back soon — every tournament will be listed here.'}
             </p>
           </div>
         ) : (

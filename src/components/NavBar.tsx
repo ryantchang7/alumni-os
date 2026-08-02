@@ -32,8 +32,8 @@ const memberBookLinks: NavLink[] = [
 const teamLinks: NavLink[] = [
   { label: 'Team Room', href: '/team-room' },
   { label: 'Ask the Team', href: '/meet-the-team' },
-  { label: 'Team Updates', href: '/team/updates' },
-  { label: 'Team Travel', href: '/team/travel' },
+  { label: 'Schedule & Travel', href: '/team/travel' },
+  { label: 'Scotland Tour', href: '/scotland' },
 ]
 
 // The top nav, in order. 'link' = direct destination; 'menu' = a dropdown

@@ -52,7 +52,7 @@ interface PersistenceStatus {
   warning: string | null
 }
 
-export default function SeasonManagerClient() {
+export default function SeasonManagerClient({ isFounder = false }: { isFounder?: boolean }) {
   const [updates, setUpdates] = useState<SeasonUpdate[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
@@ -342,6 +342,7 @@ export default function SeasonManagerClient() {
                     </a>
                   )}
                 </div>
+                {isFounder && (
                 <div className="flex flex-shrink-0 gap-1">
                   <button
                     type="button"
@@ -358,6 +359,7 @@ export default function SeasonManagerClient() {
                     Delete
                   </button>
                 </div>
+                )}
               </div>
             </div>
           ))}

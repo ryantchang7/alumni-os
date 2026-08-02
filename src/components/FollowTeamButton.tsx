@@ -15,7 +15,7 @@ export default function FollowTeamButton({ initialFollowing, signedIn }: Props) 
 
   async function handleToggle() {
     if (!signedIn) {
-      router.push('/login?next=/team/updates')
+      router.push('/login?next=/team-room')
       return
     }
     const next = !following
@@ -50,7 +50,7 @@ export default function FollowTeamButton({ initialFollowing, signedIn }: Props) 
         className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c8a84b]/60 disabled:opacity-60 ${
           following
             ? 'bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628]'
-            : 'bg-white/10 border border-white/25 text-white hover:bg-white/15'
+            : 'bg-white border border-[#0a1628]/30 text-[#0a1628] hover:border-[#0a1628] hover:bg-[#fbf9f6]'
         }`}
       >
         {following ? (
@@ -96,7 +96,7 @@ export default function FollowTeamButton({ initialFollowing, signedIn }: Props) 
           </>
         )}
       </button>
-      <p className="text-xs text-white/70">
+      <p className="text-xs text-ink-muted">
         {following
           ? "You'll get notified when new results are posted."
           : 'Get notified when the team posts results.'}

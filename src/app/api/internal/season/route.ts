@@ -109,9 +109,9 @@ export async function POST(request: Request) {
           type: 'team_update',
           title: `Team update: ${title}`,
           body: update.body ? `${dateText} — ${update.body.slice(0, 80)}${update.body.length > 80 ? '…' : ''}` : dateText,
-          href: '/team/updates',
+          href: '/team-room',
         },
-        // Don't notify the founder for their own post (consistent with the
+        // Don't notify the poster for their own post (consistent with the
         // other fan-outs). Safe if accountId is undefined — exclusion no-ops.
         { excludeAccountId: gate.accountId ?? undefined },
       )

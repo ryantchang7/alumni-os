@@ -237,9 +237,6 @@ export default async function TeamRoomPage() {
         <section>
           <div className="flex items-end justify-between gap-4 flex-wrap mb-1.5">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#990000] mb-1.5">
-                Live from the Course
-              </p>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1">The Season</h2>
               <p className="text-sm text-ink-muted">
                 Schedule, qualifying, results, and stats — updated all year as it happens.
@@ -425,7 +422,7 @@ export default async function TeamRoomPage() {
           </Link>
         </div>
 
-        {/* Team Travel card */}
+        {/* Schedule & Travel card */}
         <div
           className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}

@@ -50,6 +50,14 @@ export default function ClubhouseFooter() {
             Legal
           </Link>
           <span className="text-[#d9c8a8]">·</span>
+          <Link href="/community-guidelines" className="hover:text-[#0a1628] hover:underline transition-colors">
+            Guidelines
+          </Link>
+          <span className="text-[#d9c8a8]">·</span>
+          <Link href="/launch" className="hover:text-[#0a1628] hover:underline transition-colors">
+            The Film
+          </Link>
+          <span className="text-[#d9c8a8]">·</span>
           <Link href="/suggest" className="hover:text-[#0a1628] hover:underline transition-colors">
             Suggest an idea
           </Link>

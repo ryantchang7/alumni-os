@@ -33,7 +33,7 @@ const tools = [
     href: '/internal/gatherings',
   },
   {
-    label: 'Season Tracker',
+    label: 'Season Updates',
     description: 'Post qualifying, tournament results, and stats with links. Shows as a timeline in the Team Room.',
     href: '/internal/season',
   },

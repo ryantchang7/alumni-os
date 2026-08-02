@@ -157,7 +157,7 @@ export default function AddTravelStop({ stop }: { stop?: TeamTravelStop }) {
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4 flex-shrink-0">
                 <div>
                   <p className="eyebrow text-gold mb-1">
-                    Penn Men&rsquo;s Golf &mdash; Founders only
+                    Penn Men&rsquo;s Golf &mdash; Schedule admin
                   </p>
                   <h2
                     className="text-white text-xl font-medium leading-snug font-heading"
