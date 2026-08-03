@@ -15,6 +15,7 @@ import {
 import SectionEmblemHeader from '@/components/SectionEmblemHeader'
 
 import type { Metadata } from 'next'
+import { getApprovalState } from '@/lib/access/approval'
 
 export const metadata: Metadata = {
   title: 'Member Map',
@@ -246,6 +247,10 @@ export default async function MemberMapPage() {
     })
   }
 
+  // Approved members see who is where; everyone else sees counts only.
+  const approval = await getApprovalState()
+  const scrub = <T extends { members: unknown[] }>(rows: T[]): T[] =>
+    approval.approved ? rows : rows.map(r => ({ ...r, members: [] }))
   const hometownStates = Array.from(hometownByState.values()).sort(
     (a, b) => b.totalCount - a.totalCount,
   )
@@ -269,9 +274,9 @@ export default async function MemberMapPage() {
 
       <div className="max-w-[1280px] mx-auto px-6 sm:px-8 py-10">
         <MemberMapClient
-          hometownStates={hometownStates}
-          currentStates={currentStates}
-          familyStates={familyStates}
+          hometownStates={scrub(hometownStates)}
+          currentStates={scrub(currentStates)}
+          familyStates={scrub(familyStates)}
         />
       </div>
     </div>

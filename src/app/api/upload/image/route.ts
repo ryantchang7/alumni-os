@@ -42,6 +42,14 @@ export async function POST(request: Request) {
   if (!session?.accountId) {
     return NextResponse.json({ error: 'Sign in required' }, { status: 401 })
   }
+  // Approved members only — anyone can create a Google account, and an
+  // unapproved stranger has nothing legitimate to upload.
+  if (!session.linkedPersonId) {
+    return NextResponse.json(
+      { error: 'Approved members only — claim your card first.' },
+      { status: 403 },
+    )
+  }
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json(

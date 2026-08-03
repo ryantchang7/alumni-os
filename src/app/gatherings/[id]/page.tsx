@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
+import { getApprovalState } from '@/lib/access/approval'
+import GatedPreview from '@/components/GatedPreview'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -27,6 +29,19 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function GatheringDetailPage({ params }: Props) {
   const { id } = await params
+  // Gathering details (host, venue, who's coming) are member-only — the
+  // list pages that link here are gated the same way.
+  const approval = await getApprovalState()
+  if (!approval.approved) {
+    return (
+      <GatedPreview
+        signedIn={approval.signedIn}
+        eyebrow="Members only · Gatherings"
+        headline="Gatherings are for members."
+        blurb="Sign in and claim your Member Book card to see where the Penn Golf family is meeting up."
+      />
+    )
+  }
 
   const { getClubhouseGatheringById, readStore } = await import('@/lib/store/local-store')
   const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } = await import('@/lib/seed-data/example-gatherings')

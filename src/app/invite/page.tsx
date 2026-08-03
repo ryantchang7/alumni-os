@@ -1,5 +1,7 @@
 import InviteTeammates from '@/components/InviteTeammates'
 import type { TeammateEntry } from '@/components/InviteTeammates'
+import { getApprovalState } from '@/lib/access/approval'
+import GatedPreview from '@/components/GatedPreview'
 
 export const metadata = {
   title: 'Invite Teammates',
@@ -7,6 +9,19 @@ export const metadata = {
 }
 
 export default async function InvitePage() {
+  // The invite list names every member and shows who hasn't joined yet —
+  // that's member information, not a public directory.
+  const approval = await getApprovalState()
+  if (!approval.approved) {
+    return (
+      <GatedPreview
+        signedIn={approval.signedIn}
+        eyebrow="Members only · Invite"
+        headline="Invites are for members."
+        blurb="Claim your Member Book card first — then you can pull your teammates in."
+      />
+    )
+  }
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')

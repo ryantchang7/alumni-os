@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getTeamBySlug, readStore } from '@/lib/store/local-store'
 import { hometownToStateCode, enrichmentStateToCode, CODE_TO_NAME } from '@/lib/map/state-lookup'
+import { getApprovalState } from '@/lib/access/approval'
 
 export interface MapMember {
   personId: string
@@ -40,6 +41,12 @@ export interface MapState {
 }
 
 export async function GET(request: Request) {
+  // Names, hometowns, and photos are member data — approved members only.
+  // Signed-out visitors get the aggregate state counts from the page instead.
+  const approval = await getApprovalState()
+  if (!approval.approved) {
+    return NextResponse.json({ team: null, hometownStates: [], currentStates: [], familyStates: [] })
+  }
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
 

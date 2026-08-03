@@ -132,8 +132,11 @@ export default async function MemberDetailPage({
   const favoritePennGolfMemory = enr?.favoritePennGolfMemory ?? null
   const interests = enr?.interests ?? null
   const highSchool = member.profile.highSchool ?? null
-  // Contact info only surfaces for signed-in viewers (privacy).
-  const showContact = !!session
+  // Contact info is APPROVED-MEMBERS-ONLY. Anyone can create a Google
+  // account, so `!!session` would let a stranger harvest every members
+  // email + phone; the gate must be the same one that guards the rest of
+  // the member-entered details.
+  const showContact = isApprovedViewer
   const contactEmail = showContact ? enr?.email ?? null : null
   const contactPhone = showContact ? enr?.phone ?? null : null
   const linkedinUrl = showContact ? enr?.linkedinUrl ?? null : null

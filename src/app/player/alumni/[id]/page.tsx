@@ -33,7 +33,14 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
 
   if (!membership.publishedToNetwork) notFound()
 
-  const enrichment = await getPersonEnrichment(person.id, team.id)
+  const rawEnrichment = await getPersonEnrichment(person.id, team.id)
+  // Every member-ENTERED field (bio, employer, help topics, favorite courses,
+  // contact) lives on the enrichment record — withhold the whole object from
+  // unapproved viewers so nothing member-written leaks to the public. Roster
+  // facts (name, class, hometown, high school) stay visible; they mirror the
+  // public pennathletics roster.
+  const viewerIsApproved = !!session?.accountId && !!session?.linkedPersonId
+  const enrichment = viewerIsApproved ? rawEnrichment : null
   // Members hidden from players (visibleToPlayers === false) are filtered out
   // of every list + the profiles API, so their detail page 404s to match.
   if (enrichment?.visibleToPlayers === false) notFound()
@@ -78,10 +85,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
     membership.memberStatus !== 'verified' &&
     membership.memberStatus !== 'active'
 
-  // Contact-info gating: visible only to signed-in members who have
-  // claimed their own card (linkedPersonId on the session). We don't
-  // gate viewing the rest of the profile, only direct contact details.
-  const viewerIsApproved = !!session?.accountId && !!session?.linkedPersonId
+
   const hasContactInfo = !!(
     enrichment?.email || enrichment?.phone || enrichment?.linkedinUrl
   )
