@@ -247,10 +247,26 @@ export default async function MemberMapPage() {
     })
   }
 
-  // Approved members see who is where; everyone else sees counts only.
+  // Approved members see WHO is where. Everyone else still sees the map and
+  // the counts (that's the public story — 'we're everywhere'), but every
+  // identifying field is stripped: no names, photos, hometowns, or ids.
   const approval = await getApprovalState()
-  const scrub = <T extends { members: unknown[] }>(rows: T[]): T[] =>
-    approval.approved ? rows : rows.map(r => ({ ...r, members: [] }))
+  const scrub = <T extends { members: MapMember[] }>(rows: T[]): T[] =>
+    approval.approved
+      ? rows
+      : rows.map(r => ({
+          ...r,
+          members: r.members.map(m => ({
+            personId: '',
+            canonicalName: '',
+            memberRole: m.memberRole,
+            rosterStartYear: m.rosterStartYear,
+            rosterEndYear: m.rosterEndYear,
+            openToCoffee: m.openToCoffee,
+            openToGolfRounds: m.openToGolfRounds,
+            state: m.state,
+          })),
+        }))
   const hometownStates = Array.from(hometownByState.values()).sort(
     (a, b) => b.totalCount - a.totalCount,
   )

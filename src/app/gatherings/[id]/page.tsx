@@ -18,7 +18,10 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const { id } = await params
   const { getClubhouseGatheringById } = await import('@/lib/store/local-store')
+  const { getApprovalState: approvalForMeta } = await import('@/lib/access/approval')
   const gathering = await getClubhouseGatheringById(id)
+  // Don't put member-only event details in the tab title / link preview.
+  if (!(await approvalForMeta()).approved) return { title: 'Gatherings' }
   if (!gathering) return { title: 'Gatherings' }
   const where = [gathering.venue, gathering.city].filter(Boolean).join(', ')
   return {

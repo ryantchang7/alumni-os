@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { requireApprovedMember } from '@/lib/auth/guards'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } from '@/lib/seed-data/example-gatherings'
+import { getApprovalState } from '@/lib/access/approval'
 
 const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const VALID_AUDIENCES = ['players', 'alumni', 'both'] as const
@@ -22,6 +23,10 @@ function cleanUrl(raw: unknown): string | undefined {
 }
 
 export async function GET(request: NextRequest) {
+  // Member-written content — approved members only; empty for everyone else.
+  const approval = await getApprovalState()
+  if (!approval.approved) return NextResponse.json({ gatherings: [] })
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
   const typeFilter = searchParams.get('type') as (typeof VALID_TYPES)[number] | null

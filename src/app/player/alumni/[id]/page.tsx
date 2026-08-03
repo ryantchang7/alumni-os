@@ -43,7 +43,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
   const enrichment = viewerIsApproved ? rawEnrichment : null
   // Members hidden from players (visibleToPlayers === false) are filtered out
   // of every list + the profiles API, so their detail page 404s to match.
-  if (enrichment?.visibleToPlayers === false) notFound()
+  if (rawEnrichment?.visibleToPlayers === false) notFound()
 
   // Profile photo: the member's uploaded photo, else their Google avatar
   // (stored on the linked Account at sign-in) — same merge as
@@ -51,7 +51,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
   const linkedAccount = (await getAllLinkedAccountsForTeam(team.id)).find(
     a => a.linkedPersonId === person.id,
   )
-  const photoUrl = enrichment?.photoUrl ?? linkedAccount?.image ?? null
+  const photoUrl = enrichment?.photoUrl ?? (viewerIsApproved ? linkedAccount?.image : null) ?? null
 
   const hasCareer = !!(enrichment?.currentRole || enrichment?.currentCompany)
   const isCurrentPlayer = membership.memberRole === 'current_player'
@@ -188,7 +188,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                     <dd className="text-sm font-medium text-[#0a1628]">{membership.classLabel}</dd>
                   </div>
                 )}
-                {membership.hometown && (
+                {viewerIsApproved && membership.hometown && (
                   <div className="flex justify-between items-baseline gap-4 py-2.5">
                     <dt className="text-xs text-ink-muted flex-shrink-0">Hometown</dt>
                     <dd className="text-sm font-medium text-[#0a1628] text-right">{membership.hometown}</dd>

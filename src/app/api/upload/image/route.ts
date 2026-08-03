@@ -18,6 +18,9 @@
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { auth } from '@/auth'
+import { FOUNDER_EMAILS } from '@/lib/badges'
+import { isCaptainEmailWithOverrides } from '@/lib/captains-runtime'
+import { readStore } from '@/lib/store/local-store'
 
 const IMAGE_TYPES = new Set([
   'image/jpeg',
@@ -43,8 +46,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Sign in required' }, { status: 401 })
   }
   // Approved members only — anyone can create a Google account, and an
-  // unapproved stranger has nothing legitimate to upload.
-  if (!session.linkedPersonId) {
+  // unapproved stranger has nothing legitimate to upload. Founders and
+  // captains are authorized by email allowlist and may not have claimed a
+  // card, so they bypass the linked check (Studio / season / gathering art).
+  const uploaderEmail = (session.user?.email ?? '').toLowerCase().trim()
+  const isStaff =
+    FOUNDER_EMAILS.has(uploaderEmail) ||
+    isCaptainEmailWithOverrides(uploaderEmail, 'penn-mens-golf', (await readStore()).accounts)
+  if (!session.linkedPersonId && !isStaff) {
     return NextResponse.json(
       { error: 'Approved members only — claim your card first.' },
       { status: 403 },

@@ -45,7 +45,7 @@ export async function GET(request: Request) {
   // Signed-out visitors get the aggregate state counts from the page instead.
   const approval = await getApprovalState()
   if (!approval.approved) {
-    return NextResponse.json({ team: null, hometownStates: [], currentStates: [], familyStates: [] })
+    return NextResponse.json({ team: null, states: [] })
   }
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'

@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getApprovalState } from '@/lib/access/approval'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ personId: string }> },
 ) {
+  const approval = await getApprovalState()
+  if (!approval.approved) {
+    return NextResponse.json({ profile: null })
+  }
+
   const { personId } = await params
   const teamSlug = request.nextUrl.searchParams.get('teamSlug')
   if (!teamSlug) {

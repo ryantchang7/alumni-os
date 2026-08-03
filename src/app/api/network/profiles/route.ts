@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getApprovalState } from '@/lib/access/approval'
 
 export async function GET(request: NextRequest) {
+  const approval = await getApprovalState()
+  if (!approval.approved) {
+    return NextResponse.json({ profiles: [] })
+  }
+
   const teamSlug = request.nextUrl.searchParams.get('teamSlug')
   if (!teamSlug) {
     return NextResponse.json({ error: 'teamSlug is required' }, { status: 400 })

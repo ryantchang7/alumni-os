@@ -1,11 +1,20 @@
 import { NextResponse } from 'next/server'
 import { getTeamBySlug, getPublishedPeopleForTeam, readStore } from '@/lib/store/local-store'
+import { getApprovalState } from '@/lib/access/approval'
 
 interface PageParams {
   params: Promise<{ personId: string }>
 }
 
 export async function GET(request: Request, { params }: PageParams) {
+  // Member profiles (bio, photo, hometown, help topics) are approved-members
+  // only. Return an empty payload rather than an error so client pages that
+  // render for signed-out visitors degrade to the public book data.
+  const approval = await getApprovalState()
+  if (!approval.approved) {
+    return NextResponse.json({ profile: null })
+  }
+
   const { personId } = await params
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')

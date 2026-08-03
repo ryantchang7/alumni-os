@@ -14,10 +14,15 @@ import {
 import { canSeeLockerRoomForAccount } from '@/lib/access/locker-room'
 import { notifyMany } from '@/lib/notifications/notify'
 import { resolveTaggedAccountIds } from '@/lib/moments/tagging'
+import { getApprovalState } from '@/lib/access/approval'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
 export async function GET() {
+  // Member-written content — approved members only; empty for everyone else.
+  const approval = await getApprovalState()
+  if (!approval.approved) return NextResponse.json({ moments: [] })
+
   const team = await getTeamBySlug(TEAM_SLUG)
   if (!team) return NextResponse.json({ moments: [] })
 

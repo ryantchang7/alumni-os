@@ -75,6 +75,25 @@ export async function POST(request: Request) {
   // create-brand-new) are folded into this single mutateStore so the resolve +
   // all pushes happen atomically under the CAS guard — a concurrent claim can
   // no longer clobber these rows.
+  // Refuse a duplicate claim BEFORE writing anything: this endpoint
+  // bootstraps Person/TeamMembership/Enrichment rows, so checking afterwards
+  // let a signed-in account pollute the store with one row per book entry.
+  {
+    const pre = await readStore()
+    const already = pre.profileClaimRequests.find(
+      r =>
+        r.teamId === team.id &&
+        r.requesterAccountId === session.accountId &&
+        r.status === 'pending',
+    )
+    if (already) {
+      return NextResponse.json(
+        { error: 'You already have a claim in front of the captain', claimId: already.id },
+        { status: 409 },
+      )
+    }
+  }
+
   const personId = await mutateStore<string>((store) => {
     const matched = findTeamStorePersonForBookEntry(entry, store.people)
     if (matched) {

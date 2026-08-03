@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getTeamBySlug, readStore } from '@/lib/store/local-store'
 import { badgesForPerson } from '@/lib/badges'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
+import { getApprovalState } from '@/lib/access/approval'
 
 function rosterYearsLabel(start?: number, end?: number): string {
   if (start !== undefined && end !== undefined) return `${start}–${end}`
@@ -10,6 +11,14 @@ function rosterYearsLabel(start?: number, end?: number): string {
 }
 
 export async function GET(request: Request) {
+  // Member profiles (bio, photo, hometown, help topics) are approved-members
+  // only. Return an empty payload rather than an error so client pages that
+  // render for signed-out visitors degrade to the public book data.
+  const approval = await getApprovalState()
+  if (!approval.approved) {
+    return NextResponse.json({ profiles: [] })
+  }
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')
 
