@@ -546,7 +546,7 @@ function ClubhouseInner() {
 
         {/* Signed OUT: an unconditional way in. Data-independent by design —
             every tease below hides itself when the store is empty. */}
-        {onboarding && !onboarding.signedIn && (
+        {onboarding && !onboarding.linked && onboarding.signedIn === false && (
           <div className="-mt-5 relative z-10 mb-6 bg-[#0a1628] text-white rounded-2xl px-6 py-6 border border-[#c8a84b]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#c8a84b] mb-1.5">
