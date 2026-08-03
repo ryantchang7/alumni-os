@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Lock } from 'lucide-react'
 import { APPROVAL_PROMISE } from '@/lib/access/promise'
+import { revealedStats, BOOK_PROOF_STATS } from '@/lib/proof'
 
 interface PreviewStat {
   label: string
@@ -32,6 +33,10 @@ export default function GatedPreview({
   stats,
   signedIn,
 }: Props) {
+  // Live counts only convince once there's something to count; below the
+  // threshold this falls back to the Member Book numbers, which are true on
+  // day one. Previously this room advertised "2 on the wall, 1 posters".
+  const shownStats = stats && stats.length > 0 ? revealedStats(stats) : BOOK_PROOF_STATS
   const ctaHref = signedIn ? '/account/setup' : '/login?next=/account/setup'
   const ctaLabel = signedIn ? 'Claim your card' : 'Sign in to claim'
 
@@ -59,9 +64,9 @@ export default function GatedPreview({
           {blurb}
         </p>
 
-        {stats && stats.length > 0 && (
+        {shownStats.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-md mx-auto mb-8">
-            {stats.map((s) => (
+            {shownStats.map((s) => (
               <div
                 key={s.label}
                 className="bg-[#fdfcf9] border border-[rgba(180,168,150,0.35)] rounded-lg py-3 px-2"
@@ -88,6 +93,22 @@ export default function GatedPreview({
         <p className="text-[11px] text-ink-muted mt-4">
           {APPROVAL_PROMISE}
         </p>
+
+        {/* Somewhere to go that isn't the lock. Both are fully public. */}
+        <div className="mt-7 pt-6 border-t border-[rgba(180,168,150,0.3)] flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <Link
+            href="/member-book"
+            className="text-[12px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors"
+          >
+            Browse the Member Book &rarr;
+          </Link>
+          <Link
+            href="/launch"
+            className="text-[12px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors"
+          >
+            Watch the film &rarr;
+          </Link>
+        </div>
       </div>
     </div>
   )

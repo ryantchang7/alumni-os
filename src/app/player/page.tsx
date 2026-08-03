@@ -21,6 +21,8 @@ import type { AlumniSpotlight, TeamNewsItem } from '@/lib/store/types'
 import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 import NextEventChip from '@/components/NextEventChip'
 import { deriveClassLabel } from '@/lib/class-year'
+import { BOOK_PROOF } from '@/lib/proof'
+import { APPROVAL_PROMISE } from '@/lib/access/promise'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
 
@@ -539,6 +541,38 @@ function ClubhouseInner() {
         {welcomeName && (
           <div className="-mt-5 relative z-10">
             <WelcomeBanner name={welcomeName} />
+          </div>
+        )}
+
+        {/* Signed OUT: an unconditional way in. Data-independent by design —
+            every tease below hides itself when the store is empty. */}
+        {onboarding && !onboarding.signedIn && (
+          <div className="-mt-5 relative z-10 mb-6 bg-[#0a1628] text-white rounded-2xl px-6 py-6 border border-[#c8a84b]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#c8a84b] mb-1.5">
+                {BOOK_PROOF.members} in the book · {BOOK_PROOF.earliestYear}–{BOOK_PROOF.latestYear} · {BOOK_PROOF.generations} generations
+              </p>
+              <p className="text-white text-lg sm:text-xl font-medium font-heading leading-snug">
+                Your name is already here.
+              </p>
+              <p className="text-white/70 text-[13px] mt-1 max-w-xl leading-relaxed">
+                Find your card and claim it to see the rest of the Clubhouse. {APPROVAL_PROMISE}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2.5 flex-shrink-0">
+              <Link
+                href="/account/setup"
+                className="inline-flex items-center justify-center bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-3 rounded-lg transition-colors whitespace-nowrap"
+              >
+                Claim your card
+              </Link>
+              <Link
+                href="/launch"
+                className="inline-flex items-center justify-center border border-white/30 hover:border-white/60 text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-3 rounded-lg transition-colors whitespace-nowrap"
+              >
+                Watch the film
+              </Link>
+            </div>
           </div>
         )}
 
