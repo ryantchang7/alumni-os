@@ -4,27 +4,21 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { useSiteContent } from '@/lib/site-content/use-site-content'
+import { useSlot } from '@/lib/site-content/use-site-content'
 
 const ease = [0.25, 0.1, 0.25, 1] as const
 
 export default function LandingPage() {
   const [ready, setReady] = useState(false)
-  const coverImage = useSiteContent('landing.cover-image', '/clubhouse-cover.jpg')
-  const headline = useSiteContent('landing.headline', 'Penn Golf Clubhouse')
-  const subtitle = useSiteContent('landing.subtitle', '')
-  const scopeNote = useSiteContent(
-    'landing.scope-note',
-    "Men's Golf for now — Women's Golf coming as we bring the data in.",
-  )
-  const eyebrow = useSiteContent('landing.eyebrow', 'Welcome to the')
-  const primaryCta = useSiteContent('landing.primary-cta', 'Enter Clubhouse')
-  const secondaryCta = useSiteContent('landing.secondary-cta', 'Claim Profile')
-  const claimNote = useSiteContent(
-    'landing.claim-note',
-    'For alumni and current players — find your name and make it yours.',
-  )
-  const familyCta = useSiteContent('landing.family-cta', 'Family or affiliate? Join here →')
+  const coverImage = useSlot('landing.cover-image')
+  const headline = useSlot('landing.headline')
+  const subtitle = useSlot('landing.subtitle')
+  const scopeNote = useSlot('landing.scope-note')
+  const eyebrow = useSlot('landing.eyebrow')
+  const primaryCta = useSlot('landing.primary-cta')
+  const secondaryCta = useSlot('landing.secondary-cta')
+  const claimNote = useSlot('landing.claim-note')
+  const familyCta = useSlot('landing.family-cta')
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 120)

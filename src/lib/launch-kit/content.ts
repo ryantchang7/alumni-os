@@ -115,7 +115,7 @@ export const ACCESS_STEPS: AccessStep[] = [
   {
     step: '2',
     label: 'Captain approval',
-    body: 'A Penn Golf captain checks the claim. Usually same-day.',
+    body: 'Every claim is reviewed by hand. Usually within a day.',
   },
   {
     step: '3',
@@ -345,7 +345,7 @@ So I spent the summer building Penn Golf Clubhouse — a private home for the pr
 
 The short version: every player I could find from 1930 onward is already in the Member Book. There's a map of where everyone is, a way to host or join a round in any city, career advice and intros without the awkwardness, and a direct line to the current team.
 
-Joining is approval-based, not paywalled — I approve every member myself. The optional support tiers are there if you want to back the Clubhouse and the program, but that's never the gate.
+Joining is approval-based, not paywalled — every claim is reviewed by hand. The optional support tiers are there if you want to back the Clubhouse and the program, but that's never the gate.
 
 Watch the film, then come claim your member card.
 

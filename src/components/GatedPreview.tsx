@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Lock } from 'lucide-react'
+import { APPROVAL_PROMISE } from '@/lib/access/promise'
 
 interface PreviewStat {
   label: string
@@ -85,7 +86,7 @@ export default function GatedPreview({
           {ctaLabel}
         </Link>
         <p className="text-[11px] text-ink-muted mt-4">
-          Approved by the captain within a day or two.
+          {APPROVAL_PROMISE}
         </p>
       </div>
     </div>

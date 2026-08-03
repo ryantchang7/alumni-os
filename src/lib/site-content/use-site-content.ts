@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { getSlotDefault } from './slots'
 
 let cache: Record<string, string> | null = null
 let inflight: Promise<Record<string, string>> | null = null
@@ -40,4 +41,14 @@ export function useSiteContent(slotId: string, fallback: string): string {
     }
   }, [slotId])
   return value
+}
+
+/**
+ * Same as useSiteContent, but the fallback IS the registry default — so the
+ * server-rendered text and the post-fetch text always agree. Page-local
+ * fallback literals had drifted from slots.ts, which made copy visibly
+ * change after hydration (the landing headline was the worst offender).
+ */
+export function useSlot(slotId: string): string {
+  return useSiteContent(slotId, getSlotDefault(slotId))
 }

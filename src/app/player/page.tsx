@@ -553,8 +553,8 @@ function ClubhouseInner() {
                     Claim pending
                   </p>
                   <p className="text-sm text-white/80 mt-1">
-                    You&rsquo;re in the captain&rsquo;s queue — approved by hand, usually
-                    within a day or two. You&rsquo;ll get an email the moment you&rsquo;re in.
+                    Every claim is reviewed by hand — usually within a day.
+                    You&rsquo;ll get an email the moment you&rsquo;re in.
                   </p>
                 </div>
                 <Link

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Clock, Users } from 'lucide-react'
+import { Clock, Film, BookOpen } from 'lucide-react'
 
 export default function ClaimPendingPage() {
   return (
@@ -15,15 +15,15 @@ export default function ClaimPendingPage() {
         <h1
           className="text-[#0a1628] text-2xl font-medium mb-3 font-heading"
         >
-          In front of the captain.
+          Your claim is in.
         </h1>
         <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-2">
-          Your claim is in the captain&rsquo;s queue. We confirm everyone by
-          hand so the Penn Golf family stays close.
+          Every claim is reviewed by hand so the Penn Golf family stays
+          close — no bots, no bulk approvals.
         </p>
         <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-8">
           You&rsquo;ll get an email at the address you signed in with as soon as
-          you&rsquo;re approved — usually within a day or two.
+          you&rsquo;re approved — usually within a day.
         </p>
         <div className="flex flex-col gap-2">
           <Link
@@ -40,18 +40,21 @@ export default function ClaimPendingPage() {
           </Link>
         </div>
 
-        {/* Invite nudge */}
-        <div className="mt-6 pt-6 border-t border-[rgba(180,168,150,0.3)]">
-          <Link
-            href="/invite"
-            className="flex items-center gap-2.5 text-left group"
-          >
-            <Users className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
+        {/* Two things a pending member can actually do (the old nudge sent
+            them to /invite, which is gated and told them to claim a card). */}
+        <div className="mt-6 pt-6 border-t border-[rgba(180,168,150,0.3)] space-y-2.5">
+          <Link href="/launch" className="flex items-center gap-2.5 text-left group">
+            <Film className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
             <span className="text-[12.5px] text-[#3d4a5c] group-hover:text-[#0a1628] transition-colors">
-              Who else should be here?{' '}
-              <span className="font-semibold text-[#0a1628] group-hover:underline">
-                Invite your teammates &rarr;
-              </span>
+              While you wait —{' '}
+              <span className="font-semibold text-[#0a1628] group-hover:underline">watch the film &rarr;</span>
+            </span>
+          </Link>
+          <Link href="/member-book" className="flex items-center gap-2.5 text-left group">
+            <BookOpen className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
+            <span className="text-[12.5px] text-[#3d4a5c] group-hover:text-[#0a1628] transition-colors">
+              Find your class —{' '}
+              <span className="font-semibold text-[#0a1628] group-hover:underline">browse the Member Book &rarr;</span>
             </span>
           </Link>
         </div>

@@ -16,6 +16,8 @@ import {
 } from '@/lib/store/local-store'
 import { getCaptainEmails } from '@/lib/captains'
 import { notify, notifyMany } from '@/lib/notifications/notify'
+import { SUPPORT_EMAIL } from '@/lib/access/promise'
+import { getMemberById } from '@/lib/member-book/data'
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -176,10 +178,12 @@ export async function POST(request: Request, { params }: RouteParams) {
       const { renderClaimDeclined } = await import('@/lib/email/templates')
       const firstName = claim.requesterName.split(/\s+/)[0]
       const captainEmails = getCaptainEmails(TEAM_SLUG)
-      const captainEmail = captainEmails[0] ?? 'captain@pennmensgolf.com'
+      const captainEmail = captainEmails[0] ?? SUPPORT_EMAIL
       const { subject, html } = renderClaimDeclined({
         firstName,
-        claimedName: claim.requesterName,
+        // The CARD they tried to claim — not their own name. Printing the
+        // requester's name here read as an accusation.
+        claimedName: getMemberById(claim.memberId)?.displayName ?? claim.requesterName,
         captainEmail,
       })
       const result = await sendEmail({ to: claim.requesterEmail, subject, html })

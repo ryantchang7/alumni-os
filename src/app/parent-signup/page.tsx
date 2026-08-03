@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession, signIn } from 'next-auth/react'
 import { ArrowLeft, Heart } from 'lucide-react'
-import { useSiteContent } from '@/lib/site-content/use-site-content'
+import { useSiteContent, useSlot } from '@/lib/site-content/use-site-content'
 
 // Stash the form across the Google OAuth round-trip so the user doesn't
 // have to retype after sign-in. sessionStorage clears on tab close, which
@@ -54,10 +54,7 @@ function clearDraft(): void {
 export default function ParentSignupPage() {
   const { data: session, status: sessionStatus } = useSession()
   const router = useRouter()
-  const heroBody = useSiteContent(
-    'parent-signup.body',
-    "Parents, family, and longtime affiliates of Penn Men’s Golf can join the Clubhouse to follow the program, support the team, and stay in touch with the community. After the captain confirms, you’ll have a card in the Member Book and can optionally subscribe to support the program.",
-  )
+  const heroBody = useSlot('parent-signup.body')
 
   const [name, setName] = useState('')
   const [relationship, setRelationship] = useState('')

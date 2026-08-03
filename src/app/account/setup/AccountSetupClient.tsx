@@ -31,7 +31,7 @@ export default function AccountSetupClient({
   const router = useRouter()
   const womensNote = useSiteContent(
     'account-setup.scope-note-womens',
-    "If you played Penn Women's Golf, we're not live with that data yet — we'll add it as we bring women's golf in. Email rtchang@upenn.edu if that's you and we'll get you sorted.",
+    "If you played Penn Women's Golf, we're not live with that data yet — we'll add it as we bring women's golf in. Email rtchang@sas.upenn.edu if that's you and we'll get you sorted.",
   )
   const [query, setQuery] = useState(signedInName ?? '')
   const [claiming, setClaiming] = useState<string | null>(null)
