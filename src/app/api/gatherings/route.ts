@@ -96,6 +96,12 @@ export async function POST(request: NextRequest) {
     ? (body.vibe as (typeof VALID_VIBES)[number])
     : undefined
 
+  // Founder-only: seed a labeled "Example" gathering so the rooms show what
+  // they're for before real ones exist. Members can never post examples —
+  // the flag is ignored for everyone else. Examples age out after their date.
+  const viewerEmail = (session.user?.email ?? '').toLowerCase().trim()
+  const isExample = body.isExample === true && FOUNDER_EMAILS.has(viewerEmail)
+
   const gathering = await createClubhouseGathering({
     teamId: team.id,
     type: type as (typeof VALID_TYPES)[number],
@@ -114,6 +120,7 @@ export async function POST(request: NextRequest) {
     imageUrl: cleanUrl(body.imageUrl),
     mapsUrl: cleanUrl(body.mapsUrl),
     status: 'open',
+    ...(isExample ? { isExample: true } : {}),
   })
 
   return NextResponse.json({ gathering }, { status: 201 })
