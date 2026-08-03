@@ -21,7 +21,7 @@ export const HERO_BODY =
   'A private clubhouse for Penn Golf players, alumni, family, and friends to ask for advice, meet, play rounds, gather, and stay connected to the program.'
 
 export const ACCESS_LINE =
-  'Joining is approval-based, not paywalled. Optional membership tiers are there if you want to back the Clubhouse and the program, but connection is the point.'
+  'Every claim is reviewed by hand, so the Clubhouse stays the people who actually carried the bag. Find your name, claim your card, and you\'re in.'
 
 export const CLOSING_LINE = 'Come into the Clubhouse.'
 
@@ -95,7 +95,6 @@ export const FEATURE_WALKTHROUGH: FeatureRow[] = [
   { label: '19th Hole', href: '/19th-hole', blurb: 'Coffee, drinks, dinner, and signature gatherings in every city.' },
   { label: 'Team Room', href: '/team-room', blurb: 'Stay close to the current team. Schedules, results, news.' },
   { label: 'Moments', href: '/moments', blurb: 'Photos and notes from the Penn Golf road.' },
-  { label: 'Support', href: '/support', blurb: 'Optional membership tiers. 70% to the program, 30% to keep the Clubhouse running.' },
 ]
 
 /* ── Access model copy ───────────────────────────────────────────── */
@@ -122,11 +121,6 @@ export const ACCESS_STEPS: AccessStep[] = [
     label: 'You\'re in',
     body: 'Full access to every room. Post, ask, host, meet.',
   },
-  {
-    step: '4',
-    label: 'Optional support',
-    body: 'If you want to back the Clubhouse and the program, the support tiers are right there. Never required.',
-  },
 ]
 
 /* ── Launch video scripts (3 lengths) ────────────────────────────── */
@@ -151,7 +145,7 @@ Inside: our full Member Book, a map of where we all are, a way to ask for advice
 
 Ask. Meet. Play. Gather.
 
-Approval-based, not paywalled. Optional support tiers if you want to back the program too.
+Every claim is reviewed by hand.
 
 Come claim your member card at penngolfclubhouse.com/launch.`
 
@@ -165,11 +159,11 @@ So I built Penn Golf Clubhouse.
 
 I compiled our Member Book through online research and Penn historical data, then built a private space for everyone who's carried the Penn Golf bag.
 
-Inside, you can find members across generations, see where everyone is on the map, ask for career advice without the awkwardness, set up coffee or drinks, host or join a round, follow the current team, post moments, and support the program.
+Inside, you can find members across generations, see where everyone is on the map, ask for career advice without the awkwardness, set up coffee or drinks, host or join a round, follow the current team, and post moments.
 
 The idea is simple. Ask. Meet. Play. Gather.
 
-Joining is approval-based, not paywalled. The optional membership tiers are there if you want to support the program, but connection is the point.
+Every claim is reviewed by hand.
 
 For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully take down Princeton and Harvard.
 
@@ -193,7 +187,7 @@ The idea is simple. Ask. Meet. Play. Gather.
 
 For current players, it makes it easier to reach out respectfully. For alumni, it makes it easy to help in a curated way and stay close to the team you spent four years building.
 
-Joining is approval-based, not paywalled. The optional membership tiers are there if you want to back the Clubhouse and the program. But connection is the point. Always.
+Every claim is reviewed by hand.
 
 This is for the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
 
@@ -289,7 +283,7 @@ export const STORYBOARD: StoryboardBeat[] = [
   },
   {
     timestamp: '1:18–1:30',
-    voiceover: 'Approval-based, not paywalled. Come claim your member card at penngolfclubhouse.com/launch.',
+    voiceover: 'Every claim is reviewed by hand. Come claim your member card at penngolfclubhouse.com/launch.',
     visual: 'Return to /launch hero with the "Claim Your Member Card" CTA highlighted.',
     route: '/launch',
     notes: 'End on the hero. Allow 1s of breath. Cut to black.',
@@ -345,7 +339,7 @@ So I spent the summer building Penn Golf Clubhouse — a private home for the pr
 
 The short version: every player I could find from 1930 onward is already in the Member Book. There's a map of where everyone is, a way to host or join a round in any city, career advice and intros without the awkwardness, and a direct line to the current team.
 
-Joining is approval-based, not paywalled — every claim is reviewed by hand. The optional support tiers are there if you want to back the Clubhouse and the program, but that's never the gate.
+Every claim is reviewed by hand — it stays the people who actually carried the bag.
 
 Watch the film, then come claim your member card.
 
@@ -381,7 +375,7 @@ So we built one.
 
 Inside: the full Member Book (every player I could find from 1930 onward), a map of where everyone is now, a guided way to ask for career advice without the awkwardness, coffee and rounds in any city, and a place to follow the current team.
 
-Approval-based, not paywalled. The point is connection first.
+Every claim is reviewed by hand.
 
 If you carried the Penn Golf bag, come claim your card → penngolfclubhouse.com/launch
 
@@ -536,8 +530,8 @@ export function getProhibitedHits(): ProhibitedHit[] {
 }
 
 export const ACCESS_AFFIRMATION = {
-  positive: 'approval-based, not paywalled',
-  appears: ACCESS_LINE.toLowerCase().includes('approval-based, not paywalled'),
+  positive: 'reviewed by hand',
+  appears: ACCESS_LINE.toLowerCase().includes('reviewed by hand'),
 }
 
 /* ── Shoot Day playbook ──────────────────────────────────────────── */

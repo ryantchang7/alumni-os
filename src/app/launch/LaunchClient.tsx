@@ -118,12 +118,6 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
             >
               Claim Your Member Card
             </Link>
-            <Link
-              href="/support"
-              className="inline-flex items-center justify-center text-white/75 hover:text-white font-medium text-sm px-7 py-3.5 rounded-lg border border-white/20 hover:border-white/40 transition-colors tracking-wide"
-            >
-              Support the Clubhouse
-            </Link>
           </motion.div>
 
           <motion.p
@@ -249,7 +243,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
             <h2
               className="text-[#0a1628] text-3xl sm:text-4xl font-medium font-heading"
             >
-              Eight rooms. One family.
+              What&rsquo;s inside.
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
@@ -286,7 +280,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
             <h2
               className="text-[#0a1628] text-3xl sm:text-4xl font-medium mb-3 font-heading"
             >
-              Approval-based, not paywalled.
+              How you get in.
             </h2>
             <p className="text-[14.5px] sm:text-[15px] text-[#3d4a5c] leading-relaxed max-w-2xl">
               {accessLine}
