@@ -1,7 +1,7 @@
 /**
  * Fetcher for Penn Athletics men's golf news. Primary source is the
  * Sidearm Sports RSS feed at:
- *   https://pennathletics.com/rss.aspx?path=mgolf
+ *   https://pennathletics.com/rss?path=mgolf
  *
  * The feed exposes title, link, pubDate, description (with embedded image),
  * and media:thumbnail / media:content / enclosure for the image URL.
@@ -11,7 +11,7 @@
  * we return [] rather than throwing so the cron run still 200s.
  */
 
-const FEED_URL = 'https://pennathletics.com/rss.aspx?path=mgolf'
+const FEED_URL = 'https://pennathletics.com/rss?path=mgolf'
 
 export interface FetchedNewsItem {
   sourceUrl: string
@@ -25,6 +25,7 @@ export async function fetchPennGolfNews(): Promise<FetchedNewsItem[]> {
   let xml: string
   try {
     const res = await fetch(FEED_URL, {
+      redirect: 'follow',
       headers: { 'User-Agent': 'PennGolfClubhouse/1.0 (+alumni-os)' },
       // Sidearm doesn't set strong cache headers; let Next/runtime handle.
       cache: 'no-store',
