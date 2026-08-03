@@ -5,7 +5,7 @@ import GatedPreview from '@/components/GatedPreview'
 
 export const metadata = {
   title: 'Invite Teammates',
-  description: 'Pull your teammates onto the Penn Golf Clubhouse.',
+  description: 'Pull the rest of the Penn Golf family onto the Clubhouse.',
 }
 
 export default async function InvitePage() {
@@ -18,7 +18,7 @@ export default async function InvitePage() {
         signedIn={approval.signedIn}
         eyebrow="Members only · Invite"
         headline="Invites are for members."
-        blurb="Claim your Member Book card first — then you can pull your teammates in."
+        blurb="Claim your card first — then you can pull the rest of the family in."
       />
     )
   }
@@ -78,7 +78,7 @@ export default async function InvitePage() {
           <h1
             className="text-white text-4xl sm:text-5xl font-medium tracking-tight font-heading"
           >
-            Invite the guys
+            Invite the people who should be here
           </h1>
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
             The Clubhouse is better the more of us are on it. Pull in the teammates who

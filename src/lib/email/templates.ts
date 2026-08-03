@@ -104,7 +104,7 @@ export function renderClaimNotification(input: {
       is asking to claim:
     </p>
     <p style="margin:0 0 20px 0;font-size:15px;line-height:1.4;color:${NAVY};font-family:${SERIF};">
-      ${escapeHtml(input.claimedName)}${input.claimedYears ? ` <span style="color:${MUTED}">· Penn Golf ${escapeHtml(input.claimedYears)}</span>` : ''}
+      ${escapeHtml(input.claimedName)}${input.claimedYears ? ` <span style="color:${MUTED}">· ${escapeHtml(input.claimedYears)}</span>` : ''}
     </p>
     <p style="margin:0;">${btn(input.adminUrl, 'Review in admin')}</p>
   `
@@ -131,7 +131,7 @@ export function renderClaimDeclined(input: {
     <p style="margin:0 0 14px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
       Most often this is because the Google account name didn&rsquo;t match the book entry.
       Email <a href="mailto:${input.captainEmail}" style="color:${NAVY};text-decoration:underline;">${escapeHtml(input.captainEmail)}</a>
-      with a quick note (graduation year, team you were on) and we&rsquo;ll get you sorted.
+      with a quick note (your years on the team, or how you're connected to the program) and we&rsquo;ll get you sorted.
     </p>
   `
   return { subject, html: shell(inner) }
@@ -228,7 +228,7 @@ export function renderNearbyRequestEmail(input: {
     .join(' &middot; ')
   const inner = `
     <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
-      A brother&rsquo;s in your area
+      Someone from Penn Golf is in your area
     </h1>
     <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
       ${greeting} <strong>${escapeHtml(input.fromName)}</strong> is around

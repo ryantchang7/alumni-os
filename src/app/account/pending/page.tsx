@@ -53,7 +53,7 @@ export default function ClaimPendingPage() {
           <Link href="/member-book" className="flex items-center gap-2.5 text-left group">
             <BookOpen className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
             <span className="text-[12.5px] text-[#3d4a5c] group-hover:text-[#0a1628] transition-colors">
-              Find your class —{' '}
+              Meanwhile —{' '}
               <span className="font-semibold text-[#0a1628] group-hover:underline">browse the Member Book &rarr;</span>
             </span>
           </Link>

@@ -55,6 +55,8 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
 
   const hasCareer = !!(enrichment?.currentRole || enrichment?.currentCompany)
   const isCurrentPlayer = membership.memberRole === 'current_player'
+  // Family & affiliates aren't alumni — don't label them as such.
+  const isFamily = membership.memberRole === 'parent'
 
   const rosterYears =
     membership.rosterStartYear && membership.rosterEndYear
@@ -118,9 +120,11 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               <span className={`inline-block text-[11px] font-semibold uppercase tracking-[0.18em] px-2 py-0.5 rounded-sm border mb-3 ${
                 isCurrentPlayer
                   ? 'text-[#2d6a4f] bg-[#2d6a4f]/15 border-[#2d6a4f]/30'
-                  : 'text-gold bg-gold/15 border-gold/30'
+                  : isFamily
+                    ? 'text-[#f4b8b8] bg-[#990000]/25 border-[#990000]/45'
+                    : 'text-gold bg-gold/15 border-gold/30'
               }`}>
-                {isCurrentPlayer ? 'Current Player' : 'Penn Golf Alumni'}
+                {isCurrentPlayer ? 'Current Player' : isFamily ? 'Penn Golf Family' : 'Penn Golf Alumni'}
               </span>
 
               {/* Name */}
@@ -172,10 +176,16 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             >
               <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#fdfcf9]">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
-                  Penn Golf
+                  {isFamily ? 'Family & Affiliate' : 'Penn Golf'}
                 </p>
               </div>
               <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">
+                {isFamily && membership.parentRelationship && (
+                  <div className="flex justify-between items-baseline gap-4 py-2.5">
+                    <dt className="text-xs text-ink-muted flex-shrink-0">Connection</dt>
+                    <dd className="text-sm font-medium text-[#0a1628] text-right">{membership.parentRelationship}</dd>
+                  </div>
+                )}
                 {rosterYears && (
                   <div className="flex justify-between items-baseline py-2.5">
                     <dt className="text-xs text-ink-muted">Seasons</dt>

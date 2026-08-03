@@ -134,7 +134,7 @@ export default function ClaimsManager() {
               <span className="font-mono">{claim.requesterEmail}</span>
             </p>
             {claim.pennGolfYears && (
-              <p className="text-xs text-[#3a4657]">Penn Golf years: {claim.pennGolfYears}</p>
+              <p className="text-xs text-[#3a4657]">Penn Golf: {claim.pennGolfYears}</p>
             )}
             {claim.note && (
               <p className="text-xs text-[#0a1628] italic mt-1">&ldquo;{claim.note}&rdquo;</p>

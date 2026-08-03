@@ -696,8 +696,8 @@ function ClubhouseInner() {
                     <BookOpen className="w-3.5 h-3.5 text-[#0a1628]" />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-[13px] font-semibold text-[#0a1628] leading-snug mb-0.5">Your class</p>
-                    <p className="text-[11.5px] text-ink-muted leading-snug">Find teammates from your years in the Member Book.</p>
+                    <p className="text-[13px] font-semibold text-[#0a1628] leading-snug mb-0.5">Your people</p>
+                    <p className="text-[11.5px] text-ink-muted leading-snug">Find the people you know in the Member Book.</p>
                     <span className="text-[10.5px] font-semibold text-[#990000] group-hover:underline mt-1.5 inline-block">Browse &rarr;</span>
                   </div>
                 </Link>
@@ -723,7 +723,7 @@ function ClubhouseInner() {
                   </span>
                   <div className="min-w-0">
                     <p className="text-[13px] font-semibold text-[#0a1628] leading-snug mb-0.5">The current team</p>
-                    <p className="text-[11.5px] text-ink-muted leading-snug">The guys playing now. They know who you are.</p>
+                    <p className="text-[11.5px] text-ink-muted leading-snug">The current team, and how to follow them.</p>
                     <span className="text-[10.5px] font-semibold text-[#990000] group-hover:underline mt-1.5 inline-block">Meet the team &rarr;</span>
                   </div>
                 </Link>

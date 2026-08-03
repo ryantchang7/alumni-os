@@ -168,7 +168,12 @@ export function getBadgesForAccount(account: Account | null | undefined): BadgeI
 export function badgesForPerson(
   personId: string,
   accounts: Account[],
+  memberRole?: string,
 ): BadgeId[] {
   const account = accounts.find(a => a.linkedPersonId === personId)
-  return getBadgesForAccount(account)
+  const badges = getBadgesForAccount(account)
+  // Joining as family is free, so the 'parent' badge can't come from a paid
+  // tier alone — otherwise family members render with no role signal at all.
+  if (memberRole === 'parent' && !badges.includes('parent')) badges.push('parent')
+  return badges
 }

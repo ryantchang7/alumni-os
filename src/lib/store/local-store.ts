@@ -1492,8 +1492,15 @@ export async function updateProfileClaimRequestStatus(
   }
   if (status === 'approved') {
     const claim = store.profileClaimRequests[idx]
+    // Parent claims store 'parent-<personId>'; alumni claims store the book
+    // slug (their membership is already created verified). Without this the
+    // status never flipped and approved parents kept seeing 'claim this card'
+    // on their own profile.
+    const targetPersonId = claim.memberId.startsWith('parent-')
+      ? claim.memberId.slice('parent-'.length)
+      : claim.memberId
     const memberIdx = store.teamMemberships.findIndex(
-      m => m.personId === claim.memberId && m.teamId === claim.teamId,
+      m => m.personId === targetPersonId && m.teamId === claim.teamId,
     )
     if (memberIdx !== -1) {
       store.teamMemberships[memberIdx] = {
