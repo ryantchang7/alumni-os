@@ -9,10 +9,14 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { checkCronAuth } from '@/lib/cron-auth'
+import { requireFounder } from '@/lib/auth/guards'
 
 export async function GET(req: NextRequest) {
+  // Cron secret OR a founder session — so news can be pulled on demand when
+  // Penn Athletics posts something, instead of waiting for the daily run.
   if (!checkCronAuth(req)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const gate = await requireFounder()
+    if (!gate.ok) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const teamSlug = req.nextUrl.searchParams.get('teamSlug') ?? 'penn-mens-golf'
