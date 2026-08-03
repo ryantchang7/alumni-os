@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
-import { memberBookEntries } from '@/lib/member-book/data'
+import { memberBookEntries, getMemberById } from '@/lib/member-book/data'
 import { getPublicMembers, getMemberPennGolfYears } from '@/lib/member-book/helpers'
 import { readStore, getTeamBySlug } from '@/lib/store/local-store'
 import AccountSetupClient from './AccountSetupClient'
@@ -18,7 +18,11 @@ const TEAM_SLUG = 'penn-mens-golf'
 
 export const dynamic = 'force-dynamic'
 
-export default async function AccountSetupPage() {
+export default async function AccountSetupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ bookId?: string; q?: string }>
+}) {
   const session = await auth()
   if (!session) {
     redirect('/login?next=/account/setup')
@@ -58,8 +62,14 @@ export default async function AccountSetupPage() {
     // Counts are decoration. Soldier on.
   }
 
+  // Came from a member card ('Is this you?') — seed the search with that
+  // name so they don't have to find themselves twice.
+  const sp = await searchParams
+  const seeded = sp.bookId ? getMemberById(sp.bookId)?.displayName ?? null : sp.q ?? null
+
   return (
     <AccountSetupClient
+      initialQuery={seeded}
       members={minimal}
       signedInName={session.user?.name ?? null}
       signedInEmail={session.user?.email ?? null}

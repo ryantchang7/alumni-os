@@ -151,9 +151,12 @@ export default async function MemberDetailPage({
 
   // Claim CTA destination depends on whether a store record exists. Unclaimed
   // cards route through /account/setup so every claim is approved by hand.
+  // Carry the card through sign-in so they don't have to find themselves
+  // twice. /account/setup redirects anon to login itself, but passing next=
+  // keeps the bookId across the OAuth round-trip.
   const claimHref = storeMatch
     ? `/alumni/profile/${storeMatch.personId}?teamSlug=${TEAM_SLUG}`
-    : '/account/setup'
+    : `/login?next=${encodeURIComponent(`/account/setup?bookId=${member.id}`)}`
   const claimLabel = storeMatch ? 'Update Profile' : 'Claim your card'
 
   return (

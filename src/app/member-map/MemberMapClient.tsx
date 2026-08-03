@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import type { MapState, MapMember } from '@/app/api/member-map/route'
 import MemberAvatar from '@/components/MemberAvatar'
+import { MapPin } from 'lucide-react'
+import MemberOnlyTease from '@/components/MemberOnlyTease'
 
 // ── Minimal topojson decoder ──────────────────────────────────────────────────
 interface Topology {
@@ -127,6 +129,8 @@ function matchesCombined(m: MapMember, role: RoleFilter, era: EraFilter): boolea
 
 function memberHref(m: MapMember): string {
   if (m.bookId) return `/member-book/${encodeURIComponent(m.bookId)}`
+  // Scrubbed (unapproved) rows carry no ids — never build /player/alumni/.
+  if (!m.personId) return '/member-book'
   return `/player/alumni/${m.personId}`
 }
 
@@ -198,10 +202,13 @@ const LENS_LABELS: Record<Lens, string> = {
 type MapView = 'all' | 'family'
 
 export default function MemberMapClient({
+  approved = false,
   hometownStates,
   currentStates,
   familyStates,
 }: {
+  /** Approved members see who is where; everyone else sees counts. */
+  approved?: boolean
   hometownStates: MapState[]
   currentStates: MapState[]
   familyStates: MapState[]
@@ -655,10 +662,22 @@ export default function MemberMapClient({
                   </p>
                 ) : (
                   <>
-                    {filteredMembers.slice(0, 24).map((m) => (
-                      <ContextualRow key={m.personId} member={m} />
-                    ))}
-                    {filteredMembers.length > 24 && (
+                    {!approved ? (
+                      <div className="px-4 py-4">
+                        <MemberOnlyTease
+                          icon={MapPin}
+                          title="Who&rsquo;s here"
+                          count={filteredMembers.length}
+                          countLabel={`Penn Golf ${filteredMembers.length === 1 ? 'member' : 'members'} in ${selectedState.stateName}`}
+                          valueProp="Members see names, class years, and who&rsquo;s open to coffee or a round."
+                        />
+                      </div>
+                    ) : (
+                      filteredMembers.slice(0, 24).map((m) => (
+                        <ContextualRow key={m.personId} member={m} />
+                      ))
+                    )}
+                    {(!approved || filteredMembers.length > 24) && (
                       <div className="px-4 py-3 border-t border-[rgba(180,168,150,0.25)] bg-[#fdfcf9]">
                         <Link
                           href="/member-book"

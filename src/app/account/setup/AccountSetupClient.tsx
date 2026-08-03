@@ -15,12 +15,15 @@ interface MinimalMember {
 }
 
 export default function AccountSetupClient({
+  initialQuery,
   members,
   signedInName,
   signedInEmail,
   claimedCount,
   monthCount,
 }: {
+  /** Pre-seeded search term, from ?bookId on a member card. */
+  initialQuery?: string | null
   members: MinimalMember[]
   signedInName: string | null
   signedInEmail: string | null
@@ -33,7 +36,7 @@ export default function AccountSetupClient({
     'account-setup.scope-note-womens',
     "If you played Penn Women's Golf, we're not live with that data yet — we'll add it as we bring women's golf in. Email rtchang@sas.upenn.edu if that's you and we'll get you sorted.",
   )
-  const [query, setQuery] = useState(signedInName ?? '')
+  const [query, setQuery] = useState(initialQuery ?? signedInName ?? '')
   const [claiming, setClaiming] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(() =>
     typeof window !== 'undefined' &&

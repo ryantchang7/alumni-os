@@ -31,6 +31,9 @@ import type {
   EraFilter,
   SortMode,
 } from '@/lib/member-book/types'
+import { BOOK_PROOF } from '@/lib/proof'
+import { APPROVAL_PROMISE } from '@/lib/access/promise'
+import { useSession } from 'next-auth/react'
 
 const ERA_OPTIONS: { value: EraFilter; label: string }[] = [
   { value: 'all', label: 'All Eras' },
@@ -130,8 +133,8 @@ function RegistryEntry({
             </span>
           ) : null}
         </div>
-        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-          View Member &rarr;
+        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-70 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+          Is this you? &rarr;
         </p>
       </Link>
     </motion.div>
@@ -456,6 +459,7 @@ function MemberBookPageInner() {
 
       <div className="max-w-[1280px] mx-auto px-5 sm:px-8">
         <div className="-mt-6 relative z-10 pb-20">
+          <ClaimRail />
           {/* Toolbar */}
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden mb-7"
@@ -691,6 +695,39 @@ function MemberBookSkeleton() {
           <div key={i} className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl h-20" />
         ))}
       </div>
+    </div>
+  )
+}
+
+/** The book is the hook — an alum who finds their own name needs a way to
+ *  say "that's me" without hunting. Hidden once the viewer is approved. */
+function ClaimRail() {
+  const { data: session, status } = useSession()
+  if (status === 'loading') return null
+  if (session?.linkedPersonId) return null
+  return (
+    <div
+      className="bg-[#0a1628] text-white rounded-xl px-5 sm:px-7 py-5 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.08), 0 10px 30px rgba(10,22,40,0.14)' }}
+    >
+      <div className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#c8a84b] mb-1.5">
+          {BOOK_PROOF.members} members · {BOOK_PROOF.earliestYear}–{BOOK_PROOF.latestYear}
+        </p>
+        <p className="text-white text-lg sm:text-xl font-medium font-heading leading-snug">
+          Find your name. It&rsquo;s already in the book.
+        </p>
+        <p className="text-white/70 text-[13px] mt-1 max-w-xl leading-relaxed">
+          Search below, open your card, and claim it. {APPROVAL_PROMISE}
+        </p>
+      </div>
+      <Link
+        href="/account/setup"
+        data-testid="book-claim-rail-cta"
+        className="inline-flex items-center justify-center bg-[#c8a84b] hover:bg-[#b8973b] text-[#0a1628] text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-3 rounded-lg transition-colors whitespace-nowrap flex-shrink-0"
+      >
+        Claim your card
+      </Link>
     </div>
   )
 }

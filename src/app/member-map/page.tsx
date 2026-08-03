@@ -290,6 +290,7 @@ export default async function MemberMapPage() {
 
       <div className="max-w-[1280px] mx-auto px-6 sm:px-8 py-10">
         <MemberMapClient
+          approved={approval.approved}
           hometownStates={scrub(hometownStates)}
           currentStates={scrub(currentStates)}
           familyStates={scrub(familyStates)}
