@@ -12,6 +12,8 @@ interface ChatMessage {
   fromName: string
   body: string
   createdAt: string
+  editedAt?: string
+  deletedAt?: string
   // Client-only flags for optimistic state
   pending?: boolean
   failed?: boolean
@@ -51,6 +53,40 @@ export default function ChatThreadClient({
   initialMessages,
 }: Props) {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editDraft, setEditDraft] = useState('')
+  const [msgBusy, setMsgBusy] = useState(false)
+
+  async function saveEdit(id: string) {
+    const body = editDraft.trim()
+    if (!body) return
+    setMsgBusy(true)
+    try {
+      const res = await fetch(`/api/chat/messages/${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body }),
+      })
+      if (res.ok) {
+        setMessages(prev => prev.map(m => (m.id === id ? { ...m, body, editedAt: new Date().toISOString() } : m)))
+        setEditingId(null)
+      }
+    } finally {
+      setMsgBusy(false)
+    }
+  }
+
+  async function removeMessage(id: string) {
+    setMsgBusy(true)
+    try {
+      const res = await fetch(`/api/chat/messages/${encodeURIComponent(id)}`, { method: 'DELETE' })
+      if (res.ok) {
+        setMessages(prev => prev.map(m => (m.id === id ? { ...m, body: '', deletedAt: new Date().toISOString() } : m)))
+      }
+    } finally {
+      setMsgBusy(false)
+    }
+  }
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
   const [reconnecting, setReconnecting] = useState(false)
@@ -292,12 +328,67 @@ export default function ChatThreadClient({
                           : 'bg-white text-[#0a1628] border border-[rgba(180,168,150,0.45)] rounded-bl-md shadow-[0_1px_2px_rgba(10,22,40,0.05)]'
                       }`}
                     >
-                      {m.body}
+                      {m.deletedAt ? (
+                        <span className="italic opacity-60">Message deleted</span>
+                      ) : editingId === m.id ? (
+                        <div className="flex flex-col gap-2 min-w-[220px]">
+                          <textarea
+                            value={editDraft}
+                            onChange={e => setEditDraft(e.target.value)}
+                            rows={2}
+                            maxLength={4000}
+                            className={`w-full rounded-lg px-2.5 py-1.5 text-[14px] resize-none focus:outline-none ${
+                              mine ? 'bg-white/10 text-white placeholder-white/40' : 'bg-[#fdfcf9] text-[#0a1628] border border-[rgba(180,168,150,0.5)]'
+                            }`}
+                          />
+                          <div className="flex gap-3 justify-end">
+                            <button
+                              type="button"
+                              onClick={() => setEditingId(null)}
+                              className={`text-[11px] ${mine ? 'text-white/60 hover:text-white' : 'text-ink-muted hover:text-[#0a1628]'}`}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              disabled={msgBusy || !editDraft.trim()}
+                              onClick={() => saveEdit(m.id)}
+                              className={`text-[11px] font-semibold disabled:opacity-40 ${mine ? 'text-[#c8a84b]' : 'text-[#990000]'}`}
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        m.body
+                      )}
                     </div>
                     <div className={`flex items-center gap-1.5 mt-1 ${mine ? 'mr-3' : 'ml-3'}`}>
                       <span className="text-[10.5px] text-ink-muted">
                         {m.pending ? 'Sending…' : fmtTime(m.createdAt)}
                       </span>
+                      {m.editedAt && !m.deletedAt && (
+                        <span className="text-[10.5px] text-ink-muted italic">edited</span>
+                      )}
+                      {mine && !m.pending && !m.failed && !m.deletedAt && editingId !== m.id && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => { setEditDraft(m.body); setEditingId(m.id) }}
+                            className="text-[10.5px] text-ink-muted hover:text-[#0a1628] transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            disabled={msgBusy}
+                            onClick={() => removeMessage(m.id)}
+                            className="text-[10.5px] text-ink-muted hover:text-[#990000] transition-colors disabled:opacity-40"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
                       {m.failed && (
                         <button
                           type="button"

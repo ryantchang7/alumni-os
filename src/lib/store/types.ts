@@ -623,6 +623,10 @@ export interface ChatMessage {
   fromName: string
   body: string
   createdAt: string
+  /** Set when the sender edits — the bubble shows an 'edited' marker. */
+  editedAt?: string
+  /** Soft delete: body is cleared, the bubble reads 'Message deleted'. */
+  deletedAt?: string
   /** Account ids that have read this message. */
   readByAccountIds: string[]
 }

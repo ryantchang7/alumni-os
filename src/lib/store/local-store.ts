@@ -2234,6 +2234,40 @@ export async function createChatMessage(input: {
   return msg
 }
 
+/** Edit your own message. Sender-only; deleted messages can't be edited. */
+export async function updateChatMessage(
+  messageId: string,
+  byAccountId: string,
+  body: string,
+): Promise<ChatMessage | null> {
+  return mutateStore(store => {
+    const idx = store.chatMessages.findIndex(m => m.id === messageId)
+    if (idx === -1) return null
+    const msg = store.chatMessages[idx]
+    if (msg.fromAccountId !== byAccountId) return null
+    if (msg.deletedAt) return null
+    store.chatMessages[idx] = { ...msg, body, editedAt: new Date().toISOString() }
+    return store.chatMessages[idx]
+  })
+}
+
+/** Soft-delete your own message — the bubble stays as a tombstone so the
+ *  conversation doesn't silently reshuffle for the other person. */
+export async function deleteChatMessage(
+  messageId: string,
+  byAccountId: string,
+): Promise<boolean> {
+  const res = await mutateStore(store => {
+    const idx = store.chatMessages.findIndex(m => m.id === messageId)
+    if (idx === -1) return false
+    const msg = store.chatMessages[idx]
+    if (msg.fromAccountId !== byAccountId) return false
+    store.chatMessages[idx] = { ...msg, body: '', deletedAt: new Date().toISOString() }
+    return true
+  })
+  return res === true
+}
+
 export async function markChatConversationRead(
   conversationId: string,
   accountId: string,
