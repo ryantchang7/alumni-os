@@ -113,7 +113,7 @@ export const ACCESS_STEPS: AccessStep[] = [
   },
   {
     step: '2',
-    label: 'Captain approval',
+    label: 'Reviewed by hand',
     body: 'Every claim is reviewed by hand. Usually within a day.',
   },
   {
