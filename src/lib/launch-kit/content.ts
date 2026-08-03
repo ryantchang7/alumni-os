@@ -153,7 +153,7 @@ Ask. Meet. Play. Gather.
 
 Approval-based, not paywalled. Optional support tiers if you want to back the program too.
 
-Come claim your member card at penngolfclubhouse.com.`
+Come claim your member card at penngolfclubhouse.com/launch.`
 
 const SCRIPT_90 = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
 
@@ -173,7 +173,7 @@ Joining is approval-based, not paywalled. The optional membership tiers are ther
 
 For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully take down Princeton and Harvard.
 
-Come claim your member card at penngolfclubhouse.com.`
+Come claim your member card at penngolfclubhouse.com/launch.`
 
 const SCRIPT_120 = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
 
@@ -197,7 +197,7 @@ Joining is approval-based, not paywalled. The optional membership tiers are ther
 
 This is for the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
 
-Come claim your member card at penngolfclubhouse.com.`
+Come claim your member card at penngolfclubhouse.com/launch.`
 
 function countWords(s: string): number {
   return s.trim().split(/\s+/).length
@@ -289,7 +289,7 @@ export const STORYBOARD: StoryboardBeat[] = [
   },
   {
     timestamp: '1:18–1:30',
-    voiceover: 'Approval-based, not paywalled. Come claim your member card at penngolfclubhouse.com.',
+    voiceover: 'Approval-based, not paywalled. Come claim your member card at penngolfclubhouse.com/launch.',
     visual: 'Return to /launch hero with the "Claim Your Member Card" CTA highlighted.',
     route: '/launch',
     notes: 'End on the hero. Allow 1s of breath. Cut to black.',
@@ -361,7 +361,7 @@ Brookline, MA`,
     body: `yo penn golf
 
 built something for us 🏌️
-penngolfclubhouse.com
+penngolfclubhouse.com/launch
 
 it's a private clubhouse for the whole penn golf family. alumni, current team, parents. claim your card, see where everyone is, ask for advice, set up rounds.
 
@@ -383,7 +383,7 @@ Inside: the full Member Book (every player I could find from 1930 onward), a map
 
 Approval-based, not paywalled. The point is connection first.
 
-If you carried the Penn Golf bag, come claim your card → penngolfclubhouse.com
+If you carried the Penn Golf bag, come claim your card → penngolfclubhouse.com/launch
 
 For the Penn Golf family. Thanks to everyone who's already in. This wouldn't exist without you.`,
   },
@@ -393,7 +393,7 @@ For the Penn Golf family. Thanks to everyone who's already in. This wouldn't exi
     surface: 'Posted alongside the 90-second main video. Reel format.',
     body: `For everyone who carried the Penn Golf bag.
 
-Penn Golf Clubhouse is live → penngolfclubhouse.com 🏌️
+Penn Golf Clubhouse is live → penngolfclubhouse.com/launch 🏌️
 
 Ask. Meet. Play. Gather.
 
@@ -403,7 +403,7 @@ Ask. Meet. Play. Gather.
     id: 'sms-alumni',
     label: 'Short SMS to recent alumni',
     surface: 'For people in Ryan\'s contacts. Personal, low pressure.',
-    body: `Built Penn Golf Clubhouse — a private space for the whole Penn Golf family. Approval based, takes a sec. Come claim your card → penngolfclubhouse.com`,
+    body: `Built Penn Golf Clubhouse — a private space for the whole Penn Golf family. Approval based, takes a sec. Come claim your card → penngolfclubhouse.com/launch`,
   },
   {
     id: 'parent-family',
@@ -413,7 +413,7 @@ Ask. Meet. Play. Gather.
 
 It's Ryan Chang, on the current Penn Men's Golf team. We just launched Penn Golf Clubhouse, a private space for the Penn Golf family that includes parents and longtime friends of the program.
 
-You can claim a Family & Affiliate card at penngolfclubhouse.com. It's free and approval-based. You'll be able to follow the team, see where alumni are around the country, and stay close to everything happening with the program.
+You can claim a Family & Affiliate card at penngolfclubhouse.com/launch. It's free and approval-based. You'll be able to follow the team, see where alumni are around the country, and stay close to everything happening with the program.
 
 It would mean a lot to have [player name]'s family in there.
 
@@ -466,7 +466,7 @@ export const RECORDING_FLOW: string[] = [
 ]
 
 export const ASSET_REFS: Array<{ label: string; value: string; note?: string }> = [
-  { label: 'Site URL', value: 'penngolfclubhouse.com' },
+  { label: 'Site URL', value: 'penngolfclubhouse.com/launch' },
   { label: 'Brand color (navy)', value: '#0a1628', note: 'Hero backgrounds, deep accents.' },
   { label: 'Brand color (parchment)', value: '#f8f5f0', note: 'Page background, warm fields.' },
   { label: 'Brand color (Penn red)', value: '#990000', note: 'CTAs, links, action.' },
@@ -562,7 +562,7 @@ export const DAY_BEFORE_CHECKLIST: ChecklistItem[] = [
   },
   {
     label: 'Verify the deploy reads production',
-    detail: 'URL bar shows penngolfclubhouse.com. No localhost in the title bar. Sign-in works end to end. Open Requests strip shows your seeded entries.',
+    detail: 'URL bar shows penngolfclubhouse.com/launch. No localhost in the title bar. Sign-in works end to end. Open Requests strip shows your seeded entries.',
   },
   {
     label: 'Charge devices to 100%',

@@ -225,7 +225,13 @@ function AccountAffordance() {
 export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+  // Signed-out visitors get 'The Film' — the pitch was otherwise reachable
+  // only from the emailed URL and the footer.
+  const visibleNavEntries: NavEntry[] =
+    status === 'authenticated'
+      ? navEntries
+      : [...navEntries, { type: 'link' as const, label: 'The Film', href: '/launch' }]
   const email = (session?.user?.email ?? '').toLowerCase().trim()
   const isFounder = FOUNDER_EMAILS.has(email)
 
@@ -244,7 +250,7 @@ export default function NavBar() {
 
         {/* Center nav (desktop) */}
         <nav className="hidden xl:flex items-center gap-1">
-          {navEntries.map(entry =>
+          {visibleNavEntries.map(entry =>
             entry.type === 'menu' ? (
               <NavMenu key={entry.label} label={entry.label} links={entry.links} pathname={pathname} />
             ) : (
@@ -300,7 +306,7 @@ export default function NavBar() {
             className="xl:hidden bg-[#0a1628] border-t border-white/[0.08] px-6 pb-4 max-h-[calc(100dvh-60px)] overflow-y-auto"
           >
             <div className="flex flex-col gap-1 pt-3">
-              {navEntries.map(entry =>
+              {visibleNavEntries.map(entry =>
                 entry.type === 'menu' ? (
                   <Fragment key={entry.label}>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 pt-4 pb-1">

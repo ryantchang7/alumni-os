@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useSlot } from '@/lib/site-content/use-site-content'
+import ProofStrip from '@/components/ProofStrip'
 
 const ease = [0.25, 0.1, 0.25, 1] as const
 
@@ -141,6 +142,21 @@ export default function LandingPage() {
             {claimNote}
           </motion.p>
         )}
+
+        <motion.div
+          className="mt-5 flex flex-col items-center gap-3"
+          initial={{ opacity: 0 }}
+          animate={ready ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ delay: 1.75, duration: 0.65, ease }}
+        >
+          <ProofStrip variant="line" />
+          <Link
+            href="/launch"
+            className="text-[12.5px] text-white/85 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
+          >
+            Watch the 3-minute film →
+          </Link>
+        </motion.div>
 
         {scopeNote && (
           <motion.p
