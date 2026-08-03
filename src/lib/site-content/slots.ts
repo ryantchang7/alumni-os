@@ -343,10 +343,10 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
   {
     id: 'launch.access-line',
     label: '/launch — access explanation',
-    hint: 'The paragraph below "Approval-based, not paywalled."',
+    hint: 'The paragraph below "How you get in."',
     kind: 'longtext',
     default:
-      'Joining is approval-based, not paywalled. Optional membership tiers are there if you want to back the Clubhouse and the program, but connection is the point.',
+      'Every claim is reviewed by hand, so the Clubhouse stays the people who actually carried the bag. Find your name, claim your card, and you\'re in.',
   },
   {
     id: 'launch.closing-line',
