@@ -118,7 +118,12 @@ const VALID_PURPOSES: PlayerAlumniRequest['purpose'][] = [
 ]
 
 export async function POST(request: NextRequest) {
-  // Public, unauthenticated endpoint that accepts attacker-controlled input —
+  // Approved members only. This writes a request record AND fires a
+  // notification into a member's inbox, so it must not be anonymous.
+  const gate = await requireApprovedMember()
+  if (!gate.ok) return gate.response
+
+  // Rate-limit per IP before any heavy work —
   // rate-limit per IP before any heavy work. Generous window so no real user
   // hits it; the limiter fails open if Redis is down.
   const ip = ipFromRequest(request)

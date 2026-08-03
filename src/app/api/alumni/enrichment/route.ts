@@ -27,6 +27,12 @@ const VALID_RELATIONSHIP_STATUSES: PersonEnrichment['relationshipStatus'][] = [
 ]
 
 export async function GET(request: Request) {
+  // Founder-only: this returns the raw CRM record (email, phone, LinkedIn,
+  // notes, relationship status). personIds are enumerable, so leaving this
+  // open made it a scriptable contact export of the whole roster.
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
   const { searchParams } = new URL(request.url)
   const teamSlug = searchParams.get('teamSlug')
   const personId = searchParams.get('personId')
