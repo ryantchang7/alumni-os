@@ -110,6 +110,32 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   const isHost =
     approved && !!gathering.hostPersonId && session?.linkedPersonId === gathering.hostPersonId
 
+  // Responding to RSVPs. The API for this existed with proper ownership
+  // checks but had no UI at all, so a host could see who asked in and had no
+  // way to answer them.
+  const [rsvpBusy, setRsvpBusy] = useState<string | null>(null)
+  async function respondToRsvp(requestId: string, status: 'accepted' | 'declined') {
+    setRsvpBusy(requestId)
+    try {
+      const res = await fetch('/api/gatherings/request/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId, status }),
+      })
+      if (res.ok) {
+        setAttendees(prev =>
+          prev
+            ? status === 'declined'
+              ? prev.filter(a => a.requestId !== requestId)
+              : prev.map(a => (a.requestId === requestId ? { ...a, status } : a))
+            : prev,
+        )
+      }
+    } finally {
+      setRsvpBusy(null)
+    }
+  }
+
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [sent, setSent] = useState(false)
@@ -389,18 +415,48 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-1.5">
               On the sheet
             </p>
-            <ul className="flex flex-wrap gap-x-3 gap-y-1">
+            <ul className={isHost ? 'space-y-1.5' : 'flex flex-wrap gap-x-3 gap-y-1'}>
               {attendees.map(a => (
-                <li key={a.requestId} className="text-[12.5px] text-[#0a1628]">
-                  {a.bookId ? (
-                    <Link
-                      href={`/member-book/${encodeURIComponent(a.bookId)}`}
-                      className="hover:underline font-heading"
-                    >
-                      {a.name}
-                    </Link>
-                  ) : (
-                    <span className="font-heading">{a.name}</span>
+                <li
+                  key={a.requestId}
+                  className={`text-[12.5px] text-[#0a1628] ${isHost ? 'flex items-center justify-between gap-3' : ''}`}
+                >
+                  <span className="min-w-0">
+                    {a.bookId ? (
+                      <Link
+                        href={`/member-book/${encodeURIComponent(a.bookId)}`}
+                        className="hover:underline font-heading"
+                      >
+                        {a.name}
+                      </Link>
+                    ) : (
+                      <span className="font-heading">{a.name}</span>
+                    )}
+                    {a.status === 'accepted' && (
+                      <span className="ml-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#2d6a4f]">
+                        In
+                      </span>
+                    )}
+                  </span>
+                  {isHost && a.status !== 'accepted' && (
+                    <span className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        type="button"
+                        disabled={rsvpBusy === a.requestId}
+                        onClick={() => respondToRsvp(a.requestId, 'accepted')}
+                        className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#2d6a4f] hover:underline disabled:opacity-40"
+                      >
+                        Add
+                      </button>
+                      <button
+                        type="button"
+                        disabled={rsvpBusy === a.requestId}
+                        onClick={() => respondToRsvp(a.requestId, 'declined')}
+                        className="text-[11px] text-ink-muted hover:text-[#990000] disabled:opacity-40"
+                      >
+                        Pass
+                      </button>
+                    </span>
                   )}
                 </li>
               ))}

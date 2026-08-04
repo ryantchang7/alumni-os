@@ -50,5 +50,28 @@ export async function POST(request: NextRequest) {
   )
 
   if (!updated) return NextResponse.json({ error: 'Request not found' }, { status: 404 })
+
+  // Tell the guest. The host answering was previously invisible to the person
+  // who asked in — the same silent-loop pattern as the Ask flow.
+  if (updated.fromAccountId && (status === 'accepted' || status === 'declined')) {
+    try {
+      const { notify } = await import('@/lib/notifications/notify')
+      await notify(updated.fromAccountId, {
+        type: 'request',
+        title:
+          status === 'accepted'
+            ? `You're on the sheet — ${gathering.title}`
+            : `${gathering.title} is full`,
+        body:
+          status === 'accepted'
+            ? `${gathering.dateText}${gathering.venue ? ` · ${gathering.venue}` : ''}`
+            : 'The host passed this time. Plenty more on the board.',
+        href: `/gatherings/${gathering.id}`,
+      })
+    } catch (e) {
+      console.warn('[rsvp-status-notify] failed:', e)
+    }
+  }
+
   return NextResponse.json({ request: updated })
 }
