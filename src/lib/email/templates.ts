@@ -205,6 +205,66 @@ export function renderTeamAnswerEmail(input: {
 
 // ── Open Request: a Penn Golf alum is in your area ───────────────────────────
 
+/**
+ * Someone asked you for advice / an intro. The flagship Ask had no email at
+ * all — only an in-app bell and web push, which almost nobody has enabled —
+ * so asks were effectively silent for the recipient.
+ */
+export function renderAskEmail(input: {
+  recipientFirstName?: string | null
+  fromName: string
+  purposeLabel: string
+  message: string
+  url: string
+}): { subject: string; html: string } {
+  const greeting = input.recipientFirstName ? `Hi ${escapeHtml(input.recipientFirstName)},` : 'Hi,'
+  const subject = `${input.fromName} asked you about ${input.purposeLabel.toLowerCase()}`
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      ${escapeHtml(input.fromName)} reached out
+    </h1>
+    <p style="margin:0 0 14px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">${greeting}</p>
+    <p style="margin:0 0 14px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">
+      A Penn Golf member asked you about <strong>${escapeHtml(input.purposeLabel.toLowerCase())}</strong>.
+    </p>
+    <blockquote style="margin:0 0 20px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:#fdfcf9;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${escapeHtml(input.message).slice(0, 600)}
+    </blockquote>
+    <p style="margin:0 0 20px 0;font-size:14px;line-height:1.55;color:#3d4a5c;">
+      No pressure and no deadline — a short reply, or a pass, both help.
+    </p>
+    <p style="margin:0;">${btn(input.url, 'Read and reply')}</p>
+  `
+  return { subject, html: shell(inner, input.url) }
+}
+
+/**
+ * Your ask got an answer. Without this the loop never closed — the asker had
+ * to keep checking the page to find out.
+ */
+export function renderAskAnsweredEmail(input: {
+  askerFirstName?: string | null
+  alumniName: string
+  statusLabel: string
+  responseMessage?: string | null
+  url: string
+}): { subject: string; html: string } {
+  const greeting = input.askerFirstName ? `Hi ${escapeHtml(input.askerFirstName)},` : 'Hi,'
+  const subject = `${input.alumniName} replied to your ask`
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      You got a reply
+    </h1>
+    <p style="margin:0 0 14px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">${greeting}</p>
+    <p style="margin:0 0 14px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">
+      <strong>${escapeHtml(input.alumniName)}</strong> ${escapeHtml(input.statusLabel)}.
+    </p>
+    ${input.responseMessage ? `<blockquote style="margin:0 0 20px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:#fdfcf9;font-size:14px;line-height:1.6;color:#3d4a5c;">${escapeHtml(input.responseMessage).slice(0, 600)}</blockquote>` : ''}
+    <p style="margin:0;">${btn(input.url, 'Open the Clubhouse')}</p>
+  `
+  return { subject, html: shell(inner, input.url) }
+}
+
 export function renderNearbyRequestEmail(input: {
   recipientFirstName?: string | null
   fromName: string

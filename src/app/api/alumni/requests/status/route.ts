@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireApprovedMember } from '@/lib/auth/guards'
 import type { PlayerAlumniRequest } from '@/lib/store/types'
+import { notify } from '@/lib/notifications/notify'
 
 const VALID_STATUSES: PlayerAlumniRequest['status'][] = [
   'seen', 'accepted', 'declined', 'suggested', 'responded', 'closed',
@@ -98,6 +99,47 @@ export async function POST(request: NextRequest) {
     suggestedPersonId: suggestedPersonId || undefined,
     suggestedPersonName: suggestedPersonName?.trim() || undefined,
   })
+
+  // Close the loop. Previously a reply was recorded and the student who
+  // asked was never told — they had to keep re-checking the page.
+  if (updated && (status === 'accepted' || status === 'declined' || status === 'responded' || status === 'suggested')) {
+    try {
+      const fresh = await readStore()
+      const asker = updated.fromEmail
+        ? fresh.accounts.find(a => a.email?.toLowerCase() === updated.fromEmail!.toLowerCase())
+        : undefined
+      const alumniPerson = fresh.people.find(p => p.id === updated.alumniPersonId)
+      const alumniName = alumniPerson?.canonicalName ?? 'A Penn Golf alum'
+      const statusLabel =
+        status === 'accepted' ? 'said yes'
+        : status === 'declined' ? 'passed this time'
+        : status === 'suggested' ? 'suggested someone else who can help'
+        : 'replied'
+      if (asker) {
+        await notify(asker.id, {
+          type: 'request',
+          title: `${alumniName} replied to your ask`,
+          body: statusLabel,
+          href: '/player/requests',
+        })
+      }
+      if (updated.fromEmail) {
+        const { renderAskAnsweredEmail } = await import('@/lib/email/templates')
+        const { sendEmail } = await import('@/lib/email/send')
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
+        const { subject, html } = renderAskAnsweredEmail({
+          askerFirstName: updated.fromName?.split(/\s+/)[0] ?? null,
+          alumniName,
+          statusLabel,
+          responseMessage: updated.responseMessage ?? null,
+          url: `${baseUrl}/player/requests`,
+        })
+        await sendEmail({ to: updated.fromEmail, subject, html })
+      }
+    } catch (e) {
+      console.warn('[ask-answered-notify] failed:', e)
+    }
+  }
 
   return NextResponse.json({
     request: {

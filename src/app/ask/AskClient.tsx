@@ -292,15 +292,15 @@ export default function AskClient() {
           <div className="max-w-[680px] mx-auto">
             <p className="eyebrow text-gold mb-3">Penn Golf · Clubhouse</p>
             <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">Request sent.</h1>
-            <p className="text-white/70 text-sm mt-2">Your message is in {first}&rsquo;s Clubhouse inbox.</p>
+            <p className="text-white/70 text-sm mt-2">We&rsquo;ve passed it along to {first}.</p>
           </div>
         </div>
         <div className="max-w-[680px] mx-auto px-6 sm:px-8 py-10">
           <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-8 text-center"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
-            <p className="text-base font-semibold text-[#0a1628] mb-2">In their inbox.</p>
+            <p className="text-base font-semibold text-[#0a1628] mb-2">On its way.</p>
             <p className="text-sm text-ink-muted max-w-sm mx-auto mb-6">
-              {first} gets pinged on the Clubhouse. Give it a few days. Penn Golf members have day jobs.
+              {first} gets an email and a Clubhouse notification if they&rsquo;ve claimed their card. Give it a few days — Penn Golf members have day jobs.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
               <Link
@@ -479,7 +479,7 @@ export default function AskClient() {
                 )}
               </div>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Pick someone to ask.</h2>
-              <p className="text-xs text-ink-muted mb-5">Sorted by fit. Everyone here has said they&rsquo;re open to it.</p>
+              <p className="text-xs text-ink-muted mb-5">Sorted by fit — members who&rsquo;ve said what they&rsquo;re open to rank first.</p>
 
               {loadingProfiles ? (
                 <p className="text-sm text-ink-muted py-6 text-center">Loading members…</p>

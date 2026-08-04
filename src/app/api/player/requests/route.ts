@@ -115,6 +115,11 @@ const VALID_PURPOSES: PlayerAlumniRequest['purpose'][] = [
   'city_advice',
   'drinks_informal',
   'general_intro',
+  // These three were offered by the Ask UI but rejected here, so the flow
+  // 400'd at the final click after the user had written their whole note.
+  'job_referral',
+  'grad_school',
+  'custom',
 ]
 
 export async function POST(request: NextRequest) {
@@ -260,14 +265,31 @@ export async function POST(request: NextRequest) {
   const recipient = store.accounts.find(
     a => a.linkedPersonId === alumniPersonId && a.teamId === team.id,
   )
+  const purposeLabel = PURPOSE_LABELS[purpose as string] ?? 'a request'
   if (recipient) {
-    const purposeLabel = PURPOSE_LABELS[purpose as string] ?? 'a request'
     await notify(recipient.id, {
       type: 'request',
       title: `${trimmedName} reached out`,
       body: `${purposeLabel} — open your inbox to respond.`,
       href: '/alumni/requests',
     })
+    // Email too. The bell + web push alone meant asks were effectively silent
+    // (almost nobody has push enabled), while the sender was told it landed.
+    try {
+      const { renderAskEmail } = await import('@/lib/email/templates')
+      const { sendEmail } = await import('@/lib/email/send')
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
+      const { subject, html } = renderAskEmail({
+        recipientFirstName: recipient.name?.split(/\s+/)[0] ?? null,
+        fromName: trimmedName,
+        purposeLabel,
+        message: trimmedMessage,
+        url: `${baseUrl}/alumni/requests`,
+      })
+      if (recipient.email) await sendEmail({ to: recipient.email, subject, html })
+    } catch (e) {
+      console.warn('[ask-email] send failed:', e)
+    }
   }
 
   return NextResponse.json({
