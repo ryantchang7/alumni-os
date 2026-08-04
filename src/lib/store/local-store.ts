@@ -1511,8 +1511,64 @@ export async function updateProfileClaimRequestStatus(
         updatedAt: now,
       }
     }
+
+    // Apply whatever they told us while they were waiting.
+    if (claim.setupCity || (claim.setupOpenTo && claim.setupOpenTo.length > 0)) {
+      const eIdx = store.personEnrichments.findIndex(
+        e => e.teamId === claim.teamId && e.personId === targetPersonId,
+      )
+      const open = claim.setupOpenTo ?? []
+      const patch = {
+        ...(claim.setupCity ? { city: claim.setupCity } : {}),
+        ...(claim.setupState ? { state: claim.setupState } : {}),
+        ...(open.includes('golf') ? { openToGolfRounds: true } : {}),
+        ...(open.includes('coffee') ? { openToCoffee: true } : {}),
+        ...(open.includes('mentorship') ? { openToMentorship: true } : {}),
+        ...(open.includes('intros') ? { openToWarmIntroductions: true } : {}),
+      }
+      if (eIdx !== -1) {
+        store.personEnrichments[eIdx] = {
+          ...store.personEnrichments[eIdx],
+          ...patch,
+          updatedAt: now,
+        }
+      } else {
+        store.personEnrichments.push({
+          id: crypto.randomUUID(),
+          teamId: claim.teamId,
+          personId: targetPersonId,
+          ...patch,
+          createdAt: now,
+          updatedAt: now,
+        } as (typeof store.personEnrichments)[number])
+      }
+    }
   }
   return store.profileClaimRequests[idx]
+  })
+}
+
+/** Save the waiting-page answers onto a pending claim. CAS-guarded. */
+export async function updateProfileClaimSetup(
+  claimId: string,
+  patch: {
+    setupCity?: string
+    setupState?: string
+    setupOpenTo?: Array<'golf' | 'coffee' | 'mentorship' | 'intros'>
+  },
+): Promise<ClubhouseProfileClaimRequest | null> {
+  return mutateStore(store => {
+    const idx = store.profileClaimRequests.findIndex(r => r.id === claimId)
+    if (idx === -1) return null
+    if (store.profileClaimRequests[idx].status !== 'pending') return null
+    store.profileClaimRequests[idx] = {
+      ...store.profileClaimRequests[idx],
+      ...(patch.setupCity !== undefined ? { setupCity: patch.setupCity } : {}),
+      ...(patch.setupState !== undefined ? { setupState: patch.setupState } : {}),
+      ...(patch.setupOpenTo !== undefined ? { setupOpenTo: patch.setupOpenTo } : {}),
+      updatedAt: new Date().toISOString(),
+    }
+    return store.profileClaimRequests[idx]
   })
 }
 

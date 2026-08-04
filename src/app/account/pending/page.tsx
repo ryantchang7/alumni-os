@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Clock, Film, BookOpen } from 'lucide-react'
+import PendingSetup from './PendingSetup'
 
 export default function ClaimPendingPage() {
   return (
@@ -39,6 +40,8 @@ export default function ClaimPendingPage() {
             Browse the Member Book
           </Link>
         </div>
+
+        <PendingSetup />
 
         {/* Two things a pending member can actually do (the old nudge sent
             them to /invite, which is gated and told them to claim a card). */}

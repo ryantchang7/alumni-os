@@ -129,17 +129,49 @@ export async function GET() {
       }
     })
 
-  // On the Loop — anyone (alumni, players, coaches, family) with an
-  // active `inTown` trip. The data field is what gates it — if you
-  // haven't told us you're passing through somewhere, you don't appear.
+  // On the Loop — who's passing through. This used to read the passive
+  // `inTown` field on enrichment, which lived at line ~566 of a 1,000-line
+  // profile editor and had zero users, while Open Requests ("In NYC Aug
+  // 5-10, looking to play") is the thing members actually post. Two
+  // mechanisms for one need is why neither got used; this reads the one
+  // with a real front door, and still honors a legacy inTown if set.
   const onTheLoop: OnTheLoopMember[] = []
+  const seenLoopPersons = new Set<string>()
+  for (const r of store.openRequests ?? []) {
+    if (r.teamId !== team.id) continue
+    if (r.status !== 'open') continue
+    if (r.endDate && r.endDate < usEasternToday()) continue
+    const personId = r.fromPersonId
+    if (!personId || seenLoopPersons.has(personId)) continue
+    const person = store.people.find((p) => p.id === personId)
+    if (!person) continue
+    const enrichment = store.personEnrichments.find(
+      (e) => e.teamId === team.id && e.personId === personId,
+    )
+    if (enrichment?.visibleToPlayers === false) continue
+    seenLoopPersons.add(personId)
+    const bookEntry = findBookEntryForTeamStorePerson(person.canonicalName)
+    onTheLoop.push({
+      personId: person.id,
+      bookId: bookEntry?.id ?? null,
+      name: person.canonicalName,
+      city: r.city,
+      state: r.state,
+      startDate: r.startDate,
+      endDate: r.endDate,
+      note: r.note,
+    })
+  }
+  // Legacy: anyone who filled in the old inTown field before it was retired.
   for (const e of store.personEnrichments) {
     if (e.teamId !== team.id) continue
     if (e.visibleToPlayers === false) continue
     if (!e.inTown) continue
     if (!tripIsActive(e.inTown)) continue
+    if (seenLoopPersons.has(e.personId)) continue
     const person = store.people.find((p) => p.id === e.personId)
     if (!person) continue
+    seenLoopPersons.add(e.personId)
     const bookEntry = findBookEntryForTeamStorePerson(person.canonicalName)
     onTheLoop.push({
       personId: person.id,

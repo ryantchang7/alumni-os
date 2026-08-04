@@ -254,6 +254,12 @@ export interface ClubhouseProfileClaimRequest {
    *  'weak'. Computed at claim time; shown in the approval queue so bulk
    *  approve is a judgment rather than a coin flip. */
   matchHint?: 'strong' | 'weak'
+  /** Answered on the waiting page while the claim is pending — applied to
+   *  their enrichment the moment they're approved, so the Map and the
+   *  open-to lists fill up as people join rather than staying empty. */
+  setupCity?: string
+  setupState?: string
+  setupOpenTo?: Array<'golf' | 'coffee' | 'mentorship' | 'intros'>
   requesterEmail: string
   /** Account id of the signed-in claimer. Present for the new captain-
    * gated flow; absent for legacy public-form claims. */
