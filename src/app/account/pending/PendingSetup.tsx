@@ -26,6 +26,7 @@ export default function PendingSetup() {
   const [openTo, setOpenTo] = useState<string[]>([])
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
 
   const toggle = (k: string) =>
     setOpenTo(prev => (prev.includes(k) ? prev.filter(x => x !== k) : [...prev, k]))
@@ -33,13 +34,26 @@ export default function PendingSetup() {
   async function save() {
     if (!city.trim() && openTo.length === 0) return
     setSaving(true)
+    setError('')
     try {
       const res = await fetch('/api/account/claim-setup', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ city: city.trim(), state: stateCode.trim(), openTo }),
       })
-      if (res.ok) setSaved(true)
+      if (res.ok) {
+        setSaved(true)
+        return
+      }
+      // Never fail silently — a swallowed error here reads as "saved" and the
+      // answer is gone.
+      const data = await res.json().catch(() => ({}))
+      setError(
+        (data as { error?: string }).error ||
+          'That did not save. Try again, or just tell us when you are in.',
+      )
+    } catch {
+      setError('That did not save. Check your connection and try again.')
     } finally {
       setSaving(false)
     }
@@ -107,6 +121,12 @@ export default function PendingSetup() {
       >
         {saving ? 'Saving…' : 'Save for when I\u2019m in'}
       </button>
+
+      {error && (
+        <p className="mt-2.5 text-[12.5px] text-[#b3261e]" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   )
 }
