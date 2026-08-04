@@ -1,9 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { X } from 'lucide-react'
 
 const DISMISS_KEY = 'pgc-install-dismissed'
+
+// Never compete with the pages where someone is trying to get in. /launch is
+// the URL in the alumni email, and the banner is bottom-fixed: on an iPhone it
+// landed straight on top of "Claim Your Member Card".
+const SUPPRESSED = ['/launch', '/login', '/account/setup', '/account/pending', '/parent-signup']
+
+// Wait for a sign of interest before asking for anything. Either is enough.
+const DWELL_MS = 15000
+const SCROLL_PX = 500
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>
@@ -17,6 +27,26 @@ export default function InstallAppBanner() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null)
   const [iosHint, setIosHint] = useState(false)
   const [show, setShow] = useState(false)
+  const [engaged, setEngaged] = useState(false)
+  const boxRef = useRef<HTMLDivElement | null>(null)
+  const pathname = usePathname()
+  const suppressed = SUPPRESSED.some(r => pathname === r || pathname.startsWith(r + '/'))
+
+  // Only ask once someone has stuck around or scrolled — never on first paint.
+  useEffect(() => {
+    if (suppressed) return
+    const arm = () => setEngaged(true)
+    const onScroll = () => {
+      if (window.scrollY > SCROLL_PX) arm()
+    }
+    const t = setTimeout(arm, DWELL_MS)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => {
+      clearTimeout(t)
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [suppressed])
 
   useEffect(() => {
     const standalone =
@@ -48,7 +78,21 @@ export default function InstallAppBanner() {
     return () => window.removeEventListener('beforeinstallprompt', onBIP)
   }, [])
 
-  if (!show) return null
+  const visible = show && engaged && !suppressed
+
+  // While it's up it covers the foot of the page, so make room rather than
+  // sitting on whatever the last element happens to be.
+  useEffect(() => {
+    if (!visible) return
+    const h = boxRef.current?.offsetHeight ?? 76
+    const prev = document.body.style.paddingBottom
+    document.body.style.paddingBottom = `${h + 24}px`
+    return () => {
+      document.body.style.paddingBottom = prev
+    }
+  }, [visible])
+
+  if (!visible) return null
 
   const dismiss = () => {
     setShow(false)
@@ -73,6 +117,7 @@ export default function InstallAppBanner() {
 
   return (
     <div
+      ref={boxRef}
       role="dialog"
       aria-label="Install Penn Golf Clubhouse"
       className="fixed inset-x-3 z-[60] mx-auto max-w-md"
