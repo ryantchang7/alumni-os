@@ -12,7 +12,7 @@ import {
   linkAccountToPerson,
   publishMembershipsForPerson,
   readStore,
-  updateProfileClaimRequestStatus,
+  updateProfileClaimRequestStatus,  addNotifications,
 } from '@/lib/store/local-store'
 import { getCaptainEmails } from '@/lib/captains'
 import { notify, notifyMany } from '@/lib/notifications/notify'
@@ -132,19 +132,22 @@ export async function POST(request: Request, { params }: RouteParams) {
         broadcastIds.push(a.id)
       }
 
-      await Promise.all(
-        eraPings.map(p =>
-          notify(p.accountId, {
-            type: 'era_teammate',
+      // One write for all era pings — each has different body text, so this
+      // can't use notifyMany, but it must not be one full-store write each.
+      if (eraPings.length > 0) {
+        await addNotifications(
+          eraPings.map(p => ({
+            accountId: p.accountId,
+            type: 'era_teammate' as const,
             title: `${newMemberName} from your era just walked in`,
             body:
               p.overlapStart === p.overlapEnd
                 ? `You were on the roster together in ${p.overlapStart} — say hello.`
                 : `You played together ${p.overlapStart}–${p.overlapEnd} — say hello.`,
             href: '/player',
-          }),
-        ),
-      )
+          })),
+        )
+      }
       await notifyMany(broadcastIds, {
         type: 'new_member',
         title: `${newMemberName} just joined the Clubhouse`,

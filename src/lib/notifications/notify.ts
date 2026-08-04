@@ -13,6 +13,7 @@
 
 import {
   addNotification,
+  addNotifications,
   getPushSubscriptionsForAccount,
   prunePushSubscriptionsByEndpoints,
   readStore,
@@ -77,6 +78,23 @@ export async function notify(
  * the caller can pass an `excludeAccountId` to avoid notifying the actor.
  * Never throws.
  */
+/** The push half of notify(), without the per-recipient store write. */
+async function pushOnly(recipientAccountId: string, payload: NotifyPayload): Promise<void> {
+  try {
+    const subs = await getPushSubscriptionsForAccount(recipientAccountId)
+    if (subs.length === 0) return
+    const { deadEndpoints } = await sendPush(subs, {
+      title: payload.title,
+      body: payload.body,
+      href: payload.href,
+      tag: payload.type,
+    })
+    if (deadEndpoints.length > 0) await prunePushSubscriptionsByEndpoints(deadEndpoints)
+  } catch (err) {
+    console.warn('[notifyMany] push failed (non-fatal):', err)
+  }
+}
+
 export async function notifyMany(
   recipientAccountIds: string[],
   payload: NotifyPayload,
@@ -99,8 +117,30 @@ export async function notifyMany(
       if (recipients.length === 0) return
     }
 
-    // Fan out. Each notify() already swallows its own errors.
-    await Promise.all(recipients.map(id => notify(id, payload)))
+    // Store every row in ONE write. The old path called notify() per person,
+    // and each of those rewrites the whole store blob — a 200-member fan-out
+    // was 200 concurrent CAS writes racing one revision key, most of which
+    // lost, retried six times, threw, and were silently swallowed.
+    try {
+      await addNotifications(
+        recipients.map(id => ({
+          accountId: id,
+          type: payload.type,
+          title: payload.title,
+          body: payload.body,
+          href: payload.href,
+        })),
+      )
+    } catch (err) {
+      console.warn('[notifyMany] batched store write failed (non-fatal):', err)
+    }
+
+    // Push is per-subscription and doesn't touch the store, so it can stay
+    // parallel — but bound the concurrency so we don't open 200 sockets.
+    const CHUNK = 20
+    for (let i = 0; i < recipients.length; i += CHUNK) {
+      await Promise.all(recipients.slice(i, i + CHUNK).map(id => pushOnly(id, payload)))
+    }
   } catch (err) {
     console.warn('[notifyMany] broadcast failed (non-fatal):', err)
   }

@@ -2396,6 +2396,52 @@ const NOTIFICATIONS_PER_ACCOUNT_CAP = 50
  * Append a notification for one recipient, then trim that account back to the
  * newest NOTIFICATIONS_PER_ACCOUNT_CAP rows. Returns the created row.
  */
+/**
+ * Append notifications for MANY accounts in a single CAS write.
+ *
+ * The per-recipient path (addNotification) rewrites the entire store blob
+ * once per person. Approving one claim fans out to every member, so a
+ * 200-member team meant 200 concurrent full-blob writes racing one revision
+ * key — most lose, retry 6x, throw, and get swallowed. This does it once.
+ */
+export async function addNotifications(
+  rows: Array<{
+    accountId: string
+    type: AppNotification['type']
+    title: string
+    body: string
+    href?: string
+  }>,
+): Promise<number> {
+  if (rows.length === 0) return 0
+  const now = new Date().toISOString()
+  const built: AppNotification[] = rows.map((r, i) => ({
+    id: `ntf_${Date.now()}_${i}_${Math.random().toString(36).slice(2, 8)}`,
+    accountId: r.accountId,
+    type: r.type,
+    title: r.title,
+    body: r.body,
+    href: r.href,
+    createdAt: now,
+  }))
+  return mutateStore(store => {
+    store.notifications.push(...built)
+    // Trim each touched account to the newest CAP rows.
+    for (const accountId of new Set(built.map(b => b.accountId))) {
+      const mine = store.notifications
+        .filter(n => n.accountId === accountId)
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      if (mine.length > NOTIFICATIONS_PER_ACCOUNT_CAP) {
+        const keep = new Set(mine.slice(0, NOTIFICATIONS_PER_ACCOUNT_CAP).map(n => n.id))
+        store.notifications = store.notifications.filter(
+          n => n.accountId !== accountId || keep.has(n.id),
+        )
+      }
+    }
+    return built.length
+  })
+}
+
 export async function addNotification(input: {
   accountId: string
   type: AppNotification['type']
