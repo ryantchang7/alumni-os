@@ -375,7 +375,7 @@ function MemberBookPageInner() {
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
       <BookHeader
-        members={stats.members + parents.length}
+        members={stats.members}
         earliestYear={stats.earliestYear}
         latestYear={stats.latestYear}
       />
@@ -430,7 +430,7 @@ function MemberBookPageInner() {
                   : 'bg-white/10 text-white/75'
               }`}
             >
-              {stats.members + parents.length}
+              {stats.members}
             </span>
           </button>
           <button
