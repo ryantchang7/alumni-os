@@ -14,6 +14,12 @@ import { NextResponse } from 'next/server'
 import { requireApprovedMember } from '@/lib/auth/guards'
 import { getTeamBySlug, readStore } from '@/lib/store/local-store'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
+import { memberBookEntries, getMemberById } from '@/lib/member-book/data'
+import {
+  getPublicMembers,
+  getMemberStartYear,
+  getMemberEndYear,
+} from '@/lib/member-book/helpers'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -46,9 +52,22 @@ export async function GET() {
       m.personId === viewerPersonId &&
       (m.memberRole === 'current_player' || m.memberRole === 'alumni'),
   )
-  const myStart = mine?.rosterStartYear ?? mine?.rosterEndYear
-  const myEnd = mine?.rosterEndYear ?? mine?.rosterStartYear
-  if (!mine || !myStart || !myEnd) {
+  // The store only holds rosters from 2000 onward, so deriving the viewer's
+  // era from it alone left every pre-2000 alum — most of the Member Book —
+  // with no era at all. Fall back to their Member Book record.
+  const viewerPerson = store.people.find(p => p.id === viewerPersonId)
+  const viewerBookEntry = viewerPerson
+    ? findBookEntryForTeamStorePerson(viewerPerson.canonicalName)
+    : null
+  const myStart =
+    mine?.rosterStartYear ??
+    mine?.rosterEndYear ??
+    (viewerBookEntry ? getMemberStartYear(viewerBookEntry) ?? undefined : undefined)
+  const myEnd =
+    mine?.rosterEndYear ??
+    mine?.rosterStartYear ??
+    (viewerBookEntry ? getMemberEndYear(viewerBookEntry) ?? undefined : undefined)
+  if (!myStart || !myEnd) {
     return NextResponse.json({ eraLabel: null, hereCount: 0, teammates: [] })
   }
 
@@ -93,6 +112,37 @@ export async function GET() {
       claimed: !!account,
       accountId: account?.id ?? null,
       bookId: bookEntry?.id ?? null,
+    })
+  }
+
+  // Now the Member Book — 346 people with letter years going back to 1930,
+  // versus 81 in the store. Without this, an alum from 1994 saw an empty
+  // section: the one feature that is personal on day one was dark for the
+  // majority of the people being emailed.
+  const seenBookIds = new Set(
+    teammates.map(t => t.bookId).filter((b): b is string => !!b),
+  )
+  const viewerBookId = viewerBookEntry?.id ?? null
+  for (const entry of getPublicMembers(memberBookEntries)) {
+    if (entry.id === viewerBookId) continue
+    if (seenBookIds.has(entry.id)) continue
+    const start = getMemberStartYear(entry)
+    const end = getMemberEndYear(entry)
+    if (!start || !end) continue
+    const overlapStart = Math.max(start, myStart)
+    const overlapEnd = Math.min(end, myEnd)
+    if (overlapStart > overlapEnd) continue
+    seenBookIds.add(entry.id)
+    teammates.push({
+      personId: '',
+      name: entry.displayName,
+      photoUrl: null,
+      classLabel: entry.profile.classYearEstimate ?? null,
+      overlapStart,
+      overlapEnd,
+      claimed: false,
+      accountId: null,
+      bookId: entry.id,
     })
   }
 
