@@ -218,11 +218,11 @@ function AlumniProfileInner() {
 
   async function handleSave() {
     if (!profile) return
+    // Save whatever they've filled in. This used to hard-block on eight
+    // fields (down to handicap and employer), so a member following the
+    // welcome email's "just set your city" got an error instead of a save —
+    // which is why almost no profile on the site has a city.
     const missing = requiredMissing()
-    if (missing.length > 0) {
-      setError(`Please fill in: ${missing.join(', ')}.`)
-      return
-    }
     setSaving(true)
     setSaved(false)
     try {
@@ -271,6 +271,11 @@ function AlumniProfileInner() {
       })
       if (!res.ok) throw new Error('Save failed')
       setSaved(true)
+      setError(
+        missing.length > 0
+          ? `Saved. Still to add when you get a chance: ${missing.join(', ')}.`
+          : null,
+      )
     } catch {
       setError('Failed to save. Please try again.')
     } finally {

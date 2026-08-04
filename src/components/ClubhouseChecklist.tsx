@@ -12,6 +12,8 @@ interface Step {
 }
 
 interface Props {
+  /** Linked personId, so CTAs can open the editor directly. */
+  personId?: string | null
   hasCity: boolean
   hasAvailability: boolean
   hasFirstPost: boolean
@@ -32,7 +34,13 @@ export default function ClubhouseChecklist({
   hasCity,
   hasAvailability,
   hasFirstPost,
+  personId,
 }: Props) {
+  // The editor itself, not the /account/profile dashboard — that was an extra
+  // hop between 'Set city' and an actual input.
+  const profileHref = personId
+    ? `/alumni/profile/${personId}?teamSlug=penn-mens-golf`
+    : '/account/profile'
   const [dismissed, setDismissed] = useState<boolean | null>(null)
 
   useEffect(() => {
@@ -50,13 +58,13 @@ export default function ClubhouseChecklist({
       done: hasCity,
       label: 'Add your city to your profile',
       helper: 'So alumni traveling through can find you.',
-      cta: { href: '/account/profile', label: 'Set city' },
+      cta: { href: profileHref, label: 'Set city' },
     },
     {
       done: hasAvailability,
       label: 'Mark one availability',
       helper: 'Coffee, a round, mentorship, or a warm intro.',
-      cta: { href: '/account/profile', label: 'Set availability' },
+      cta: { href: profileHref, label: 'Set availability' },
     },
     {
       done: hasFirstPost,

@@ -56,6 +56,9 @@ export async function GET() {
 
   return NextResponse.json({
     linked: true,
+    // So the checklist can link straight to the editor instead of bouncing
+    // members through the /account/profile dashboard.
+    personId: session.linkedPersonId,
     hasCity,
     hasAvailability,
     hasFirstPost,

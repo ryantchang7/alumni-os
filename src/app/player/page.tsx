@@ -405,6 +405,7 @@ function WelcomeBanner({ name }: { name: string }) {
 
 interface OnboardingStatus {
   linked: boolean
+  personId?: string | null
   signedIn?: boolean
   pendingClaim?: boolean
   hasCity?: boolean
@@ -627,6 +628,7 @@ function ClubhouseInner() {
               hasCity={!!onboarding.hasCity}
               hasAvailability={!!onboarding.hasAvailability}
               hasFirstPost={!!onboarding.hasFirstPost}
+              personId={onboarding.personId}
             />
           </div>
         )}
