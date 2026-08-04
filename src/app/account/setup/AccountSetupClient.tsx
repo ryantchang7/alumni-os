@@ -76,7 +76,7 @@ export default function AccountSetupClient({
         throw new Error(j.error ?? 'Failed to submit claim')
       }
       const j = await res.json()
-      // New flow: claim is now pending captain review, not auto-linked.
+      // New flow: the claim is queued for review, not auto-linked.
       router.push(`/account/pending?claimId=${j.claimId}`)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')

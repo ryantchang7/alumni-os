@@ -425,7 +425,20 @@ export async function writeStore(store: Store): Promise<void> {
 // revision moved underneath us we re-read and retry. Hot/concurrent write paths
 // use this instead of readStore()+writeStore().
 const REV_KEY = `${REDIS_KEY}:rev`
-const MUTATE_MAX_RETRIES = 6
+const MUTATE_MAX_RETRIES = 8
+
+/**
+ * Every retry lost the race. The caller's change did NOT land, but nothing is
+ * corrupt and trying again is the right move — routes should say so rather
+ * than surfacing a generic 500.
+ */
+export class WriteContentionError extends Error {
+  readonly retryable = true
+  constructor(message: string) {
+    super(message)
+    this.name = 'WriteContentionError'
+  }
+}
 // KEYS[1]=store, KEYS[2]=rev. ARGV[1]=expectedRev, ARGV[2]=storeJson, ARGV[3]=nextRev.
 const CAS_SCRIPT = `
 local cur = redis.call('GET', KEYS[2])
@@ -461,10 +474,14 @@ export async function mutateStore<T>(
       [String(expectedRev), JSON.stringify(store), String(expectedRev + 1)],
     )
     if (Number(ok) === 1) return result
-    // Lost the race — brief backoff, then re-read and re-apply the mutation.
-    await new Promise(r => setTimeout(r, 25 + attempt * 50))
+    // Lost the race — back off, then re-read and re-apply the mutation.
+    // The delay is JITTERED on purpose: a fixed schedule makes every loser of
+    // a race wake at the same moment and collide again, which is exactly the
+    // shape of launch morning (one email, 340 people, one Redis key).
+    const step = 50 + attempt * 50
+    await new Promise(r => setTimeout(r, 25 + attempt * 50 + Math.floor(Math.random() * step)))
   }
-  throw new Error(
+  throw new WriteContentionError(
     `mutateStore: write contention — failed to commit after ${MUTATE_MAX_RETRIES} attempts`,
   )
 }

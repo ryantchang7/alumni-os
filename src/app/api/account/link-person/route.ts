@@ -14,6 +14,7 @@ import {
   getTeamBySlug,
   createProfileClaimRequest,
   getAccountById,
+  WriteContentionError,
 } from '@/lib/store/local-store'
 import { getMemberById } from '@/lib/member-book/data'
 import { isPublicMember } from '@/lib/member-book/helpers'
@@ -43,6 +44,24 @@ function storeNormalizeName(name: string): string {
 }
 
 export async function POST(request: Request) {
+  try {
+    return await handleClaim(request)
+  } catch (e) {
+    // Claiming is THE action of launch day and every claim is one CAS write
+    // against a single key. If a burst of alumni lose every retry, say so and
+    // let them tap again — a generic 500 reads as "the site is broken".
+    if (e instanceof WriteContentionError) {
+      console.warn('[claim] write contention:', e.message)
+      return NextResponse.json(
+        { error: 'Lots of people are joining at once. Tap claim again in a moment.', retryable: true },
+        { status: 503 },
+      )
+    }
+    throw e
+  }
+}
+
+async function handleClaim(request: Request) {
   const session = await auth()
   if (!session?.accountId) {
     return NextResponse.json({ error: 'Sign in required' }, { status: 401 })
