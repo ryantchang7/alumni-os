@@ -6,6 +6,7 @@
  */
 
 import Link from 'next/link'
+import { getApprovalState } from '@/lib/access/approval'
 import { Lock } from 'lucide-react'
 import { auth } from '@/auth'
 import {
@@ -33,6 +34,7 @@ export default async function LockerRoomPage() {
   const emptyHeadline = await getSiteContentOrDefault('locker-room.empty-headline')
   const emptyBlurb = await getSiteContentOrDefault('locker-room.empty-blurb')
 
+  const approval = await getApprovalState()
   const signedIn = !!session?.accountId
   let canSee = false
   let store: Awaited<ReturnType<typeof readStore>> | null = null
@@ -40,6 +42,45 @@ export default async function LockerRoomPage() {
     const account = await getAccountById(session!.accountId!)
     store = await readStore()
     canSee = canSeeLockerRoomForAccount(account, store, team.id)
+  }
+
+  // Coaches and family are deliberately outside this room. They're already
+  // approved members, so the generic 'claim your card' gate would be telling
+  // them to do something they've done — say plainly that it isn't for them.
+  const excludedByRole =
+    approval.memberRole === 'coach' || approval.memberRole === 'parent'
+
+  if (excludedByRole) {
+    return (
+      <div className="min-h-screen bg-[#fbf9f6]">
+        <LockerRoomHero crestImage={crestImage} showPostCta={false} />
+        <div className="max-w-[820px] mx-auto px-6 sm:px-8 py-12 sm:py-16">
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.45)] rounded-2xl p-8 sm:p-12 text-center"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 10px 28px rgba(10,22,40,0.06)' }}
+          >
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-3">
+              Players &amp; alumni only · Locker Room
+            </p>
+            <h2 className="text-[#0a1628] text-3xl sm:text-4xl font-medium font-heading mb-3">
+              This one stays between the guys.
+            </h2>
+            <p className="text-[14px] text-[#3d4a5c] leading-relaxed max-w-md mx-auto">
+              The Locker Room is kept to current players and alumni so they can
+              talk freely. Everything else in the Clubhouse is yours.
+            </p>
+            <div className="mt-7 pt-6 border-t border-[rgba(180,168,150,0.3)] flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              <Link href="/moments" className="text-[12px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors">
+                Go to Moments &rarr;
+              </Link>
+              <Link href="/team-room" className="text-[12px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors">
+                Follow the team &rarr;
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (!signedIn || !canSee) {
@@ -50,7 +91,7 @@ export default async function LockerRoomPage() {
           signedIn={signedIn}
           eyebrow="Players &amp; alumni only · Locker Room"
           headline="This one stays between us."
-          blurb="The Locker Room is for current players and alumni — coaches and family are intentionally not in here. Sign in with your Penn email and claim your card to see what&rsquo;s on the wall."
+          blurb="The Locker Room is for current players and alumni. Sign in and claim your card to see what&rsquo;s on the wall."
         />
       </div>
     )

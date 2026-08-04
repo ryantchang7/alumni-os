@@ -20,6 +20,7 @@ export type BadgeId =
   | 'founding-member'
   | 'member'
   | 'parent'
+  | 'coach'
 
 export interface BadgeMeta {
   id: BadgeId
@@ -104,9 +105,22 @@ export const BADGE_META: Record<BadgeId, BadgeMeta & { glow?: BadgeGlow }> = {
         '0 0 0 1px rgba(153,0,0,0.14), 0 1px 2px rgba(10,22,40,0.08), 0 3px 10px rgba(153,0,0,0.12)',
     },
   },
+  // Coaching staff — navy, so it reads as program authority, not a supporter.
+  coach: {
+    id: 'coach',
+    label: 'Coach',
+    tooltip: "Penn Men's Golf coaching staff",
+    className:
+      'bg-gradient-to-br from-[#0a1628]/12 to-[#0a1628]/6 text-[#0a1628] border border-[#0a1628]/35',
+    icon: 'shield',
+    glow: {
+      boxShadow:
+        '0 0 0 1px rgba(10,22,40,0.14), 0 1px 2px rgba(10,22,40,0.08), 0 3px 10px rgba(10,22,40,0.12)',
+    },
+  },
 }
 
-const PRIORITY: BadgeId[] = ['founder', 'captain', 'founding-member', 'member', 'parent']
+const PRIORITY: BadgeId[] = ['founder', 'captain', 'coach', 'founding-member', 'member', 'parent']
 
 export const FOUNDER_EMAILS = new Set<string>([
   'rtchang@sas.upenn.edu',
@@ -175,5 +189,6 @@ export function badgesForPerson(
   // Joining as family is free, so the 'parent' badge can't come from a paid
   // tier alone — otherwise family members render with no role signal at all.
   if (memberRole === 'parent' && !badges.includes('parent')) badges.push('parent')
+  if (memberRole === 'coach' && !badges.includes('coach')) badges.push('coach')
   return badges
 }

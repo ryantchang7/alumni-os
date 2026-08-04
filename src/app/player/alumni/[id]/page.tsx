@@ -57,6 +57,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
   const isCurrentPlayer = membership.memberRole === 'current_player'
   // Family & affiliates aren't alumni — don't label them as such.
   const isFamily = membership.memberRole === 'parent'
+  const isCoach = membership.memberRole === 'coach'
 
   const rosterYears =
     membership.rosterStartYear && membership.rosterEndYear
@@ -124,7 +125,13 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                     ? 'text-[#f4b8b8] bg-[#990000]/25 border-[#990000]/45'
                     : 'text-gold bg-gold/15 border-gold/30'
               }`}>
-                {isCurrentPlayer ? 'Current Player' : isFamily ? 'Penn Golf Family' : 'Penn Golf Alumni'}
+                {isCurrentPlayer
+                  ? 'Current Player'
+                  : isCoach
+                    ? 'Penn Golf Coach'
+                    : isFamily
+                      ? 'Penn Golf Family'
+                      : 'Penn Golf Alumni'}
               </span>
 
               {/* Name */}
@@ -176,7 +183,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             >
               <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#fdfcf9]">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
-                  {isFamily ? 'Family & Affiliate' : 'Penn Golf'}
+                  {isFamily ? 'Family & Affiliate' : isCoach ? 'Coaching Staff' : 'Penn Golf'}
                 </p>
               </div>
               <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">

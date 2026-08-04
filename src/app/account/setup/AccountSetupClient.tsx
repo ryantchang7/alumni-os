@@ -116,7 +116,7 @@ export default function AccountSetupClient({
             <p
               className="text-white/70 text-[15px] sm:text-base mt-4 max-w-xl leading-relaxed font-heading"
             >
-              <span className="text-[#c8a84b]">{claimedCount}</span> of your foursome have already
+              <span className="text-[#c8a84b]">{claimedCount}</span> from the Penn Golf family have already
               checked in
               {monthCount > 0 ? (
                 <>
@@ -129,6 +129,14 @@ export default function AccountSetupClient({
           <p className="text-white/70 text-[13px] mt-4 max-w-xl leading-relaxed">
             {signedInEmail ? <>Signed in as {signedInEmail}. </> : null}
             Search by name, hometown, or class year. Once you claim, edit your role and how you can help.
+          </p>
+          {/* Family and affiliates aren't in the player registry — say so here
+              instead of only after a search returns nothing. */}
+          <p className="text-white/60 text-[12.5px] mt-2.5 max-w-xl leading-relaxed">
+            Family, parent, or affiliate of the program?{' '}
+            <Link href="/parent-signup" className="text-[#c8a84b] font-medium hover:underline">
+              Join through the family door &rarr;
+            </Link>
           </p>
         </div>
       </div>
