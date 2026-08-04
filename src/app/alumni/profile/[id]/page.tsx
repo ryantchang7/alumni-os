@@ -80,7 +80,7 @@ const HELP_TOPIC_OPTIONS = [
 // Room tiles and the Member Book ?industry= filter.
 
 const CONTACT_PREF_LABELS: Record<string, string> = {
-  team_intro: 'Have the captain make an introduction',
+  team_intro: 'Have someone make an introduction for me',
   email_ok: 'Email is fine',
   linkedin_ok: 'LinkedIn message is fine',
   not_available: 'Not available right now',

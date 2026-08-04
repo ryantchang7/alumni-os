@@ -107,7 +107,7 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-6 space-y-2">
             <li>Only approved members of the Clubhouse can see member profiles, the Member Map, gatherings, Open Requests, Moments, and chat threads.</li>
             <li>The Member Book may list names, years, and hometowns from public roster and historical sources before a card is claimed.</li>
-            <li>You decide how you want other members to reach you (email, intro through the captain, LinkedIn, or not available right now).</li>
+            <li>You decide how you want other members to reach you (email, an introduction passed along for you, LinkedIn, or not available right now).</li>
             <li>Captain and Operator roles can see the admin queue (pending claims, roster edits). They cannot read your private chats.</li>
           </ul>
 

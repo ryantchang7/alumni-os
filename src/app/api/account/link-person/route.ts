@@ -88,7 +88,7 @@ export async function POST(request: Request) {
     )
     if (already) {
       return NextResponse.json(
-        { error: 'You already have a claim in front of the captain', claimId: already.id },
+        { error: 'You already have a claim in the queue', claimId: already.id },
         { status: 409 },
       )
     }
@@ -209,7 +209,7 @@ export async function POST(request: Request) {
   if (existing) {
     return NextResponse.json(
       {
-        error: 'You already have a claim in front of the captain',
+        error: 'You already have a claim in the queue',
         claimId: existing.id,
       },
       { status: 409 },

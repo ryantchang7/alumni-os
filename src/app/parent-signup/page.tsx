@@ -198,7 +198,7 @@ export default function ParentSignupPage() {
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30 focus:border-[#c8a84b]"
               />
               <p className="text-[11px] text-ink-muted mt-1.5">
-                A short line so the captain knows who you are. Shown on your
+                A short line so we know who you are. Shown on your
                 Member Book card.
               </p>
             </div>

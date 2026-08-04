@@ -587,7 +587,7 @@ export default function SupportClient({ status }: Props) {
           <p className="text-[11.5px] text-ink-muted max-w-md mx-auto leading-relaxed">
             Payments processed by Stripe. Penn Men&rsquo;s Golf is not a registered
             501(c)(3), so contributions are not tax-deductible. The 70% transfer to
-            the program is reconciled quarterly by the captain.{' '}
+            the program is reconciled quarterly by the Clubhouse.{' '}
             <Link href="/player" className="text-[#0a1628] hover:underline">
               Back to the Clubhouse
             </Link>

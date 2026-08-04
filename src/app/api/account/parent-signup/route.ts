@@ -141,7 +141,7 @@ export async function POST(request: Request) {
 
   if (result.conflict) {
     return NextResponse.json(
-      { error: 'You already have a request in front of the captain.', claimId: result.claimId },
+      { error: 'You already have a request in the queue.', claimId: result.claimId },
       { status: 409 },
     )
   }

@@ -606,8 +606,8 @@ function ClubhouseInner() {
                     One step left
                   </p>
                   <p className="text-sm text-white/80 mt-1">
-                    Find your name and claim your card — the captain approves every
-                    member by hand.
+                    Find your name and claim your card — every claim is reviewed by
+                    hand.
                   </p>
                 </div>
                 <Link

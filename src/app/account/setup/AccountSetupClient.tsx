@@ -41,7 +41,7 @@ export default function AccountSetupClient({
   const [error, setError] = useState<string | null>(() =>
     typeof window !== 'undefined' &&
     new URLSearchParams(window.location.search).get('error') === 'already-claimed'
-      ? 'That card is already linked to another account. If it should be yours, email rtchang@sas.upenn.edu and the captain will sort it out.'
+      ? 'That card is already linked to another account. If it should be yours, email rtchang@sas.upenn.edu and we will sort it out.'
       : null,
   )
 

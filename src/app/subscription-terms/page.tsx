@@ -46,7 +46,7 @@ export default function SubscriptionTermsPage() {
             How funds are used
           </h2>
           <p>
-            Seventy percent (70%) of every membership payment and one-time contribution is directed to Penn Men&rsquo;s Golf. The remaining thirty percent (30%) covers Clubhouse platform and operating costs (hosting, storage, email delivery, payment processing, and related services). The 70% transfer is reconciled quarterly by the captain.
+            Seventy percent (70%) of every membership payment and one-time contribution is directed to Penn Men&rsquo;s Golf. The remaining thirty percent (30%) covers Clubhouse platform and operating costs (hosting, storage, email delivery, payment processing, and related services). The 70% transfer is reconciled quarterly by the Clubhouse.
           </p>
           <p>
             Penn Men&rsquo;s Golf is not a registered 501(c)(3), so contributions are not tax-deductible.
