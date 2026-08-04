@@ -186,7 +186,7 @@ const CLIPS = [
     id: 'home-to-hof',
     start: '/player',
     steps: async (p) => {
-      await scrollBottom(p, 6800)
+      await scrollBottom(p, 7250)
       await p.waitForTimeout(700)
       const clicked = await moveClick(p, p.getByRole('link', { name: /visit the hall of fame/i }))
       if (!clicked) await moveClick(p, p.getByText(/visit the hall of fame/i))
@@ -281,11 +281,13 @@ const CLIPS = [
     },
   },
   {
-    // team room: full scroll (updates, roster, schedule, alumni) → Ask the Team → modal
+    // team room: full scroll (The Season hub, roster, coaching staff, alumni)
+    // → Ask the Team → modal. The page grew ~43% when The Season landed, so
+    // the scroll gets proportionally longer.
     id: 'teamroom-full',
     start: '/team-room',
     steps: async (p) => {
-      await scrollBottom(p, 7000)
+      await scrollBottom(p, 9800)
       await p.waitForTimeout(600)
       const banner = p.getByRole('link', { name: /ask the team/i }).first()
       const clicked = await moveClick(p, banner)
