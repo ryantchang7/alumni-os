@@ -8,6 +8,7 @@ interface ClaimRequest {
   memberId: string
   personId?: string
   requesterName: string
+  matchHint?: 'strong' | 'weak'
   requesterEmail: string
   requesterAccountId?: string
   pennGolfYears?: string
@@ -120,7 +121,25 @@ export default function ClaimsManager() {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex-1 min-w-0 space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-semibold text-[#0a1628] text-sm">{claim.requesterName}</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-semibold text-[#0a1628] text-sm">{claim.requesterName}</p>
+                {claim.matchHint && (
+                  <span
+                    title={
+                      claim.matchHint === 'strong'
+                        ? 'Google account name matches the Member Book entry'
+                        : "Google account name does NOT match the book entry — check before approving"
+                    }
+                    className={`text-[10px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full border ${
+                      claim.matchHint === 'strong'
+                        ? 'text-[#2d6a4f] bg-[#2d6a4f]/10 border-[#2d6a4f]/30'
+                        : 'text-[#990000] bg-[#990000]/10 border-[#990000]/30'
+                    }`}
+                  >
+                    {claim.matchHint === 'strong' ? 'Name matches' : 'Name mismatch'}
+                  </span>
+                )}
+              </div>
               <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${STATUS_STYLES[claim.status]}`}>
                 {claim.status}
               </span>

@@ -250,6 +250,10 @@ export interface ClubhouseProfileClaimRequest {
    * approval handler can link the account without re-doing the bridge. */
   personId?: string
   requesterName: string
+  /** 'strong' when the Google account name matches the book entry, else
+   *  'weak'. Computed at claim time; shown in the approval queue so bulk
+   *  approve is a judgment rather than a coin flip. */
+  matchHint?: 'strong' | 'weak'
   requesterEmail: string
   /** Account id of the signed-in claimer. Present for the new captain-
    * gated flow; absent for legacy public-form claims. */

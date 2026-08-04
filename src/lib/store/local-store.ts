@@ -1439,6 +1439,7 @@ export async function createProfileClaimRequest(input: {
   requesterAccountId?: string
   pennGolfYears?: string
   note?: string
+  matchHint?: 'strong' | 'weak'
 }): Promise<ClubhouseProfileClaimRequest> {
   // CAS-guarded: launch traffic can file claims concurrently.
   return mutateStore(store => {
@@ -1453,6 +1454,7 @@ export async function createProfileClaimRequest(input: {
       requesterAccountId: input.requesterAccountId,
       pennGolfYears: input.pennGolfYears?.trim() || undefined,
       note: input.note?.trim() || undefined,
+      matchHint: input.matchHint,
       status: 'pending',
       createdAt: now,
       updatedAt: now,

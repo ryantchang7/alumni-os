@@ -15,6 +15,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { checkCronAuth } from '@/lib/cron-auth'
 import { deriveClassLabel } from '@/lib/class-year'
+import { alertFounders } from '@/lib/ops/alert'
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000
 
@@ -29,7 +30,7 @@ function formatWeekOf(now: Date): string {
   return `Week of ${fmt(start)}–${fmt(now)}`
 }
 
-export async function GET(req: NextRequest) {
+async function runJob(req: NextRequest) {
   if (!checkCronAuth(req)) return unauthorized()
 
   const teamSlug = req.nextUrl.searchParams.get('teamSlug') ?? 'penn-mens-golf'
@@ -178,4 +179,18 @@ export async function GET(req: NextRequest) {
     skipped: skipped.length,
     errors,
   })
+}
+
+/**
+ * Alert on failure. These ran into a Vercel log nobody reads — which is how
+ * the news feed sat dead for a month. The digest is the only recurring reason
+ * anyone returns, so silence there is expensive.
+ */
+export async function GET(req: NextRequest) {
+  try {
+    return await runJob(req)
+  } catch (e) {
+    await alertFounders('weekly digest', String(e instanceof Error ? e.stack ?? e.message : e))
+    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 })
+  }
 }

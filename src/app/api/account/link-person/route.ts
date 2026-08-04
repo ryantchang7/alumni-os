@@ -224,6 +224,7 @@ export async function POST(request: Request) {
     requesterName,
     requesterEmail: account.email,
     requesterAccountId: session.accountId,
+    matchHint: matchesNameLoosely(account.name, entry.displayName) ? 'strong' : 'weak',
   })
 
   // Send captain notification. Awaited so the serverless function doesn't

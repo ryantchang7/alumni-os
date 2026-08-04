@@ -17,6 +17,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireFounder } from '@/lib/auth/guards'
 import { writeBackupSnapshot } from '@/lib/store/local-store'
 import { checkCronAuth } from '@/lib/cron-auth'
+import { alertFounders } from '@/lib/ops/alert'
 
 export async function GET(req: NextRequest) {
   // Either gate is sufficient. Check the cron secret first (cheap, header-only),
@@ -39,6 +40,7 @@ export async function GET(req: NextRequest) {
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Backup failed'
     console.error('[internal/export] snapshot failed:', msg)
+    await alertFounders('daily backup', msg)
     return NextResponse.json({ error: msg }, { status: 500 })
   }
 }

@@ -11,6 +11,7 @@ import { checkCronAuth } from '@/lib/cron-auth'
 import { readStore, getTeamBySlug } from '@/lib/store/local-store'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import { notifyMany } from '@/lib/notifications/notify'
+import { alertFounders } from '@/lib/ops/alert'
 
 const ROSTER_URL = 'https://pennathletics.com/sports/mens-golf/roster'
 
@@ -31,6 +32,7 @@ export async function GET(request: NextRequest) {
     if (!res.ok) throw new Error(`roster page ${res.status}`)
     html = await res.text()
   } catch (e) {
+    await alertFounders('roster-check', `Could not fetch roster: ${String(e)}`)
     return NextResponse.json(
       { ok: false, error: `Could not fetch roster: ${String(e)}` },
       { status: 502 },
@@ -45,6 +47,10 @@ export async function GET(request: NextRequest) {
     ),
   ]
   if (officialNames.length === 0) {
+    await alertFounders(
+      'roster-check',
+      'Roster parse produced zero names — pennathletics markup likely changed.',
+    )
     return NextResponse.json(
       { ok: false, error: 'Roster parse produced zero names — page layout may have changed.' },
       { status: 502 },

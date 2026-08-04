@@ -10,8 +10,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { checkCronAuth } from '@/lib/cron-auth'
 import { requireFounder } from '@/lib/auth/guards'
+import { alertFounders } from '@/lib/ops/alert'
 
-export async function GET(req: NextRequest) {
+async function runJob(req: NextRequest) {
   // Cron secret OR a founder session — so news can be pulled on demand when
   // Penn Athletics posts something, instead of waiting for the daily run.
   if (!checkCronAuth(req)) {
@@ -42,4 +43,18 @@ export async function GET(req: NextRequest) {
     updated,
     total,
   })
+}
+
+/**
+ * Alert on failure. These ran into a Vercel log nobody reads — which is how
+ * the news feed sat dead for a month. The digest is the only recurring reason
+ * anyone returns, so silence there is expensive.
+ */
+export async function GET(req: NextRequest) {
+  try {
+    return await runJob(req)
+  } catch (e) {
+    await alertFounders('news refresh', String(e instanceof Error ? e.stack ?? e.message : e))
+    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 })
+  }
 }
