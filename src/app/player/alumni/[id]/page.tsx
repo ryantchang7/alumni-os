@@ -66,6 +66,16 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
         ? `${membership.rosterStartYear}`
         : null
 
+  // Every row in the identity panel is conditional, so for a coach (no roster
+  // years, no class) it rendered as an empty titled box.
+  const hasIdentityRows = !!(
+    rosterYears ||
+    membership.classLabel ||
+    (isFamily && membership.parentRelationship) ||
+    (viewerIsApproved && membership.hometown) ||
+    membership.highSchool
+  )
+
   const subtitle = isCurrentPlayer
     ? [membership.classYearEstimate?.split(' / ')[0] ?? membership.classLabel, 'Penn Golf']
         .filter(Boolean).join(' · ')
@@ -177,6 +187,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
           {/* Left: Penn Golf identity + claim */}
           <div className="space-y-4">
 
+            {hasIdentityRows && (
             <div
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
               style={{ boxShadow: '0 1px 4px rgba(10,22,40,0.05)' }}
@@ -219,6 +230,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                 )}
               </dl>
             </div>
+            )}
 
             {/* Unclaimed — direct visitors to the Member Book / sign-in flow */}
             {unclaimed && (
@@ -429,7 +441,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                     </dl>
                   ) : (
                     <p className="px-5 py-4 text-[12.5px] text-ink-muted italic">
-                      {person.canonicalName.split(' ')[0]} hasn&rsquo;t added contact details yet. Use the request buttons above to start a private conversation.
+                      {person.canonicalName.split(' ')[0]}{' '}hasn&rsquo;t added contact details yet. Use the request buttons above to start a private conversation.
                     </p>
                   )
                 ) : (
