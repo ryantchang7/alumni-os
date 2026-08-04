@@ -173,7 +173,8 @@ export async function DELETE(_req: Request, ctx: Ctx) {
   if (!session?.accountId) {
     return NextResponse.json({ error: 'Sign in required' }, { status: 401 })
   }
-  const ok = await deleteMoment(id, session.accountId)
+  const viewerEmail = (session.user?.email ?? '').toLowerCase().trim()
+  const ok = await deleteMoment(id, session.accountId, FOUNDER_EMAILS.has(viewerEmail))
   if (!ok) {
     return NextResponse.json({ error: 'Not found or not yours' }, { status: 404 })
   }

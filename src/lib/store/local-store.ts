@@ -1699,16 +1699,19 @@ export async function toggleMomentFeatured(
 export async function deleteMoment(
   momentId: string,
   byAccountId: string,
+  allowAnyPoster = false,
 ): Promise<boolean> {
-  // Only the poster can soft-delete their own moment (admin removal is a
-  // separate path that doesn't go through this fn).
-  const store = await readStore()
-  const idx = store.moments.findIndex((m) => m.id === momentId)
-  if (idx === -1) return false
-  if (store.moments[idx].postedByAccountId !== byAccountId) return false
-  store.moments[idx] = { ...store.moments[idx], status: 'removed' }
-  await writeStore(store)
-  return true
+  // The poster can take their own moment down. The founder can too — the
+  // "admin removal is a separate path" this used to point at never existed,
+  // so the only way to remove someone else's post was the database.
+  const res = await mutateStore(store => {
+    const idx = store.moments.findIndex((m) => m.id === momentId)
+    if (idx === -1) return false
+    if (!allowAnyPoster && store.moments[idx].postedByAccountId !== byAccountId) return false
+    store.moments[idx] = { ...store.moments[idx], status: 'removed' }
+    return true
+  })
+  return res === true
 }
 
 /** Edit your own moment — caption, tags, and/or media. CAS-guarded;
@@ -2070,7 +2073,12 @@ export async function getRecentTeamNewsItems(
 
 export async function getAllLinkedAccountsForTeam(teamId: string): Promise<Account[]> {
   const store = await readStore()
-  return store.accounts.filter(a => a.teamId === teamId && a.linkedPersonId)
+  // Honor the community-updates mute. The weekly digest is a community
+  // broadcast, but it used to ignore this flag entirely — so muting the bell
+  // still left you receiving 52 emails a year.
+  return store.accounts.filter(
+    a => a.teamId === teamId && a.linkedPersonId && a.mutedCommunityNotifications !== true,
+  )
 }
 
 /**

@@ -344,13 +344,23 @@ export default async function TheCoursePage() {
                 Pick a date, pick a course — alumni and current players in your city will see it and ask in.
               </p>
             </div>
-            <Link
-              href="/the-course/host"
-              data-testid="host-a-round"
-              className="bg-[#c8a84b] hover:bg-[#d4b75a] text-[#0a1628] text-[13px] font-semibold uppercase tracking-[0.14em] px-7 py-3.5 rounded-lg transition-colors whitespace-nowrap"
-            >
-              Host a Round &rarr;
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-2.5 flex-shrink-0">
+              <Link
+                href="/the-course/host"
+                data-testid="host-a-round"
+                className="bg-[#c8a84b] hover:bg-[#d4b75a] text-[#0a1628] text-[13px] font-semibold uppercase tracking-[0.14em] px-7 py-3.5 rounded-lg transition-colors whitespace-nowrap text-center"
+              >
+                Host a Round &rarr;
+              </Link>
+              {/* The traveling-golfer case — the single best reason to open
+                  this site — was only reachable from the account dropdown. */}
+              <Link
+                href="/requests/new"
+                className="border border-white/30 hover:border-white/60 text-white text-[13px] font-semibold uppercase tracking-[0.14em] px-7 py-3.5 rounded-lg transition-colors whitespace-nowrap text-center"
+              >
+                I&rsquo;m in town &rarr;
+              </Link>
+            </div>
           </div>
         </section>
 

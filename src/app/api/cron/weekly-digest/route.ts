@@ -117,13 +117,11 @@ async function runJob(req: NextRequest) {
     clubhouseUrl: `${clubhouseUrl}/player`,
   })
 
+  // Clubhouse activity is what justifies the email. News alone doesn't —
+  // counting it meant a dead week still sent "A quiet week at the Clubhouse"
+  // containing nothing but Penn Athletics headlines.
   const hasContent =
-    newMembers.length +
-      gatherings.length +
-      careerPosts.length +
-      moments.length +
-      newsItems.length >
-    0
+    newMembers.length + gatherings.length + careerPosts.length + moments.length > 0
 
   if (!hasContent) {
     return NextResponse.json({

@@ -754,6 +754,27 @@ function ClubhouseInner() {
           </motion.div>
         )}
 
+        {/* Traveling? The round-finder was buried in the account menu. */}
+        {onboarding?.linked && (
+          <div className="mb-10">
+            <Link
+              href="/requests/new"
+              className="flex items-center justify-between gap-3 bg-white border border-[rgba(180,168,150,0.45)] rounded-xl px-5 py-4 hover:border-[#2d6a4f]/50 transition-colors group"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+            >
+              <p className="text-[13.5px] text-[#3d4a5c] leading-snug min-w-0">
+                <span className="font-semibold text-[#2d6a4f] uppercase tracking-[0.1em] text-[11px] mr-2">
+                  Traveling?
+                </span>
+                Tell the Clubhouse where you&rsquo;ll be — members there can host you for a round.
+              </p>
+              <span className="text-[12.5px] font-semibold text-[#0a1628] whitespace-nowrap group-hover:translate-x-0.5 transition-transform">
+                Post it &rarr;
+              </span>
+            </Link>
+          </div>
+        )}
+
         {/* Scotland Tour — October 2026 */}
         <div className="mb-10 space-y-3">
           <NextEventChip />

@@ -442,7 +442,7 @@ export default function MomentCard({
                 <span className="text-[11px] font-medium">Edit</span>
               </button>
             )}
-            {isOwn && (
+            {(isOwn || isFounder) && (
               <>
                 <button
                   type="button"

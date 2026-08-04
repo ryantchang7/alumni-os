@@ -15,7 +15,7 @@ const MUTED = '#6b6155'
 const SERIF = "Georgia, 'Times New Roman', serif"
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
 
-function shell(inner: string, footerCtaUrl?: string): string {
+function shell(inner: string, footerCtaUrl?: string, unsubscribeUrl?: string): string {
   return `<!doctype html>
 <html><body style="margin:0;padding:0;background:${CREAM};font-family:${SANS};color:${NAVY};">
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${CREAM};padding:40px 16px;">
@@ -30,6 +30,14 @@ function shell(inner: string, footerCtaUrl?: string): string {
               ? `<p style="margin:32px 0 0 0;font-size:11px;color:${MUTED};">
                   Replying to this email goes nowhere. Visit the Clubhouse at
                   <a href="${footerCtaUrl}" style="color:${NAVY};text-decoration:underline;">${footerCtaUrl.replace(/^https?:\/\//, '')}</a>.
+                </p>`
+              : ''
+          }
+          ${
+            unsubscribeUrl
+              ? `<p style="margin:10px 0 0 0;font-size:11px;color:${MUTED};">
+                  Don&rsquo;t want the weekly note?
+                  <a href="${unsubscribeUrl}" style="color:${NAVY};text-decoration:underline;">Turn it off</a>.
                 </p>`
               : ''
           }
@@ -395,7 +403,10 @@ export function renderWeeklyDigest(input: {
     ${sections.join('')}
     <div style="margin:32px 0 0 0;">${btn(input.clubhouseUrl, 'Open the Clubhouse')}</div>
   `
-  return { subject, html: shell(inner, input.clubhouseUrl) }
+  return {
+    subject,
+    html: shell(inner, input.clubhouseUrl, `${input.clubhouseUrl}/account/profile`),
+  }
 }
 
 // ── RSVP confirmation (to the attendee) ─────────────────────────────────────
