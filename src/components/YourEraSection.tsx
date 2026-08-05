@@ -73,7 +73,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
         <h2 className="text-base font-semibold text-[#0a1628]">Your Era</h2>
         {data.eraLabel && (
           <p className="text-[12px] text-ink-muted italic ml-1">
-           , the guys you played with, {data.eraLabel}
+           The guys you played with, {data.eraLabel}
           </p>
         )}
       </div>
