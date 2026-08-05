@@ -195,7 +195,7 @@ export default async function TheCoursePage() {
       }
     }
 
-    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } = await import('@/lib/seed-data/example-gatherings')
+    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering, byGatheringDate } = await import('@/lib/seed-data/example-gatherings')
     rounds = store.clubhouseGatherings
       .filter(
         (g) =>
@@ -205,7 +205,10 @@ export default async function TheCoursePage() {
           !isHiddenGathering(g.id),
       )
       .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) }))
-      .filter(g => !isExpiredExampleGathering(g)) as GatheringData[]
+      .filter(g => !isExpiredExampleGathering(g))
+      // Soonest first. This page reads the store directly, so it doesn't get
+      // the ordering /api/gatherings applies.
+      .sort(byGatheringDate) as GatheringData[]
 
     for (const r of store.clubhouseGatheringRequests) {
       if (r.teamId !== team.id) continue

@@ -46,3 +46,22 @@ export function isExpiredExampleGathering(g: { isExample?: boolean; dateText: st
   const t = Date.parse(g.dateText)
   return !Number.isNaN(t) && t < Date.now() - 24 * 60 * 60 * 1000
 }
+
+/**
+ * Chronological order for anything with a human `dateText`. Unparseable dates
+ * ("Championship Weekend") sort last.
+ *
+ * Lives here because /api/gatherings and /the-course build their lists from
+ * different sources — the API sorted, the page didn't, so the soonest round
+ * was not the first one shown.
+ */
+export function byGatheringDate(
+  a: { dateText: string },
+  b: { dateText: string },
+): number {
+  const key = (d: string) => {
+    const t = Date.parse(d)
+    return Number.isNaN(t) ? Number.MAX_SAFE_INTEGER : t
+  }
+  return key(a.dateText) - key(b.dateText)
+}
