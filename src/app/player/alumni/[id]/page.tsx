@@ -17,6 +17,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
     getPeopleForTeam,
     getTeamMembershipsForTeam,
     getPersonEnrichment,
+  isPersonClaimed,
     getAllLinkedAccountsForTeam,
   } = await import('@/lib/store/local-store')
 
@@ -93,8 +94,12 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
     ? [enrichment.city, enrichment.state].filter(Boolean).join(', ')
     : null
 
+  // Ask the store whether an account is linked, rather than trusting a status
+  // flag that only gets written at approval time and can go stale.
+  const claimedByAccount = await isPersonClaimed(person.id)
   const unclaimed =
     !isCurrentPlayer &&
+    !claimedByAccount &&
     membership.memberStatus !== 'verified' &&
     membership.memberStatus !== 'active'
 

@@ -2395,6 +2395,19 @@ export async function setAccountStripeCustomerId(
   await writeStore(store)
 }
 
+/**
+ * Has anyone actually claimed this person's card?
+ *
+ * The truth is the account link, not `membership.memberStatus`. That flag is
+ * set at approval time, so any record approved before a fix to that path stays
+ * stale forever — which is how an approved parent kept being told to "claim
+ * your card" on his own profile.
+ */
+export async function isPersonClaimed(personId: string): Promise<boolean> {
+  const store = await readStore()
+  return store.accounts.some(a => a.linkedPersonId === personId)
+}
+
 export async function getAccountByStripeCustomerId(
   stripeCustomerId: string,
 ): Promise<Account | undefined> {
