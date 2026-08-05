@@ -26,12 +26,15 @@ export interface GatheringData {
   imageUrl?: string
   mapsUrl?: string
   isExample?: boolean
-  /** Host display name -> Member Book id, for the names we could resolve. */
-  hostBookIds?: Record<string, string>
+  /** Host display name -> profile href, for the names we could resolve.
+   * Family and affiliates have no Member Book slug, so this is a full path
+   * rather than an id. */
+  hostLinks?: Record<string, string>
 }
 
 interface Attendee {
   requestId: string
+  personId: string | null
   bookId: string | null
   name: string
   note?: string
@@ -378,12 +381,12 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
               <span>
                 Hosted by{' '}
                 {gathering.hostName.split(/\s*&\s*/).map((who, i, all) => {
-                  const bookId = gathering.hostBookIds?.[who.trim()]
+                  const href = gathering.hostLinks?.[who.trim()]
                   return (
                     <span key={who + i}>
-                      {bookId ? (
+                      {href ? (
                         <Link
-                          href={`/member-book/${encodeURIComponent(bookId)}`}
+                          href={href}
                           className="text-[#0a1628] hover:underline font-medium"
                         >
                           {who.trim()}
@@ -495,9 +498,13 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                   className={`text-[12.5px] text-[#0a1628] ${isHost ? 'flex items-center justify-between gap-3' : ''}`}
                 >
                   <span className="min-w-0">
-                    {a.bookId ? (
+                    {a.bookId || a.personId ? (
                       <Link
-                        href={`/member-book/${encodeURIComponent(a.bookId)}`}
+                        href={
+                          a.bookId
+                            ? `/member-book/${encodeURIComponent(a.bookId)}`
+                            : `/player/alumni/${encodeURIComponent(a.personId!)}`
+                        }
                         className="hover:underline font-heading"
                       >
                         {a.name}

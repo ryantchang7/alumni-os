@@ -196,7 +196,7 @@ export default async function TheCoursePage() {
       }
     }
 
-    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering, byGatheringDate, resolveHostBookIds } = await import('@/lib/seed-data/example-gatherings')
+    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering, byGatheringDate, resolveHostLinks } = await import('@/lib/seed-data/example-gatherings')
     rounds = store.clubhouseGatherings
       .filter(
         (g) =>
@@ -210,7 +210,7 @@ export default async function TheCoursePage() {
         isExample: isExampleGathering(g.id, g.isExample),
         // Each named host links to their card. hostName is free text and
         // can hold two people, so resolve them individually.
-        hostBookIds: resolveHostBookIds(g.hostName, store.people, name => {
+        hostLinks: resolveHostLinks(g.hostName, store.people, name => {
           const e = findBookEntryForTeamStorePerson(name)
           return e?.id ?? null
         }),

@@ -144,7 +144,7 @@ export default async function NineteenthHolePage() {
       .sort((a, b) => b[1].count - a[1].count)
       .map(([city, s]) => ({ city, ...s }))
 
-    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering, resolveHostBookIds } = await import('@/lib/seed-data/example-gatherings')
+    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering, resolveHostLinks } = await import('@/lib/seed-data/example-gatherings')
     socialGatherings = store.clubhouseGatherings
       .filter(
         g =>
@@ -158,7 +158,7 @@ export default async function NineteenthHolePage() {
         isExample: isExampleGathering(g.id, g.isExample),
         // Each named host links to their card. hostName is free text and
         // can hold two people, so resolve them individually.
-        hostBookIds: resolveHostBookIds(g.hostName, store.people, name => {
+        hostLinks: resolveHostLinks(g.hostName, store.people, name => {
           const e = findBookEntryForTeamStorePerson(name)
           return e?.id ?? null
         }),

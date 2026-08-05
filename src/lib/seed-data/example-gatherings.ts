@@ -74,7 +74,7 @@ export function byGatheringDate(
  * while `hostPersonId` only holds one. Splitting on "&" and matching each name
  * means both hosts are clickable and neither has to have claimed a card.
  */
-export function resolveHostBookIds(
+export function resolveHostLinks(
   hostName: string,
   people: Array<{ id: string; canonicalName: string }>,
   toBookId: (name: string) => string | null,
@@ -87,7 +87,10 @@ export function resolveHostBookIds(
       p => p.canonicalName.trim().toLowerCase() === name.toLowerCase(),
     )
     const bookId = toBookId(person?.canonicalName ?? name)
-    if (bookId) out[name] = bookId
+    if (bookId) out[name] = `/member-book/${encodeURIComponent(bookId)}`
+    // Family and affiliates aren't Member Book entries; their card lives on
+    // the person route instead.
+    else if (person) out[name] = `/player/alumni/${encodeURIComponent(person.id)}`
   }
   return out
 }
