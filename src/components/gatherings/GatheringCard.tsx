@@ -26,6 +26,8 @@ export interface GatheringData {
   imageUrl?: string
   mapsUrl?: string
   isExample?: boolean
+  /** Host display name -> Member Book id, for the names we could resolve. */
+  hostBookIds?: Record<string, string>
 }
 
 interface Attendee {
@@ -34,6 +36,7 @@ interface Attendee {
   name: string
   note?: string
   status: 'requested' | 'accepted' | 'declined' | 'closed'
+  groupLabel?: string
   createdAt: string
 }
 
@@ -197,6 +200,25 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   const [attendees, setAttendees] = useState<Attendee[] | null>(null)
   const liveCount = attendees ? attendees.length : (interestedCount ?? 0) + (sent ? 1 : 0)
 
+  // Bunch the sheet by the host's pairings. Anyone without a group falls into
+  // a single unlabelled block at the end, so a normal RSVP list looks exactly
+  // as it did before groups existed.
+  const groupedAttendees: Array<[string, Attendee[]]> = (() => {
+    if (!attendees) return []
+    const byLabel = new Map<string, Attendee[]>()
+    for (const a of attendees) {
+      const key = a.groupLabel?.trim() || ''
+      const list = byLabel.get(key)
+      if (list) list.push(a)
+      else byLabel.set(key, [a])
+    }
+    return [...byLabel.entries()].sort((x, y) => {
+      if (!x[0]) return 1
+      if (!y[0]) return -1
+      return x[0].localeCompare(y[0], undefined, { numeric: true })
+    })
+  })()
+
   // Approved members can see the attendee list. Re-fetch after a successful
   // RSVP so the user sees themselves on the sheet.
   useEffect(() => {
@@ -353,7 +375,27 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
           {gathering.hostName && (
             <div className="flex items-center gap-1.5 text-xs text-ink-muted">
               <Clock className="w-3 h-3 flex-shrink-0" />
-              <span>Hosted by {gathering.hostName}</span>
+              <span>
+                Hosted by{' '}
+                {gathering.hostName.split(/\s*&\s*/).map((who, i, all) => {
+                  const bookId = gathering.hostBookIds?.[who.trim()]
+                  return (
+                    <span key={who + i}>
+                      {bookId ? (
+                        <Link
+                          href={`/member-book/${encodeURIComponent(bookId)}`}
+                          className="text-[#0a1628] hover:underline font-medium"
+                        >
+                          {who.trim()}
+                        </Link>
+                      ) : (
+                        who.trim()
+                      )}
+                      {i < all.length - 1 ? ' & ' : ''}
+                    </span>
+                  )
+                })}
+              </span>
             </div>
           )}
         </div>
@@ -439,8 +481,15 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-1.5">
               On the sheet
             </p>
+            {groupedAttendees.map(([label, rows]) => (
+            <div key={label || '_'} className={label ? 'mb-2.5 last:mb-0' : ''}>
+            {label && (
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#c8a84b] mb-1">
+                {label}
+              </p>
+            )}
             <ul className={isHost ? 'space-y-1.5' : 'flex flex-wrap gap-x-3 gap-y-1'}>
-              {attendees.map(a => (
+              {rows.map(a => (
                 <li
                   key={a.requestId}
                   className={`text-[12.5px] text-[#0a1628] ${isHost ? 'flex items-center justify-between gap-3' : ''}`}
@@ -485,6 +534,8 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 </li>
               ))}
             </ul>
+            </div>
+            ))}
           </div>
         )}
 

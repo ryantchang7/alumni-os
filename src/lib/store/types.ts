@@ -308,10 +308,17 @@ export interface ClubhouseGatheringRequest {
   /** Account that submitted the RSVP (set when an approved member RSVPs).
    * Lets us de-dup, link to profiles, and email the attendee later. */
   fromAccountId?: string
+  /** Person this row is for, when the host added them directly. Most of the
+   * roster has no account yet, so without this a player on the tee sheet
+   * would be a name with nothing to click. */
+  fromPersonId?: string
   fromName: string
   fromEmail?: string
   note?: string
   status: 'requested' | 'accepted' | 'declined' | 'closed'
+  /** Optional pairing for a round, e.g. "Group 1". Free text so a host can
+   * write whatever the day actually looks like. */
+  groupLabel?: string
   createdAt: string
   updatedAt: string
   respondedAt?: string

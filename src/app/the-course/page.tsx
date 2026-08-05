@@ -15,6 +15,7 @@ import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 import { bucketHandicap, BUCKET_LABELS, BUCKET_SHORT, type HandicapBucket } from '@/lib/handicap'
 
 import type { Metadata } from 'next'
+import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 
 export const metadata: Metadata = {
   title: 'The Course',
@@ -195,7 +196,7 @@ export default async function TheCoursePage() {
       }
     }
 
-    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering, byGatheringDate } = await import('@/lib/seed-data/example-gatherings')
+    const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering, byGatheringDate, resolveHostBookIds } = await import('@/lib/seed-data/example-gatherings')
     rounds = store.clubhouseGatherings
       .filter(
         (g) =>
@@ -204,7 +205,16 @@ export default async function TheCoursePage() {
           g.status !== 'closed' &&
           !isHiddenGathering(g.id),
       )
-      .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) }))
+      .map(g => ({
+        ...g,
+        isExample: isExampleGathering(g.id, g.isExample),
+        // Each named host links to their card. hostName is free text and
+        // can hold two people, so resolve them individually.
+        hostBookIds: resolveHostBookIds(g.hostName, store.people, name => {
+          const e = findBookEntryForTeamStorePerson(name)
+          return e?.id ?? null
+        }),
+      }))
       .filter(g => !isExpiredExampleGathering(g))
       // Soonest first. This page reads the store directly, so it doesn't get
       // the ordering /api/gatherings applies.

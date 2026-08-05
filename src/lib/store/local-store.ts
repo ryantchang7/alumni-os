@@ -1400,6 +1400,62 @@ export async function createClubhouseGatheringRequest(input: {
   return req
 }
 
+/**
+ * Put someone on a gathering's sheet directly, as the host would when they
+ * already know who is playing.
+ *
+ * Unlike an RSVP this needs no account: most of the roster hasn't claimed a
+ * card yet, so the row carries `fromPersonId` and the attendee list resolves
+ * the profile link from that. Idempotent per person so re-running a seed
+ * doesn't double anyone up.
+ */
+export async function addGatheringAttendees(input: {
+  gatheringId: string
+  teamId: string
+  people: Array<{ personId?: string; name: string; groupLabel?: string }>
+}): Promise<ClubhouseGatheringRequest[]> {
+  return mutateStore(store => {
+    const now = new Date().toISOString()
+    const added: ClubhouseGatheringRequest[] = []
+    for (const p of input.people) {
+      const already = store.clubhouseGatheringRequests.find(
+        r =>
+          r.gatheringId === input.gatheringId &&
+          ((p.personId && r.fromPersonId === p.personId) ||
+            r.fromName.trim().toLowerCase() === p.name.trim().toLowerCase()),
+      )
+      if (already) {
+        const idx = store.clubhouseGatheringRequests.indexOf(already)
+        store.clubhouseGatheringRequests[idx] = {
+          ...already,
+          fromPersonId: p.personId ?? already.fromPersonId,
+          groupLabel: p.groupLabel ?? already.groupLabel,
+          status: 'accepted',
+          updatedAt: now,
+        }
+        added.push(store.clubhouseGatheringRequests[idx])
+        continue
+      }
+      const req: ClubhouseGatheringRequest = {
+        id: crypto.randomUUID(),
+        gatheringId: input.gatheringId,
+        teamId: input.teamId,
+        fromPersonId: p.personId,
+        fromName: p.name.trim(),
+        // The host put them here, so they're in — not awaiting a reply.
+        status: 'accepted',
+        groupLabel: p.groupLabel,
+        createdAt: now,
+        updatedAt: now,
+        respondedAt: now,
+      }
+      store.clubhouseGatheringRequests.push(req)
+      added.push(req)
+    }
+    return added
+  })
+}
+
 export async function getSiteContent(slot: string): Promise<string | undefined> {
   const store = await readStore()
   return store.siteContent?.[slot]

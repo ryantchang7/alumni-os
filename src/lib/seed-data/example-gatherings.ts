@@ -65,3 +65,29 @@ export function byGatheringDate(
   }
   return key(a.dateText) - key(b.dateText)
 }
+
+/**
+ * Resolve each name in a gathering's `hostName` to a Member Book id so the
+ * card can link them.
+ *
+ * hostName is free text and often two people ("Ryan Chang & Raymond Chang"),
+ * while `hostPersonId` only holds one. Splitting on "&" and matching each name
+ * means both hosts are clickable and neither has to have claimed a card.
+ */
+export function resolveHostBookIds(
+  hostName: string,
+  people: Array<{ id: string; canonicalName: string }>,
+  toBookId: (name: string) => string | null,
+): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const raw of (hostName || '').split(/\s*&\s*/)) {
+    const name = raw.trim()
+    if (!name) continue
+    const person = people.find(
+      p => p.canonicalName.trim().toLowerCase() === name.toLowerCase(),
+    )
+    const bookId = toBookId(person?.canonicalName ?? name)
+    if (bookId) out[name] = bookId
+  }
+  return out
+}

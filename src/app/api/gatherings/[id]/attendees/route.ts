@@ -21,6 +21,7 @@ interface AttendeeOut {
   name: string
   note?: string
   status: 'requested' | 'accepted' | 'declined' | 'closed'
+  groupLabel?: string
   createdAt: string
 }
 
@@ -48,9 +49,11 @@ export async function GET(_request: Request, { params }: RouteParams) {
     const account = r.fromAccountId
       ? store.accounts.find(a => a.id === r.fromAccountId)
       : undefined
-    const person = account?.linkedPersonId
-      ? store.people.find(p => p.id === account.linkedPersonId)
-      : undefined
+    // Prefer the account's linked person; fall back to the person the host
+    // named directly, which is how the roster gets on a sheet before anyone
+    // has claimed a card.
+    const personId = account?.linkedPersonId ?? r.fromPersonId
+    const person = personId ? store.people.find(p => p.id === personId) : undefined
     const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
     return {
       requestId: r.id,
@@ -60,6 +63,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
       name: person?.canonicalName ?? r.fromName,
       note: r.note,
       status: r.status,
+      groupLabel: r.groupLabel,
       createdAt: r.createdAt,
     }
   })
