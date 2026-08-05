@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   const ip = ipFromRequest(request)
   const rateResult = await checkRateLimit(`suggest:${ip}`, 4, 600)
   if (!rateResult.ok) {
-    return NextResponse.json({ error: 'Too many submissions — try again later.' }, { status: 429 })
+    return NextResponse.json({ error: 'Too many submissions, try again later.' }, { status: 429 })
   }
 
   // ── Parse body ──────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
   const turnstileToken = typeof body.turnstileToken === 'string' ? body.turnstileToken : undefined
   const turnstileOk = await verifyTurnstile(turnstileToken, ip)
   if (!turnstileOk) {
-    return NextResponse.json({ error: 'Challenge failed — please refresh and try again.' }, { status: 403 })
+    return NextResponse.json({ error: 'Challenge failed, please refresh and try again.' }, { status: 403 })
   }
 
   // ── Resolve submitter identity ──────────────────────────────────────────────

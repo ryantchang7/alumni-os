@@ -4,7 +4,7 @@ import { ImageResponse } from 'next/og'
 // point at. Sells the film specifically ("Watch the film") rather than the
 // generic site card. Purely typographic like the root card: no external
 // fetches, can never break the build.
-export const alt = 'The Penn Golf Clubhouse — watch the film'
+export const alt = 'The Penn Golf Clubhouse, watch the film'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 

@@ -150,7 +150,7 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
 
   return (
     <div>
-      {/* Persistence warning — writes won't survive a cold start until KV is
+      {/* Persistence warning, writes won't survive a cold start until KV is
           connected on Vercel. Loud on purpose. */}
       {persistence?.warning && (
         <div className="mb-6 rounded-xl border border-[#990000]/30 bg-[#990000]/5 px-4 py-3">

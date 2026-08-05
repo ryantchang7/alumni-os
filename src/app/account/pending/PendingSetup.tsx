@@ -64,7 +64,7 @@ export default function PendingSetup() {
       <div className="mt-6 pt-6 border-t border-[rgba(180,168,150,0.3)]">
         <p className="flex items-center gap-2 text-[13px] text-[#2d6a4f] font-medium">
           <Check className="w-4 h-4" />
-          Got it — that&rsquo;ll be on your card the moment you&rsquo;re in.
+          Got it, that&rsquo;ll be on your card the moment you&rsquo;re in.
         </p>
       </div>
     )
@@ -74,7 +74,7 @@ export default function PendingSetup() {
     <div className="mt-6 pt-6 border-t border-[rgba(180,168,150,0.3)] text-left">
       <p className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.16em] text-ink-muted mb-1.5">
         <MapPin className="w-3.5 h-3.5 text-[#c8a84b]" />
-        While you wait — 30 seconds
+        While you wait, 30 seconds
       </p>
       <p className="text-[13px] text-[#3d4a5c] mb-4 leading-relaxed">
         Two things that put you on the map and help members find you.

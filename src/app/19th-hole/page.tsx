@@ -14,7 +14,7 @@ import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 
 export const metadata: Metadata = {
   title: '19th Hole',
-  description: 'Coffee, drinks, dinners — gatherings of the Penn Golf family.',
+  description: 'Coffee, drinks, dinners, gatherings of the Penn Golf family.',
 }
 
 export default async function NineteenthHolePage() {

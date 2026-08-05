@@ -81,7 +81,7 @@ export default function NineteenthHoleClient({
   return (
     <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
 
-      {/* Host CTA — prominent, always visible at the top. */}
+      {/* Host CTA, prominent, always visible at the top. */}
       <section>
         <div
           className="bg-gradient-to-r from-[#0a1628] to-[#112240] text-white rounded-2xl px-6 py-7 sm:px-8 sm:py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 border border-[#c8a84b]/25"
@@ -97,7 +97,7 @@ export default function NineteenthHoleClient({
               Pick a spot. Penn Golf finds you there.
             </p>
             <p className="text-[13px] text-white/70 mt-1.5">
-              Drinks, dinner, coffee, or a watch party — host it and members will show up.
+              Drinks, dinner, coffee, or a watch party, host it and members will show up.
             </p>
           </div>
           <Link
@@ -161,7 +161,7 @@ export default function NineteenthHoleClient({
         </section>
       )}
 
-      {/* Open Requests — visiting members looking for drinks / coffee /
+      {/* Open Requests, visiting members looking for drinks / coffee /
           dinner. Empty-state strip still renders to advertise the
           "Post a request" CTA. */}
       <section>
@@ -169,14 +169,14 @@ export default function NineteenthHoleClient({
           requests={openRequests}
           eyebrow="Open Requests"
           title="In town and want company."
-          subtitle="Penn Golf members visiting somewhere — drop a note if you can host them."
+          subtitle="Penn Golf members visiting somewhere, drop a note if you can host them."
           accent="#b8860b"
           limit={6}
           viewerAccountId={viewerAccountId}
         />
       </section>
 
-      {/* Open to Coffee — grouped by role so every list of "who's
+      {/* Open to Coffee, grouped by role so every list of "who's
           open" reads cleanly: Current Players, then Alumni, then Coach,
           then Family & Affiliate. Groups with zero members are hidden. */}
       <section>

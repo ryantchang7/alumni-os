@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   const session = await auth()
   if (!session?.accountId || !session.linkedPersonId) {
     return NextResponse.json(
-      { error: 'Approved members only — claim your card to RSVP.' },
+      { error: 'Approved members only, claim your card to RSVP.' },
       { status: 403 },
     )
   }
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
       ],
     })
     if (!aRes.ok) console.warn('[rsvp-confirm] send failed:', aRes.error)
-    else if (aRes.skipped) console.warn('[rsvp-confirm] skipped — email env unset')
+    else if (aRes.skipped) console.warn('[rsvp-confirm] skipped, email env unset')
     else console.log(`[rsvp-confirm] sent ok id=${aRes.id}`)
 
     // 2) Notification to the host (only if we can resolve their email).
@@ -171,10 +171,10 @@ export async function POST(request: NextRequest) {
         })
         const hRes = await sendEmail({ to: hostAccount.email, subject: hSubj, html: hHtml })
         if (!hRes.ok) console.warn('[rsvp-host] send failed:', hRes.error)
-        else if (hRes.skipped) console.warn('[rsvp-host] skipped — email env unset')
+        else if (hRes.skipped) console.warn('[rsvp-host] skipped, email env unset')
         else console.log(`[rsvp-host] sent ok id=${hRes.id}`)
       } else {
-        console.log('[rsvp-host] skipped — host has no linked account email')
+        console.log('[rsvp-host] skipped, host has no linked account email')
       }
     }
   } catch (e) {

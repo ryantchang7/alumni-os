@@ -31,7 +31,7 @@ export default function CourseHoleSection({
     >
       <div className="flex items-baseline justify-between mb-2 gap-3 flex-wrap">
         <div className="flex items-start gap-4">
-          {/* Flagstick marker with hole number — replaces the round badge */}
+          {/* Flagstick marker with hole number, replaces the round badge */}
           <FlagMarker hole={hole} />
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#5a7a3e]">

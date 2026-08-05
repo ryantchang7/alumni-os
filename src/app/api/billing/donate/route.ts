@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   const stripe = getStripe()
   if (!stripe) {
     return NextResponse.json(
-      { error: 'Donations not configured yet — try again later.' },
+      { error: 'Donations not configured yet, try again later.' },
       { status: 503 },
     )
   }
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
           currency: 'usd',
           unit_amount: amountCents,
           product_data: {
-            name: 'Penn Golf Clubhouse — Donation',
+            name: 'Penn Golf Clubhouse. Donation',
             description: 'A one-time contribution to the Penn Men’s Golf program and the Clubhouse.',
           },
         },

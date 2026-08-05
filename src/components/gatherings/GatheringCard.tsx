@@ -71,7 +71,7 @@ const VIDEO_EXT_RE = /\.(mp4|mov|m4v|webm)(\?|$)/i
  */
 function gatheringMapQuery(g: GatheringData): string {
   const place = (g.venue ?? '')
-    .split(/\s+[—–-]\s+|\s*\(/)[0]
+    .split(/\s+[, –-]\s+|\s*\(/)[0]
     .replace(/\b(tbd|tba)\b/gi, '')
     .trim()
   return [place, g.city, g.state].filter(Boolean).join(' ').trim()
@@ -315,7 +315,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
               {gathering.isExample && (
                 <span
                   className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted bg-[#fdfcf9] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
-                  title="Sample gathering — host a real one to replace it."
+                  title="Sample gathering, host a real one to replace it."
                 >
                   Example
                 </span>
@@ -403,7 +403,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
           )}
         </div>
 
-        {/* Map preview — a real map of the spot. Lazy-loaded so a list of
+        {/* Map preview, a real map of the spot. Lazy-loaded so a list of
             cards doesn't fire every iframe at once.
 
             The keyless Google embed sometimes paints nothing (a query it can't
@@ -441,7 +441,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
           <p className="text-xs text-[#3a4657] leading-relaxed mb-4">{gathering.description}</p>
         )}
 
-        {/* Add to calendar — instant Google Cal link + .ics download, right
+        {/* Add to calendar, instant Google Cal link + .ics download, right
             on the card so it works without depending on the RSVP email. */}
         {!gathering.isExample && (
           <div className="flex items-center gap-2 flex-wrap mb-4 text-xs">
@@ -549,7 +549,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         {/* Action */}
         {gathering.isExample ? (
           <p className="text-xs text-ink-muted italic">
-            Sample gathering — host a real one to replace it.
+            Sample gathering, host a real one to replace it.
           </p>
         ) : isHost ? (
           // Host view — no RSVP to your own event; a Remove control instead.

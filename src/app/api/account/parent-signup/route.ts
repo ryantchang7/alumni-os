@@ -171,7 +171,7 @@ export async function POST(request: Request) {
       const { subject, html } = renderClaimNotification({
         requesterName: name,
         requesterEmail: account.email,
-        claimedName: `${name} — Family / Affiliate`,
+        claimedName: `${name}, Family / Affiliate`,
         claimedYears: relationship,
         adminUrl: `${baseUrl}/internal/claims`,
         matchHint: 'strong',

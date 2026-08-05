@@ -37,11 +37,11 @@ Golf has given me so much: opportunities, friendships, mentors, doors that opene
 
 So I built Penn Golf Clubhouse.
 
-I compiled our Member Book through online research and Penn historical data — every player and manager I could find from 1930 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
+I compiled our Member Book through online research and Penn historical data, every player and manager I could find from 1930 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
 
 For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
 
-— Ryan Chang, Penn Men's Golf '28, Brookline, MA`
+, Ryan Chang, Penn Men's Golf '28, Brookline, MA`
 
 /* ── The four-room model ─────────────────────────────────────────── */
 
@@ -234,7 +234,7 @@ export const STORYBOARD: StoryboardBeat[] = [
   },
   {
     timestamp: '0:16–0:25',
-    voiceover: 'This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us, and seeing Derek Rodgers, Carter Thompson, KJ, and so many other guys out there — it felt like a real Penn Golf family.',
+    voiceover: 'This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us, and seeing Derek Rodgers, Carter Thompson, KJ, and so many other guys out there, it felt like a real Penn Golf family.',
     visual: 'Cut to /launch hero text, then to /team-room. If you have Baltusrol B-roll, drop it in here.',
     route: '/launch → /team-room',
     notes: 'No real names of alumni shown on screen unless you have permission. Keep it on the Clubhouse surfaces.',
@@ -327,19 +327,19 @@ export const COPY_BLOCKS: CopyBlock[] = [
     id: 'alumni-email',
     label: 'Alumni email',
     surface: 'Send to the full Member Book once, BCC batches of ~50 from Gmail. Personalize the first name. The GIF of the map lighting up goes right above the watch link.',
-    body: `Subject: Penn Golf Clubhouse — a place for everyone who carried the bag.
+    body: `Subject: Penn Golf Clubhouse, a place for everyone who carried the bag.
 
 Hey [first name],
 
 This spring at Ivy Champs at Baltusrol, with Patrick Cooper hosting and so many of you on the property, I felt something Penn Golf has always had but never quite captured in one place. A family.
 
-So I spent the summer building Penn Golf Clubhouse — a private home for the program. I made a 3-minute film that shows the whole thing:
+So I spent the summer building Penn Golf Clubhouse, a private home for the program. I made a 3-minute film that shows the whole thing:
 
 ▶ Watch the film → penngolfclubhouse.com/launch
 
 The short version: every player I could find from 1930 onward is already in the Member Book. There's a map of where everyone is, a way to host or join a round in any city, career advice and intros without the awkwardness, and a direct line to the current team.
 
-Every claim is reviewed by hand — it stays the people who actually carried the bag.
+Every claim is reviewed by hand, it stays the people who actually carried the bag.
 
 Watch the film, then come claim your member card.
 
@@ -397,7 +397,7 @@ Ask. Meet. Play. Gather.
     id: 'sms-alumni',
     label: 'Short SMS to recent alumni',
     surface: 'For people in Ryan\'s contacts. Personal, low pressure.',
-    body: `Built Penn Golf Clubhouse — a private space for the whole Penn Golf family. Approval based, takes a sec. Come claim your card → penngolfclubhouse.com/launch`,
+    body: `Built Penn Golf Clubhouse, a private space for the whole Penn Golf family. Approval based, takes a sec. Come claim your card → penngolfclubhouse.com/launch`,
   },
   {
     id: 'parent-family',
@@ -613,7 +613,7 @@ export const SHOOT_DAY_PHASES: ShootPhase[] = [
     goal: 'Clip every route the storyboard calls for in the cleanest pass possible.',
     steps: [
       'Quiet room. Mac plugged in. Screen recording app open and tested with a 5-second throwaway clip.',
-      'Go in storyboard order, not feature order. Each clip is its own take — don\'t try to chain routes in one continuous capture.',
+      'Go in storyboard order, not feature order. Each clip is its own take, don\'t try to chain routes in one continuous capture.',
       'When you misclick or fumble, scrub back and re-roll. Cheap.',
       'Capture B-roll pans: Member Book scroll, Member Map zoom, Open Requests strip, four-room cards on /launch. Each 8-12 seconds.',
       'After every 4-5 takes, push to AirDrop or iCloud Drive so files exist in two places.',
@@ -626,7 +626,7 @@ export const SHOOT_DAY_PHASES: ShootPhase[] = [
     goal: 'Assemble enough of a cut to know what you still need.',
     steps: [
       'Drop the best baseline talking-head take into CapCut on the audio track.',
-      'Drop screen captures roughly to the storyboard timestamps. Don\'t obsess over frame-perfect — just see if the pacing works.',
+      'Drop screen captures roughly to the storyboard timestamps. Don\'t obsess over frame-perfect, just see if the pacing works.',
       'Note any moments where the screen capture doesn\'t exist or doesn\'t cut clean. Those are re-shoot candidates.',
       'Re-shoot anything missing while light and energy still hold. Don\'t leave it for tomorrow.',
       'Save the project. Do not finish the edit today. Sleep on it, finish tomorrow with fresh eyes.',
@@ -667,7 +667,7 @@ export const SCREEN_CAPTURE_PLAYBOOK: CapturePlay[] = [
     route: '/player',
     pageName: 'Clubhouse home',
     preState: 'Signed in as a regular member. Page fully loaded. No notification toasts on screen.',
-    move: 'Slow vertical pan from top to about 60% of the page. Don\'t scroll all the way down — you want the feeling of "more under the surface".',
+    move: 'Slow vertical pan from top to about 60% of the page. Don\'t scroll all the way down, you want the feeling of "more under the surface".',
     dwellSeconds: '~5 seconds',
     hide: 'Any captain-only admin chips, your own profile photo if you don\'t want it identifiable.',
     cursorHighlight: 'no',
@@ -687,7 +687,7 @@ export const SCREEN_CAPTURE_PLAYBOOK: CapturePlay[] = [
     preState: 'US map loaded. No state list expanded. Cursor parked outside the map.',
     move: 'Pan slowly from Northeast westward across the map. Click on Pennsylvania (your home state). Let the state list open.',
     dwellSeconds: '~7 seconds',
-    hide: 'Same — names in the state list that aren\'t pre-cleared. Scroll past, don\'t pause.',
+    hide: 'Same, names in the state list that aren\'t pre-cleared. Scroll past, don\'t pause.',
     cursorHighlight: 'yes',
   },
   {
@@ -705,7 +705,7 @@ export const SCREEN_CAPTURE_PLAYBOOK: CapturePlay[] = [
     preState: 'Page loaded. Open Requests strip showing your seeded round request. Open to a Round section visible below.',
     move: 'Slow scroll past the strip, dwell 1.5s on your seeded card, continue down to the Open to a Round grid.',
     dwellSeconds: '~6 seconds',
-    hide: 'Other members\' real names — dwell on your own seeded card, not someone else\'s.',
+    hide: 'Other members\' real names, dwell on your own seeded card, not someone else\'s.',
     cursorHighlight: 'yes',
   },
   {
@@ -714,7 +714,7 @@ export const SCREEN_CAPTURE_PLAYBOOK: CapturePlay[] = [
     preState: 'Open Requests strip visible. Gatherings list below.',
     move: 'Scroll through the strip, dwell 1.5s on the seeded coffee request, continue to Open to Coffee.',
     dwellSeconds: '~5 seconds',
-    hide: 'Same — your seeded entries only.',
+    hide: 'Same, your seeded entries only.',
     cursorHighlight: 'yes',
   },
   {
@@ -732,7 +732,7 @@ export const SCREEN_CAPTURE_PLAYBOOK: CapturePlay[] = [
     preState: 'Page loaded. Penn Athletics news strip and roster visible.',
     move: 'Slow scroll past the news strip, pause 1s on the roster card.',
     dwellSeconds: '~5 seconds',
-    hide: 'Nothing in particular — this page is safe.',
+    hide: 'Nothing in particular. This page is safe.',
     cursorHighlight: 'no',
   },
   {
@@ -770,7 +770,7 @@ export const TALKING_HEAD_PLAYBOOK: TalkingHeadRule[] = [
   },
   {
     label: 'Takes',
-    body: 'Six takes per chunk. Don\'t watch between takes — that\'s a momentum killer. Just keep rolling. The keeper is usually take 3-5, after you\'ve loosened up and before you\'re tired of the line.',
+    body: 'Six takes per chunk. Don\'t watch between takes, that\'s a momentum killer. Just keep rolling. The keeper is usually take 3-5, after you\'ve loosened up and before you\'re tired of the line.',
   },
   {
     label: 'Cutaways to plan for',
@@ -778,7 +778,7 @@ export const TALKING_HEAD_PLAYBOOK: TalkingHeadRule[] = [
   },
   {
     label: 'Energy',
-    body: 'Smile before you start each take. Talk a touch louder and slower than feels natural. The camera flattens energy — what feels like 80% in person reads as 60% on camera.',
+    body: 'Smile before you start each take. Talk a touch louder and slower than feels natural. The camera flattens energy, what feels like 80% in person reads as 60% on camera.',
   },
 ]
 
@@ -817,7 +817,7 @@ export const TOOL_COMPARISON: ToolCompare[] = [
     cost: 'Free',
     bestFor: 'Multi-source production with scenes, transitions, live overlays.',
     watchOut: 'Setup tax is real. You\'ll spend an hour configuring scenes before you record anything.',
-    pickIf: 'You\'ve used it before. Otherwise skip — it\'s overkill for v1.',
+    pickIf: 'You\'ve used it before. Otherwise skip, it\'s overkill for v1.',
   },
 ]
 
@@ -832,31 +832,31 @@ export const POST_PRODUCTION_LAYOUT: PostProductionStep[] = [
     body: '1920×1080, 30 fps, target 90 seconds. Render preset H.264 / AAC. Square crop (1080×1080) and vertical (1080×1920) get rendered as separate exports after the master is locked.',
   },
   {
-    label: 'Track 1 — Voice (master)',
+    label: 'Track 1, Voice (master)',
     body: 'The best talking-head take, top to bottom. This is the spine of the cut. Trim breaths and filler words ("um", "like", long pauses) using the razor tool.',
   },
   {
-    label: 'Track 2 — Screen captures',
+    label: 'Track 2, Screen captures',
     body: 'Clips placed to the storyboard timestamps. Use J-cuts: the screen cap arrives ~10 frames before the voice line that introduces it.',
   },
   {
-    label: 'Track 3 — B-roll cutaways',
+    label: 'Track 3, B-roll cutaways',
     body: 'Hand-on-club, bag tag, campus shots. Use these to cover edits in the talking head so the cut is invisible. 1-2 second clips.',
   },
   {
-    label: 'Track 4 — Music',
+    label: 'Track 4, Music',
     body: 'Tasteful instrumental at -20 dB. Duck to -28 dB whenever voice is present (CapCut\'s "Auto Volume" handles this if turned on). Music starts on the title card and runs through the end.',
   },
   {
-    label: 'Track 5 — Captions',
+    label: 'Track 5, Captions',
     body: 'Penn navy text (#0a1628) on parchment background (#f8f5f0), bottom third of frame, 2 lines max. Auto-caption then proofread every word. The captions are what people read on muted autoplay.',
   },
 ]
 
 export const POST_PRODUCTION_REVIEW_PASSES: string[] = [
-  'Pass 1 — Pacing only. Mute the audio entirely. Watch the cut. Anything that lingers too long or jumps too fast jumps out without dialogue to distract.',
-  'Pass 2 — Audio only. Close your eyes. Listen end to end. Trim every breath, every "um", every soft pause. Voice should sound conversational, not edited.',
-  'Pass 3 — Captions + final color. Match exposure across talking-head and screen captures (screen captures usually need a slight desaturation). Proofread every caption frame.',
+  'Pass 1, Pacing only. Mute the audio entirely. Watch the cut. Anything that lingers too long or jumps too fast jumps out without dialogue to distract.',
+  'Pass 2, Audio only. Close your eyes. Listen end to end. Trim every breath, every "um", every soft pause. Voice should sound conversational, not edited.',
+  'Pass 3, Captions + final color. Match exposure across talking-head and screen captures (screen captures usually need a slight desaturation). Proofread every caption frame.',
 ]
 
 export const COMMON_MISTAKES: string[] = [
@@ -865,6 +865,6 @@ export const COMMON_MISTAKES: string[] = [
   'Don\'t film vertically by accident. Lock the iPhone in landscape orientation. Vertical 9:16 is a separate render, not the source.',
   'Don\'t move the cursor on every word. Cursor motion is punctuation, not a constant. Move it to draw the eye to one thing per scene, then park it.',
   'Don\'t auto-caption and skip proofreading. Auto-captions get names and Penn-specific terms wrong. Read every line before exporting.',
-  'Don\'t forget 1 second of black at the start and end. Instagram and TikTok clip the first and last beats — give the CTA room to breathe.',
+  'Don\'t forget 1 second of black at the start and end. Instagram and TikTok clip the first and last beats, give the CTA room to breathe.',
 ]
 

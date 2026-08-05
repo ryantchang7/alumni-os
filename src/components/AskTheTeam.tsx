@@ -179,13 +179,13 @@ export default function AskTheTeam({
         const data = await res.json().catch(() => ({}))
         const err = (data as { error?: string }).error
         if (res.status === 401) {
-          setErrorMsg('Sign in to send your question — what you wrote is saved.')
+          setErrorMsg('Sign in to send your question, what you wrote is saved.')
           setErrorAction('signin')
         } else if (res.status === 403) {
           setErrorMsg(err ?? 'Your account needs to be approved before you can ask questions.')
           setErrorAction('claim')
         } else if (res.status === 429) {
-          setErrorMsg('You’ve sent a few questions recently — give it a day and try again.')
+          setErrorMsg('You’ve sent a few questions recently, give it a day and try again.')
         } else {
           setErrorMsg(err ?? 'Something went wrong. Try again.')
         }
@@ -217,8 +217,8 @@ export default function AskTheTeam({
   // Success headline
   const successHeadline =
     selectedIds.size === 0
-      ? 'Sent — one of the guys will get back to you'
-      : 'Sent to ' + joinNames(selectedFirstNames) + ' — they’ll get back to you'
+      ? 'Sent, one of the guys will get back to you'
+      : 'Sent to ' + joinNames(selectedFirstNames) + ', they’ll get back to you'
 
   // Trigger button
   const triggerLabel = variant === 'primary' ? (label ?? 'Ask the Team') : (label ?? 'Ask')
@@ -320,7 +320,7 @@ export default function AskTheTeam({
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <p className="text-sm text-[#5a5347] leading-relaxed">
-                      Got a question for the guys on the team? Ask away &mdash; current players answer when they can.
+                      Got a question for the guys on the team? Ask away, current players answer when they can.
                     </p>
 
                     {/* ---- Player picker ---- */}

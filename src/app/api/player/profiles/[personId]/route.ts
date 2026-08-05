@@ -52,7 +52,7 @@ export async function GET(request: Request, { params }: PageParams) {
       ? `${membership.rosterStartYear}–${membership.rosterEndYear}`
       : membership.rosterStartYear !== undefined
         ? String(membership.rosterStartYear)
-        : '—'
+        : ', '
 
   return NextResponse.json({
     profile: {

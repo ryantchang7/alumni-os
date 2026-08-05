@@ -74,7 +74,7 @@ export function renderWelcomeEmail(input: {
     </p>
     <ul style="margin:0 0 28px 0;padding:0 0 0 20px;font-size:14px;line-height:1.7;color:#3d4a5c;">
       <li>Set your city on your locker card.</li>
-      <li>Mark one availability &mdash; coffee, a round, or a warm intro.</li>
+      <li>Mark one availability, coffee, a round, or a warm intro.</li>
       <li>Post a Moment, a tee time, or an ask in the Career Room.</li>
     </ul>
     <p style="margin:0;">${btn(input.clubhouseUrl, 'Open the Clubhouse')}</p>
@@ -174,7 +174,7 @@ export function renderTeamQuestionEmail(input: {
     </blockquote>
     <p style="margin:0;">${btn(input.answerUrl, 'Answer on the Clubhouse')}</p>
     <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
-      A quick reply means a lot &mdash; it&rsquo;s how alumni stay close to the team.
+      A quick reply means a lot, it&rsquo;s how alumni stay close to the team.
     </p>
   `
   return { subject, html: shell(inner, input.answerUrl) }
@@ -239,7 +239,7 @@ export function renderAskEmail(input: {
       ${escapeHtml(input.message).slice(0, 600)}
     </blockquote>
     <p style="margin:0 0 20px 0;font-size:14px;line-height:1.55;color:#3d4a5c;">
-      No pressure and no deadline — a short reply, or a pass, both help.
+      No pressure and no deadline, a short reply, or a pass, both help.
     </p>
     <p style="margin:0;">${btn(input.url, 'Read and reply')}</p>
   `
@@ -286,7 +286,7 @@ export function renderNearbyRequestEmail(input: {
   url: string
 }): { subject: string; html: string } {
   const greeting = input.recipientFirstName ? `Hi ${escapeHtml(input.recipientFirstName)},` : 'Hi,'
-  const subject = `${input.fromName} is around ${input.placeText} — up for ${input.intentLabel}`
+  const subject = `${input.fromName} is around ${input.placeText}, up for ${input.intentLabel}`
   const meta = [
     input.whenText ? escapeHtml(input.whenText) : '',
     input.fromHomeCourse ? `member at ${escapeHtml(input.fromHomeCourse)}` : '',
@@ -308,7 +308,7 @@ export function renderNearbyRequestEmail(input: {
     ${meta ? `<p style="margin:0 0 18px 0;font-size:13px;color:${MUTED};">${meta}</p>` : ''}
     <p style="margin:0;">${btn(input.url, 'See it on the Clubhouse')}</p>
     <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
-      This is the whole point &mdash; a game (or a coffee) wherever the road takes you.
+      This is the whole point, a game (or a coffee) wherever the road takes you.
     </p>
   `
   return { subject, html: shell(inner, input.url) }
@@ -445,7 +445,7 @@ export function renderRsvpConfirmation(input: {
       <p style="margin:0;font-size:12px;color:${MUTED};">Hosted by ${escapeHtml(input.hostName)}</p>
     </div>
     <p style="margin:0 0 12px 0;font-size:13.5px;line-height:1.55;color:#3d4a5c;">
-      We attached an .ics file to this email &mdash; click it to add the event to Apple Calendar, Outlook,
+      We attached an .ics file to this email, click it to add the event to Apple Calendar, Outlook,
       or any other calendar app. For Gmail users:
     </p>
     <p style="margin:0 0 24px 0;">${btn(input.googleCalUrl, 'Add to Google Calendar')}</p>

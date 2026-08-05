@@ -99,43 +99,43 @@ function buildDraft(profile: PlayerProfile, purpose: Purpose, context: Context):
       : ''
 
   if (purpose === 'career_advice') {
-    return `Hi ${first} —\n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine}${applyingLine}${exploringLine} I'd love to hear about ${careerRef} and any advice you might have for someone earlier in the process. Even 20 minutes would mean a lot.\n\nThanks for staying connected to the program.\n\n— [Your name]`
+    return `Hi ${first}, \n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine}${applyingLine}${exploringLine} I'd love to hear about ${careerRef} and any advice you might have for someone earlier in the process. Even 20 minutes would mean a lot.\n\nThanks for staying connected to the program.\n\n. [Your name]`
   }
 
   if (purpose === 'coffee_chat') {
-    return `Hi ${first} —\n\nI'm a current Penn Golf player and found your profile in the Clubhouse.${referralLine}${cityLine} I'd love to connect over a quick coffee or call sometime — happy to work around your schedule entirely.\n\nThanks for being part of the network.\n\n— [Your name]`
+    return `Hi ${first}, \n\nI'm a current Penn Golf player and found your profile in the Clubhouse.${referralLine}${cityLine} I'd love to connect over a quick coffee or call sometime, happy to work around your schedule entirely.\n\nThanks for being part of the network.\n\n. [Your name]`
   }
 
   if (purpose === 'mentorship') {
-    return `Hi ${first} —\n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine}${exploringLine} I'm at a point where I'm thinking seriously about my path after Penn, and I'd be genuinely grateful for even a brief conversation. Hearing about ${careerRef} would help a lot.\n\nNo obligation at all — I appreciate you considering it.\n\n— [Your name]`
+    return `Hi ${first}, \n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine}${exploringLine} I'm at a point where I'm thinking seriously about my path after Penn, and I'd be genuinely grateful for even a brief conversation. Hearing about ${careerRef} would help a lot.\n\nNo obligation at all. I appreciate you considering it.\n\n. [Your name]`
   }
 
   if (purpose === 'warm_introduction') {
-    return `Hi ${first} —\n\nI'm a current Penn Golf player reaching out through the Clubhouse.${referralLine} I'm hoping you might be able to connect me with someone in your network${company ? ` at ${company}` : ''} — I'd be happy to share more context on what I'm looking for. Totally understand if it's not the right time.\n\nThanks for staying involved with the program.\n\n— [Your name]`
+    return `Hi ${first}, \n\nI'm a current Penn Golf player reaching out through the Clubhouse.${referralLine} I'm hoping you might be able to connect me with someone in your network${company ? ` at ${company}` : ''}, I'd be happy to share more context on what I'm looking for. Totally understand if it's not the right time.\n\nThanks for staying involved with the program.\n\n. [Your name]`
   }
 
   if (purpose === 'internship_guidance') {
-    return `Hi ${first} —\n\nI'm a current Penn Golf player and found your profile in the Clubhouse.${referralLine}${applyingLine} I'm actively looking at internships${company ? ` in the ${company} space` : ''} and would really value any guidance you could share — even a quick note on what to look for or avoid.\n\nThanks for staying connected to Penn Golf.\n\n— [Your name]`
+    return `Hi ${first}, \n\nI'm a current Penn Golf player and found your profile in the Clubhouse.${referralLine}${applyingLine} I'm actively looking at internships${company ? ` in the ${company} space` : ''} and would really value any guidance you could share, even a quick note on what to look for or avoid.\n\nThanks for staying connected to Penn Golf.\n\n. [Your name]`
   }
 
   if (purpose === 'interview_prep') {
-    return `Hi ${first} —\n\nI'm a current Penn Golf player reaching out through the Clubhouse.${referralLine}${applyingLine} I have an interview coming up${company ? ` for a role at a firm like ${company}` : ''} and I'd be really grateful for any prep advice or a quick chat. I know you're busy — even 15 minutes would make a real difference.\n\n— [Your name]`
+    return `Hi ${first}, \n\nI'm a current Penn Golf player reaching out through the Clubhouse.${referralLine}${applyingLine} I have an interview coming up${company ? ` for a role at a firm like ${company}` : ''} and I'd be really grateful for any prep advice or a quick chat. I know you're busy, even 15 minutes would make a real difference.\n\n. [Your name]`
   }
 
   if (purpose === 'golf_round') {
-    return `Hi ${first} —\n\nI saw you're open to rounds in the Clubhouse. Would love to play sometime if you're ever in the area. No pressure at all — just thought it'd be great to stay connected on the course.\n\nThanks for supporting the program.\n\n— [Your name]`
+    return `Hi ${first}, \n\nI saw you're open to rounds in the Clubhouse. Would love to play sometime if you're ever in the area. No pressure at all, just thought it'd be great to stay connected on the course.\n\nThanks for supporting the program.\n\n. [Your name]`
   }
 
   if (purpose === 'city_advice') {
-    return `Hi ${first} —\n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine} I'm planning to spend some time in your city and would love any advice on neighborhoods, things to do, or people to connect with. Even a few pointers would be super helpful.\n\n— [Your name]`
+    return `Hi ${first}, \n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine} I'm planning to spend some time in your city and would love any advice on neighborhoods, things to do, or people to connect with. Even a few pointers would be super helpful.\n\n. [Your name]`
   }
 
   if (purpose === 'drinks_informal') {
-    return `Hi ${first} —\n\nI'm a current Penn Golf player reaching out through the Clubhouse.${referralLine}${cityLine} Would love to grab a drink or meet up informally if you're around sometime. No agenda — just a chance to connect as part of the same program.\n\n— [Your name]`
+    return `Hi ${first}, \n\nI'm a current Penn Golf player reaching out through the Clubhouse.${referralLine}${cityLine} Would love to grab a drink or meet up informally if you're around sometime. No agenda, just a chance to connect as part of the same program.\n\n. [Your name]`
   }
 
   // general_intro fallback
-  return `Hi ${first} —\n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine} I'd love to introduce myself and stay connected — Penn Golf alumni mean a lot to the program and it'd be great to know you.\n\nThanks for staying part of the network.\n\n— [Your name]`
+  return `Hi ${first}, \n\nI'm a current Penn Golf player and came across your profile in the Clubhouse.${referralLine} I'd love to introduce myself and stay connected. Penn Golf alumni mean a lot to the program and it'd be great to know you.\n\nThanks for staying part of the network.\n\n. [Your name]`
 }
 
 function OutreachPageInner() {
@@ -239,7 +239,7 @@ function OutreachPageInner() {
 
   const first = profile.firstName ?? profile.canonicalName.split(' ')[0]
   const rosterLabel =
-    profile.rosterYearsLabel !== '—' ? `Penn Golf ${profile.rosterYearsLabel}` : 'Penn Golf'
+    profile.rosterYearsLabel !== ', ' ? `Penn Golf ${profile.rosterYearsLabel}` : 'Penn Golf'
 
   const purposeLabel = PURPOSE_OPTIONS.find(o => o.value === purpose)?.label ?? purpose
 
@@ -266,7 +266,7 @@ function OutreachPageInner() {
           >
             <p className="text-base font-semibold text-[#0a1628] mb-2">Request sent.</p>
             <p className="text-sm text-[#3a4657] leading-relaxed max-w-sm mx-auto">
-              Your request has been saved. {first} will see it in their Clubhouse inbox. Give it a few days &mdash; Penn Golf members have day jobs.
+              Your request has been saved. {first} will see it in their Clubhouse inbox. Give it a few days. Penn Golf members have day jobs.
             </p>
             <Link
               href={`/player/alumni/${profile.personId}`}
@@ -339,7 +339,7 @@ function OutreachPageInner() {
           >
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
-                Step 1 — What kind of request?
+                Step 1, What kind of request?
               </p>
               {step > 1 && (
                 <button
@@ -393,7 +393,7 @@ function OutreachPageInner() {
             >
               <div className="flex items-center justify-between mb-4">
                 <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
-                  Step 2 — A bit of context
+                  Step 2, A bit of context
                 </p>
                 {step > 2 && (
                   <button
@@ -449,7 +449,7 @@ function OutreachPageInner() {
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
             >
               <p className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-4">
-                Step 3 — Your message
+                Step 3, Your message
               </p>
 
               <div className="mb-3">
@@ -490,7 +490,7 @@ function OutreachPageInner() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#3a4657] mb-1">
-                    Your email <span className="text-ink-muted">(optional — for the alum to reply to)</span>
+                    Your email <span className="text-ink-muted">(optional, for the alum to reply to)</span>
                   </label>
                   <input
                     type="email"

@@ -157,7 +157,7 @@ export default function AddTravelStop({ stop }: { stop?: TeamTravelStop }) {
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4 flex-shrink-0">
                 <div>
                   <p className="eyebrow text-gold mb-1">
-                    Penn Men&rsquo;s Golf &mdash; Schedule admin
+                    Penn Men&rsquo;s Golf, Schedule admin
                   </p>
                   <h2
                     className="text-white text-xl font-medium leading-snug font-heading"
@@ -284,7 +284,7 @@ export default function AddTravelStop({ stop }: { stop?: TeamTravelStop }) {
                   <div>
                     <label className={labelClass}>
                       Course link{' '}
-                      <span className="normal-case font-normal tracking-normal">(optional — website, or a Google Maps link)</span>
+                      <span className="normal-case font-normal tracking-normal">(optional, website, or a Google Maps link)</span>
                     </label>
                     <input
                       type="url"
@@ -300,7 +300,7 @@ export default function AddTravelStop({ stop }: { stop?: TeamTravelStop }) {
                     <div>
                       <label className={labelClass}>
                         Final result{' '}
-                        <span className="normal-case font-normal tracking-normal">(optional — shows on the card once the event is over)</span>
+                        <span className="normal-case font-normal tracking-normal">(optional, shows on the card once the event is over)</span>
                       </label>
                       <input
                         type="text"

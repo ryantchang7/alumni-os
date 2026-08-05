@@ -214,7 +214,7 @@ export default function GatheringsManager() {
 
             <div>
               <label className={labelCls}>Google Maps link (optional)</label>
-              <input type="text" value={form.mapsUrl} onChange={e => setForm(f => ({ ...f, mapsUrl: e.target.value }))} placeholder="Paste a Maps link — or leave blank to auto-map the venue" className={inputCls} />
+              <input type="text" value={form.mapsUrl} onChange={e => setForm(f => ({ ...f, mapsUrl: e.target.value }))} placeholder="Paste a Maps link, or leave blank to auto-map the venue" className={inputCls} />
             </div>
 
             <div>

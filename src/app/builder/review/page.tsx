@@ -61,7 +61,7 @@ export default async function BuilderReviewPage({ searchParams }: Props) {
           <h1 className="text-white text-3xl font-semibold tracking-tight">Review Items</h1>
           <p className="text-gray-300 text-base mt-2 max-w-2xl leading-relaxed">
             {team
-              ? `${teamSlug} — ${openItems.length} open item${openItems.length !== 1 ? 's' : ''} require human review before graph promotion.`
+              ? `${teamSlug}, ${openItems.length} open item${openItems.length !== 1 ? 's' : ''} require human review before graph promotion.`
               : `Team "${teamSlug}" not found in store.`}
           </p>
         </div>

@@ -51,14 +51,14 @@ const CLASS_ESTIMATES: Record<string, string> = {
   'Fr.': 'Freshman / Rising Freshman',
 }
 const CONTACT_PREFS = [
-  { value: '', label: '— not set —' },
+  { value: '', label: ', not set. ' },
   { value: 'team_intro', label: 'Team intro' },
   { value: 'email_ok', label: 'Email ok' },
   { value: 'linkedin_ok', label: 'LinkedIn ok' },
   { value: 'not_available', label: 'Not available' },
 ]
 const AVAIL_LEVELS = [
-  { value: '', label: '— not set —' },
+  { value: '', label: ', not set. ' },
   { value: 'one_per_month', label: '1×/month' },
   { value: 'two_per_month', label: '2×/month' },
   { value: 'open', label: 'Open' },
@@ -237,7 +237,7 @@ function PlayerCard({ entry, teamSlug }: { entry: PlayerEntry; teamSlug: string 
                 }}
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-sm text-[#0a1628] bg-white focus:outline-none focus:ring-1 focus:ring-[#0a1628]"
               >
-                <option value="">— select —</option>
+                <option value="">, select, </option>
                 {CLASS_LABELS.map(l => <option key={l} value={l}>{l}</option>)}
               </select>
             </div>

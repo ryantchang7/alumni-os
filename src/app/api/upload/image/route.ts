@@ -55,14 +55,14 @@ export async function POST(request: Request) {
     isCaptainEmailWithOverrides(uploaderEmail, 'penn-mens-golf', (await readStore()).accounts)
   if (!session.linkedPersonId && !isStaff) {
     return NextResponse.json(
-      { error: 'Approved members only — claim your card first.' },
+      { error: 'Approved members only, claim your card first.' },
       { status: 403 },
     )
   }
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json(
-      { error: 'Media uploads not configured yet — paste a URL instead.' },
+      { error: 'Media uploads not configured yet, paste a URL instead.' },
       { status: 503 },
     )
   }
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: isVideo
-          ? `Video too big (${mb} MB). Max ${max} MB — try a shorter clip.`
+          ? `Video too big (${mb} MB). Max ${max} MB, try a shorter clip.`
           : `Image too big (${mb} MB). Max ${max} MB.`,
       },
       { status: 413 },

@@ -5,7 +5,7 @@ import { ImageResponse } from 'next/og'
 // typographic (default font, no external font/image fetch) so it renders
 // reliably and can never break the build. Next auto-wires og:image +
 // twitter:image from this file.
-export const alt = "Penn Golf Clubhouse — the private alumni network for Penn Men's Golf"
+export const alt = "Penn Golf Clubhouse, the private alumni network for Penn Men's Golf"
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 

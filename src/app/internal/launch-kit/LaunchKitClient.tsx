@@ -62,7 +62,7 @@ const SECTIONS = [
  */
 const PRE_FILM_CHECK: { area: string; items: { text: string; route?: string }[] }[] = [
   {
-    area: 'Gatherings — host it, click in, interact',
+    area: 'Gatherings, host it, click in, interact',
     items: [
       { text: 'Host a round/gathering with a photo + a pasted Google Maps link, then submit', route: '/the-course/host or /19th-hole/host' },
       { text: 'The card shows the photo banner + map preview', route: '/the-course or /19th-hole' },
@@ -77,7 +77,7 @@ const PRE_FILM_CHECK: { area: string; items: { text: string; route?: string }[] 
     area: 'The Season (Team Room hub)',
     items: [
       { text: 'Post an update with a link → it appears', route: '/internal/season' },
-      { text: 'It shows under Latest updates in The Season — delete the test one after', route: '/team-room' },
+      { text: 'It shows under Latest updates in The Season, delete the test one after', route: '/team-room' },
       { text: 'A pasted link renders a preview card with the link’s image + title; or upload a custom preview image to override it', route: '/internal/season → /team-room' },
     ],
   },
@@ -207,7 +207,7 @@ export default function LaunchKitClient() {
                 </span>
               ) : (
                 <span className="text-[#990000] font-semibold">
-                  Missing the &ldquo;approval-based, not paywalled&rdquo; line — fix in content.ts.
+                  Missing the &ldquo;approval-based, not paywalled&rdquo; line, fix in content.ts.
                 </span>
               )}
             </p>
@@ -222,7 +222,7 @@ export default function LaunchKitClient() {
           )}
         </div>
 
-        {/* Pre-Film Check — live-site QA to run the morning of the shoot. */}
+        {/* Pre-Film Check, live-site QA to run the morning of the shoot. */}
         <section id="prefilm" className="mb-16 scroll-mt-24">
           <h2
             className="text-[#0a1628] text-2xl sm:text-3xl font-medium mb-4 font-heading"
@@ -230,7 +230,7 @@ export default function LaunchKitClient() {
             Pre-Film Check
           </h2>
           <p className="text-[13px] text-ink-muted mb-5">
-            Run this on the live site the morning of the shoot &mdash; tick each as you confirm it
+            Run this on the live site the morning of the shoot, tick each as you confirm it
             works. Storage (Vercel Blob + KV) is connected, so everything you post saves for real.
           </p>
           <div className="space-y-5">
@@ -500,7 +500,7 @@ export default function LaunchKitClient() {
                     </div>
                     <div>
                       <p className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-1">Cursor highlight</p>
-                      <p>{cap.cursorHighlight.startsWith('yes') ? `Yes — ${cap.cursorHighlight.replace(/^yes\s*\(?/, '').replace(/\)$/, '')}` : 'No — keep cursor still or off-frame'}</p>
+                      <p>{cap.cursorHighlight.startsWith('yes') ? `Yes, ${cap.cursorHighlight.replace(/^yes\s*\(?/, '').replace(/\)$/, '')}` : 'No, keep cursor still or off-frame'}</p>
                     </div>
                   </div>
                 </details>
@@ -532,7 +532,7 @@ export default function LaunchKitClient() {
             <h3
               className="text-[#0a1628] text-lg font-medium mb-1 font-heading"
             >
-              Screen capture tool — pick one
+              Screen capture tool, pick one
             </h3>
             <p className="text-[12.5px] text-ink-muted mb-4">
               Four common options. The recommended pick is in the first row.
@@ -623,7 +623,7 @@ export default function LaunchKitClient() {
             Recording checklist
           </h2>
           <p className="text-[13px] text-ink-muted mb-5">
-            Go in this order. Each line is one screen-capture take. Don&rsquo;t worry about perfect runs &mdash; you&rsquo;ll cherry-pick the best segments in the edit.
+            Go in this order. Each line is one screen-capture take. Don&rsquo;t worry about perfect runs, you&rsquo;ll cherry-pick the best segments in the edit.
           </p>
           <ol className="space-y-2">
             {RECORDING_CHECKLIST.map((c, i) => (

@@ -99,7 +99,7 @@ function OpenQuestionCard({
         className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-5"
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
       >
-        <p className="text-sm text-[#2d6a4f] font-medium">Answer sent &mdash; thanks.</p>
+        <p className="text-sm text-[#2d6a4f] font-medium">Answer sent, thanks.</p>
       </div>
     )
   }
@@ -302,7 +302,7 @@ export default function TeamQuestionsPage() {
           </h1>
           {data?.role === 'player' && (
             <p className="text-white/70 text-sm max-w-xl leading-relaxed mt-4">
-              Alumni ask &mdash; you answer. Keeps the community tight and gives guys real access to the program.
+              Alumni ask, you answer. Keeps the community tight and gives guys real access to the program.
             </p>
           )}
         </div>
@@ -319,7 +319,7 @@ export default function TeamQuestionsPage() {
           </div>
         )}
 
-        {/* Signed out / unclaimed — show the right door, not a retry loop */}
+        {/* Signed out / unclaimed, show the right door, not a retry loop */}
         {gate && (
           <div
             className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-8 py-12 text-center max-w-lg mx-auto"
@@ -333,7 +333,7 @@ export default function TeamQuestionsPage() {
             <p className="text-[13px] text-[#3d4a5c] mb-6">
               {gate === 'signin'
                 ? 'Questions and answers are members-only. Sign in and they’ll be right here.'
-                : 'Your account isn’t linked to a member card yet — finish claiming yours to see questions and answers.'}
+                : 'Your account isn’t linked to a member card yet, finish claiming yours to see questions and answers.'}
             </p>
             <Link
               href={gate === 'signin' ? '/login?next=/team/questions' : '/account/setup'}

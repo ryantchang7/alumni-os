@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         type: 'request',
         title:
           status === 'accepted'
-            ? `You're on the sheet — ${gathering.title}`
+            ? `You're on the sheet. ${gathering.title}`
             : `${gathering.title} is full`,
         body:
           status === 'accepted'

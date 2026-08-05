@@ -41,7 +41,7 @@ export async function fetchPage(url: string): Promise<FetchedPage> {
       if (response.status < 300 || response.status >= 400) break
 
       const location = response.headers.get('location')
-      if (!location) break // redirect with no target — treat as final.
+      if (!location) break // redirect with no target, treat as final.
 
       if (hop >= MAX_REDIRECTS) {
         throw new Error(`Too many redirects (>${MAX_REDIRECTS})`)

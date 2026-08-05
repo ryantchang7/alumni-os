@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
   const { ok } = await checkRateLimit(`player-request:${ip}`, 6, 600)
   if (!ok) {
     return NextResponse.json(
-      { error: 'Too many requests — please try again in a few minutes.' },
+      { error: 'Too many requests, please try again in a few minutes.' },
       { status: 429 },
     )
   }
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
   const captchaOk = await verifyTurnstile(body.turnstileToken, ip)
   if (!captchaOk) {
     return NextResponse.json(
-      { error: 'Verification failed — please try again.' },
+      { error: 'Verification failed, please try again.' },
       { status: 403 },
     )
   }
@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
     await notify(recipient.id, {
       type: 'request',
       title: `${trimmedName} reached out`,
-      body: `${purposeLabel} — open your inbox to respond.`,
+      body: `${purposeLabel}, open your inbox to respond.`,
       href: '/alumni/requests',
     })
     // Email too. The bell + web push alone meant asks were effectively silent

@@ -57,7 +57,7 @@ export async function checkRateLimit(
     return { ok: count <= limit }
   } catch (err) {
     // Any Redis failure must not block a real user. Fail open.
-    console.warn('[rate-limit] check failed — failing open:', err)
+    console.warn('[rate-limit] check failed, failing open:', err)
     return { ok: true }
   }
 }

@@ -201,7 +201,7 @@ function AgentInner() {
       setRefreshKey(k => k + 1)
     } catch (err) {
       setExtractionError(
-        err instanceof Error ? err.message : 'Network error — check that the server is running.',
+        err instanceof Error ? err.message : 'Network error, check that the server is running.',
       )
     } finally {
       setExtracting(false)
@@ -443,10 +443,10 @@ function AgentInner() {
                   {displayEntries.slice(0, 15).map(e => (
                     <tr key={e.id} className="hover:bg-gray-50/50">
                       <td className="px-4 py-2.5 font-medium text-[#0a1628]">{e.fullName}</td>
-                      <td className="px-4 py-2.5 text-gray-500">{e.classLabel ?? '—'}</td>
-                      <td className="px-4 py-2.5 text-gray-500">{e.hometown ?? '—'}</td>
+                      <td className="px-4 py-2.5 text-gray-500">{e.classLabel ?? '. '}</td>
+                      <td className="px-4 py-2.5 text-gray-500">{e.hometown ?? '. '}</td>
                       <td className="px-4 py-2.5"><ConfidencePill value={e.extractionConfidence} /></td>
-                      <td className="px-4 py-2.5 text-gray-400 font-mono text-xs">{e.seasonYear ?? '—'}</td>
+                      <td className="px-4 py-2.5 text-gray-400 font-mono text-xs">{e.seasonYear ?? '. '}</td>
                     </tr>
                   ))}
                 </tbody>

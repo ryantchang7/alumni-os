@@ -97,7 +97,7 @@ export default function LaunchReadinessClient({
       const res = await fetch('/api/internal/launch-readiness/test-email', { method: 'POST' })
       const j = await res.json().catch(() => ({}))
       if (res.ok && j.ok) {
-        setTestEmailStatus(`Sent to ${j.to}. Resend id ${j.id ?? '—'}.`)
+        setTestEmailStatus(`Sent to ${j.to}. Resend id ${j.id ?? '. '}.`)
       } else {
         setTestEmailStatus(`Failed: ${j.error ?? `HTTP ${res.status}`}`)
       }
@@ -113,7 +113,7 @@ export default function LaunchReadinessClient({
       const res = await fetch('/api/internal/launch-readiness/persistence-test', { method: 'POST' })
       const j = await res.json().catch(() => ({}))
       if (res.ok && j.ok) {
-        setPersistenceStatus(`KV roundtrip OK (${j.latencyMs}ms). Heartbeat nonce ${j.value?.nonce ?? '—'}.`)
+        setPersistenceStatus(`KV roundtrip OK (${j.latencyMs}ms). Heartbeat nonce ${j.value?.nonce ?? '. '}.`)
       } else {
         setPersistenceStatus(`Failed: ${j.error ?? `HTTP ${res.status}`}`)
       }

@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Support',
-  description: 'Back the program — support Penn Golf.',
+  description: 'Back the program, support Penn Golf.',
 }
 
 interface PageProps {

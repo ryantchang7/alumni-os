@@ -49,10 +49,10 @@ export async function GET(request: NextRequest) {
   if (officialNames.length === 0) {
     await alertFounders(
       'roster-check',
-      'Roster parse produced zero names — pennathletics markup likely changed.',
+      'Roster parse produced zero names, pennathletics markup likely changed.',
     )
     return NextResponse.json(
-      { ok: false, error: 'Roster parse produced zero names — page layout may have changed.' },
+      { ok: false, error: 'Roster parse produced zero names, page layout may have changed.' },
       { status: 502 },
     )
   }
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
     try {
       await notifyMany(founderIds, {
         type: 'team_update',
-        title: 'New season — roster check',
+        title: 'New season, roster check',
         body: parts.join(' · ').slice(0, 240),
         href: '/internal/current-roster',
       })

@@ -61,7 +61,7 @@ export default async function CurrentRosterEditorPage() {
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-8">
         <div className="flex items-center justify-between gap-4 mb-6">
           <p className="text-sm text-ink-muted">
-            <span className="font-semibold text-[#0a1628]">{players.length}</span> current players — save each card individually.
+            <span className="font-semibold text-[#0a1628]">{players.length}</span> current players, save each card individually.
           </p>
           <Link href="/member-book?role=current_player" className="text-xs font-medium text-[#990000] hover:underline">
             View in Member Book &rarr;

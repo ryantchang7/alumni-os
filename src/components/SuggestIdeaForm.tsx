@@ -103,7 +103,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
           className="font-serif text-2xl text-[#0a1628]"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
-          Thanks &mdash; Ryan will see this.
+          Thanks, Ryan will see this.
         </p>
         <p className="mt-3 text-sm text-ink-muted">
           We read every idea. Appreciate you taking the time.
@@ -114,7 +114,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Name — always editable; prefilled for signed-in users */}
+      {/* Name, always editable; prefilled for signed-in users */}
       <div>
         <label
           htmlFor="suggest-name"
@@ -134,7 +134,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
         />
       </div>
 
-      {/* Email — always editable; prefilled for signed-in users; optional */}
+      {/* Email, always editable; prefilled for signed-in users; optional */}
       <div>
         <label
           htmlFor="suggest-email"
@@ -153,7 +153,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
         />
       </div>
 
-      {/* Topic chips — optional single-select */}
+      {/* Topic chips, optional single-select */}
       <div>
         <p className="block text-xs font-semibold tracking-widest uppercase text-ink-muted mb-2">
           What&apos;s this about? <span className="normal-case font-normal tracking-normal">(optional)</span>
@@ -208,7 +208,7 @@ export default function SuggestIdeaForm({ prefillName, prefillEmail, isSignedIn 
         />
       </div>
 
-      {/* Turnstile — self-hides when NEXT_PUBLIC_TURNSTILE_SITE_KEY is unset */}
+      {/* Turnstile, self-hides when NEXT_PUBLIC_TURNSTILE_SITE_KEY is unset */}
       <TurnstileWidget onToken={handleTurnstile} />
 
       {status === 'error' && (

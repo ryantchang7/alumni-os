@@ -139,7 +139,7 @@ export default function RolesClient({ initialAccounts }: Props) {
                         ? 'Family & Affiliate'
                         : row.stripeTier === 'member'
                           ? 'Supporting'
-                          : '—'}
+                          : ', '}
                   </td>
                   <td className="py-2.5 px-2 text-center">
                     <RoleCheckbox

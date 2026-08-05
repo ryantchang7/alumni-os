@@ -9,7 +9,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Schedule & Travel',
-  description: 'The full season, stop by stop — and offer to host the team.',
+  description: 'The full season, stop by stop, and offer to host the team.',
 }
 
 function formatDate(iso: string): string {
@@ -74,7 +74,7 @@ export default async function TeamTravelPage() {
             Schedule &amp; Travel
           </h1>
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-            The season, stop by stop &mdash; and offer to host the team when they&rsquo;re near you.
+            The season, stop by stop, and offer to host the team when they&rsquo;re near you.
           </p>
         </div>
       </div>
@@ -93,12 +93,12 @@ export default async function TeamTravelPage() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
           >
             <p className="text-sm font-semibold text-[#0a1628]">
-              {isFounder ? 'No stops yet — add the first one.' : 'The schedule hasn\'t been posted yet.'}
+              {isFounder ? 'No stops yet, add the first one.' : 'The schedule hasn\'t been posted yet.'}
             </p>
             <p className="text-xs text-ink-muted mt-2 max-w-sm mx-auto">
               {isFounder
                 ? 'Once you add a stop, alumni near that location can offer to host the team.'
-                : 'Check back soon — every tournament will be listed here.'}
+                : 'Check back soon. Every tournament will be listed here.'}
             </p>
           </div>
         ) : (
@@ -111,7 +111,7 @@ export default async function TeamTravelPage() {
                   className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
                   style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
                 >
-                  {/* Stop header — itinerary layout */}
+                  {/* Stop header, itinerary layout */}
                   <div className="p-5 sm:p-6">
                     <div className="flex items-start justify-between gap-4 flex-wrap">
                       <div className="min-w-0 flex-1 flex items-start gap-4">
@@ -196,7 +196,7 @@ export default async function TeamTravelPage() {
                                   </span>
                                   {offer.byLocation && (
                                     <span className="text-[11px] text-ink-muted">
-                                      &mdash; {offer.byLocation}
+                                     , {offer.byLocation}
                                     </span>
                                   )}
                                   <span className="text-[10px] text-[#b0a898] ml-auto">

@@ -43,10 +43,10 @@ function PeopleInner() {
   }
 
   function rosterYears(m: TeamMembership | undefined): string {
-    if (!m) return '—'
+    if (!m) return '. '
     if (m.rosterStartYear && m.rosterEndYear) return `${m.rosterStartYear}–${m.rosterEndYear}`
     if (m.rosterStartYear) return String(m.rosterStartYear)
-    return '—'
+    return ', '
   }
 
   const avgConfidence =
@@ -201,13 +201,13 @@ function PeopleInner() {
                       </td>
                       <td className="px-4 py-3 text-ink-muted">{rosterYears(m)}</td>
                       <td className="px-4 py-3 text-ink-muted">
-                        {m?.classLabel ?? <span className="text-[#c4bbb0]">—</span>}
+                        {m?.classLabel ?? <span className="text-[#c4bbb0]">, </span>}
                       </td>
                       <td className="px-4 py-3 text-ink-muted">
-                        {m?.hometown ?? <span className="text-[#c4bbb0]">—</span>}
+                        {m?.hometown ?? <span className="text-[#c4bbb0]">, </span>}
                       </td>
                       <td className="px-4 py-3 text-ink-muted">
-                        {m?.highSchool ?? <span className="text-[#c4bbb0]">—</span>}
+                        {m?.highSchool ?? <span className="text-[#c4bbb0]">, </span>}
                       </td>
                       <td className="px-4 py-3 text-ink-muted">
                         {m ? (
@@ -221,7 +221,7 @@ function PeopleInner() {
                             {Math.round(m.confidence * 100)}%
                           </span>
                         ) : (
-                          <span className="text-[#c4bbb0]">—</span>
+                          <span className="text-[#c4bbb0]">, </span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-ink-muted">
@@ -233,7 +233,7 @@ function PeopleInner() {
                             {m.bioUrls.length} link{m.bioUrls.length !== 1 ? 's' : ''}
                           </span>
                         ) : (
-                          <span className="text-[#c4bbb0]">—</span>
+                          <span className="text-[#c4bbb0]">, </span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-ink-muted">

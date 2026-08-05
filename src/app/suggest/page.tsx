@@ -36,7 +36,7 @@ export default async function SuggestPage() {
           </h1>
           <p className="text-base text-[#3a4657] leading-relaxed">
             Got an idea to make the Clubhouse more useful? Send it directly to
-            Ryan &mdash; every suggestion is read.
+            Ryan. Every suggestion is read.
           </p>
         </div>
 

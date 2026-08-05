@@ -117,9 +117,9 @@ export default async function BuilderGraphPage({ searchParams }: Props) {
                     return (
                       <tr key={person.id} className="hover:bg-[#f5f2ed] transition-colors">
                         <td className="px-4 py-3 font-medium text-[#0d1f3c]">{person.canonicalName}</td>
-                        <td className="px-4 py-3 text-ink-muted">{m?.classLabel ?? <span className="text-[#c4bbb0]">—</span>}</td>
-                        <td className="px-4 py-3 text-ink-muted">{m?.hometown ?? <span className="text-[#c4bbb0]">—</span>}</td>
-                        <td className="px-4 py-3 text-ink-muted">{m?.highSchool ?? <span className="text-[#c4bbb0]">—</span>}</td>
+                        <td className="px-4 py-3 text-ink-muted">{m?.classLabel ?? <span className="text-[#c4bbb0]">, </span>}</td>
+                        <td className="px-4 py-3 text-ink-muted">{m?.hometown ?? <span className="text-[#c4bbb0]">, </span>}</td>
+                        <td className="px-4 py-3 text-ink-muted">{m?.highSchool ?? <span className="text-[#c4bbb0]">, </span>}</td>
                         <td className="px-4 py-3">
                           {m ? (
                             <span
@@ -132,7 +132,7 @@ export default async function BuilderGraphPage({ searchParams }: Props) {
                               {Math.round(m.confidence * 100)}%
                             </span>
                           ) : (
-                            <span className="text-[#c4bbb0]">—</span>
+                            <span className="text-[#c4bbb0]">, </span>
                           )}
                         </td>
                       </tr>

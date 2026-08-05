@@ -59,13 +59,13 @@ const PLAYER_ALUMNI_COACH_REQUIRED: RequirementLine[] = [
   },
   ...COMMON_REQUIRED,
   {
-    field: 'Home course — OR — "I\'m not a member at a course"',
+    field: 'Home course, OR, "I\'m not a member at a course"',
     note: 'The opt-out checkbox suppresses the required check for members without a club affiliation.',
     appearsOn: ['/the-course "Where Penn Golf plays" (Course Roll)', '/player/alumni/[id] detail'],
   },
   {
     field: 'Handicap',
-    note: 'Free text — numeric ("12.4"), "Scratch", or "Beginner / Learning". Buckets feed the /the-course "Players around your level" section.',
+    note: 'Free text, numeric ("12.4"), "Scratch", or "Beginner / Learning". Buckets feed the /the-course "Players around your level" section.',
     appearsOn: ['/the-course Open to a Round card', '/19th-hole Open to Coffee card', '/the-course "Players around your level"'],
   },
 ]
@@ -95,7 +95,7 @@ const PLAYER_ALUMNI_COACH_OPTIONAL: RequirementLine[] = [
   },
   {
     field: 'How I can help (topics) + contact preference',
-    appearsOn: ['/player/alumni/[id] detail (alumni only — current players hide this)'],
+    appearsOn: ['/player/alumni/[id] detail (alumni only, current players hide this)'],
   },
   {
     field: 'Open-to toggles (round / coffee / mentorship / warm intros)',
@@ -104,7 +104,7 @@ const PLAYER_ALUMNI_COACH_OPTIONAL: RequirementLine[] = [
   },
   {
     field: 'Visible-to-players toggle',
-    note: 'When off, the member is hidden across all the discovery surfaces — they keep their card but disappear from lists.',
+    note: 'When off, the member is hidden across all the discovery surfaces. They keep their card but disappear from lists.',
   },
 ]
 
@@ -156,7 +156,7 @@ export const ROLE_SECTIONS: RoleSection[] = [
     key: 'alumni',
     label: 'Alumni',
     blurb:
-      'Penn Golf graduates with a Member Book card. The largest audience — all alumni-facing surfaces target this role.',
+      'Penn Golf graduates with a Member Book card. The largest audience, all alumni-facing surfaces target this role.',
     required: PLAYER_ALUMNI_COACH_REQUIRED,
     optional: PLAYER_ALUMNI_COACH_OPTIONAL,
   },

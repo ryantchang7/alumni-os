@@ -250,7 +250,7 @@ function BuildPageInner() {
       <div className="max-w-[860px] mx-auto px-8">
         <div className="-mt-5 relative z-10 space-y-3 pb-16">
 
-          {/* Step 1 — Team confirmed */}
+          {/* Step 1, Team confirmed */}
           <SectionShell active={activeStep === 1} done={step1Done}>
             <div className="flex gap-4 p-5">
               <StepNumber n={1} done={step1Done} active={activeStep === 1} />
@@ -269,7 +269,7 @@ function BuildPageInner() {
             </div>
           </SectionShell>
 
-          {/* Step 2 — Find alumni */}
+          {/* Step 2, Find alumni */}
           <SectionShell active={activeStep === 2} done={step2Done}>
             <div className="flex gap-4 p-5">
               <StepNumber n={2} done={step2Done} active={activeStep === 2} />
@@ -299,7 +299,7 @@ function BuildPageInner() {
               </div>
             </div>
 
-            {/* Import action — visible when step 1 done and not yet have people */}
+            {/* Import action, visible when step 1 done and not yet have people */}
             {step1Done && !step2Done && (
               <div className="px-5 pb-5 pt-0">
                 {importStatus === 'idle' || importStatus === 'error' ? (
@@ -335,7 +335,7 @@ function BuildPageInner() {
             )}
           </SectionShell>
 
-          {/* Step 3 — Review & publish */}
+          {/* Step 3, Review & publish */}
           <SectionShell active={activeStep === 3} done={step3Done}>
             <div className="flex gap-4 p-5">
               <StepNumber n={3} done={step3Done} active={activeStep === 3} />
@@ -377,7 +377,7 @@ function BuildPageInner() {
             )}
           </SectionShell>
 
-          {/* Step 4 — Open Clubhouse */}
+          {/* Step 4, Open Clubhouse */}
           <SectionShell active={activeStep === 4} done={false}>
             <div className="flex gap-4 p-5">
               <StepNumber n={4} done={false} active={activeStep === 4} />
@@ -394,7 +394,7 @@ function BuildPageInner() {
                       </Link>
                     </>
                   ) : (
-                    'Players see verified alumni — names, years, hometowns, and career info when available.'
+                    'Players see verified alumni, names, years, hometowns, and career info when available.'
                   )}
                 </p>
               </div>

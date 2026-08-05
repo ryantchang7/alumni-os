@@ -334,7 +334,7 @@ export default function MemberMapClient({
 
   return (
     <div className="space-y-6">
-      {/* Top-level subtab — All Members vs Family & Affiliate. Family
+      {/* Top-level subtab, All Members vs Family & Affiliate. Family
           gets its own separate map (current location only); no lens or
           role/era filter on that view. */}
       <div
@@ -381,7 +381,7 @@ export default function MemberMapClient({
         </button>
       </div>
 
-      {/* Lens toggle — All Members view only. Family has just one lens
+      {/* Lens toggle, All Members view only. Family has just one lens
           (current location), so the toggle would be a dead control. */}
       {view === 'all' && (
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3" data-testid="lens-toggle">
@@ -414,7 +414,7 @@ export default function MemberMapClient({
           <p className="text-[12px] text-ink-muted sm:text-right max-w-md">
             {lens === 'hometown'
               ? 'Where Penn Golf members grew up, drawn from the Member Book.'
-              : 'Where Penn Golf members live now — only members who have updated their location appear.'}
+              : 'Where Penn Golf members live now, only members who have updated their location appear.'}
           </p>
         </div>
       )}
@@ -531,7 +531,7 @@ export default function MemberMapClient({
             </div>
           ) : geoError ? (
             <div className="flex flex-col items-center justify-center gap-3" style={{ height: 380 }}>
-              <p className="text-sm text-ink-muted">Map couldn&rsquo;t load — check your connection.</p>
+              <p className="text-sm text-ink-muted">Map couldn&rsquo;t load, check your connection.</p>
               <button
                 type="button"
                 onClick={() => { setGeoError(false); setGeoRetry(n => n + 1) }}

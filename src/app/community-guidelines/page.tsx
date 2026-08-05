@@ -20,21 +20,21 @@ export default function CommunityGuidelinesPage() {
 
         <section className="space-y-5 text-[14.5px] text-[#0a1628] leading-relaxed">
           <p>
-            The Penn Golf Clubhouse is the private network for the Penn Men&rsquo;s Golf family &mdash; players, alumni, coaches, family, and longtime affiliates. This is a community built on shared experience and mutual respect. Treat it that way.
+            The Penn Golf Clubhouse is the private network for the Penn Men&rsquo;s Golf family, players, alumni, coaches, family, and longtime affiliates. This is a community built on shared experience and mutual respect. Treat it that way.
           </p>
           
           <h2 className="text-xl font-medium pt-2 font-heading">
             Be real
           </h2>
           <p>
-            Use your authentic identity. Claim only the member card that is genuinely yours &mdash; don&rsquo;t claim a card that belongs to someone else, and don&rsquo;t impersonate another person. Members hold one account each. Misrepresenting who you are undermines the trust this community is built on.
+            Use your authentic identity. Claim only the member card that is genuinely yours, don&rsquo;t claim a card that belongs to someone else, and don&rsquo;t impersonate another person. Members hold one account each. Misrepresenting who you are undermines the trust this community is built on.
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">
             Be respectful
           </h2>
           <p>
-            The Penn Golf family spans generations &mdash; current players, recent grads, parents, coaches, and alumni going back decades. Treat every member with the respect you&rsquo;d show a teammate or a coach. We do not tolerate:
+            The Penn Golf family spans generations, current players, recent grads, parents, coaches, and alumni going back decades. Treat every member with the respect you&rsquo;d show a teammate or a coach. We do not tolerate:
           </p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Harassment, bullying, or threats of any kind.</li>
@@ -74,7 +74,7 @@ export default function CommunityGuidelinesPage() {
             <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">
               rtchang@upenn.edu
             </a>
-            . Include as much detail as you can &mdash; what you saw, where, and when. We take every report seriously and will review it promptly.
+            . Include as much detail as you can, what you saw, where, and when. We take every report seriously and will review it promptly.
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">
@@ -97,7 +97,7 @@ export default function CommunityGuidelinesPage() {
             .
           </p>
           <p>
-            These Guidelines supplement &mdash; they do not replace &mdash; the{' '}
+            These Guidelines supplement, they do not replace, the{' '}
             <Link href="/terms" className="text-[#990000] hover:underline">
               Terms of Use
             </Link>

@@ -17,7 +17,7 @@ export default async function InternalSeasonPage() {
           <p className="text-xs text-gray-400 uppercase tracking-widest mb-3">Penn Men&rsquo;s Golf</p>
           <h1 className="text-white text-2xl font-semibold tracking-tight">Post a Season Update</h1>
           <p className="text-gray-400 text-sm mt-2">
-            Qualifiers, results, stats, notes — they land in The Season on the Team Room, newest first. Followers get notified.
+            Qualifiers, results, stats, notes, they land in The Season on the Team Room, newest first. Followers get notified.
             Paste a link to results or coverage on any update.
           </p>
         </div>

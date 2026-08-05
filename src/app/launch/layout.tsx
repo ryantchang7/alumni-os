@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Watch the film',
   description:
-    "The Penn Golf Clubhouse — a private network for everyone who carried the Penn Golf bag. Watch the 3-minute film, then claim your member card.",
+    "The Penn Golf Clubhouse, a private network for everyone who carried the Penn Golf bag. Watch the 3-minute film, then claim your member card.",
 }
 
 export default function LaunchLayout({ children }: { children: React.ReactNode }) {

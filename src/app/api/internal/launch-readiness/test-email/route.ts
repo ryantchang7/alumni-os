@@ -18,7 +18,7 @@ export async function POST() {
   }
 
   const html = `<!doctype html><html><body style="font-family:Georgia,serif;color:#0a1628;padding:24px;">
-    <h1 style="font-weight:500;">Penn Golf Clubhouse — test email</h1>
+    <h1 style="font-weight:500;">Penn Golf Clubhouse, test email</h1>
     <p>This confirms Resend is working for Penn Golf Clubhouse.</p>
     <p style="color:#6b6155;font-size:13px;">Sent ${new Date().toISOString()}</p>
   </body></html>`

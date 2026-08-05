@@ -223,7 +223,7 @@ export default function SupportClient({ status }: Props) {
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
-      {/* Hero — clean navy, no radial glow, no gold underline. Matches
+      {/* Hero, clean navy, no radial glow, no gold underline. Matches
           the Locker Room / Member Book pattern. */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-14 pb-16">
         <div className="max-w-[920px] mx-auto">
@@ -482,7 +482,7 @@ export default function SupportClient({ status }: Props) {
           </button>
         </div>
 
-        {/* Founders Wall lives on /member-book now — link to it from here. */}
+        {/* Founders Wall lives on /member-book now, link to it from here. */}
         {founders.length > 0 && (
           <div className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-5 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-[13.5px] text-[#3d4a5c]">
@@ -498,7 +498,7 @@ export default function SupportClient({ status }: Props) {
           </div>
         )}
 
-        {/* Merch — coming-soon teaser. Sits below the money content. Products
+        {/* Merch, coming-soon teaser. Sits below the money content. Products
             are blurred + locked so it reads as "reveal coming," not a live
             offer; copy is soft pending the compliance check on member merch.
             The gold sheen + spotlight + hover-to-peek make it feel like an
@@ -528,12 +528,12 @@ export default function SupportClient({ status }: Props) {
               Clubhouse merch is coming.
             </h2>
             <p className="text-[13.5px] text-white/70 leading-relaxed max-w-md">
-              Member gear stamped with the Quaker &mdash; a hat and a hoodie to
+              Member gear stamped with the Quaker, a hat and a hoodie to
               start. We&rsquo;re checking it with compliance first, then getting
               it made.
             </p>
             <p className="text-[11.5px] text-white/60 italic mt-2">
-              Pending compliance review &mdash; nothing&rsquo;s locked in yet.
+              Pending compliance review, nothing&rsquo;s locked in yet.
             </p>
 
             <div className="grid grid-cols-2 gap-4 mt-7 max-w-md">
@@ -554,7 +554,7 @@ export default function SupportClient({ status }: Props) {
                       style={{ background: 'radial-gradient(circle, rgba(200,168,75,0.45) 0%, transparent 70%)', filter: 'blur(14px)' }}
                     />
                   </div>
-                  {/* blurred product silhouette — eases toward a peek on hover */}
+                  {/* blurred product silhouette, eases toward a peek on hover */}
                   <div
                     className="absolute inset-0 flex items-center justify-center text-[#c8a84b]/80 group-hover:text-[#e6cf8a] [filter:blur(5px)] group-hover:[filter:blur(2px)] transition-[filter,color] duration-500"
                     aria-hidden="true"

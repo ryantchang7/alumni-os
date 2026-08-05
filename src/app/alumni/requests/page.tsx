@@ -218,7 +218,7 @@ function RequestCard({
                   <option value="">Select a member…</option>
                   {otherProfiles.map(p => (
                     <option key={p.personId} value={p.personId}>
-                      {p.canonicalName}{p.classLabel ? ` — ${p.classLabel}` : ''}
+                      {p.canonicalName}{p.classLabel ? `, ${p.classLabel}` : ''}
                     </option>
                   ))}
                 </select>

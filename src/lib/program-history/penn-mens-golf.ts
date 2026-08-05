@@ -3,7 +3,7 @@ export interface TraditionAchievement {
   value: string       // the big number shown first
   detail: string      // years or subcategory line
   description: string
-  featured?: boolean  // first/primary card — Penn red number accent
+  featured?: boolean  // first/primary card. Penn red number accent
 }
 
 export interface ProgramTradition {

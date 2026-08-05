@@ -75,7 +75,7 @@ export default function TeamNewsStrip({ items }: Props) {
           <h2
             className="text-[#0a1628] text-base font-medium font-heading"
           >
-            Penn Men&rsquo;s Golf — Latest
+            Penn Men&rsquo;s Golf, Latest
           </h2>
         </div>
         <a

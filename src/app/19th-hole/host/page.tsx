@@ -180,7 +180,7 @@ export default function HostNineteenthHolePage() {
             </h1>
             <p className="text-[13px] text-[#3d4a5c]/80 mt-3 max-w-lg">
               Pick a spot, set a time. Penn Golf finds you there. Use this for any
-              non-golf gathering — drinks, dinner, a quick coffee, or a one-off event.
+              non-golf gathering, drinks, dinner, a quick coffee, or a one-off event.
             </p>
           </div>
 
@@ -281,7 +281,7 @@ export default function HostNineteenthHolePage() {
                 type="text"
                 value={mapsUrl}
                 onChange={(e) => setMapsUrl(e.target.value)}
-                placeholder="Paste a Google Maps link — or leave blank and we'll map the venue"
+                placeholder="Paste a Google Maps link, or leave blank and we'll map the venue"
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#b8860b]/30 focus:border-[#b8860b]"
               />
             </div>

@@ -74,7 +74,7 @@ export async function POST(
         {
           type: 'host_offer',
           title: 'An alum offered to host the team',
-          body: `${byName}${byLocation ? ` (${byLocation})` : ''}${stop ? ` — ${stop.eventName}` : ''}`,
+          body: `${byName}${byLocation ? ` (${byLocation})` : ''}${stop ? `, ${stop.eventName}` : ''}`,
           href: '/team/travel',
         },
         { excludeAccountId: gate.session.accountId! },

@@ -186,7 +186,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
         } gap-6`}
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
       >
-        {/* Recently joined — approved only */}
+        {/* Recently joined, approved only */}
         {approved && (
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2.5">
@@ -218,7 +218,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
           </div>
         )}
 
-        {/* Totals — public, aggregate only */}
+        {/* Totals, public, aggregate only */}
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2.5">
             The Pulse

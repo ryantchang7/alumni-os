@@ -101,7 +101,7 @@ export default function FoundersWall({
         </Link>
       </div>
 
-      {/* Tab pills — quiet, sit just under the title. Only render the
+      {/* Tab pills, quiet, sit just under the title. Only render the
           Family tab when there's at least one supporter, so empty-state
           chrome doesn't pollute the wall. */}
       {hasFamily && (

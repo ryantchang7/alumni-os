@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
   const session = await auth()
   if (!session?.accountId || !session.linkedPersonId) {
     return NextResponse.json(
-      { error: 'Approved members only — claim your card to host.' },
+      { error: 'Approved members only, claim your card to host.' },
       { status: 403 },
     )
   }

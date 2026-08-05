@@ -109,7 +109,7 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
               {g.isExample && (
                 <span
                   className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted bg-[#fdfcf9] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
-                  title="Sample gathering — host a real one to replace it."
+                  title="Sample gathering, host a real one to replace it."
                 >
                   Example
                 </span>
@@ -274,7 +274,7 @@ function TraditionSection() {
         className="rounded-2xl overflow-hidden border border-[rgba(180,168,150,0.28)]"
         style={{ boxShadow: '0 2px 8px rgba(10,22,40,0.08), 0 16px 40px rgba(10,22,40,0.06)' }}
       >
-        {/* Trophy cabinet header — deep navy */}
+        {/* Trophy cabinet header, deep navy */}
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-6 pb-5 relative overflow-hidden">
           <div className="absolute inset-0 opacity-[0.035] pointer-events-none texture-engraved" />
           <div className="relative">
@@ -289,7 +289,7 @@ function TraditionSection() {
         </div>
         {/* Penn red ribbon */}
         <div className="h-[3px] bg-gradient-to-r from-[#990000] via-[#bb0000] to-[#990000]" />
-        {/* Plaque grid on parchment — NUMBER FIRST */}
+        {/* Plaque grid on parchment. NUMBER FIRST */}
         <div className="bg-[#fdfcf9] grid grid-cols-2 sm:grid-cols-3 divide-x divide-y divide-[rgba(180,168,150,0.3)]">
           {PENN_GOLF_TRADITION.achievements.map((a) => (
             <div key={a.label} className="px-5 sm:px-6 py-6 sm:py-7 hover:-translate-y-px hover:bg-white transition-all duration-150 cursor-default">
@@ -355,7 +355,7 @@ function MiniMemberCard({ profile, teamSlug }: { profile: PlayerProfile; teamSlu
   const isCurrentPlayer = profile.memberRole === 'current_player'
   const subline = isCurrentPlayer
     ? (deriveClassLabel(profile.classYearEstimate) ?? profile.classLabel ?? null)
-    : profile.rosterYearsLabel !== '—'
+    : profile.rosterYearsLabel !== '. '
       ? `Penn Golf ${profile.rosterYearsLabel}`
       : null
   const careerLine = profile.career?.currentRole && profile.career?.currentCompany
@@ -483,7 +483,7 @@ function ClubhouseInner() {
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
-      {/* Header — the foyer. The clubhouse hero photo carries the visual
+      {/* Header, the foyer. The clubhouse hero photo carries the visual
           weight; a navy gradient keeps the headline legible over it. */}
       <div className="relative overflow-hidden px-6 sm:px-8 pt-16 pb-16 sm:pt-24 sm:pb-20">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -545,7 +545,7 @@ function ClubhouseInner() {
           </div>
         )}
 
-        {/* Signed OUT: an unconditional way in. Data-independent by design —
+        {/* Signed OUT: an unconditional way in. Data-independent by design, 
             every tease below hides itself when the store is empty. */}
         {onboarding && !onboarding.linked && onboarding.signedIn === false && (
           <div className="-mt-5 relative z-10 mb-6 bg-[#0a1628] text-white rounded-2xl px-6 py-6 border border-[#c8a84b]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -588,7 +588,7 @@ function ClubhouseInner() {
                     Claim pending
                   </p>
                   <p className="text-sm text-white/80 mt-1">
-                    Every claim is reviewed by hand — usually within a day.
+                    Every claim is reviewed by hand, usually within a day.
                     You&rsquo;ll get an email the moment you&rsquo;re in.
                   </p>
                 </div>
@@ -606,7 +606,7 @@ function ClubhouseInner() {
                     One step left
                   </p>
                   <p className="text-sm text-white/80 mt-1">
-                    Find your name and claim your card — every claim is reviewed by
+                    Find your name and claim your card. Every claim is reviewed by
                     hand.
                   </p>
                 </div>
@@ -621,7 +621,7 @@ function ClubhouseInner() {
           </div>
         )}
 
-        {/* First-week locker checklist — only when signed in + linked */}
+        {/* First-week locker checklist, only when signed in + linked */}
         {onboarding?.linked && (
           <div className={`${welcomeName ? 'mt-4' : '-mt-5'} relative z-10 mb-6`}>
             <ClubhouseChecklist
@@ -633,7 +633,7 @@ function ClubhouseInner() {
           </div>
         )}
 
-        {/* Support nudge — approved members who haven't subscribed yet. */}
+        {/* Support nudge, approved members who haven't subscribed yet. */}
         {onboarding?.linked &&
           billingStatus?.configured &&
           !billingStatus.subscribed && (
@@ -665,7 +665,7 @@ function ClubhouseInner() {
             </div>
           )}
 
-        {/* Activation panel — shown to linked members; points them at
+        {/* Activation panel, shown to linked members; points them at
             the three highest-value next steps and signals the network is alive. */}
         {onboarding?.linked && (
           <motion.div
@@ -737,7 +737,7 @@ function ClubhouseInner() {
                     {' '}
                     {membersOn === 1 ? 'alum' : 'alumni'} in the Clubhouse
                     {membersOn < 50 && (
-                      <> &mdash; help us reach the first 50</>
+                      <>, help us reach the first 50</>
                     )}
                   </p>
                   {membersOn < 50 && (
@@ -766,7 +766,7 @@ function ClubhouseInner() {
                 <span className="font-semibold text-[#2d6a4f] uppercase tracking-[0.1em] text-[11px] mr-2">
                   Traveling?
                 </span>
-                Tell the Clubhouse where you&rsquo;ll be — members there can host you for a round.
+                Tell the Clubhouse where you&rsquo;ll be. Members there can host you for a round.
               </p>
               <span className="text-[12.5px] font-semibold text-[#0a1628] whitespace-nowrap group-hover:translate-x-0.5 transition-transform">
                 Post it &rarr;
@@ -775,13 +775,13 @@ function ClubhouseInner() {
           </div>
         )}
 
-        {/* Scotland Tour — October 2026 */}
+        {/* Scotland Tour, October 2026 */}
         <div className="mb-10 space-y-3">
           <NextEventChip />
           <ScotlandTourBanner variant="featured" />
         </div>
 
-        {/* From the box — Penn Athletics news */}
+        {/* From the box. Penn Athletics news */}
         {newsItems.length > 0 && (
           <div className="mb-10">
             <TeamNewsStrip items={newsItems} />
@@ -801,7 +801,7 @@ function ClubhouseInner() {
                   viewport={revealViewport}
                   transition={{ ...settle, delay: i * 0.05 }}
                 >
-                  {/* "Locker door" — double keyline (border + inset ring),
+                  {/* "Locker door", double keyline (border + inset ring),
                       brass roundel, 0.3s lift on hover. No bounce. */}
                   <Link
                     href={room.href}
@@ -824,17 +824,17 @@ function ClubhouseInner() {
           </div>
         </div>
 
-        {/* Alumni Spotlight compact card — only when one exists */}
+        {/* Alumni Spotlight compact card, only when one exists */}
         {currentSpotlight && <SpotlightCard spotlight={currentSpotlight} />}
 
-        {/* This Week in the Clubhouse — moved up so what's HAPPENING this
+        {/* This Week in the Clubhouse, moved up so what's HAPPENING this
             week sits near the top of the page, not at the bottom. */}
         <ThisWeekPanel teamSlug={teamSlug} approved={!!onboarding?.linked} />
 
-        {/* On the Loop — Penn Golf passing through. Tease for non-members. */}
+        {/* On the Loop. Penn Golf passing through. Tease for non-members. */}
         <OnTheLoopStrip approved={!!onboarding?.linked} />
 
-        {/* Your Era — the guys whose roster years overlapped yours.
+        {/* Your Era, the guys whose roster years overlapped yours.
             Members only; hidden entirely when there's no overlap data. */}
         <YourEraSection approved={!!onboarding?.linked} />
 
@@ -926,11 +926,11 @@ function ClubhouseInner() {
           )
         })()}
 
-        {/* Penn Golf Tradition — moved to bottom; it's "always there"
+        {/* Penn Golf Tradition, moved to bottom; it's "always there"
             content (history), not timely. */}
         <TraditionSection />
 
-        {/* Your Requests — members only; anonymous visitors have none to see */}
+        {/* Your Requests, members only; anonymous visitors have none to see */}
         <div className="pb-10" hidden={!onboarding?.linked}>
           <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-5 py-4 flex items-center justify-between"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}>

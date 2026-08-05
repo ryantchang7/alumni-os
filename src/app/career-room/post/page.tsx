@@ -11,13 +11,13 @@ const KIND_OPTIONS = [
   {
     value: 'ask',
     label: 'Ask',
-    helper: 'You’re looking for something specific — an intro, a referral, a piece of advice.',
+    helper: 'You’re looking for something specific, an intro, a referral, a piece of advice.',
     accent: '#990000',
   },
   {
     value: 'offer',
     label: 'Offer',
-    helper: 'You can give something specific — an intro at your firm, a seat at a dinner, a referral.',
+    helper: 'You can give something specific, an intro at your firm, a seat at a dinner, a referral.',
     accent: '#2d6a4f',
   },
 ] as const
@@ -171,7 +171,7 @@ export default function PostCareerEntryPage() {
             </h1>
             <p className="text-[13px] text-[#3d4a5c]/80 mt-3 max-w-lg">
               Be specific. The strongest asks and offers name a sector, a role, and a real
-              constraint. Replies are private — they go to the email you list below.
+              constraint. Replies are private, they go to the email you list below.
             </p>
           </div>
 

@@ -43,7 +43,7 @@ export const BOOK_PROOF_STATS: ProofStat[] = [
     value:
       BOOK_PROOF.earliestYear && BOOK_PROOF.latestYear
         ? `${BOOK_PROOF.earliestYear}–${BOOK_PROOF.latestYear}`
-        : '—',
+        : ', ',
   },
   { label: 'Generations', value: BOOK_PROOF.generations },
   { label: 'Letter years', value: BOOK_PROOF.letterYears },

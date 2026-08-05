@@ -14,7 +14,7 @@ export default function GlobalError({ error, reset }: Props) {
       {/* Penn red accent bar at the very top */}
       <div className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#990000] via-[#bb0000] to-[#990000]" />
 
-      {/* Shield icon placeholder — uses brand colors */}
+      {/* Shield icon placeholder, uses brand colors */}
       <div className="w-16 h-16 rounded-2xl bg-[#0a1628] flex items-center justify-center mb-6 shadow-lg">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
@@ -32,7 +32,7 @@ export default function GlobalError({ error, reset }: Props) {
       </h1>
 
       <p className="text-[14px] text-ink-muted max-w-sm leading-relaxed mb-8">
-        An unexpected error occurred. Try reloading — if it keeps happening, the team is already on it.
+        An unexpected error occurred. Try reloading. If it keeps happening, the team is already on it.
       </p>
 
       {process.env.NODE_ENV === 'development' && error?.message && (

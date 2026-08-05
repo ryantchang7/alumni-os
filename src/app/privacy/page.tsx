@@ -36,7 +36,7 @@ export default function PrivacyPage() {
             Information we collect
           </h2>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Profile information you add to your member card &mdash; name, class year, city and state, hometown, home course, handicap, contact preferences, bio, and how you want to help.</li>
+            <li>Profile information you add to your member card, name, class year, city and state, hometown, home course, handicap, contact preferences, bio, and how you want to help.</li>
             <li>Photos and videos you upload to your profile or to Moments.</li>
             <li>Messages and requests you send or receive inside the Clubhouse.</li>
             <li>Sign-in information from Google OAuth: your name, email address, and profile photo.</li>
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
             <li>Photos and videos are stored in Vercel Blob.</li>
             <li>Sign-in is handled by Google through NextAuth / Auth.js.</li>
             <li>Email is delivered by Resend.</li>
-            <li>Payments are handled by Stripe &mdash; card details never reach our servers.</li>
+            <li>Payments are handled by Stripe, card details never reach our servers.</li>
             <li>The site is hosted on Vercel.</li>
             <li>Bot-challenge verification on public forms is handled by Cloudflare Turnstile.</li>
             <li>All data is processed and stored in the United States.</li>
@@ -134,7 +134,7 @@ export default function PrivacyPage() {
             <li><strong>Identifiers.</strong> Name, email address, Google account ID (from Google OAuth sign-in).</li>
             <li><strong>Customer records.</strong> Profile and member-card fields you fill in: class year, city and state, hometown, home course, handicap, contact preferences, and how you want to help.</li>
             <li><strong>Internet or other electronic network activity.</strong> IP address, request logs (browser type, referring URL, timestamps) collected automatically for security and abuse prevention.</li>
-            <li><strong>Geolocation &mdash; approximate only.</strong> City, state, and hometown as entered on your member card. We do not collect or use precise GPS location.</li>
+            <li><strong>Geolocation, approximate only.</strong> City, state, and hometown as entered on your member card. We do not collect or use precise GPS location.</li>
             <li><strong>Visual information.</strong> Photos and videos you upload to your profile or to Moments.</li>
             <li><strong>Commercial information.</strong> Optional subscription tier and status (e.g., Supporting Member), if you choose to support the Clubhouse.</li>
             <li><strong>Professional or biographical information.</strong> Bio, class year, role (current player, alum, coach, family &amp; affiliate), and how you want to be involved with the community.</li>

@@ -194,7 +194,7 @@ export default function ParentSignupPage() {
                 onChange={e => setRelationship(e.target.value)}
                 maxLength={200}
                 required
-                placeholder="Parent of John Smith C'24 / Affiliate — supporter since 2010"
+                placeholder="Parent of John Smith C'24 / Affiliate, supporter since 2010"
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30 focus:border-[#c8a84b]"
               />
               <p className="text-[11px] text-ink-muted mt-1.5">

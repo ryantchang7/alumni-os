@@ -73,7 +73,7 @@ export default function CaptainsLineup({
         Clubhouse Captains
       </h2>
       <p className="text-sm text-ink-muted mb-5">
-        The members who built and look after the Clubhouse — your point people for the Penn Golf family.
+        The members who built and look after the Clubhouse, your point people for the Penn Golf family.
       </p>
       <div className="flex flex-wrap gap-4">
         {captains.map(({ account, displayName, photoUrl, badges }) => (

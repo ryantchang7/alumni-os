@@ -72,7 +72,7 @@ export default function TermsPage() {
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">
-            No paywall &mdash; optional support
+            No paywall, optional support
           </h2>
           <p>
             Access to the Clubhouse is free and approval-based. Membership and access are never gated by payment. Optional support contributions (processed securely by Stripe) are entirely voluntary. Seventy percent (70%) of every dollar is directed to Penn Men&rsquo;s Golf and thirty percent (30%) covers Clubhouse operating costs. Support does not affect your access or standing beyond an optional supporter badge, and can be canceled at any time from the Support page.
@@ -89,7 +89,7 @@ export default function TermsPage() {
             Termination
           </h2>
           <p>
-            You may stop using the Clubhouse at any time. You can request deletion of your account and associated data by emailing <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a>. We may suspend or terminate your access for violation of these Terms or for any other reason we deem necessary, with or without notice. Upon termination, your license to use the Clubhouse ceases, and provisions of these Terms that by their nature should survive&mdash;including disclaimers, limitations of liability, and indemnification&mdash;will continue to apply.
+            You may stop using the Clubhouse at any time. You can request deletion of your account and associated data by emailing <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a>. We may suspend or terminate your access for violation of these Terms or for any other reason we deem necessary, with or without notice. Upon termination, your license to use the Clubhouse ceases, and provisions of these Terms that by their nature should survive, including disclaimers, limitations of liability, and indemnification, will continue to apply.
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">

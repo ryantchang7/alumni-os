@@ -19,7 +19,7 @@ import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 
 export const metadata: Metadata = {
   title: 'The Course',
-  description: 'Find a round or host one — tee times with the Penn Golf family.',
+  description: 'Find a round or host one, tee times with the Penn Golf family.',
 }
 
 interface AlumniEntry {
@@ -338,7 +338,7 @@ export default async function TheCoursePage() {
       <CourseHero />
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-12 space-y-14">
-        {/* Host a Round — prominent CTA, always visible */}
+        {/* Host a Round, prominent CTA, always visible */}
         <section>
           <div
             className="bg-gradient-to-r from-[#0a1628] to-[#112240] text-white rounded-2xl px-6 py-7 sm:px-8 sm:py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 border border-[#c8a84b]/25"
@@ -354,7 +354,7 @@ export default async function TheCoursePage() {
                 Host a round. Penn Golf will find you there.
               </p>
               <p className="text-[13px] text-white/70 mt-1.5">
-                Pick a date, pick a course — alumni and current players in your city will see it and ask in.
+                Pick a date, pick a course, alumni and current players in your city will see it and ask in.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2.5 flex-shrink-0">
@@ -365,8 +365,8 @@ export default async function TheCoursePage() {
               >
                 Host a Round &rarr;
               </Link>
-              {/* The traveling-golfer case — the single best reason to open
-                  this site — was only reachable from the account dropdown. */}
+              {/* The traveling-golfer case, the single best reason to open
+                  this site, was only reachable from the account dropdown. */}
               <Link
                 href="/requests/new"
                 className="border border-white/30 hover:border-white/60 text-white text-[13px] font-semibold uppercase tracking-[0.14em] px-7 py-3.5 rounded-lg transition-colors whitespace-nowrap text-center"
@@ -408,7 +408,7 @@ export default async function TheCoursePage() {
           </div>
         </section>
 
-        {/* Organized Rounds — Hole 1 */}
+        {/* Organized Rounds, Hole 1 */}
         {rounds.length > 0 && (
           <div id="rounds-section" data-testid="rounds-section">
             <CourseHoleSection
@@ -432,7 +432,7 @@ export default async function TheCoursePage() {
           </div>
         )}
 
-        {/* Open Requests — members in town looking for a tee time.
+        {/* Open Requests, members in town looking for a tee time.
             Always renders: the strip's empty state advertises the
             "Post a request" CTA so the surface stays discoverable. */}
         <div className="-mt-4 mb-2">
@@ -440,7 +440,7 @@ export default async function TheCoursePage() {
             requests={openRoundRequests}
             eyebrow="Open Requests"
             title="In town, looking for a round."
-            subtitle="Penn Golf members visiting somewhere — ping them if you can play host."
+            subtitle="Penn Golf members visiting somewhere, ping them if you can play host."
             accent="#2d6a4f"
             limit={6}
             homeCourseByPersonId={homeCourseByPersonId}
@@ -448,7 +448,7 @@ export default async function TheCoursePage() {
           />
         </div>
 
-        {/* Open to a Round — Hole 2 */}
+        {/* Open to a Round. Hole 2 */}
         <div id="open-to-rounds">
           <CourseHoleSection
             hole={rounds.length > 0 ? 2 : 1}
@@ -557,7 +557,7 @@ export default async function TheCoursePage() {
           </CourseHoleSection>
         </div>
 
-        {/* Players around your level — same handicap bucket as the
+        {/* Players around your level, same handicap bucket as the
             viewer, opted into rounds. Hidden when the viewer hasn't
             saved a handicap. */}
         {viewerBucket && similarPlayers.length > 0 && (
@@ -574,7 +574,7 @@ export default async function TheCoursePage() {
               {BUCKET_SHORT[viewerBucket]}
             </h2>
             <p className="text-sm text-ink-muted mb-5">
-              Penn Golf members in your bucket — {BUCKET_LABELS[viewerBucket].toLowerCase()}.
+              Penn Golf members in your bucket. {BUCKET_LABELS[viewerBucket].toLowerCase()}.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {similarPlayers.slice(0, 24).map(entry => (
@@ -607,7 +607,7 @@ export default async function TheCoursePage() {
           </div>
         )}
 
-        {/* Notable Courses — Hole 3 */}
+        {/* Notable Courses, Hole 3 */}
         {sortedCourses.length > 0 && (
           <div>
             <CartPathDivider />
@@ -615,7 +615,7 @@ export default async function TheCoursePage() {
               hole={rounds.length > 0 ? 3 : 2}
               title="Where Penn Golf plays"
               rightLabel="The course roll"
-              subtitle="Home courses across the alumni network — access often runs through these."
+              subtitle="Home courses across the alumni network, access often runs through these."
             >
               <CourseRoll entries={courseRollEntries} />
             </CourseHoleSection>

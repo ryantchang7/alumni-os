@@ -34,7 +34,7 @@ export function buildPublishedProfile(
       ? `${start}–${String(end).slice(-2)}`
       : start
         ? String(start)
-        : '—'
+        : ', '
 
   const isVerified =
     enrichment &&

@@ -130,7 +130,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
           </motion.p>
         </div>
 
-        {/* Subtle radial in the corner — gives the hero some depth without an image */}
+        {/* Subtle radial in the corner, gives the hero some depth without an image */}
         <div
           className="absolute pointer-events-none"
           style={{
@@ -143,7 +143,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
         />
       </section>
 
-      {/* The film — server-rendered by page.tsx so a slow or failed
+      {/* The film, server-rendered by page.tsx so a slow or failed
           /api/site-content call can never silently delete it. */}
       {film}
 
@@ -158,7 +158,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.05)' }}
           >
             {founderNote.split('\n\n').map((para, i) => {
-              const isSig = para.startsWith('— ')
+              const isSig = para.startsWith('. ')
               return (
                 <p
                   key={i}

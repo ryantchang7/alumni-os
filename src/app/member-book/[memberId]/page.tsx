@@ -73,7 +73,7 @@ export async function generateMetadata({
     startYear && finishYear ? ` · Penn Golf ${startYear}–${finishYear}` : ''
   return {
     title: member.displayName,
-    description: `${member.displayName}${years} — in the Penn Golf Clubhouse Member Book.`,
+    description: `${member.displayName}${years}, in the Penn Golf Clubhouse Member Book.`,
   }
 }
 
@@ -276,7 +276,7 @@ export default async function MemberDetailPage({
             </div>
           </div>
 
-          {/* Penn Golf section — coaches get a tailored blurb instead of letter/season stats. */}
+          {/* Penn Golf section, coaches get a tailored blurb instead of letter/season stats. */}
           {member.role === 'coach' ? (
             <Section title="Penn Golf">
               <p className="text-[14px] text-[#3d4a5c] leading-relaxed">
@@ -490,7 +490,7 @@ export default async function MemberDetailPage({
                 Send {member.displayName.split(' ')[0]} a request.
               </p>
               <p className="text-[13.5px] text-white/70 mb-5 max-w-lg leading-relaxed">
-                Career advice, a warm intro, a coffee chat, a round — a structured
+                Career advice, a warm intro, a coffee chat, a round, a structured
                 4-step request that lands in {member.displayName.split(' ')[0]}&rsquo;s
                 Clubhouse inbox.
               </p>

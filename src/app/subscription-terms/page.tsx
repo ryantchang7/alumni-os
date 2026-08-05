@@ -30,9 +30,9 @@ export default function SubscriptionTermsPage() {
             The following optional monthly support tiers are currently offered:
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li><strong>Supporting Member &mdash; $10 / month.</strong> For alumni, players, and community members who want to directly support the program.</li>
-            <li><strong>Founding Member &mdash; $20 / month.</strong> For those who want to provide double the support and be recognized as a Founding Member of the Clubhouse.</li>
-            <li><strong>Family &amp; Affiliate &mdash; $15 / month.</strong> For family, parents, and longtime affiliates of the program.</li>
+            <li><strong>Supporting Member, $10 / month.</strong> For alumni, players, and community members who want to directly support the program.</li>
+            <li><strong>Founding Member, $20 / month.</strong> For those who want to provide double the support and be recognized as a Founding Member of the Clubhouse.</li>
+            <li><strong>Family &amp; Affiliate, $15 / month.</strong> For family, parents, and longtime affiliates of the program.</li>
           </ul>
           <p>
             Optional one-time contributions of any amount (minimum $5) are also accepted via the{' '}
@@ -75,7 +75,7 @@ export default function SubscriptionTermsPage() {
             Refunds
           </h2>
           <p>
-            Payments are voluntary contributions that support a program. As a general rule, payments are non-refundable. If you believe you were charged in error &mdash; for example, a duplicate charge or a charge after cancellation &mdash; email us at{' '}
+            Payments are voluntary contributions that support a program. As a general rule, payments are non-refundable. If you believe you were charged in error, for example, a duplicate charge or a charge after cancellation, email us at{' '}
             <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">
               rtchang@upenn.edu
             </a>{' '}
@@ -86,7 +86,7 @@ export default function SubscriptionTermsPage() {
             Payment processing
           </h2>
           <p>
-            All payments are processed by Stripe. We never see, receive, or store your card number, CVV, or other payment credentials &mdash; that information goes directly to Stripe and is governed by{' '}
+            All payments are processed by Stripe. We never see, receive, or store your card number, CVV, or other payment credentials. That information goes directly to Stripe and is governed by{' '}
             <a
               href="https://stripe.com/legal/ssa"
               target="_blank"
@@ -102,7 +102,7 @@ export default function SubscriptionTermsPage() {
             Price changes
           </h2>
           <p>
-            We will give you advance notice of any change to the price of a support tier &mdash; via email or a notice on the site. A price change takes effect on your next renewal date after the notice period. If you do not agree to a price change, you may cancel before the change takes effect.
+            We will give you advance notice of any change to the price of a support tier, via email or a notice on the site. A price change takes effect on your next renewal date after the notice period. If you do not agree to a price change, you may cancel before the change takes effect.
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">

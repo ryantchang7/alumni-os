@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const { ok } = await checkRateLimit(`claim:${ip}`, 6, 600)
   if (!ok) {
     return NextResponse.json(
-      { error: 'Too many requests — please try again in a few minutes.' },
+      { error: 'Too many requests, please try again in a few minutes.' },
       { status: 429 },
     )
   }
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   )
   if (!captchaOk) {
     return NextResponse.json(
-      { error: 'Verification failed — please try again.' },
+      { error: 'Verification failed, please try again.' },
       { status: 403 },
     )
   }

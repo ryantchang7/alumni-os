@@ -13,7 +13,7 @@
  */
 
 /** What happens after you claim, in one sentence fragment. */
-export const APPROVAL_PROMISE = 'Reviewed by hand — usually within a day.'
+export const APPROVAL_PROMISE = 'Reviewed by hand, usually within a day.'
 
 /** Sentence-fragment form for inline use ("...approved by hand, usually within a day"). */
 export const APPROVER_PHRASE = 'Every claim is reviewed by hand'

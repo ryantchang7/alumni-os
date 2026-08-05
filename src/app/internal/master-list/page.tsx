@@ -66,15 +66,15 @@ export default async function MasterListPage() {
         ? `${m.rosterStartYear}–${String(m.rosterEndYear).slice(-2)}`
         : m.rosterStartYear
           ? `${m.rosterStartYear}`
-          : '—'
+          : ', '
     return {
       key: `store:${m.personId}`,
       source: 'store',
       name,
       role: m.memberRole,
       years,
-      classLabel: m.classLabel ?? '—',
-      hometown: m.hometown ?? '—',
+      classLabel: m.classLabel ?? '. ',
+      hometown: m.hometown ?? '. ',
       published: m.publishedToNetwork ?? false,
       visible: enrichment?.visibleToPlayers !== false,
       hasEnrichment: !!enrichment,
@@ -97,15 +97,15 @@ export default async function MasterListPage() {
         ? `${start}–${String(end).slice(-2)}`
         : start
           ? `${start}`
-          : '—'
+          : ', '
     bookRows.push({
       key: `book:${entry.id}`,
       source: 'book',
       name: entry.displayName,
       role: isActiveMember(entry) ? 'current_player' : 'book',
       years,
-      classLabel: entry.profile.classYearEstimate ?? '—',
-      hometown: entry.profile.hometown ?? '—',
+      classLabel: entry.profile.classYearEstimate ?? '. ',
+      hometown: entry.profile.hometown ?? '. ',
       published: isPublicMember(entry),
       visible: isPublicMember(entry),
       hasEnrichment: false,
@@ -147,7 +147,7 @@ export default async function MasterListPage() {
           </div>
           <h1 className="text-white text-2xl font-semibold tracking-tight">Master Member Manager</h1>
           <p className="text-gray-400 text-sm mt-2">
-            Every Penn Men&apos;s Golf member — team store + historical Member Book, unified.
+            Every Penn Men&apos;s Golf member, team store + historical Member Book, unified.
           </p>
         </div>
       </div>

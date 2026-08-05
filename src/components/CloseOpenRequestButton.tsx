@@ -41,7 +41,7 @@ export default function CloseOpenRequestButton({ requestId }: Props) {
       disabled={busy}
       className="w-full text-[11.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2 rounded-lg border border-[#0a1628]/25 text-[#3d4a5c] hover:bg-[#0a1628] hover:text-white transition-colors disabled:opacity-60"
     >
-      {busy ? 'Closing…' : failed ? 'Could not close — try again' : 'Close request'}
+      {busy ? 'Closing…' : failed ? 'Could not close, try again' : 'Close request'}
     </button>
   )
 }

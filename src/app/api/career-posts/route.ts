@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
   }
   if (!session.linkedPersonId) {
     return NextResponse.json(
-      { error: 'Approved members only — claim your card to post.' },
+      { error: 'Approved members only, claim your card to post.' },
       { status: 403 },
     )
   }

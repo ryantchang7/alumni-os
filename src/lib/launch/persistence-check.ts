@@ -73,7 +73,7 @@ export async function runPersistenceTest(): Promise<PersistenceTestResult> {
     return {
       ok: false,
       backend: status.backend,
-      error: status.warning ?? 'Not on KV — cannot run live persistence test.',
+      error: status.warning ?? 'Not on KV, cannot run live persistence test.',
     }
   }
 

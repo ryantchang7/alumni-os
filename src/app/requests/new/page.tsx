@@ -117,7 +117,7 @@ export default function NewOpenRequestPage() {
           </h1>
           <p className="text-[13px] text-[#3d4a5c] mb-7">
             Penn Golf members in {city || 'your area'} will see it.
-            Responses come through chat &mdash; and you can close the
+            Responses come through chat, and you can close the
             request anytime from {intent === 'round' ? 'The Course' : 'the 19th Hole'}.
           </p>
           <div className="flex flex-col gap-2.5">
@@ -177,7 +177,7 @@ export default function NewOpenRequestPage() {
             </h1>
             <p className="text-[13px] text-[#3d4a5c]/80 mt-3 max-w-lg">
               Visiting somewhere and want to play, grab coffee, or pull a
-              dinner together? Drop a note &mdash; Penn Golf alumni near that
+              dinner together? Drop a note. Penn Golf alumni near that
               city get a heads-up (bell + email), so someone can play or host you.
             </p>
           </div>
@@ -281,7 +281,7 @@ export default function NewOpenRequestPage() {
               </p>
             </div>
 
-            {/* Guest-fees toggle — only relevant for rounds */}
+            {/* Guest-fees toggle, only relevant for rounds */}
             {intent === 'round' && (
               <label className="flex items-start gap-3 cursor-pointer">
                 <input

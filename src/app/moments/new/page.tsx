@@ -242,7 +242,7 @@ function NewMomentForm() {
                       }`}
                     >
                       <Lock className="w-3.5 h-3.5" />
-                      {lockerMode ? 'Locker Room Only — Active' : 'Locker Room only'}
+                      {lockerMode ? 'Locker Room Only. Active' : 'Locker Room only'}
                     </span>
                     <span
                       className={`block text-[12px] mt-1 leading-relaxed ${

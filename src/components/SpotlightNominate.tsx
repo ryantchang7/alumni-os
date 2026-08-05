@@ -62,13 +62,13 @@ export default function SpotlightNominate() {
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))
         setStatus('error')
-        setErrorMsg((d as { error?: string }).error ?? 'Something went wrong — try again.')
+        setErrorMsg((d as { error?: string }).error ?? 'Something went wrong, try again.')
         return
       }
       setStatus('success')
     } catch {
       setStatus('error')
-      setErrorMsg('Network error — check your connection and try again.')
+      setErrorMsg('Network error, check your connection and try again.')
     }
   }
 
@@ -133,7 +133,7 @@ export default function SpotlightNominate() {
                     <p
                       className="text-[#0a1628] text-lg font-medium mb-2 font-heading"
                     >
-                      Thanks &mdash; we&rsquo;ll take a look.
+                      Thanks, we&rsquo;ll take a look.
                     </p>
                     <p className="text-sm text-ink-muted">
                       Your nomination has been sent.

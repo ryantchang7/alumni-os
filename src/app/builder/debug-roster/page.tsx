@@ -367,9 +367,9 @@ function DebugRosterInner() {
                                 {e.fullName}
                               </div>
                             </td>
-                            <td className="px-4 py-3 text-ink-muted">{e.classLabel ?? <span className="text-[#c4bbb0]">—</span>}</td>
-                            <td className="px-4 py-3 text-ink-muted">{e.hometown ?? <span className="text-[#c4bbb0]">—</span>}</td>
-                            <td className="px-4 py-3 text-ink-muted">{e.highSchool ?? <span className="text-[#c4bbb0]">—</span>}</td>
+                            <td className="px-4 py-3 text-ink-muted">{e.classLabel ?? <span className="text-[#c4bbb0]">, </span>}</td>
+                            <td className="px-4 py-3 text-ink-muted">{e.hometown ?? <span className="text-[#c4bbb0]">, </span>}</td>
+                            <td className="px-4 py-3 text-ink-muted">{e.highSchool ?? <span className="text-[#c4bbb0]">, </span>}</td>
                             <td className="px-4 py-3 text-right">
                               <ConfidencePill value={e.extractionConfidence} />
                             </td>

@@ -10,7 +10,7 @@ import SectionEmblemHeader from '@/components/SectionEmblemHeader'
 export default function NineteenthHoleHero() {
   const heroBlurb = useSiteContent(
     '19th-hole.hero-blurb',
-    'Coffee, dinners, and signature Penn Golf gatherings — wherever you are.',
+    'Coffee, dinners, and signature Penn Golf gatherings, wherever you are.',
   )
 
   return (

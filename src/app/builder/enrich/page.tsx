@@ -157,7 +157,7 @@ function EnrichListInner() {
                 Enrich Profiles
               </h1>
               <p className="text-gray-400 text-sm leading-relaxed">
-                {team ? `${team.teamName} — ${team.schoolName}` : 'Add verified career, contact, and relationship data.'}
+                {team ? `${team.teamName}, ${team.schoolName}` : 'Add verified career, contact, and relationship data.'}
               </p>
             </div>
             {teamSlug && (
@@ -280,7 +280,7 @@ function EnrichListInner() {
                           {profile.canonicalName}
                         </td>
                         <td className="px-4 py-3 text-ink-muted text-xs">
-                          {profile.rosterYearsLabel || '—'}
+                          {profile.rosterYearsLabel || ', '}
                         </td>
                         <td className="px-4 py-3 text-ink-muted text-xs">
                           {profile.hometown || profile.highSchool ? (
@@ -290,7 +290,7 @@ function EnrichListInner() {
                               {profile.highSchool && <span>{profile.highSchool}</span>}
                             </span>
                           ) : (
-                            <span className="text-[#c4bbb0]">—</span>
+                            <span className="text-[#c4bbb0]">, </span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-ink-muted text-xs max-w-[220px] truncate">

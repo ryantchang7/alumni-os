@@ -205,7 +205,7 @@ function HistoryInner() {
           </Link>
           <h1 className="text-white text-2xl font-semibold tracking-tight mb-2">Historical Import</h1>
           <p className="text-gray-400 text-sm leading-relaxed">
-            Fetch public roster data season-by-season. Rows are saved as extracted entries — no
+            Fetch public roster data season-by-season. Rows are saved as extracted entries, no
             identities are added to the graph until you promote them.
           </p>
         </div>
@@ -412,7 +412,7 @@ function HistoryInner() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right font-mono text-gray-600">
-                        {sr.status === 'complete' ? sr.entriesExtracted : '—'}
+                        {sr.status === 'complete' ? sr.entriesExtracted : '. '}
                       </td>
                       <td className="px-4 py-3 text-gray-400 text-xs truncate max-w-[200px]">
                         {sr.errorMessage ?? ''}

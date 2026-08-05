@@ -141,7 +141,7 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
                     <p
                       className="text-xl font-medium text-[#0a1628] font-heading"
                     >
-                      Thanks &mdash; we&rsquo;ll pass it along.
+                      Thanks, we&rsquo;ll pass it along.
                     </p>
                     <p className="mt-3 text-sm text-ink-muted">
                       The coach and team will see this. We appreciate you looking out for the guys.
@@ -179,7 +179,7 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
                         onChange={e => setMessage(e.target.value.slice(0, 600))}
                         rows={4}
                         maxLength={600}
-                        placeholder="Anything you'd want to offer — dinner, a round, a place to stay?"
+                        placeholder="Anything you'd want to offer, dinner, a round, a place to stay?"
                         className="w-full rounded-lg border border-[#d9c8a8] bg-white px-4 py-3 text-sm text-[#0a1628] placeholder:text-[#b0a898] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/40 focus:border-[#c8a84b]"
                       />
                     </div>

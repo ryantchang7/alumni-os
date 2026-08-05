@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   const ip = ipFromRequest(request)
   const rate = await checkRateLimit(`teamq:${ip}`, 5, 600)
   if (!rate.ok) {
-    return NextResponse.json({ error: 'Too many questions — try again later.' }, { status: 429 })
+    return NextResponse.json({ error: 'Too many questions, try again later.' }, { status: 429 })
   }
 
   let body: Record<string, unknown>
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 
   const turnstileToken = typeof body.turnstileToken === 'string' ? body.turnstileToken : undefined
   if (!(await verifyTurnstile(turnstileToken, ip))) {
-    return NextResponse.json({ error: 'Challenge failed — please refresh and try again.' }, { status: 403 })
+    return NextResponse.json({ error: 'Challenge failed, please refresh and try again.' }, { status: 403 })
   }
 
   const question = typeof body.question === 'string' ? body.question.trim() : ''

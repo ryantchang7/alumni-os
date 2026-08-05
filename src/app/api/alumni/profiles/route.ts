@@ -50,7 +50,7 @@ export async function GET(request: Request) {
 
     const rosterStartYear = membership?.rosterStartYear
     const rosterEndYear = membership?.rosterEndYear
-    let rosterYearsLabel = '—'
+    let rosterYearsLabel = '. '
     if (rosterStartYear !== undefined && rosterEndYear !== undefined) {
       rosterYearsLabel = `${rosterStartYear}–${rosterEndYear}`
     } else if (rosterStartYear !== undefined) {

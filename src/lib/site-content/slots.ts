@@ -137,7 +137,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   // ── The Course (`/the-course`) — the 3-stage hero flow ──────────────────
   {
     id: 'the-course.hero-blurb',
-    label: 'The Course — Tee stage blurb',
+    label: 'The Course, Tee stage blurb',
     hint: 'Paragraph that appears on Stage 1 (the resting state). Default mirrors the stage-tee blurb so you can change one or both.',
     kind: 'longtext',
     default:
@@ -145,49 +145,49 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   },
   {
     id: 'the-course.stage-tee-blurb',
-    label: 'The Course — Stage 1 (Tee) blurb',
+    label: 'The Course, Stage 1 (Tee) blurb',
     hint: 'Overrides hero-blurb when present. Leave blank to fall back to the hero blurb.',
     kind: 'longtext',
     default: '',
   },
   {
     id: 'the-course.stage-tee-cta',
-    label: 'The Course — Stage 1 primary CTA',
+    label: 'The Course, Stage 1 primary CTA',
     hint: 'Button label that advances to the tee sheet.',
     kind: 'text',
     default: 'Find a Round',
   },
   {
     id: 'the-course.stage-tee-secondary',
-    label: 'The Course — Stage 1 secondary CTA',
+    label: 'The Course, Stage 1 secondary CTA',
     hint: 'Button label that links to /the-course/host.',
     kind: 'text',
     default: 'Host a Round',
   },
   {
     id: 'the-course.stage-sheet-blurb',
-    label: 'The Course — Stage 2 (Sheet) blurb',
+    label: 'The Course, Stage 2 (Sheet) blurb',
     hint: 'Shown on the tee sheet when rounds exist.',
     kind: 'longtext',
     default: 'Pick a round on the sheet. We’ll let the host know you’re interested.',
   },
   {
     id: 'the-course.stage-sheet-blurb-empty',
-    label: 'The Course — Stage 2 (Sheet) blurb when empty',
+    label: 'The Course, Stage 2 (Sheet) blurb when empty',
     hint: 'Shown on the tee sheet when no rounds are posted yet.',
     kind: 'text',
-    default: 'The sheet is open — no rounds posted yet.',
+    default: 'The sheet is open, no rounds posted yet.',
   },
   {
     id: 'the-course.stage-confirmed-prefix',
-    label: 'The Course — Stage 3 (Confirmed) prefix',
+    label: 'The Course, Stage 3 (Confirmed) prefix',
     hint: "Text before the round title (e.g., 'You're on the sheet for {title}').",
     kind: 'text',
     default: 'You’re on the sheet for',
   },
   {
     id: 'the-course.stage-confirmed-suffix',
-    label: 'The Course — Stage 3 (Confirmed) suffix',
+    label: 'The Course, Stage 3 (Confirmed) suffix',
     hint: 'Sentence after the round title.',
     kind: 'text',
     default: 'The host will be in touch.',
@@ -200,7 +200,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Paragraph under the Moments title.',
     kind: 'longtext',
     default:
-      'Rounds, dinners, championship cuttings, first-tee jitters — moments shared by Penn Golf members across generations.',
+      'Rounds, dinners, championship cuttings, first-tee jitters, moments shared by Penn Golf members across generations.',
   },
   {
     id: 'moments.empty-headline',
@@ -215,7 +215,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Body text shown when the All Moments feed is empty.',
     kind: 'longtext',
     default:
-      'Post the first one — a photo from a round, a tournament, an alumni dinner. The wall grows one moment at a time.',
+      'Post the first one, a photo from a round, a tournament, an alumni dinner. The wall grows one moment at a time.',
   },
 
   // ── Locker Room (`/locker-room`) ─────────────────────────────────────────
@@ -232,7 +232,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Body text shown when the Locker Room feed is empty. Players + alumni only see this surface.',
     kind: 'longtext',
     default:
-      'Post the first Locker Room moment — a road trip dinner, a pre-round shot, the Penn-Princeton afterparty. Players and alumni see it. No one else.',
+      'Post the first Locker Room moment, a road trip dinner, a pre-round shot, the Penn-Princeton afterparty. Players and alumni see it. No one else.',
   },
 
   // ── Support / membership (`/support`) ────────────────────────────────────
@@ -248,21 +248,21 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   // ── Public launch page (`/launch`) — all the marketing copy ─────────────
   {
     id: 'launch.hero-eyebrow',
-    label: '/launch — hero eyebrow',
+    label: '/launch, hero eyebrow',
     hint: 'Small ALL CAPS line above the title on /launch.',
     kind: 'text',
     default: "Penn Men's Golf · Clubhouse",
   },
   {
     id: 'launch.hero-subtitle',
-    label: '/launch — hero subtitle (italic line)',
+    label: '/launch, hero subtitle (italic line)',
     hint: 'The italic line right under the big title.',
     kind: 'longtext',
     default: 'For everyone who carried the Penn Golf bag.',
   },
   {
     id: 'launch.hero-body',
-    label: '/launch — hero body paragraph',
+    label: '/launch, hero body paragraph',
     hint: 'The longer description below the italic line.',
     kind: 'longtext',
     default:
@@ -270,14 +270,14 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   },
   {
     id: 'launch.tagline',
-    label: '/launch — tagline pill',
+    label: '/launch, tagline pill',
     hint: 'Small pill at the bottom of the hero. Also used as a section header below.',
     kind: 'text',
     default: 'Ask. Meet. Play. Gather.',
   },
   {
     id: 'launch.video-url',
-    label: '/launch — film URL (mp4)',
+    label: '/launch, film URL (mp4)',
     hint: 'Direct mp4 URL for the launch film. Empty hides the video section. When the VO version is ready, upload the new file and paste its URL here (or update this default).',
     kind: 'text',
     default:
@@ -285,7 +285,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   },
   {
     id: 'launch.video-poster',
-    label: '/launch — film poster image URL',
+    label: '/launch, film poster image URL',
     hint: 'Poster frame shown before the film plays. Usually the clubhouse photo frame.',
     kind: 'text',
     default:
@@ -293,8 +293,8 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   },
   {
     id: 'launch.founder-note',
-    label: '/launch — founder note (long)',
-    hint: 'The full personal note from Ryan that lives in the parchment card. Paragraphs separated by a blank line. The line that starts with — is treated as the signature.',
+    label: '/launch, founder note (long)',
+    hint: 'The full personal note from Ryan that lives in the parchment card. Paragraphs separated by a blank line. The line that starts with, is treated as the signature.',
     kind: 'longtext',
     default: `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
 
@@ -306,43 +306,43 @@ Golf has given me so much: opportunities, friendships, mentors, doors that opene
 
 So I built Penn Golf Clubhouse.
 
-I compiled our Member Book through online research and Penn historical data — every player and manager I could find from 1930 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
+I compiled our Member Book through online research and Penn historical data, every player and manager I could find from 1930 onward. Then I built a private space for everyone who's carried the Penn Golf bag, designed around what we actually do: ask, meet, play, gather.
 
 For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
 
-— Ryan Chang, Penn Men's Golf '28, Brookline, MA`,
+, Ryan Chang, Penn Men's Golf '28, Brookline, MA`,
   },
   {
     id: 'launch.ask-blurb',
-    label: '/launch — Ask card blurb',
+    label: '/launch, Ask card blurb',
     hint: 'One-line description of the Ask room.',
     kind: 'longtext',
     default: 'Career advice, mentorship, and warm introductions without the awkward DM.',
   },
   {
     id: 'launch.meet-blurb',
-    label: '/launch — Meet card blurb',
+    label: '/launch, Meet card blurb',
     hint: 'One-line description of the Meet room.',
     kind: 'longtext',
     default: 'Coffee, drinks, dinners, and city gatherings with the Penn Golf family.',
   },
   {
     id: 'launch.play-blurb',
-    label: '/launch — Play card blurb',
+    label: '/launch, Play card blurb',
     hint: 'One-line description of the Play room.',
     kind: 'longtext',
     default: 'Host a round at your home course, or find a tee time wherever you are.',
   },
   {
     id: 'launch.gather-blurb',
-    label: '/launch — Gather card blurb',
+    label: '/launch, Gather card blurb',
     hint: 'One-line description of the Gather room.',
     kind: 'longtext',
     default: 'Events, alumni weekends, the season as it happens, and the next generation of Penn Golf.',
   },
   {
     id: 'launch.access-line',
-    label: '/launch — access explanation',
+    label: '/launch, access explanation',
     hint: 'The paragraph below "How you get in."',
     kind: 'longtext',
     default:
@@ -350,7 +350,7 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
   },
   {
     id: 'launch.closing-line',
-    label: '/launch — closing line',
+    label: '/launch, closing line',
     hint: 'The big closing line on the dark closing CTA section.',
     kind: 'text',
     default: 'Come into the Clubhouse.',
@@ -359,14 +359,14 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
   // ── Room heroes (mostly hardcoded today) ────────────────────────────────
   {
     id: '19th-hole.hero-blurb',
-    label: '19th Hole — hero blurb',
+    label: '19th Hole, hero blurb',
     hint: 'Paragraph under the 19th Hole title.',
     kind: 'longtext',
-    default: 'Coffee, dinners, and signature Penn Golf gatherings — wherever you are.',
+    default: 'Coffee, dinners, and signature Penn Golf gatherings, wherever you are.',
   },
   {
     id: 'career-room.hero-blurb',
-    label: 'Career Room — hero blurb',
+    label: 'Career Room, hero blurb',
     hint: 'Paragraph under the Career Room title.',
     kind: 'longtext',
     default:
@@ -374,14 +374,14 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
   },
   {
     id: 'member-book.subtitle',
-    label: 'Member Book — subtitle',
+    label: 'Member Book, subtitle',
     hint: 'The line right under "The Member Book" headline.',
     kind: 'longtext',
     default: 'A registry of Penn Men’s Golf members, across generations.',
   },
   {
     id: 'member-book.scope-note',
-    label: 'Member Book — scope note (italic)',
+    label: 'Member Book, scope note (italic)',
     hint: 'Italic line below the subtitle. Use to communicate scope (e.g., women\'s coming).',
     kind: 'text',
     default: "Penn Women's Golf coming as we bring the data in.",
@@ -390,7 +390,7 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
   // ── Login + parent signup ──────────────────────────────────────────────
   {
     id: 'login.body',
-    label: 'Login page — body paragraph',
+    label: 'Login page, body paragraph',
     hint: 'The paragraph under the "Sign in to the Clubhouse" heading.',
     kind: 'longtext',
     default:
@@ -398,7 +398,7 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
   },
   {
     id: 'parent-signup.body',
-    label: 'Parent / Family signup — body paragraph',
+    label: 'Parent / Family signup, body paragraph',
     hint: 'The opening paragraph on /parent-signup.',
     kind: 'longtext',
     default:
@@ -408,42 +408,42 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
   // ── Landing splash extras ──────────────────────────────────────────────
   {
     id: 'landing.eyebrow',
-    label: 'Landing — eyebrow above title',
+    label: 'Landing, eyebrow above title',
     hint: 'Small ALL CAPS line above the headline on /. Leave blank to hide.',
     kind: 'text',
     default: 'Welcome to the',
   },
   {
     id: 'landing.primary-cta',
-    label: 'Landing — primary button label',
+    label: 'Landing, primary button label',
     hint: 'Button that goes to /player.',
     kind: 'text',
     default: 'Enter Clubhouse',
   },
   {
     id: 'landing.secondary-cta',
-    label: 'Landing — secondary button label',
+    label: 'Landing, secondary button label',
     hint: 'Button that goes to the claim flow.',
     kind: 'text',
     default: 'Claim Profile',
   },
   {
     id: 'landing.claim-note',
-    label: 'Landing — claim note (under buttons)',
+    label: 'Landing, claim note (under buttons)',
     hint: 'Small line under the buttons clarifying who can claim a profile.',
     kind: 'text',
-    default: 'For alumni and current players — find your name and make it yours.',
+    default: 'For alumni and current players, find your name and make it yours.',
   },
   {
     id: 'landing.family-cta',
-    label: 'Landing — family / affiliate pill',
+    label: 'Landing, family / affiliate pill',
     hint: 'Pill below the buttons that links to /parent-signup.',
     kind: 'text',
     default: 'Family or affiliate? Join here →',
   },
   {
     id: 'scotland.hero-image',
-    label: '/scotland — hero image',
+    label: '/scotland, hero image',
     hint: 'Course photo behind the Scotland Tour hero. Empty = text-led hero.',
     kind: 'image',
     default: '',

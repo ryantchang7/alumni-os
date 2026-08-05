@@ -40,10 +40,10 @@ async function viewerCanSeeMoment(
   if (!moment) return { ok: false, status: 404, error: 'Moment not found' }
   if (moment.audience !== 'locker-room') return { ok: true }
   const session = await auth()
-  if (!session?.accountId) return { ok: false, status: 403, error: 'Locker Room — sign in required' }
+  if (!session?.accountId) return { ok: false, status: 403, error: 'Locker Room, sign in required' }
   const account = await getAccountById(session.accountId)
   if (!canSeeLockerRoomForAccount(account, store, team.id)) {
-    return { ok: false, status: 403, error: 'Locker Room — players + alumni only' }
+    return { ok: false, status: 403, error: 'Locker Room, players + alumni only' }
   }
   return { ok: true }
 }
@@ -66,7 +66,7 @@ export async function POST(request: Request, ctx: Ctx) {
   }
   if (!session.linkedPersonId) {
     return NextResponse.json(
-      { error: 'Approved members only — claim your card to react.' },
+      { error: 'Approved members only, claim your card to react.' },
       { status: 403 },
     )
   }

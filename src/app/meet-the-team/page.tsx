@@ -97,7 +97,7 @@ export default async function MeetTheTeamPage() {
             Ask the Team
           </h1>
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-            Meet this year&rsquo;s squad below. Ask the whole team &mdash; or tap
+            Meet this year&rsquo;s squad below. Ask the whole team, or tap
             a guy to ask him directly. You&rsquo;ll get a real answer from one of
             the guys on the team.
           </p>
@@ -238,7 +238,7 @@ export default async function MeetTheTeamPage() {
             <div>
               <p className="font-semibold text-[#0a1628] text-sm">Have a question for the team?</p>
               <p className="text-xs text-ink-muted mt-0.5">
-                Current players answer when they can &mdash; usually within a couple days.
+                Current players answer when they can, usually within a couple days.
               </p>
             </div>
             <div className="flex-shrink-0">

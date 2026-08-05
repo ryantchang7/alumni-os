@@ -24,7 +24,7 @@ const tools = [
   },
   {
     label: 'Member Home Clubs',
-    description: "Set any member's home club(s) — current players and alumni.",
+    description: "Set any member's home club(s), current players and alumni.",
     href: '/internal/member-clubs',
   },
   {
@@ -39,7 +39,7 @@ const tools = [
   },
   {
     label: 'Studio',
-    description: 'Edit text and images across the site — headlines, hero images, page copy.',
+    description: 'Edit text and images across the site, headlines, hero images, page copy.',
     href: '/internal/studio',
   },
   {
@@ -49,7 +49,7 @@ const tools = [
   },
   {
     label: 'Required Fields by Role',
-    description: 'What every signup type fills out, and where each field surfaces. Reference doc — pulled from src/lib/role-requirements.ts.',
+    description: 'What every signup type fills out, and where each field surfaces. Reference doc, pulled from src/lib/role-requirements.ts.',
     href: '/internal/requirements',
   },
   {

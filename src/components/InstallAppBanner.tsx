@@ -139,7 +139,7 @@ export default function InstallAppBanner() {
             </p>
           ) : (
             <p className="mt-0.5 text-[12px] leading-snug text-white/70">
-              Add it to your home screen — a full app is coming as the family grows.
+              Add it to your home screen. A full app is coming as the family grows.
             </p>
           )}
         </div>

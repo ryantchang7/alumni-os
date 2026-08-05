@@ -27,7 +27,7 @@ export default function CookiesPage() {
             Cookies we use
           </h2>
           <p>
-            The Clubhouse sets <strong>one category of cookies</strong>: essential session cookies set by our authentication provider, NextAuth / Auth.js, to keep you signed in. These cookies are strictly necessary to operate the service &mdash; without them, the Clubhouse cannot identify you as a signed-in member.
+            The Clubhouse sets <strong>one category of cookies</strong>: essential session cookies set by our authentication provider, NextAuth / Auth.js, to keep you signed in. These cookies are strictly necessary to operate the service, without them, the Clubhouse cannot identify you as a signed-in member.
           </p>
           <ul className="list-disc pl-6 space-y-2">
             <li>

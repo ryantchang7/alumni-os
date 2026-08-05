@@ -21,7 +21,7 @@ export default function CityStateInput({
   city,
   state,
   onChange,
-  cityPlaceholder = 'City — e.g. New York',
+  cityPlaceholder = 'City, e.g. New York',
   className = '',
 }: Props) {
   const [suggestions, setSuggestions] = useState<UsCity[]>([])

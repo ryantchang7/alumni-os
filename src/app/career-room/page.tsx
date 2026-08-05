@@ -261,7 +261,7 @@ export default async function CareerRoomPage() {
           signedIn={approval.signedIn}
           eyebrow="Members only · Career Room"
           headline="The floor stays inside the room."
-          blurb="The Career Room is where Penn Golf alumni post real asks and real offers — warm intros, referrals, mentorship. Replies are private. Claim your card to see and post."
+          blurb="The Career Room is where Penn Golf alumni post real asks and real offers, warm intros, referrals, mentorship. Replies are private. Claim your card to see and post."
           stats={[
             { label: 'On the floor', value: careerPosts.length },
             { label: 'Mentors', value: openToMentorship.length },
@@ -279,7 +279,7 @@ export default async function CareerRoomPage() {
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
 
-        {/* Asks & Offers — the active surface */}
+        {/* Asks & Offers, the active surface */}
         <section data-testid="asks-and-offers">
           <div className="flex items-end justify-between gap-4 mb-1">
             <div>

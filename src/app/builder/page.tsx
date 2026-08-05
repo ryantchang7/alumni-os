@@ -2,10 +2,10 @@ import Link from 'next/link'
 import { CheckCircle2 } from 'lucide-react'
 
 const trustRules = [
-  'Public pages only — no login-gated scraping',
+  'Public pages only, no login-gated scraping',
   'No LinkedIn scraping or profile fetching',
   'Human review required before publishing identities',
-  'Contact paths only — no scraped emails or phone numbers',
+  'Contact paths only, no scraped emails or phone numbers',
 ]
 
 const advancedTools = [
@@ -36,7 +36,7 @@ export default function BuilderPage() {
       </div>
 
       <div className="max-w-[1320px] mx-auto px-8">
-        {/* PRIMARY — Agent card */}
+        {/* PRIMARY, Agent card */}
         <div
           className="bg-white border border-[rgba(180,168,150,0.35)] border-l-4 border-l-[#990000] rounded-xl p-6 -mt-5 relative z-10 mb-8"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}

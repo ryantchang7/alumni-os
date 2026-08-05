@@ -106,7 +106,7 @@ export default function ChatThreadClient({
       router.refresh()
     } catch {
       setDeleting(false)
-      window.alert('Could not delete the conversation — try again.')
+      window.alert('Could not delete the conversation, try again.')
     }
   }, [conversationId, router])
 
@@ -396,7 +396,7 @@ export default function ChatThreadClient({
                           className="inline-flex items-center gap-1 text-[10.5px] text-[#990000] hover:underline"
                         >
                           <AlertCircle className="w-3 h-3" />
-                          Failed — retry
+                          Failed, retry
                         </button>
                       )}
                     </div>

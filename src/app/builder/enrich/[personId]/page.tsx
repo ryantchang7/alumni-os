@@ -85,10 +85,10 @@ const VERIFICATION_STATUSES = [
 ]
 
 function rosterYears(m?: { rosterStartYear?: number; rosterEndYear?: number }): string {
-  if (!m) return '—'
+  if (!m) return '. '
   if (m.rosterStartYear && m.rosterEndYear) return `${m.rosterStartYear}–${m.rosterEndYear}`
   if (m.rosterStartYear) return String(m.rosterStartYear)
-  return '—'
+  return ', '
 }
 
 function enrichmentStatusLabel(verificationStatus?: string): { label: string; className: string } {
@@ -325,7 +325,7 @@ function EnrichPersonInner() {
             {/* Roster facts card */}
             <div data-testid="roster-truth-panel" className="bg-white border border-[rgba(180,168,150,0.35)] rounded-lg p-5" style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}>
               <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-[#0a1628] font-semibold text-sm">Roster facts — source of truth</h2>
+                <h2 className="text-[#0a1628] font-semibold text-sm">Roster facts, source of truth</h2>
                 <span className="text-xs text-ink-muted bg-[#f0ece5] px-2 py-0.5 rounded">Read only</span>
               </div>
               <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm">
@@ -339,20 +339,20 @@ function EnrichPersonInner() {
                 </div>
                 <div>
                   <dt className="text-xs text-ink-muted uppercase tracking-wide">Class</dt>
-                  <dd className="text-[#0d1f3c] mt-0.5">{membership?.classLabel ?? '—'}</dd>
+                  <dd className="text-[#0d1f3c] mt-0.5">{membership?.classLabel ?? '. '}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-ink-muted uppercase tracking-wide">Hometown</dt>
-                  <dd className="text-[#0d1f3c] mt-0.5">{membership?.hometown ?? '—'}</dd>
+                  <dd className="text-[#0d1f3c] mt-0.5">{membership?.hometown ?? '. '}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-ink-muted uppercase tracking-wide">High School</dt>
-                  <dd className="text-[#0d1f3c] mt-0.5">{membership?.highSchool ?? '—'}</dd>
+                  <dd className="text-[#0d1f3c] mt-0.5">{membership?.highSchool ?? '. '}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-ink-muted uppercase tracking-wide">Confidence</dt>
                   <dd className="text-[#0d1f3c] mt-0.5">
-                    {membership ? `${Math.round(membership.confidence * 100)}%` : '—'}
+                    {membership ? `${Math.round(membership.confidence * 100)}%` : '. '}
                   </dd>
                 </div>
                 <div>

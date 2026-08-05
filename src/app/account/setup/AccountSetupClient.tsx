@@ -34,7 +34,7 @@ export default function AccountSetupClient({
   const router = useRouter()
   const womensNote = useSiteContent(
     'account-setup.scope-note-womens',
-    "If you played Penn Women's Golf, we're not live with that data yet — we'll add it as we bring women's golf in. Email rtchang@sas.upenn.edu if that's you and we'll get you sorted.",
+    "If you played Penn Women's Golf, we're not live with that data yet, we'll add it as we bring women's golf in. Email rtchang@sas.upenn.edu if that's you and we'll get you sorted.",
   )
   const [query, setQuery] = useState(initialQuery ?? signedInName ?? '')
   const [claiming, setClaiming] = useState<string | null>(null)
@@ -120,7 +120,7 @@ export default function AccountSetupClient({
               checked in
               {monthCount > 0 ? (
                 <>
-                  {' '}— <span className="italic">{monthCount} came back this month</span>
+                  {' '}, <span className="italic">{monthCount} came back this month</span>
                 </>
               ) : null}
               . Find your card to be found.
@@ -130,7 +130,7 @@ export default function AccountSetupClient({
             {signedInEmail ? <>Signed in as {signedInEmail}. </> : null}
             Search by name, hometown, or class year. Once you claim, edit your role and how you can help.
           </p>
-          {/* Family and affiliates aren't in the player registry — say so here
+          {/* Family and affiliates aren't in the player registry, say so here
               instead of only after a search returns nothing. */}
           <p className="text-white/60 text-[12.5px] mt-2.5 max-w-xl leading-relaxed">
             Family, parent, or affiliate of the program?{' '}

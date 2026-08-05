@@ -73,13 +73,13 @@ export default function FeatureAlumComposer({ members }: Props) {
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))
         setStatus('error')
-        setErrorMsg((d as { error?: string }).error ?? 'Something went wrong — try again.')
+        setErrorMsg((d as { error?: string }).error ?? 'Something went wrong, try again.')
         return
       }
       setStatus('success')
     } catch {
       setStatus('error')
-      setErrorMsg('Network error — check your connection and try again.')
+      setErrorMsg('Network error, check your connection and try again.')
     }
   }
 
@@ -111,7 +111,7 @@ export default function FeatureAlumComposer({ members }: Props) {
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4">
                 <div>
                   <p className="eyebrow text-gold mb-1">
-                    Penn Men&rsquo;s Golf &mdash; Captains only
+                    Penn Men&rsquo;s Golf, Captains only
                   </p>
                   <h2
                     className="text-white text-xl font-medium leading-snug font-heading"
@@ -204,7 +204,7 @@ export default function FeatureAlumComposer({ members }: Props) {
                               ))}
                               {filtered.length > 12 && (
                                 <li className="px-4 py-2 text-xs text-ink-muted">
-                                  {filtered.length - 12} more &mdash; keep typing to narrow
+                                  {filtered.length - 12} more, keep typing to narrow
                                 </li>
                               )}
                             </ul>

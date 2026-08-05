@@ -9,7 +9,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Spotlight',
-  description: 'The member spotlight — one Penn Golf story at a time.',
+  description: 'The member spotlight, one Penn Golf story at a time.',
 }
 
 function formatDate(iso: string) {
@@ -89,10 +89,10 @@ export default async function SpotlightPage() {
               className="bg-white border border-[rgba(180,168,150,0.35)] rounded-2xl overflow-hidden"
               style={{ boxShadow: '0 2px 8px rgba(10,22,40,0.08), 0 16px 40px rgba(10,22,40,0.06)' }}
             >
-              {/* Featured card header strip — marquee layout */}
+              {/* Featured card header strip, marquee layout */}
               <div className="bg-[#0a1628] px-6 sm:px-10 py-8 sm:py-10">
                 <div className="flex flex-col sm:flex-row sm:items-end gap-6">
-                  {/* Avatar — large for editorial weight */}
+                  {/* Avatar, large for editorial weight */}
                   <div className="flex-shrink-0">
                     <MemberAvatar
                       photoUrl={photoFor(current.personId)}
@@ -120,10 +120,10 @@ export default async function SpotlightPage() {
                 </div>
               </div>
 
-              {/* Gold ribbon — matches site brand */}
+              {/* Gold ribbon, matches site brand */}
               <div className="h-[3px] bg-gradient-to-r from-[#c8a84b] via-[#d4b75a] to-[#c8a84b]" />
 
-              {/* Blurb — generous padding */}
+              {/* Blurb, generous padding */}
               <div className="px-6 sm:px-10 py-8">
                 <p className="text-[#3d4a5c] text-base sm:text-lg leading-relaxed max-w-3xl">
                   {current.blurb}
@@ -149,7 +149,7 @@ export default async function SpotlightPage() {
               <div className="px-6 sm:px-10 py-8 text-center">
                 <p className="text-sm text-[#3a4657] leading-relaxed mb-6">
                   Know someone from the Penn Golf family who deserves a moment in the spotlight?
-                  Nominate them &mdash; we pick from submissions each week.
+                  Nominate them, we pick from submissions each week.
                 </p>
                 <SpotlightNominate />
               </div>

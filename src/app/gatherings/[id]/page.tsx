@@ -75,7 +75,7 @@ export default async function GatheringDetailPage({ params }: Props) {
         </div>
         <div className="max-w-[640px] mx-auto px-6 sm:px-8 py-12">
           <p className="text-sm text-ink-muted">
-            This gathering isn&rsquo;t available anymore — it may have been removed by the host or has
+            This gathering isn&rsquo;t available anymore. It may have been removed by the host or has
             already happened. Check{' '}
             <Link href="/the-course" className="text-[#990000] hover:underline font-medium">The Course</Link>{' '}
             or{' '}

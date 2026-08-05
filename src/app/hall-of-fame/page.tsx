@@ -67,7 +67,7 @@ export default function HallOfFamePage() {
           <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5 mb-5" />
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed">
             Championships, postseason appearances, and individual honors from the
-            Penn Golf record book — from the first NCAA appearance in 1947 to today.
+            Penn Golf record book, from the first NCAA appearance in 1947 to today.
           </p>
         </div>
       </div>

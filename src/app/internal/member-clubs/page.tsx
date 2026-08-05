@@ -70,7 +70,7 @@ export default async function MemberClubsPage() {
             Member Home Clubs
           </h1>
           <p className="text-gray-400 text-sm mt-2 max-w-2xl">
-            Set any member&rsquo;s home club here &mdash; current players and alumni alike. Add
+            Set any member&rsquo;s home club here, current players and alumni alike. Add
             several clubs comma-separated; they all combine on The Course.
           </p>
         </div>

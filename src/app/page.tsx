@@ -29,7 +29,7 @@ export default function LandingPage() {
   return (
     <div className="relative w-full h-[calc(100dvh-60px)] flex flex-col overflow-hidden bg-[#0a1628]">
 
-      {/* Background image — full-bleed, clubhouse stays centered.
+      {/* Background image, full-bleed, clubhouse stays centered.
           Captain can swap via /internal/studio → "Landing cover image". */}
       <Image
         src={coverImage}
@@ -42,7 +42,7 @@ export default function LandingPage() {
         unoptimized={!coverImage.startsWith('/')}
       />
 
-      {/* Very light navy tint — preserves image brightness */}
+      {/* Very light navy tint, preserves image brightness */}
       <div className="absolute inset-0 bg-[#0a1628]/18 pointer-events-none" />
 
       {/* Soft radial shadow behind text for legibility without darkening the image */}
@@ -67,7 +67,7 @@ export default function LandingPage() {
         transition={{ duration: 2.2, ease: 'easeOut' }}
       />
 
-      {/* Content — centered vertically */}
+      {/* Content, centered vertically */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center">
 
         {/* Eyebrow */}
@@ -108,7 +108,7 @@ export default function LandingPage() {
           </motion.p>
         )}
 
-        {/* Buttons — private-club stationery feel */}
+        {/* Buttons, private-club stationery feel */}
         <motion.div
           className="flex flex-col sm:flex-row gap-3 w-full max-w-[280px] sm:max-w-none sm:w-auto"
           initial={{ opacity: 0, y: 12 }}

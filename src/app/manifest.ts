@@ -31,7 +31,7 @@ export default function manifest(): MetadataRoute.Manifest {
     // preview looks like a real app, not a bookmark.
     screenshots: [
       { src: '/screenshots/home.png', sizes: '1080x1920', type: 'image/png', form_factor: 'narrow', label: 'The Penn Golf Clubhouse' },
-      { src: '/screenshots/memberbook.png', sizes: '1080x1920', type: 'image/png', form_factor: 'narrow', label: 'The Member Book — every Quaker, past & present' },
+      { src: '/screenshots/memberbook.png', sizes: '1080x1920', type: 'image/png', form_factor: 'narrow', label: 'The Member Book, every Quaker, past & present' },
     ],
   }
 }

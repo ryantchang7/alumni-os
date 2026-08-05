@@ -54,13 +54,13 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Penn Golf Clubhouse',
     title: 'Penn Golf Clubhouse',
-    description: "The private alumni network for Penn Men's Golf — Ask. Meet. Play. Gather.",
+    description: "The private alumni network for Penn Men's Golf. Ask. Meet. Play. Gather.",
     url: 'https://www.penngolfclubhouse.com',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Penn Golf Clubhouse',
-    description: "The private alumni network for Penn Men's Golf — Ask. Meet. Play. Gather.",
+    description: "The private alumni network for Penn Men's Golf. Ask. Meet. Play. Gather.",
   },
 }
 

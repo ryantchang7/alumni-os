@@ -85,7 +85,7 @@ export default function GlobalError({ error, reset }: Props) {
             margin: '0 0 32px',
           }}
         >
-          An unexpected error occurred. Try reloading — if it keeps happening, the
+          An unexpected error occurred. Try reloading, if it keeps happening, the
           team is already on it.
         </p>
 

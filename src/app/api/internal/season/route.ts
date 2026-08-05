@@ -108,7 +108,7 @@ export async function POST(request: Request) {
         {
           type: 'team_update',
           title: `Team update: ${title}`,
-          body: update.body ? `${dateText} — ${update.body.slice(0, 80)}${update.body.length > 80 ? '…' : ''}` : dateText,
+          body: update.body ? `${dateText}, ${update.body.slice(0, 80)}${update.body.length > 80 ? '…' : ''}` : dateText,
           href: '/team-room',
         },
         // Don't notify the poster for their own post (consistent with the

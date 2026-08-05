@@ -90,7 +90,7 @@ function MemberRowCard({ row }: { row: MemberRow }) {
             <RoleChip role={row.role} />
           </div>
           <p className="text-[11px] text-ink-muted mt-0.5">
-            {[row.classLabel, row.years].filter(Boolean).join(' · ') || '—'}
+            {[row.classLabel, row.years].filter(Boolean).join(' · ') || '. '}
           </p>
         </div>
 

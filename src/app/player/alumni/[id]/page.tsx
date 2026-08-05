@@ -185,7 +185,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* ── Content — book-spread two-column on desktop ── */}
+      {/* ── Content, book-spread two-column on desktop ── */}
       <div data-testid="player-profile" className="max-w-[900px] mx-auto px-5 sm:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5 items-start">
 
@@ -237,7 +237,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             </div>
             )}
 
-            {/* Unclaimed — direct visitors to the Member Book / sign-in flow */}
+            {/* Unclaimed, direct visitors to the Member Book / sign-in flow */}
             {unclaimed && (
               <div
                 className="bg-[#fdfcf9] border border-[rgba(180,168,150,0.4)] rounded-xl p-5"
@@ -381,7 +381,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Contact — gated to signed-in members who have claimed their card */}
+            {/* Contact, gated to signed-in members who have claimed their card */}
             {!isCurrentPlayer && (
               <div
                 data-testid="contact-card"

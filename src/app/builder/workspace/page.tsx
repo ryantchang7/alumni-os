@@ -404,7 +404,7 @@ function WorkspaceInner() {
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div>
                   <p className="text-sm font-medium text-[#0a1628]">
-                    Historical import &mdash;{' '}
+                    Historical import, {' '}
                     <span className="capitalize">{latestRun.status}</span>
                   </p>
                   <p className="text-xs text-gray-500 mt-0.5">

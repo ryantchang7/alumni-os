@@ -482,7 +482,7 @@ export async function mutateStore<T>(
     await new Promise(r => setTimeout(r, 25 + attempt * 50 + Math.floor(Math.random() * step)))
   }
   throw new WriteContentionError(
-    `mutateStore: write contention — failed to commit after ${MUTATE_MAX_RETRIES} attempts`,
+    `mutateStore: write contention, failed to commit after ${MUTATE_MAX_RETRIES} attempts`,
   )
 }
 

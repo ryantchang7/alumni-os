@@ -181,7 +181,7 @@ function CaptainReviewInner() {
                       )}
                     </div>
                     <div className="flex items-center gap-3 text-xs text-ink-muted">
-                      {profile.rosterYearsLabel !== '—' && (
+                      {profile.rosterYearsLabel !== ', ' && (
                         <span>Penn Golf {profile.rosterYearsLabel}</span>
                       )}
                       {profile.classLabel && <span>{profile.classLabel}</span>}

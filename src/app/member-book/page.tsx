@@ -207,7 +207,7 @@ function BookHeader({
     "Penn Women's Golf coming as we bring the data in.",
   )
   const rangeLabel =
-    earliestYear && latestYear ? `${earliestYear} — ${latestYear}` : null
+    earliestYear && latestYear ? `${earliestYear}, ${latestYear}` : null
   return (
     <SectionEmblemHeader
       eyebrow="Penn Men's Golf"
@@ -380,7 +380,7 @@ function MemberBookPageInner() {
         latestYear={stats.latestYear}
       />
 
-      {/* Active industry filter banner — appears when navigated to
+      {/* Active industry filter banner, appears when navigated to
           /member-book?industry=<slug>. Click X to clear and see all. */}
       {activeIndustry && (
         <div className="bg-[#990000] text-white">
@@ -406,7 +406,7 @@ function MemberBookPageInner() {
         </div>
       )}
 
-      {/* Subtab pill bar — sits on a navy strip immediately under the
+      {/* Subtab pill bar, sits on a navy strip immediately under the
           hero, matching the /moments All-vs-Locker treatment. The Family
           pill uses Penn red since that's the tier's accent everywhere
           else in the app. */}
@@ -507,7 +507,7 @@ function MemberBookPageInner() {
               </span>
             </div>
 
-            {/* Era chips + sort — players-only metadata, so hide on
+            {/* Era chips + sort, players-only metadata, so hide on
                 the Family & Affiliate tab. */}
             {view === 'all' && (
               <div className="px-5 py-3.5 flex items-center gap-2 flex-wrap">
@@ -560,7 +560,7 @@ function MemberBookPageInner() {
             )}
           </div>
 
-          {/* Founders Wall — only on the All Members view. */}
+          {/* Founders Wall, only on the All Members view. */}
           {view === 'all' && founders.length > 0 && (
             <div className="mb-7">
               <FoundersWall founders={founders} familySupporters={familySupporters} />
@@ -606,7 +606,7 @@ function MemberBookPageInner() {
                 </AnimatePresence>
               )}
 
-              {/* Family & Affiliate group — appended below the main
+              {/* Family & Affiliate group, appended below the main
                   registry on the All Members tab. Subhead doubles as a
                   recruiting CTA when zero or more parents exist. */}
               {filteredParents.length > 0 && (

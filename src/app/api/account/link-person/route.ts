@@ -277,7 +277,7 @@ async function handleClaim(request: Request) {
       if (!result.ok) {
         console.warn('[claim-notify] send failed:', result.error)
       } else if (result.skipped) {
-        console.warn('[claim-notify] skipped — RESEND_API_KEY or EMAIL_FROM unset at runtime')
+        console.warn('[claim-notify] skipped, RESEND_API_KEY or EMAIL_FROM unset at runtime')
       } else {
         console.log(`[claim-notify] sent ok id=${result.id}`)
       }

@@ -101,7 +101,7 @@ export async function GET() {
             padding: '16px 34px',
           }}
         >
-          Claim your profile — 30 seconds
+          Claim your profile, 30 seconds
         </div>
 
         {/* Footer URL */}

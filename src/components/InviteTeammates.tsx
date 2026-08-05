@@ -17,7 +17,7 @@ function getInviteUrl(): string {
 
 function buildInviteMessage(name: string, url: string): string {
   const firstName = name.split(' ')[0]
-  return 'Hey ' + firstName + ' — claim your spot in the Penn Golf Clubhouse, takes 30 sec: ' + url
+  return 'Hey ' + firstName + ', claim your spot in the Penn Golf Clubhouse, takes 30 sec: ' + url
 }
 
 export default function InviteTeammates({ teammates }: { teammates: TeammateEntry[] }) {
@@ -38,7 +38,7 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
   async function handleShareClubhouse() {
     const url = getInviteUrl()
     const title = 'Penn Golf Clubhouse'
-    const text = 'Join the Penn Golf Clubhouse — every player & alum in one place.'
+    const text = 'Join the Penn Golf Clubhouse, every player & alum in one place.'
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({ title, text, url })

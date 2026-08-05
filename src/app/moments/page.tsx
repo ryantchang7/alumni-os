@@ -110,7 +110,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
           signedIn={approval.signedIn}
           eyebrow="Members only · The Wall"
           headline="Moments stay between members."
-          blurb="The Wall is where Penn Golf alumni share rounds, dinners, championship memories — the stuff the Penn Golf family is built on. Claim your card to see and post."
+          blurb="The Wall is where Penn Golf alumni share rounds, dinners, championship memories, the stuff the Penn Golf family is built on. Claim your card to see and post."
           stats={[
             { label: 'On the wall', value: moments.length },
             { label: 'Posters', value: uniquePosters },
@@ -187,7 +187,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
 
       {/* Subtab segmented control. Sits on a navy strip so the bar reads
           as a continuation of the hero. The active pill is a solid block,
-          the inactive pill is a quiet outline — clearly two different
+          the inactive pill is a quiet outline, clearly two different
           places, not two style variants of the same feed. Only eligible
           viewers (players + alumni) see the Locker Room pill at all. */}
       {canSeeLockerRoom && (

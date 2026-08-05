@@ -7,7 +7,7 @@ import { getApprovalState } from '@/lib/access/approval'
 function rosterYearsLabel(start?: number, end?: number): string {
   if (start !== undefined && end !== undefined) return `${start}–${end}`
   if (start !== undefined) return String(start)
-  return '—'
+  return ', '
 }
 
 export async function GET(request: Request) {

@@ -300,7 +300,7 @@ export default function AskClient() {
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}>
             <p className="text-base font-semibold text-[#0a1628] mb-2">On its way.</p>
             <p className="text-sm text-ink-muted max-w-sm mx-auto mb-6">
-              {first} gets an email and a Clubhouse notification if they&rsquo;ve claimed their card. Give it a few days — Penn Golf members have day jobs.
+              {first} gets an email and a Clubhouse notification if they&rsquo;ve claimed their card. Give it a few days. Penn Golf members have day jobs.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
               <Link
@@ -479,7 +479,7 @@ export default function AskClient() {
                 )}
               </div>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1 mt-2">Pick someone to ask.</h2>
-              <p className="text-xs text-ink-muted mb-5">Sorted by fit — members who&rsquo;ve said what they&rsquo;re open to rank first.</p>
+              <p className="text-xs text-ink-muted mb-5">Sorted by fit, members who&rsquo;ve said what they&rsquo;re open to rank first.</p>
 
               {loadingProfiles ? (
                 <p className="text-sm text-ink-muted py-6 text-center">Loading members…</p>

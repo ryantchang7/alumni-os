@@ -47,7 +47,7 @@ export async function verifyTurnstile(
     return data.success === true
   } catch (err) {
     // Verify-service failure must not block real users — fail open.
-    console.warn('[turnstile] verify failed — failing open:', err)
+    console.warn('[turnstile] verify failed, failing open:', err)
     return true
   }
 }

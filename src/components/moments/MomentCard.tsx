@@ -274,7 +274,7 @@ export default function MomentCard({
         boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)',
       }}
     >
-      {/* Media — single item renders plain; multiple items get a carousel */}
+      {/* Media, single item renders plain; multiple items get a carousel */}
       <div className={`relative ${postAudience === 'locker-room' ? 'bg-[#0a1628]' : 'bg-[#fdfcf9]'}`}>
         {media[mediaIdx].type === 'video' ? (
           <video
@@ -337,7 +337,7 @@ export default function MomentCard({
             Locker Room
           </span>
         ) : null}
-        {/* Captain's Pick ribbon — visible to everyone when featured */}
+        {/* Captain's Pick ribbon, visible to everyone when featured */}
         {featured && (
           <span className="absolute top-3 right-3 inline-flex items-center gap-1 bg-[#c8a84b] text-[#0a1628] text-[10.5px] font-bold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full"
             style={{ boxShadow: '0 2px 8px rgba(200,168,75,0.45)' }}
@@ -413,7 +413,7 @@ export default function MomentCard({
             <MemberBadges badges={posterBadges} size="sm" />
           </div>
           <div className="flex items-center gap-3 flex-shrink-0">
-            {/* Captain's Pick toggle — captains + founder only, never regular members */}
+            {/* Captain's Pick toggle, captains + founder only, never regular members */}
             {isCaptain && (
               <button
                 type="button"

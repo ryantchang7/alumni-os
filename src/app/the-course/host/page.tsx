@@ -164,7 +164,7 @@ export default function HostRoundPage() {
           className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl overflow-hidden"
           style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
         >
-          {/* Form header — scorecard motif */}
+          {/* Form header, scorecard motif */}
           <div className="px-7 sm:px-10 pt-10 pb-6 border-b border-[rgba(180,168,150,0.3)] bg-[#fdfcf9]">
             <span className="block w-10 h-[2px] bg-[#5a7a3e] mb-5" />
             <h1
@@ -248,7 +248,7 @@ export default function HostRoundPage() {
                 type="text"
                 value={mapsUrl}
                 onChange={(e) => setMapsUrl(e.target.value)}
-                placeholder="Paste a Google Maps link — or leave blank and we'll map the course"
+                placeholder="Paste a Google Maps link, or leave blank and we'll map the course"
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#5a7a3e]/30 focus:border-[#5a7a3e]"
               />
             </div>

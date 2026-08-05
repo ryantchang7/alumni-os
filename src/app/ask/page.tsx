@@ -12,7 +12,7 @@ export default async function AskPage() {
           signedIn={approval.signedIn}
           eyebrow="Members only · Ask the Penn Golf Family"
           headline="Asking lives inside the room."
-          blurb="Requesting an intro or advice from a Penn Golf alumnus is a members-only move. Claim your card — every claim is reviewed by hand — and you'll be able to send a private ask in one click."
+          blurb="Requesting an intro or advice from a Penn Golf alumnus is a members-only move. Claim your card. Every claim is reviewed by hand, and you'll be able to send a private ask in one click."
         />
       </div>
     )

@@ -126,7 +126,7 @@ export default function MomentEditForm({
         className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-[14px] text-[#0a1628] resize-none focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30"
       />
 
-      {/* Media editor — reorder, remove, add (max 8) */}
+      {/* Media editor, reorder, remove, add (max 8) */}
       <div className="mt-3">
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
           Photos &amp; videos ({editMedia.length}/8)
@@ -162,7 +162,7 @@ export default function MomentEditForm({
         <TagPicker options={options} tagged={tagged} onChange={setTagged} />
       </div>
 
-      {/* Audience — only members who can see the Locker Room may flip it */}
+      {/* Audience, only members who can see the Locker Room may flip it */}
       {canSeeLockerRoom && (
         <div
           className={`mt-4 rounded-lg p-3 transition-colors border ${
@@ -187,7 +187,7 @@ export default function MomentEditForm({
                 }`}
               >
                 <Lock className="w-3.5 h-3.5" />
-                {lockerMode ? 'Locker Room Only — Active' : 'Locker Room only'}
+                {lockerMode ? 'Locker Room Only. Active' : 'Locker Room only'}
               </span>
               <span
                 className={`block text-[12px] mt-1 leading-relaxed ${

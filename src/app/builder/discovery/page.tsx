@@ -373,10 +373,10 @@ export default function BuilderDiscoveryPage() {
                                 </div>
                               </td>
                               <td className="px-4 py-3">
-                                <span className="text-sm text-ink-muted">{entry.classLabel ?? '—'}</span>
+                                <span className="text-sm text-ink-muted">{entry.classLabel ?? '. '}</span>
                               </td>
                               <td className="px-4 py-3">
-                                <span className="text-sm text-ink-muted">{entry.hometown ?? '—'}</span>
+                                <span className="text-sm text-ink-muted">{entry.hometown ?? '. '}</span>
                               </td>
                               <td className="px-4 py-3">
                                 <span className="text-sm font-mono text-[#0a1628]">

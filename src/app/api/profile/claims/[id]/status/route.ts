@@ -79,7 +79,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     if (claim.requesterAccountId) {
       await notify(claim.requesterAccountId, {
         type: 'approved',
-        title: "You're in — welcome to the Clubhouse",
+        title: "You're in, welcome to the Clubhouse",
         body: 'Your Penn Golf membership is live. Tap to explore.',
         href: '/player',
       })
@@ -142,8 +142,8 @@ export async function POST(request: Request, { params }: RouteParams) {
             title: `${newMemberName} from your era just walked in`,
             body:
               p.overlapStart === p.overlapEnd
-                ? `You were on the roster together in ${p.overlapStart} — say hello.`
-                : `You played together ${p.overlapStart}–${p.overlapEnd} — say hello.`,
+                ? `You were on the roster together in ${p.overlapStart}, say hello.`
+                : `You played together ${p.overlapStart}–${p.overlapEnd}, say hello.`,
             href: '/player',
           })),
         )
@@ -175,7 +175,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       })
       const result = await sendEmail({ to: claim.requesterEmail, subject, html })
       if (!result.ok) console.warn('[claim-approve-email] send failed:', result.error)
-      else if (result.skipped) console.warn('[claim-approve-email] skipped — RESEND_API_KEY or EMAIL_FROM unset')
+      else if (result.skipped) console.warn('[claim-approve-email] skipped. RESEND_API_KEY or EMAIL_FROM unset')
       else console.log(`[claim-approve-email] sent ok id=${result.id}`)
     } else if (status === 'declined') {
       const { renderClaimDeclined } = await import('@/lib/email/templates')
@@ -191,7 +191,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       })
       const result = await sendEmail({ to: claim.requesterEmail, subject, html })
       if (!result.ok) console.warn('[claim-decline-email] send failed:', result.error)
-      else if (result.skipped) console.warn('[claim-decline-email] skipped — RESEND_API_KEY or EMAIL_FROM unset')
+      else if (result.skipped) console.warn('[claim-decline-email] skipped. RESEND_API_KEY or EMAIL_FROM unset')
       else console.log(`[claim-decline-email] sent ok id=${result.id}`)
     }
   } catch (e) {

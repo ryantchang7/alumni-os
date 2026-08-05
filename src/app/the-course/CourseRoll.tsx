@@ -48,7 +48,7 @@ export default function CourseRoll({ entries }: Props) {
       className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
     >
-      {/* Search input — sticky-feeling header so the user always has
+      {/* Search input, sticky-feeling header so the user always has
           somewhere to type as they scroll the list. */}
       <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.25)] flex items-center gap-3">
         <div className="flex-1 relative">

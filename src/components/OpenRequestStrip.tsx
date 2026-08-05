@@ -81,7 +81,7 @@ export default function OpenRequestStrip({
   requests,
   eyebrow = 'Open Requests',
   title = 'Members in town.',
-  subtitle = 'Penn Golf members visiting somewhere — ping them if you can play host.',
+  subtitle = 'Penn Golf members visiting somewhere, ping them if you can play host.',
   accent = '#0a1628',
   limit = 6,
   homeCourseByPersonId,
@@ -176,7 +176,7 @@ export default function OpenRequestStrip({
           // Pre-compose a kickoff message — RespondButton stashes it in
           // sessionStorage so a future chat-thread enhancement can pull
           // it back as a pre-filled message.
-          const kickoff = `Hey ${firstName}, saw your open ${INTENT_LABEL[req.intent].toLowerCase()} request${location ? ` in ${location}` : ''} — `
+          const kickoff = `Hey ${firstName}, saw your open ${INTENT_LABEL[req.intent].toLowerCase()} request${location ? ` in ${location}` : ''}, `
           const homeCourse = req.fromPersonId && homeCourseByPersonId
             ? homeCourseByPersonId.get(req.fromPersonId)
             : undefined

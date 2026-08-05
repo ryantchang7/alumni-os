@@ -68,11 +68,11 @@ export default async function PersonDetailPage({ params, searchParams }: Props) 
           <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
             <div>
               <dt className="text-xs uppercase tracking-wide text-gray-400 mb-0.5">First Name</dt>
-              <dd className="text-[#0a1628]">{person.firstName ?? <span className="text-gray-300">—</span>}</dd>
+              <dd className="text-[#0a1628]">{person.firstName ?? <span className="text-gray-300">, </span>}</dd>
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Last Name</dt>
-              <dd className="text-[#0a1628]">{person.lastName ?? <span className="text-gray-300">—</span>}</dd>
+              <dd className="text-[#0a1628]">{person.lastName ?? <span className="text-gray-300">, </span>}</dd>
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Person ID</dt>
@@ -95,11 +95,11 @@ export default async function PersonDetailPage({ params, searchParams }: Props) 
             <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
               <div>
                 <dt className="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Roster Years</dt>
-                <dd className="text-[#0a1628]">{rosterYears ?? <span className="text-gray-300">—</span>}</dd>
+                <dd className="text-[#0a1628]">{rosterYears ?? <span className="text-gray-300">, </span>}</dd>
               </div>
               <div>
                 <dt className="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Class</dt>
-                <dd className="text-[#0a1628]">{membership.classLabel ?? <span className="text-gray-300">—</span>}</dd>
+                <dd className="text-[#0a1628]">{membership.classLabel ?? <span className="text-gray-300">, </span>}</dd>
               </div>
               <div>
                 <dt className="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Hometown</dt>
@@ -205,7 +205,7 @@ export default async function PersonDetailPage({ params, searchParams }: Props) 
               <tbody className="divide-y divide-[rgba(180,168,150,0.2)]">
                 {relatedEntries.map((entry, i) => (
                   <tr key={entry.id} className={i % 2 === 1 ? 'bg-[#faf9f7]' : ''}>
-                    <td className="px-5 py-3 font-mono text-[#0a1628]">{entry.seasonYear ?? '—'}</td>
+                    <td className="px-5 py-3 font-mono text-[#0a1628]">{entry.seasonYear ?? '. '}</td>
                     <td className="px-5 py-3">
                       <span
                         className={`text-xs font-medium px-2 py-0.5 rounded-full ${
@@ -230,7 +230,7 @@ export default async function PersonDetailPage({ params, searchParams }: Props) 
                         {Math.round(entry.extractionConfidence * 100)}%
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-ink-muted">{entry.classLabel ?? '—'}</td>
+                    <td className="px-5 py-3 text-ink-muted">{entry.classLabel ?? '. '}</td>
                     <td className="px-5 py-3">
                       <a
                         href={entry.sourceUrl}

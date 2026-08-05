@@ -29,7 +29,7 @@ export default async function RequirementsPage() {
           <p className="text-gray-400 text-sm mt-2 max-w-2xl">
             What every signup type fills out, and where each field surfaces.
             Sourced from <code className="text-[#c8a84b]">src/lib/role-requirements.ts</code>{' '}
-            — edit there to update this panel.
+           , edit there to update this panel.
           </p>
         </div>
       </div>

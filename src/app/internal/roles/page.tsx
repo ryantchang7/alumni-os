@@ -84,7 +84,7 @@ export default async function RolesPage() {
           </h1>
           <p className="text-gray-400 text-sm mt-2 max-w-2xl">
             Grant Captain access or hand someone the Supporting Member,
-            Founding Member, or Family &amp; Affiliate badge — without
+            Founding Member, or Family &amp; Affiliate badge, without
             needing a Stripe checkout. Stacks on top of any paid sub.
           </p>
         </div>

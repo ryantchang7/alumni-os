@@ -40,7 +40,7 @@ export async function requireApprovedMember(): Promise<GateResult> {
     return {
       ok: false,
       response: NextResponse.json(
-        { error: 'Approved members only — claim your card to continue.' },
+        { error: 'Approved members only, claim your card to continue.' },
         { status: 403 },
       ),
     }

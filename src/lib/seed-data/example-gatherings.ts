@@ -27,7 +27,7 @@ export const EXAMPLE_GATHERING_IDS = new Set<string>([
  * intentionally retired to declutter). The API filters these out before
  * returning so the existing KV data doesn't need a manual delete. */
 export const HIDDEN_GATHERING_IDS = new Set<string>([
-  '8951fd85-1d3b-452f-81f5-5da9eedc879f', // Summer Clubhouse — NYC dinner
+  '8951fd85-1d3b-452f-81f5-5da9eedc879f', // Summer Clubhouse. NYC dinner
 ])
 
 export function isExampleGathering(id: string, dataFlag?: boolean): boolean {

@@ -128,7 +128,7 @@ export default function ClaimsManager() {
                     title={
                       claim.matchHint === 'strong'
                         ? 'Google account name matches the Member Book entry'
-                        : "Google account name does NOT match the book entry — check before approving"
+                        : "Google account name does NOT match the book entry, check before approving"
                     }
                     className={`text-[10px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full border ${
                       claim.matchHint === 'strong'

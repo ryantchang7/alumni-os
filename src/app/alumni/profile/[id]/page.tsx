@@ -369,7 +369,7 @@ function AlumniProfileInner() {
             </div>
           )}
 
-          {/* Read-only roster truth (players + alumni only — parents
+          {/* Read-only roster truth (players + alumni only, parents
               and coaches have no Penn Golf record to display). */}
           {!isParent && (
             <div
@@ -396,7 +396,7 @@ function AlumniProfileInner() {
             </div>
           )}
 
-          {/* Family & Affiliate banner — shown in place of the roster
+          {/* Family & Affiliate banner, shown in place of the roster
               record so parents see something meaningful here. */}
           {isParent && profile.parentRelationship && (
             <div
@@ -564,17 +564,17 @@ function AlumniProfileInner() {
                 )}
                 <p className="text-[11px] text-ink-muted mt-1.5 leading-snug">
                   For "winters in FL," "summers on Cape Cod," etc. Up to 3 extra locations
-                  — each appears on the Member Map.
+                 , each appears on the Member Map.
                 </p>
               </div>
 
-              {/* On the Loop — current trip / passing through. Open to
-                  everyone (players, alumni, coach, family) — the surface
+              {/* On the Loop, current trip / passing through. Open to
+                  everyone (players, alumni, coach, family), the surface
                   only renders when you actually fill in a trip window. */}
               <div className="border-t border-[rgba(180,168,150,0.35)] pt-5 mt-1">
                 <div className="flex items-baseline justify-between mb-1">
                   <label className="block text-xs font-medium text-[#3a4657]">
-                    On the loop <span className="text-ink-muted font-normal italic">— passing through somewhere?</span>
+                    On the loop <span className="text-ink-muted font-normal italic">, passing through somewhere?</span>
                   </label>
                   {(inTownCity || inTownState || inTownStart || inTownEnd || inTownNote) && (
                     <button
@@ -653,10 +653,10 @@ function AlumniProfileInner() {
             </div>
           </div>
 
-          {/* Golf — open to everyone. Parents/affiliates may not have a
+          {/* Golf, open to everyone. Parents/affiliates may not have a
               Penn Golf playing history, but they're welcome to add a
               home course and favorites. The "Favorite Penn Golf memory"
-              field is the only player-specific bit — hide it for them. */}
+              field is the only player-specific bit, hide it for them. */}
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
             style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
@@ -666,7 +666,7 @@ function AlumniProfileInner() {
             </p>
             <p className="text-xs text-ink-muted mb-4">
               {isParent
-                ? 'Optional — share a home course or favorites if you have them.'
+                ? 'Optional, share a home course or favorites if you have them.'
                 : 'Used on The Course and to surface you to alumni wanting to play near you.'}
             </p>
             <div className="space-y-4">
@@ -688,7 +688,7 @@ function AlumniProfileInner() {
                 {!noHomeCourse && (
                   <p className="text-[11px] text-ink-muted mt-1">
                     Member at more than one? Add them all, separated by a comma
-                    &mdash; each shows on The Course, and you appear under both.
+                   , each shows on The Course, and you appear under both.
                   </p>
                 )}
                 <label className="flex items-center gap-2 mt-2 cursor-pointer">
@@ -706,10 +706,10 @@ function AlumniProfileInner() {
                   </span>
                 </label>
               </div>
-              {/* Handicap — required for non-parents. Numeric index is the
+              {/* Handicap, required for non-parents. Numeric index is the
                   primary input (most members have one); the two chips are a
                   fallback for those who don't play to an index yet. GHIN #
-                  below is an optional credential — display only, no auto-sync
+                  below is an optional credential, display only, no auto-sync
                   (there's no free public GHIN API). */}
               <div>
                 <label className="block text-xs font-medium text-[#3a4657] mb-1">
@@ -759,7 +759,7 @@ function AlumniProfileInner() {
                   />
                   <p className="text-[11px] text-ink-muted mt-1 leading-snug">
                     Shown on your card as a verified GHIN credential. We can&rsquo;t pull your
-                    live index automatically &mdash; enter it above.
+                    live index automatically, enter it above.
                   </p>
                 </div>
               </div>
@@ -885,7 +885,7 @@ function AlumniProfileInner() {
             </div>
           </div>
 
-          {/* What I'm open to — visible to every approved member. Drives the
+          {/* What I'm open to, visible to every approved member. Drives the
               "Open to a Round" / "Open to Coffee" lists across the site. */}
           <div
             className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-6"
@@ -917,7 +917,7 @@ function AlumniProfileInner() {
             </div>
           </div>
 
-          {/* How I can help — alumni-only. Current players don't offer
+          {/* How I can help, alumni-only. Current players don't offer
               mentorship/intros to alumni; alumni offer it to them. */}
           {!isCurrentPlayer && (
             <div

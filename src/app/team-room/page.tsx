@@ -25,7 +25,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Team Room',
-  description: 'The season hub — schedule, results, roster, and updates.',
+  description: 'The season hub, schedule, results, roster, and updates.',
 }
 
 interface PlayerEntry {
@@ -38,14 +38,14 @@ const SUPPORT_CARDS = [
   {
     title: 'Show up',
     description:
-      'Rounds, dinners, watch parties — the gatherings where Penn Golf still feels like Penn Golf.',
+      'Rounds, dinners, watch parties, the gatherings where Penn Golf still feels like Penn Golf.',
     cta: 'Browse the 19th Hole',
     href: '/19th-hole',
   },
   {
     title: 'Help a player',
     description:
-      'Post an ask or an offer in the Career Room — recruiting advice, warm intros, a seat at dinner.',
+      'Post an ask or an offer in the Career Room, recruiting advice, warm intros, a seat at dinner.',
     cta: 'Open the Career Room',
     href: '/career-room',
   },
@@ -179,13 +179,13 @@ export default async function TeamRoomPage() {
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 py-10 space-y-14">
 
-        {/* Latest from Penn Athletics — sits at the top of the Team Room
+        {/* Latest from Penn Athletics, sits at the top of the Team Room
             since it's the most "current team" thing here */}
         {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
 
-        {/* Clubhouse Captains — first content section so captains are front
+        {/* Clubhouse Captains, first content section so captains are front
             and center. Captains ALSO appear in the roster/alumni sections
-            below — the double is intentional (captain = recognition role). */}
+            below, the double is intentional (captain = recognition role). */}
         {team && <CaptainsLineup store={store} teamId={team.id} />}
 
         {/* Current season roster */}
@@ -237,14 +237,14 @@ export default async function TeamRoomPage() {
           )}
         </section>
 
-        {/* The Season — one living hub: schedule + updates. Coaches, captains,
+        {/* The Season, one living hub: schedule + updates. Coaches, captains,
             and the founder post qualifiers/results via /internal/season. */}
         <section>
           <div className="flex items-end justify-between gap-4 flex-wrap mb-1.5">
             <div>
               <h2 className="text-base font-semibold text-[#0a1628] mb-1">The Season</h2>
               <p className="text-sm text-ink-muted">
-                Schedule, qualifying, results, and stats — updated all year as it happens.
+                Schedule, qualifying, results, and stats, updated all year as it happens.
               </p>
             </div>
             {seasonPoster.ok && (
@@ -370,7 +370,7 @@ export default async function TeamRoomPage() {
           </section>
         )}
 
-        {/* Support the Program — three ways */}
+        {/* Support the Program, three ways */}
         <section>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Support the Program</h2>
           <p className="text-sm text-ink-muted mb-6">
@@ -414,7 +414,7 @@ export default async function TeamRoomPage() {
           style={{ boxShadow: '0 4px 16px rgba(10,22,40,0.18)' }}
         >
           <div>
-            <p className="font-semibold text-white text-sm">Ask the Team &mdash; and meet this year&rsquo;s squad</p>
+            <p className="font-semibold text-white text-sm">Ask the Team, and meet this year&rsquo;s squad</p>
             <p className="text-xs text-white/70 mt-0.5">
               Get a real answer from a current player, usually within a couple days.
             </p>
@@ -435,7 +435,7 @@ export default async function TeamRoomPage() {
           <div>
             <p className="font-semibold text-[#0a1628] text-sm">Schedule &amp; Travel</p>
             <p className="text-xs text-ink-muted mt-0.5">
-              The full season slate &mdash; and offer to host the team when they&rsquo;re near you.
+              The full season slate, and offer to host the team when they&rsquo;re near you.
             </p>
           </div>
           <Link

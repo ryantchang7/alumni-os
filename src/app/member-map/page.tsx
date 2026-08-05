@@ -19,7 +19,7 @@ import { getApprovalState } from '@/lib/access/approval'
 
 export const metadata: Metadata = {
   title: 'Member Map',
-  description: 'Where the Penn Golf family lives — the member map.',
+  description: 'Where the Penn Golf family lives, the member map.',
 }
 
 const TEAM_SLUG = 'penn-mens-golf'

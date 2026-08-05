@@ -125,7 +125,7 @@ export default function PhotoUpload({
     const cap = maxFiles !== undefined ? Math.max(0, maxFiles) : accepted.length
     const batch = accepted.slice(0, cap)
     if (batch.length === 0) {
-      setError('This moment is full — remove something first (max 8).')
+      setError('This moment is full, remove something first (max 8).')
       return
     }
     setError(accepted.length > batch.length ? `Only the first ${batch.length} fit (max 8 per moment).` : null)
@@ -156,7 +156,7 @@ export default function PhotoUpload({
       }
       const failed = results.filter(r => r.err)
       if (failed.length > 0) {
-        setError(`${failed.length} of ${results.length} failed — ${failed[0].err}`)
+        setError(`${failed.length} of ${results.length} failed. ${failed[0].err}`)
       }
     } finally {
       setUploading(false)
@@ -271,7 +271,7 @@ export default function PhotoUpload({
           />
           {/* Separate input with `capture` so mobile opens the camera directly.
              On desktop `capture` is ignored and this falls back to the file
-             dialog — harmless. */}
+             dialog, harmless. */}
           <input
             ref={captureRef}
             type="file"

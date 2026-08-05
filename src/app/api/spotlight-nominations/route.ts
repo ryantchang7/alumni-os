@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const ip = ipFromRequest(request)
   const rate = await checkRateLimit(`spotnom:${ip}`, 5, 600)
   if (!rate.ok) {
-    return NextResponse.json({ error: 'Too many nominations — try again later.' }, { status: 429 })
+    return NextResponse.json({ error: 'Too many nominations, try again later.' }, { status: 429 })
   }
 
   let body: Record<string, unknown>

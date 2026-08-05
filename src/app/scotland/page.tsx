@@ -17,7 +17,7 @@ import { getSiteContentOrDefault } from '@/lib/site-content/read'
 export const metadata: Metadata = {
   title: 'Scotland Tour',
   description:
-    'Penn Golf is going to Scotland — the St Andrews Links Collegiate, then an alumni & family tour through St Andrews, Kingsbarns, and Carnoustie. October 14–17, 2026.',
+    'Penn Golf is going to Scotland, the St Andrews Links Collegiate, then an alumni & family tour through St Andrews, Kingsbarns, and Carnoustie. October 14–17, 2026.',
 }
 
 const ITINERARY = [
@@ -116,14 +116,14 @@ export default async function ScotlandPage() {
           </h2>
           <div className="text-[#3d4a5c] text-[15px] leading-relaxed max-w-2xl space-y-3 mb-5">
             <p>
-              The fourth annual St Andrews Links Collegiate — a four-team field of
+              The fourth annual St Andrews Links Collegiate, a four-team field of
               Penn, Texas, Washington, and St Andrews, with both Penn&rsquo;s
               men&rsquo;s and women&rsquo;s teams competing in the home of golf.
             </p>
             <p>
               Two rounds of stroke play on the Jubilee Course set the individual
-              championships and the seeding. Then the final day is match play —
-              Championship and Consolation matches — <strong className="text-[#0a1628]">on the Old Course itself</strong>.
+              championships and the seeding. Then the final day is match play, 
+              Championship and Consolation matches. <strong className="text-[#0a1628]">on the Old Course itself</strong>.
               All three days are televised on Golf Channel.
             </p>
           </div>
@@ -204,7 +204,7 @@ export default async function ScotlandPage() {
             How the trip supported the team.
           </h2>
           <p className="text-[#3d4a5c] text-[15px] leading-relaxed max-w-2xl mb-8">
-            Registration ran through June 30, 2026, with three package levels —
+            Registration ran through June 30, 2026, with three package levels, 
             the higher tiers folding in a tax-deductible gift to the Penn Golf
             annual fund that directly sponsors student-athletes on this trip.
           </p>
@@ -237,8 +237,8 @@ export default async function ScotlandPage() {
               The trip is organized with the Penn Champions Club.
             </h2>
             <p className="text-white/75 text-[14.5px] leading-relaxed max-w-2xl mb-5">
-              For anything about the Scotland Tour — confirmations, logistics, or
-              details — reach Charlie Carroll at the Penn Champions Club.
+              For anything about the Scotland Tour, confirmations, logistics, or
+              details, reach Charlie Carroll at the Penn Champions Club.
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-[14px]">
               <a href="mailto:ccarrol2@upenn.edu" className="text-[#c8a84b] hover:underline font-medium">
@@ -254,7 +254,7 @@ export default async function ScotlandPage() {
             <Link href="/moments" className="text-[#0a1628] font-medium hover:underline">
               Moments
             </Link>{' '}
-            when we&rsquo;re back — the whole clubhouse will want to see it.
+            when we&rsquo;re back, the whole clubhouse will want to see it.
           </p>
           <p className="text-[11px] text-[#b0a898] mt-3">
             Photos: Kohjiro Kinno / St Andrews Links Trust · College Links Golf

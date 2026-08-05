@@ -20,11 +20,11 @@ export default function ClaimPendingPage() {
         </h1>
         <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-2">
           Every claim is reviewed by hand so the Penn Golf family stays
-          close — no bots, no bulk approvals.
+          close, no bots, no bulk approvals.
         </p>
         <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-8">
           You&rsquo;ll get an email at the address you signed in with as soon as
-          you&rsquo;re approved — usually within a day.
+          you&rsquo;re approved, usually within a day.
         </p>
         <div className="flex flex-col gap-2">
           <Link
@@ -49,14 +49,14 @@ export default function ClaimPendingPage() {
           <Link href="/launch" className="flex items-center gap-2.5 text-left group">
             <Film className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
             <span className="text-[12.5px] text-[#3d4a5c] group-hover:text-[#0a1628] transition-colors">
-              While you wait —{' '}
+              While you wait, {' '}
               <span className="font-semibold text-[#0a1628] group-hover:underline">watch the film &rarr;</span>
             </span>
           </Link>
           <Link href="/member-book" className="flex items-center gap-2.5 text-left group">
             <BookOpen className="w-4 h-4 text-[#c8a84b] flex-shrink-0" />
             <span className="text-[12.5px] text-[#3d4a5c] group-hover:text-[#0a1628] transition-colors">
-              Meanwhile —{' '}
+              Meanwhile, {' '}
               <span className="font-semibold text-[#0a1628] group-hover:underline">browse the Member Book &rarr;</span>
             </span>
           </Link>

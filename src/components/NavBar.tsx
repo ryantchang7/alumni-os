@@ -241,7 +241,7 @@ export default function NavBar() {
   return (
     <header className="bg-[#0a1628] border-b border-white/[0.08] sticky top-0 z-50">
       <div className="max-w-[1320px] mx-auto px-6 h-[60px] flex items-center justify-between">
-        {/* Wordmark — just PENN GOLF set in tracked caps */}
+        {/* Wordmark, just PENN GOLF set in tracked caps */}
         <Link href="/" className="flex items-center">
           <span className="text-white text-sm font-semibold tracking-[0.18em]">
             PENN GOLF

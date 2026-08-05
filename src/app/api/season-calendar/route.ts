@@ -30,7 +30,7 @@ export async function GET() {
         `DTSTAMP:${stamp}`,
         `DTSTART;VALUE=DATE:${dateNum(s.startDate)}`,
         `DTEND;VALUE=DATE:${dateNum(dayAfter(s.endDate ?? s.startDate))}`,
-        `SUMMARY:${esc(`Penn Golf — ${s.eventName}`)}`,
+        `SUMMARY:${esc(`Penn Golf, ${s.eventName}`)}`,
         `LOCATION:${esc(s.locationText)}`,
         ...(s.note ? [`DESCRIPTION:${esc(s.note)}`] : []),
         'END:VEVENT',

@@ -73,7 +73,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
         <h2 className="text-base font-semibold text-[#0a1628]">Your Era</h2>
         {data.eraLabel && (
           <p className="text-[12px] text-ink-muted italic ml-1">
-            — the guys you played with, {data.eraLabel}
+           , the guys you played with, {data.eraLabel}
           </p>
         )}
       </div>
@@ -84,7 +84,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
             {data.hereCount === 1 ? 'is' : 'are'} in the Clubhouse
             {missingCount > 0 && (
               <>
-                {' '}&middot; {missingCount} {missingCount === 1 ? 'is' : 'are'} still missing &mdash;{' '}
+                {' '}&middot; {missingCount} {missingCount === 1 ? 'is' : 'are'} still missing. {' '}
                 <Link href="/invite" className="text-[#990000] hover:underline font-medium">
                   pull them in
                 </Link>
@@ -94,7 +94,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
           </>
         ) : (
           <>
-            None of them are in yet &mdash;{' '}
+            None of them are in yet. {' '}
             <Link href="/invite" className="text-[#990000] hover:underline font-medium">
               be the one who pulls them in
             </Link>
@@ -134,7 +134,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
                 <RespondButton
                   targetAccountId={t.accountId}
                   label="Say hello"
-                  kickoff={`Hey ${firstName(t.name)}, saw you in the Clubhouse — been a while. `}
+                  kickoff={`Hey ${firstName(t.name)}, saw you in the Clubhouse, been a while. `}
                   bgColor="#0a1628"
                   className="w-full"
                 />
@@ -143,7 +143,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
                   href="/invite"
                   className="inline-flex w-full items-center justify-center text-[11.5px] font-semibold uppercase tracking-[0.14em] px-3.5 py-2 rounded-lg border border-[#0a1628]/25 text-[#3d4a5c] hover:bg-[#0a1628] hover:text-white transition-colors"
                 >
-                  Not in yet — invite him
+                  Not in yet, invite him
                 </Link>
               )}
             </div>

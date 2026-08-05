@@ -66,7 +66,7 @@ function QualityInner() {
           <h1 className="text-white text-2xl font-semibold tracking-tight mb-1">Graph Quality</h1>
           <p className="text-gray-400 text-sm">
             Completeness, duplicates, and coverage for{' '}
-            <span className="font-mono text-gray-300">{teamSlug || '—'}</span>
+            <span className="font-mono text-gray-300">{teamSlug || '. '}</span>
           </p>
         </div>
       </div>

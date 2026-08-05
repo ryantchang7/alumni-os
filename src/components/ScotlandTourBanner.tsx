@@ -15,7 +15,7 @@ export default function ScotlandTourBanner({ variant }: { variant: 'featured' | 
       >
         <p className="text-[13px] leading-snug">
           <span className="font-semibold text-[#c8a84b]">Scotland, October 2026</span>
-          <span className="text-white/80"> — the team plays St Andrews, and the Penn Golf family goes too.</span>
+          <span className="text-white/80">, the team plays St Andrews, and the Penn Golf family goes too.</span>
         </p>
         <span className="text-[#c8a84b] text-[13px] font-semibold whitespace-nowrap group-hover:translate-x-0.5 transition-transform">
           See the trip →
@@ -37,7 +37,7 @@ export default function ScotlandTourBanner({ variant }: { variant: 'featured' | 
         Penn Golf is going to Scotland.
       </p>
       <p className="text-white/75 text-[13.5px] sm:text-[14px] leading-relaxed max-w-2xl">
-        The team competes in the St Andrews Links Collegiate — then alumni and
+        The team competes in the St Andrews Links Collegiate, then alumni and
         family join for three days at the Old Course Hotel, Kingsbarns, and
         Carnoustie.
       </p>

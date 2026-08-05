@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   // yet) cannot post Moments. Matches the gate on the rest of the actions.
   if (!session.linkedPersonId) {
     return NextResponse.json(
-      { error: 'Approved members only — claim your card to post a Moment.' },
+      { error: 'Approved members only, claim your card to post a Moment.' },
       { status: 403 },
     )
   }

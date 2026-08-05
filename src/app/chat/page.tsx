@@ -31,7 +31,7 @@ export default async function ChatIndexPage() {
           signedIn={approval.signedIn}
           eyebrow="Members only · Chat"
           headline="Chat is between approved members."
-          blurb="Direct messages and group threads with other Penn Golf alumni. Claim your card — every claim is reviewed by hand — and a private inbox opens up."
+          blurb="Direct messages and group threads with other Penn Golf alumni. Claim your card. Every claim is reviewed by hand, and a private inbox opens up."
         />
       </div>
     )
