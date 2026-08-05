@@ -100,7 +100,7 @@ export default function OnTheLoopStrip({ approved }: Props) {
         <Plane className="w-4 h-4 text-[#c8a84b]" />
         <h2 className="text-base font-semibold text-[#0a1628]">On the Loop</h2>
         <p className="text-[12px] text-ink-muted italic ml-1">
-         , Penn Golf passing through
+         Penn Golf passing through
         </p>
       </div>
 
