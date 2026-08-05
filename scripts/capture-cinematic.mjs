@@ -100,6 +100,7 @@ const BEATS = {
     out: 'profile.mp4',
     start: '/member-book/ryan-chang',
     seconds: 11.1,
+    redactContact: true,
     moves: [
       { kind: 'hold', s: 0.9 },
       { kind: 'scroll', to: 880, s: 8.4, cap: true },
@@ -211,6 +212,7 @@ const BEATS = {
 }
 
 async function shoot(page, dir, idx) {
+  await page.evaluate(() => window.__redact?.()).catch(() => {})
   await page.screenshot({
     type: 'jpeg',
     quality: 94,
@@ -240,6 +242,28 @@ async function runBeat(browser, key) {
   const page = await ctx.newPage()
   await page.goto(B + beat.start, { waitUntil: 'domcontentloaded', timeout: 60000 })
   await page.waitForTimeout(3500)
+
+  if (beat.redactContact) {
+    // Keep the CONTACT section on screen — it's part of what a card offers —
+    // but blur the actual values. Re-applied after any scroll in case the page
+    // re-renders.
+    await page.addStyleTag({
+      content: '.__redact{filter:blur(7px);-webkit-filter:blur(7px);user-select:none}',
+    })
+    await page.evaluate(() => {
+      window.__redact = () => {
+        const EMAIL = /[\w.+-]+@[\w-]+\.[\w.]+/
+        const PHONE = /(\+?\d[\d\s().-]{7,}\d)/
+        for (const el of document.querySelectorAll('a,span,p,div,li')) {
+          if (el.children.length > 0) continue
+          const t = (el.textContent || '').trim()
+          if (!t || t.length > 60) continue
+          if (EMAIL.test(t) || PHONE.test(t)) el.classList.add('__redact')
+        }
+      }
+      window.__redact()
+    })
+  }
   // Mount every lazy section before we start measuring heights.
   await page.evaluate(async () => {
     const step = window.innerHeight
