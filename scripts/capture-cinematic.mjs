@@ -1,0 +1,389 @@
+/**
+ * Frame-accurate 4K capture at the film's native 60fps.
+ *
+ * Playwright's recordVideo only samples at 25fps. Feeding 25fps clips into a
+ * 60fps timeline means every source frame is held for 2 or 3 output frames in
+ * an uneven 2-3-2-3 cadence — which is exactly what reads as judder on a long
+ * scroll. No encoder setting fixes that; the frames simply don't exist.
+ *
+ * So we don't record. We drive the page one output frame at a time: set the
+ * scroll offset and the cursor position from an eased timeline, screenshot,
+ * repeat. Every frame is a real render at an exact position, so the motion is
+ * mathematically smooth and the text stays razor sharp.
+ *
+ *   node scripts/capture-cinematic.mjs                 # all beats
+ *   node scripts/capture-cinematic.mjs teamroom home   # just these
+ *
+ * Read-only against prod: it scrolls, moves a drawn cursor, and follows
+ * links. It never submits a form or saves anything.
+ */
+
+import { chromium } from 'playwright'
+import { mkdirSync, rmSync, existsSync } from 'fs'
+import { execFileSync } from 'child_process'
+
+const OUT = '/Users/ryanchang/dev/penn-golf-clubhouse-video/public/clips'
+const TMP = '/private/tmp/claude-501/-Users-ryanchang-dev-alumni-os/cd59b3a3-009a-4541-96b9-4983cfe2ffa0/scratchpad/frames'
+const AUTH = '/Users/ryanchang/dev/penn-golf-clubhouse-video/assets/capture/auth.json'
+const B = 'https://www.penngolfclubhouse.com'
+
+const FPS = 60
+const VIEW = { width: 3840, height: 2160 }
+const Z = 2 // CSS zoom — page coordinates are half of device pixels
+
+const easeInOut = t => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2)
+const easeOut = t => 1 - Math.pow(1 - t, 3)
+
+// A gold ring cursor drawn into the page so we can place it per frame instead
+// of relying on real mouse events (which only move between screenshots).
+const CURSOR = `
+(() => {
+  if (document.getElementById('__cine_cursor')) return
+  const c = document.createElement('div')
+  c.id = '__cine_cursor'
+  Object.assign(c.style, {
+    position: 'fixed', left: '0px', top: '0px', width: '22px', height: '22px',
+    marginLeft: '-11px', marginTop: '-11px', borderRadius: '50%',
+    border: '2.5px solid #c8a84b', background: 'rgba(200,168,75,0.18)',
+    boxShadow: '0 0 0 4px rgba(200,168,75,0.10)', zIndex: '2147483647',
+    pointerEvents: 'none', opacity: '0', transition: 'none',
+  })
+  document.body.appendChild(c)
+  window.__cine = {
+    place(x, y, opacity, scale) {
+      const el = document.getElementById('__cine_cursor')
+      if (!el) return
+      el.style.left = x + 'px'
+      el.style.top = y + 'px'
+      el.style.opacity = String(opacity)
+      el.style.transform = 'scale(' + scale + ')'
+    },
+  }
+})()
+`
+
+/** Beats. Each is a list of moves rendered at exactly FPS. */
+const BEATS = {
+  // Home: ride the whole page, then reach for "Visit the Hall of Fame".
+  home: {
+    out: 'home-to-hof.mp4',
+    start: '/player',
+    seconds: 13.35,
+    moves: [
+      { kind: 'hold', s: 0.7 },
+      { kind: 'scrollBottom', s: 8.2 },
+      { kind: 'hold', s: 0.5 },
+      { kind: 'reach', s: 1.5, text: /visit the hall of fame/i },
+      { kind: 'click', s: 0.35 },
+      { kind: 'navHold', s: 2.1 },
+    ],
+  },
+  // Team Room: the long one — news, captains, roster, coaching staff, The
+  // Season, then Ask the Team.
+  teamroom: {
+    out: 'teamroom.mp4',
+    start: '/team-room',
+    seconds: 20.6,
+    moves: [
+      { kind: 'hold', s: 0.8 },
+      { kind: 'scrollBottom', s: 14.2 },
+      { kind: 'hold', s: 0.5 },
+      { kind: 'reach', s: 1.5, role: 'link', name: /ask the team/i },
+      { kind: 'click', s: 0.35 },
+      { kind: 'navHold', s: 3.25 },
+    ],
+  },
+  // Ryan's card: one clean ride down everything a member can fill in.
+  profile: {
+    out: 'profile.mp4',
+    start: '/member-book/ryan-chang',
+    seconds: 11.1,
+    moves: [
+      { kind: 'hold', s: 0.9 },
+      { kind: 'scrollBottom', s: 9.2 },
+      { kind: 'hold', s: 1.0 },
+    ],
+  },
+  // Member Book: ride into the grid, search a name, open the card.
+  memberbook: {
+    out: 'memberbook.mp4',
+    start: '/member-book',
+    seconds: 13.95,
+    moves: [
+      { kind: 'hold', s: 0.8 },
+      { kind: 'scroll', to: 380, s: 2.2 },
+      { kind: 'reach', s: 1.2, selector: '[aria-label="Search the Member Book"]' },
+      { kind: 'click', s: 0.3, noNav: true },
+      { kind: 'type', s: 2.0, text: 'Cohen' },
+      { kind: 'hold', s: 1.1 },
+      { kind: 'reach', s: 1.3, text: /adam s\.? cohen/i },
+      { kind: 'click', s: 0.35 },
+      { kind: 'navHold', s: 1.0 },
+      { kind: 'scrollBottom', s: 3.0 },
+      { kind: 'hold', s: 0.7 },
+    ],
+  },
+  // Member Map: the hometowns toggle lights the country up, then two states
+  // open their panels of real names. The state targets are SVG paths with no
+  // text to aim at, so these are coordinates (CSS px in the zoomed page).
+  map: {
+    out: 'map.mp4',
+    start: '/member-map',
+    seconds: 12.15,
+    moves: [
+      { kind: 'hold', s: 0.6 },
+      { kind: 'scroll', to: 340, s: 1.5 },
+      { kind: 'reach', s: 1.1, text: /^hometowns$/i },
+      { kind: 'click', s: 0.3, noNav: true },
+      { kind: 'hold', s: 1.2 },
+      { kind: 'moveTo', s: 1.0, x: 1038, y: 640 }, // Pennsylvania
+      { kind: 'click', s: 0.3, noNav: true },
+      { kind: 'hold', s: 1.9 },
+      { kind: 'moveTo', s: 0.9, x: 775, y: 830 }, // Texas
+      { kind: 'click', s: 0.3, noNav: true },
+      { kind: 'hold', s: 3.05 },
+    ],
+  },
+  // Chat: the list, then the thread with Ryan's dad. The whole exchange fits
+  // on one screen — hold on it; scrolling drives the messages off the top.
+  chat: {
+    out: 'chat.mp4',
+    start: '/chat',
+    seconds: 9.2,
+    moves: [
+      { kind: 'hold', s: 0.9 },
+      { kind: 'reach', s: 1.5, text: /raymond chang/i },
+      { kind: 'click', s: 0.35 },
+      { kind: 'navHold', s: 6.45 },
+    ],
+  },
+  // Start a chat: pick two people — the page's own copy offers "a few for a
+  // group chat". Never presses START CHAT.
+  chatnew: {
+    out: 'chat-new.mp4',
+    start: '/chat/new',
+    seconds: 9.0,
+    moves: [
+      { kind: 'hold', s: 1.0 },
+      { kind: 'reach', s: 1.4, text: /raymond chang/i },
+      { kind: 'click', s: 0.3, noNav: true },
+      { kind: 'hold', s: 1.0 },
+      { kind: 'reach', s: 1.2, text: /wesley hu/i },
+      { kind: 'click', s: 0.3, noNav: true },
+      { kind: 'hold', s: 3.8 },
+    ],
+  },
+  // The Course: the round finder, then the whole Host a Round form.
+  course: {
+    out: 'course-flow.mp4',
+    start: '/the-course',
+    seconds: 20.0,
+    moves: [
+      { kind: 'hold', s: 0.8 },
+      { kind: 'scroll', to: 900, s: 3.4 },
+      { kind: 'hold', s: 1.4 },
+      { kind: 'scroll', to: 150, s: 2.2 },
+      { kind: 'hold', s: 0.5 },
+      { kind: 'reach', s: 1.3, selector: '[data-testid="host-a-round"]' },
+      { kind: 'click', s: 0.35 },
+      { kind: 'navHold', s: 1.4 },
+      { kind: 'scrollBottom', s: 7.6 },
+      { kind: 'hold', s: 1.0 },
+    ],
+  },
+}
+
+async function shoot(page, dir, idx) {
+  await page.screenshot({
+    type: 'jpeg',
+    quality: 94,
+    path: `${dir}/f${String(idx).padStart(6, '0')}.jpg`,
+  })
+}
+
+async function runBeat(browser, key) {
+  const beat = BEATS[key]
+  const dir = `${TMP}/${key}`
+  rmSync(dir, { recursive: true, force: true })
+  mkdirSync(dir, { recursive: true })
+
+  const ctx = await browser.newContext({
+    viewport: VIEW,
+    deviceScaleFactor: 1,
+    storageState: AUTH,
+  })
+  await ctx.addInitScript(() => {
+    const z = () => {
+      document.documentElement.style.zoom = '2'
+    }
+    if (document.readyState !== 'loading') z()
+    else window.addEventListener('DOMContentLoaded', z)
+  })
+  const page = await ctx.newPage()
+  await page.goto(B + beat.start, { waitUntil: 'domcontentloaded', timeout: 60000 })
+  await page.waitForTimeout(3500)
+  // Mount every lazy section before we start measuring heights.
+  await page.evaluate(async () => {
+    const step = window.innerHeight
+    for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
+      window.scrollTo(0, y)
+      await new Promise(r => setTimeout(r, 180))
+    }
+    window.scrollTo(0, 0)
+  })
+  await page.waitForTimeout(1200)
+  await page.evaluate(CURSOR)
+
+  let frame = 0
+  let scrollY = 0
+  // Cursor lives in CSS pixels; park it off to the side until it's needed.
+  let cur = { x: VIEW.width / Z - 120, y: VIEW.height / Z - 140 }
+  let target = null
+
+  for (const move of beat.moves) {
+    const n = Math.round(move.s * FPS)
+
+    if (move.kind === 'hold' || move.kind === 'navHold') {
+      for (let i = 0; i < n; i++) {
+        await page.evaluate(
+          ({ x, y, o }) => window.__cine?.place(x, y, o, 1),
+          { x: cur.x, y: cur.y, o: move.kind === 'navHold' ? 0.55 : 0.55 },
+        )
+        await shoot(page, dir, frame++)
+      }
+      continue
+    }
+
+    if (move.kind === 'scrollBottom' || move.kind === 'scroll') {
+      const max = await page.evaluate(
+        () => document.documentElement.scrollHeight - window.innerHeight,
+      )
+      const from = scrollY
+      const to = move.kind === 'scrollBottom' ? max : Math.min(move.to * Z, max)
+      for (let i = 0; i < n; i++) {
+        const y = from + (to - from) * easeInOut((i + 1) / n)
+        await page.evaluate(
+          ({ y, cx, cy }) => {
+            window.scrollTo(0, y)
+            window.__cine?.place(cx, cy, 0.55, 1)
+          },
+          { y, cx: cur.x, cy: cur.y },
+        )
+        await shoot(page, dir, frame++)
+      }
+      scrollY = to
+      continue
+    }
+
+    if (move.kind === 'moveTo') {
+      const from = { ...cur }
+      for (let i = 0; i < n; i++) {
+        const t = easeOut((i + 1) / n)
+        const x = from.x + (move.x - from.x) * t
+        const y = from.y + (move.y - from.y) * t
+        await page.evaluate(({ x, y }) => window.__cine?.place(x, y, 0.95, 1), { x, y })
+        await shoot(page, dir, frame++)
+      }
+      cur = { x: move.x, y: move.y }
+      continue
+    }
+
+    if (move.kind === 'type') {
+      // Type one character at a time, paced across the move so the text grows
+      // at 60fps like everything else instead of jumping between screenshots.
+      let typed = 0
+      for (let i = 0; i < n; i++) {
+        const want = Math.floor(((i + 1) / n) * move.text.length)
+        while (typed < want) {
+          await page.keyboard.type(move.text[typed])
+          typed++
+        }
+        await page.evaluate(
+          ({ x, y }) => window.__cine?.place(x, y, 0.95, 1),
+          { x: cur.x, y: cur.y },
+        )
+        await shoot(page, dir, frame++)
+      }
+      continue
+    }
+
+    if (move.kind === 'reach') {
+      const loc = move.selector
+        ? page.locator(move.selector).first()
+        : move.role
+          ? page.getByRole(move.role, { name: move.name }).first()
+          : page.getByText(move.text).first()
+      await loc.scrollIntoViewIfNeeded().catch(() => {})
+      await page.waitForTimeout(120)
+      const box = await loc.boundingBox().catch(() => null)
+      if (!box) {
+        console.warn(`  ⚠️  ${key}: could not find the reach target — holding instead`)
+        for (let i = 0; i < n; i++) await shoot(page, dir, frame++)
+        continue
+      }
+      // boundingBox is in device px; the cursor is positioned in CSS px.
+      target = { x: (box.x + box.width / 2) / Z, y: (box.y + box.height / 2) / Z }
+      const from = { ...cur }
+      for (let i = 0; i < n; i++) {
+        const t = easeOut((i + 1) / n)
+        const x = from.x + (target.x - from.x) * t
+        const y = from.y + (target.y - from.y) * t
+        await page.evaluate(({ x, y }) => window.__cine?.place(x, y, 0.95, 1), { x, y })
+        await shoot(page, dir, frame++)
+      }
+      cur = target
+      continue
+    }
+
+    if (move.kind === 'click') {
+      // A quick press-in on the ring, then follow the link for real.
+      for (let i = 0; i < n; i++) {
+        const t = (i + 1) / n
+        const scale = t < 0.5 ? 1 - t * 0.5 : 0.75 + (t - 0.5) * 0.9
+        await page.evaluate(
+          ({ x, y, s }) => window.__cine?.place(x, y, 0.95, s),
+          { x: cur.x, y: cur.y, s: scale },
+        )
+        await shoot(page, dir, frame++)
+      }
+      await page.mouse.click(cur.x * Z, cur.y * Z).catch(() => {})
+      if (move.noNav) {
+        // Focusing a field, not leaving the page — keep our scroll position.
+        await page.waitForTimeout(200)
+        continue
+      }
+      await page.waitForLoadState('domcontentloaded', { timeout: 20000 }).catch(() => {})
+      await page.waitForTimeout(900)
+      await page.evaluate(CURSOR)
+      scrollY = 0
+      continue
+    }
+  }
+
+  await ctx.close()
+
+  const outPath = `${OUT}/${beat.out}`
+  execFileSync('ffmpeg', [
+    '-v', 'error', '-y',
+    '-framerate', String(FPS),
+    '-i', `${dir}/f%06d.jpg`,
+    '-c:v', 'libx264', '-preset', 'slow', '-crf', '16',
+    '-pix_fmt', 'yuv420p', '-r', String(FPS),
+    outPath,
+  ])
+  rmSync(dir, { recursive: true, force: true })
+  console.log(`  ✓ ${key}: ${frame} frames → ${beat.out} (${(frame / FPS).toFixed(2)}s @ ${FPS}fps)`)
+}
+
+const wanted = process.argv.slice(2)
+const keys = wanted.length ? wanted.filter(k => BEATS[k]) : Object.keys(BEATS)
+if (!existsSync(TMP)) mkdirSync(TMP, { recursive: true })
+
+const browser = await chromium.launch()
+console.log(`Cinematic capture at ${FPS}fps →`, OUT, '\n')
+for (const k of keys) {
+  console.log(`• ${k}`)
+  await runBeat(browser, k)
+}
+await browser.close()
+console.log('\nDone.')
