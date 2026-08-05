@@ -281,7 +281,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Direct mp4 URL for the launch film. Empty hides the video section. When the VO version is ready, upload the new file and paste its URL here (or update this default).',
     kind: 'text',
     default:
-      'https://67u0teziiyoxeaeo.public.blob.vercel-storage.com/launch/film-era167UiprZacFODr0o2ahhGhIuE31.mp4',
+      'https://67u0teziiyoxeaeo.public.blob.vercel-storage.com/launch/film-v2-HYgizkqF2YZ2lmatT9arYFGikeHWXz.mp4',
   },
   {
     id: 'launch.video-poster',
@@ -289,7 +289,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Poster frame shown before the film plays. Usually the clubhouse photo frame.',
     kind: 'text',
     default:
-      'https://67u0teziiyoxeaeo.public.blob.vercel-storage.com/launch/poster-gCESEzj4wVvskrcBOJtUtQpBEtDBci.jpg',
+      'https://67u0teziiyoxeaeo.public.blob.vercel-storage.com/launch/poster-v2-21nCY08dz79sV12vG6MNoTPmja7m4i.jpg',
   },
   {
     id: 'launch.founder-note',

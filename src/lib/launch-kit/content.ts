@@ -185,7 +185,7 @@ Inside, you can find members across generations, see where everyone is on the ma
 
 The idea is simple. Ask. Meet. Play. Gather.
 
-For current players, it makes it easier to reach out respectfully. For alumni, it makes it easy to help in a curated way and stay close to the team you spent four years building.
+For current players, it makes it easier to reach out respectfully. For alumni, it makes it easy to help on their own terms and stay close to the team they spent four years building.
 
 Every claim is reviewed by hand.
 

@@ -458,7 +458,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                       href="/login?next=/account/setup"
                       className="inline-block mt-3 bg-[#0a1628] hover:bg-[#112240] text-white text-[11.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2 rounded-md transition-colors"
                     >
-                      Sign in to unlock
+                      Sign in to see
                     </Link>
                   </div>
                 )}
