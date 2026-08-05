@@ -55,9 +55,20 @@ const VIBE_LABEL: Record<string, string> = {
 
 const VIDEO_EXT_RE = /\.(mp4|mov|m4v|webm)(\?|$)/i
 
-/** The location query used for the map — venue + city/state. */
+/**
+ * The location query used for the map — venue + city/state.
+ *
+ * Hosts write venues like "Midtown — location shared with attendees" or
+ * "Penn Campus (room TBD)". Google can't geocode the qualifier, and a query it
+ * can't place renders an EMPTY map, so strip everything from the dash or the
+ * bracket onward and keep the part that names a place.
+ */
 function gatheringMapQuery(g: GatheringData): string {
-  return [g.venue, g.city, g.state].filter(Boolean).join(' ').trim()
+  const place = (g.venue ?? '')
+    .split(/\s+[—–-]\s+|\s*\(/)[0]
+    .replace(/\b(tbd|tba)\b/gi, '')
+    .trim()
+  return [place, g.city, g.state].filter(Boolean).join(' ').trim()
 }
 
 /** Prefer the host's pasted Maps link; otherwise build a Google Maps search
@@ -348,21 +359,34 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         </div>
 
         {/* Map preview — a real map of the spot. Lazy-loaded so a list of
-            cards doesn't fire every iframe at once. */}
+            cards doesn't fire every iframe at once.
+
+            The keyless Google embed sometimes paints nothing (a query it can't
+            place, or several embeds on one page), and a bare iframe failing
+            leaves an empty bordered box that reads as broken. So the location
+            sits UNDERNEATH as a styled fallback; the iframe covers it when it
+            loads, and shows through when it doesn't. */}
         {gatheringMapEmbedUrl(gathering) && (
           <a
             href={gatheringMapUrl(gathering) ?? '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="block rounded-lg overflow-hidden border border-[rgba(180,168,150,0.4)] mb-3 group/mapimg"
+            className="relative block rounded-lg overflow-hidden border border-[rgba(180,168,150,0.4)] mb-3 h-32 bg-[#f3efe7] group/mapimg"
             title="Open in Google Maps"
           >
+            <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 px-3 text-center pointer-events-none">
+              <MapPin className="w-4 h-4 text-[#990000]" />
+              <span className="text-[12.5px] font-medium text-[#0a1628] leading-snug">
+                {gathering.venue ?? [gathering.city, gathering.state].filter(Boolean).join(', ')}
+              </span>
+              <span className="text-[11px] text-ink-muted">Open in Google Maps ↗</span>
+            </span>
             <iframe
               src={gatheringMapEmbedUrl(gathering)!}
               title={`Map of ${gathering.venue ?? gathering.city ?? 'the gathering'}`}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-32 pointer-events-none"
+              className="relative w-full h-32 pointer-events-none"
             />
           </a>
         )}
