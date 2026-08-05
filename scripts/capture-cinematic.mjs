@@ -70,12 +70,14 @@ const BEATS = {
     start: '/player',
     seconds: 13.35,
     moves: [
-      { kind: 'hold', s: 0.7 },
-      { kind: 'scrollBottom', s: 8.2 },
-      { kind: 'hold', s: 0.5 },
-      { kind: 'reach', s: 1.5, text: /visit the hall of fame/i },
-      { kind: 'click', s: 0.35 },
-      { kind: 'navHold', s: 2.1 },
+      { kind: 'hold', s: 0.8 },
+      { kind: 'scrollBottom', s: 9.4 },
+      { kind: 'hold', s: 0.6 },
+      { kind: 'reach', s: 1.6, text: /visit the hall of fame/i },
+      // Pulse, don't click: the beat has to END on the home page or the next
+      // beat cross-dissolves the Hall of Fame with itself.
+      { kind: 'pulse', s: 0.4 },
+      { kind: 'hold', s: 0.55 },
     ],
   },
   // Team Room: the long one — news, captains, roster, coaching staff, The
@@ -100,8 +102,8 @@ const BEATS = {
     seconds: 11.1,
     moves: [
       { kind: 'hold', s: 0.9 },
-      { kind: 'scrollBottom', s: 9.2 },
-      { kind: 'hold', s: 1.0 },
+      { kind: 'scroll', to: 880, s: 8.4, cap: true },
+      { kind: 'hold', s: 1.8 },
     ],
   },
   // Member Book: ride into the grid, search a name, open the card.
@@ -118,9 +120,9 @@ const BEATS = {
       { kind: 'hold', s: 1.1 },
       { kind: 'reach', s: 1.3, text: /adam s\.? cohen/i },
       { kind: 'click', s: 0.35 },
-      { kind: 'navHold', s: 1.0 },
-      { kind: 'scrollBottom', s: 3.0 },
-      { kind: 'hold', s: 0.7 },
+      { kind: 'navHold', s: 1.1 },
+      { kind: 'scroll', to: 420, s: 2.0, cap: true },
+      { kind: 'hold', s: 1.6 },
     ],
   },
   // Member Map: the hometowns toggle lights the country up, then two states
@@ -173,6 +175,21 @@ const BEATS = {
       { kind: 'hold', s: 3.8 },
     ],
   },
+  // Ryan's dad's card — the book is not only players.
+  family: {
+    out: 'family.mp4',
+    start: '/player/alumni/12db62ee-eaea-4eb6-9bb9-9a2e1f7bec0e',
+    seconds: 6.4,
+    // Tighter crop on purpose: it holds on the name, "Penn Golf Family" and
+    // "Parent of Ryan Chang C'28" and never reaches the CONTACT row, which
+    // carries a real email and phone number.
+    zoom: 3.1,
+    moves: [
+      { kind: 'hold', s: 1.6 },
+      { kind: 'scroll', to: 120, s: 2.6 },
+      { kind: 'hold', s: 2.2 },
+    ],
+  },
   // The Course: the round finder, then the whole Host a Round form.
   course: {
     out: 'course-flow.mp4',
@@ -212,13 +229,14 @@ async function runBeat(browser, key) {
     deviceScaleFactor: 1,
     storageState: AUTH,
   })
-  await ctx.addInitScript(() => {
+  const zoom = beat.zoom ?? Z
+  await ctx.addInitScript(zoomLevel => {
     const z = () => {
-      document.documentElement.style.zoom = '2'
+      document.documentElement.style.zoom = String(zoomLevel)
     }
     if (document.readyState !== 'loading') z()
     else window.addEventListener('DOMContentLoaded', z)
-  })
+  }, zoom)
   const page = await ctx.newPage()
   await page.goto(B + beat.start, { waitUntil: 'domcontentloaded', timeout: 60000 })
   await page.waitForTimeout(3500)
@@ -237,7 +255,7 @@ async function runBeat(browser, key) {
   let frame = 0
   let scrollY = 0
   // Cursor lives in CSS pixels; park it off to the side until it's needed.
-  let cur = { x: VIEW.width / Z - 120, y: VIEW.height / Z - 140 }
+  let cur = { x: VIEW.width / zoom - 120, y: VIEW.height / zoom - 140 }
   let target = null
 
   for (const move of beat.moves) {
@@ -258,8 +276,28 @@ async function runBeat(browser, key) {
       const max = await page.evaluate(
         () => document.documentElement.scrollHeight - window.innerHeight,
       )
+      // With `cap`, never travel past the last thing that actually paints —
+      // sparse cards are tall but mostly empty, and scrolling to the true
+      // bottom parks the shot on white.
+      const limit = move.cap
+        ? await page.evaluate(() => {
+            let bottom = 0
+            const root = document.querySelector('main') ?? document.body
+            for (const el of root.querySelectorAll('*')) {
+              if (el.closest('footer')) continue
+              const r = el.getBoundingClientRect()
+              if (r.height < 6 || r.width < 40) continue
+              if (!(el.textContent || '').trim() && el.tagName !== 'IMG') continue
+              bottom = Math.max(bottom, r.bottom + window.scrollY)
+            }
+            return Math.max(0, Math.round(bottom) - window.innerHeight + 120)
+          })
+        : max
       const from = scrollY
-      const to = move.kind === 'scrollBottom' ? max : Math.min(move.to * Z, max)
+      const to =
+        move.kind === 'scrollBottom'
+          ? Math.min(max, limit)
+          : Math.min(move.to * zoom, max, limit)
       for (let i = 0; i < n; i++) {
         const y = from + (to - from) * easeInOut((i + 1) / n)
         await page.evaluate(
@@ -322,7 +360,7 @@ async function runBeat(browser, key) {
         continue
       }
       // boundingBox is in device px; the cursor is positioned in CSS px.
-      target = { x: (box.x + box.width / 2) / Z, y: (box.y + box.height / 2) / Z }
+      target = { x: (box.x + box.width / 2) / zoom, y: (box.y + box.height / 2) / zoom }
       const from = { ...cur }
       for (let i = 0; i < n; i++) {
         const t = easeOut((i + 1) / n)
@@ -332,6 +370,21 @@ async function runBeat(browser, key) {
         await shoot(page, dir, frame++)
       }
       cur = target
+      continue
+    }
+
+    if (move.kind === 'pulse') {
+      // The press-in, without the click. Lets a beat end on the page it
+      // started on while still reading as "and you tap this".
+      for (let i = 0; i < n; i++) {
+        const t = (i + 1) / n
+        const scale = t < 0.5 ? 1 - t * 0.5 : 0.75 + (t - 0.5) * 0.9
+        await page.evaluate(
+          ({ x, y, s }) => window.__cine?.place(x, y, 0.95, s),
+          { x: cur.x, y: cur.y, s: scale },
+        )
+        await shoot(page, dir, frame++)
+      }
       continue
     }
 
@@ -346,7 +399,7 @@ async function runBeat(browser, key) {
         )
         await shoot(page, dir, frame++)
       }
-      await page.mouse.click(cur.x * Z, cur.y * Z).catch(() => {})
+      await page.mouse.click(cur.x * zoom, cur.y * zoom).catch(() => {})
       if (move.noNav) {
         // Focusing a field, not leaving the page — keep our scroll position.
         await page.waitForTimeout(200)
