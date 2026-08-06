@@ -340,7 +340,7 @@ So I spent the summer building Penn Golf Clubhouse, a private home for the progr
 
 The short version: every player I could find from 1930 onward is already in the Member Book. There's a map of where everyone is, a way to host or join a round in any city, career advice and intros without the awkwardness, and a direct line to the current team.
 
-Every claim is reviewed by hand, it stays the people who actually carried the bag.
+Every claim is reviewed by hand, so it stays the people who actually carried the bag.
 
 Watch the film, then come claim your member card.
 
