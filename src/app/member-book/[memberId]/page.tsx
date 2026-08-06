@@ -74,6 +74,11 @@ export async function generateMetadata({
   return {
     title: member.displayName,
     description: `${member.displayName}${years}, in the Penn Golf Clubhouse Member Book.`,
+    // Individual cards are kept out of search. These are 340 real people who
+    // were added from public roster records, not signups, so their names
+    // shouldn't become permanently Google-searchable against this site before
+    // they've joined and seen it. The Member Book index itself stays indexed.
+    robots: { index: false, follow: true },
   }
 }
 

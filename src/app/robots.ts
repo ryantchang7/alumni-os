@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/internal/', '/builder/', '/build', '/chat/', '/account/', '/api/', '/alumni/', '/player/requests', '/requests/'],
+      disallow: ['/internal/', '/builder/', '/build', '/chat/', '/account/', '/api/', '/alumni/', '/player/requests', '/player/alumni/', '/requests/'],
     },
     sitemap: 'https://penngolfclubhouse.com/sitemap.xml',
   }
