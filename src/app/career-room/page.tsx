@@ -11,7 +11,7 @@ import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
 import MemberAvatar from '@/components/MemberAvatar'
 import CareerRoomHero from './CareerRoomHero'
-import { INDUSTRY_OPTIONS, industryToSlug } from '@/lib/industries'
+import { INDUSTRY_OPTIONS, industryToSlug, memberHasIndustry } from '@/lib/industries'
 import { auth } from '@/auth'
 import { prioritizeForViewer, resolveViewerLocation } from '@/lib/prioritize'
 
@@ -208,6 +208,17 @@ export default async function CareerRoomPage() {
     careerPosts = await getCareerPostsForTeam(team.id)
   }
 
+  // How many members are actually in each field. Without this, twelve of the
+  // sixteen tiles are a dead end on launch day: you click Law, you get an
+  // empty page, and it reads as broken rather than new.
+  const industryCounts = new Map<string, number>()
+  for (const ind of INDUSTRIES) {
+    industryCounts.set(
+      ind.slug,
+      alumni.filter(a => memberHasIndustry(a.enrichment.industry, ind.label)).length,
+    )
+  }
+
   // Prioritize each "open to X" list for the viewer: same city first,
   // then same state, then most recently active. Filter the viewer out
   // of their own lists so the page doesn't read "you, plus other
@@ -371,20 +382,39 @@ export default async function CareerRoomPage() {
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Explore by Industry</h2>
           <p className="text-sm text-ink-muted mb-6">Browse alumni by their field.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {INDUSTRIES.map(ind => (
-              <Link
-                key={ind.slug}
-                href={`/member-book?industry=${ind.slug}`}
-                className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 flex flex-col gap-2 hover:shadow-md transition-shadow group"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
-              >
-                <span className="w-8 h-8 rounded-lg bg-[#0a1628] text-white text-xs font-semibold flex items-center justify-center flex-shrink-0">
-                  {ind.initial}
-                </span>
-                <p className="text-xs font-medium text-[#0a1628] leading-snug">{ind.label}</p>
-                <span className="text-xs text-[#990000] group-hover:underline mt-auto">Browse &rarr;</span>
-              </Link>
-            ))}
+            {INDUSTRIES.map(ind => {
+              const n = industryCounts.get(ind.slug) ?? 0
+              if (n === 0) {
+                return (
+                  <div
+                    key={ind.slug}
+                    className="bg-white/60 border border-[rgba(180,168,150,0.25)] rounded-xl p-4 flex flex-col gap-2"
+                  >
+                    <span className="w-8 h-8 rounded-lg bg-[#0a1628]/25 text-white text-xs font-semibold flex items-center justify-center flex-shrink-0">
+                      {ind.initial}
+                    </span>
+                    <p className="text-xs font-medium text-[#0a1628]/50 leading-snug">{ind.label}</p>
+                    <span className="text-[11px] text-ink-muted mt-auto">Nobody yet</span>
+                  </div>
+                )
+              }
+              return (
+                <Link
+                  key={ind.slug}
+                  href={`/member-book?industry=${ind.slug}`}
+                  className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4 flex flex-col gap-2 hover:shadow-md transition-shadow group"
+                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
+                >
+                  <span className="w-8 h-8 rounded-lg bg-[#0a1628] text-white text-xs font-semibold flex items-center justify-center flex-shrink-0">
+                    {ind.initial}
+                  </span>
+                  <p className="text-xs font-medium text-[#0a1628] leading-snug">{ind.label}</p>
+                  <span className="text-xs text-[#990000] group-hover:underline mt-auto">
+                    {n} {n === 1 ? 'member' : 'members'} &rarr;
+                  </span>
+                </Link>
+              )
+            })}
           </div>
         </section>
 
