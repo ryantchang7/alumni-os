@@ -574,7 +574,7 @@ function AlumniProfileInner() {
               <div className="border-t border-[rgba(180,168,150,0.35)] pt-5 mt-1">
                 <div className="flex items-baseline justify-between mb-1">
                   <label className="block text-xs font-medium text-[#3a4657]">
-                    On the loop <span className="text-ink-muted font-normal italic">, passing through somewhere?</span>
+                    On the loop <span className="text-ink-muted font-normal italic">passing through somewhere?</span>
                   </label>
                   {(inTownCity || inTownState || inTownStart || inTownEnd || inTownNote) && (
                     <button

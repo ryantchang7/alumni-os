@@ -330,16 +330,16 @@ function PromoteInner() {
                             </div>
                           </td>
                           <td className="px-4 py-3 text-ink-muted">
-                            {entry.classLabel ?? <span className="text-[#c4bbb0]">, </span>}
+                            {entry.classLabel ?? <span className="text-[#c4bbb0]">-</span>}
                           </td>
                           <td className="px-4 py-3 text-ink-muted">
-                            {entry.hometown ?? <span className="text-[#c4bbb0]">, </span>}
+                            {entry.hometown ?? <span className="text-[#c4bbb0]">-</span>}
                           </td>
                           <td className="px-4 py-3 text-ink-muted">
-                            {entry.highSchool ?? <span className="text-[#c4bbb0]">, </span>}
+                            {entry.highSchool ?? <span className="text-[#c4bbb0]">-</span>}
                           </td>
                           <td className="px-4 py-3 text-ink-muted">
-                            {entry.seasonYear ?? <span className="text-[#c4bbb0]">, </span>}
+                            {entry.seasonYear ?? <span className="text-[#c4bbb0]">-</span>}
                           </td>
                           <td className="px-4 py-3">
                             <ConfidencePill value={entry.extractionConfidence} />

@@ -1311,16 +1311,18 @@ export async function updateClubhouseGathering(
   id: string,
   patch: Partial<Omit<ClubhouseGathering, 'id' | 'teamId' | 'createdAt'>>,
 ): Promise<ClubhouseGathering | null> {
-  const store = await readStore()
-  const idx = store.clubhouseGatherings.findIndex(g => g.id === id)
-  if (idx === -1) return null
-  store.clubhouseGatherings[idx] = {
-    ...store.clubhouseGatherings[idx],
-    ...patch,
-    updatedAt: new Date().toISOString(),
-  }
-  await writeStore(store)
-  return store.clubhouseGatherings[idx]
+  // CAS: a host editing a round while someone RSVPs to it must not clobber
+  // the tee sheet.
+  return mutateStore(store => {
+    const idx = store.clubhouseGatherings.findIndex(g => g.id === id)
+    if (idx === -1) return null
+    store.clubhouseGatherings[idx] = {
+      ...store.clubhouseGatherings[idx],
+      ...patch,
+      updatedAt: new Date().toISOString(),
+    }
+    return store.clubhouseGatherings[idx]
+  })
 }
 
 // ── Season Updates ────────────────────────────────────────────────────────────

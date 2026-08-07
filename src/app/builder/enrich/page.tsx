@@ -290,7 +290,7 @@ function EnrichListInner() {
                               {profile.highSchool && <span>{profile.highSchool}</span>}
                             </span>
                           ) : (
-                            <span className="text-[#c4bbb0]">, </span>
+                            <span className="text-[#c4bbb0]">-</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-ink-muted text-xs max-w-[220px] truncate">

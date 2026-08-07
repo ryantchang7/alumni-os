@@ -131,6 +131,69 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ gathering }, { status: 201 })
 }
 
+/**
+ * PATCH /api/gatherings?id=... — the host fixes their own round.
+ *
+ * Without this the only way to correct a wrong date or course was to delete
+ * and re-post, which throws away the whole tee sheet along with it.
+ * Host or founder only; every field is optional.
+ */
+export async function PATCH(request: NextRequest) {
+  const gate = await requireApprovedMember()
+  if (!gate.ok) return gate.response
+
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })
+
+  const { getClubhouseGatheringById, updateClubhouseGathering } = await import('@/lib/store/local-store')
+  const existing = await getClubhouseGatheringById(id)
+  if (!existing) return NextResponse.json({ error: 'Gathering not found' }, { status: 404 })
+
+  const isHost = !!existing.hostPersonId && existing.hostPersonId === gate.session.linkedPersonId
+  const isFounder = FOUNDER_EMAILS.has(gate.email)
+  if (!isHost && !isFounder) {
+    return NextResponse.json({ error: 'Only the host can edit this.' }, { status: 403 })
+  }
+
+  let body: Record<string, unknown>
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  const patch: Record<string, unknown> = {}
+  const str = (k: string, max: number) => {
+    if (typeof body[k] === 'string') patch[k] = (body[k] as string).trim().slice(0, max)
+  }
+  str('title', 160)
+  str('description', 800)
+  str('city', 160)
+  str('state', 40)
+  str('venue', 200)
+  str('dateText', 160)
+  str('timeText', 80)
+  str('hostName', 160)
+  if (typeof body.capacity === 'number') patch.capacity = body.capacity
+  if (VALID_TYPES.includes(body.type as (typeof VALID_TYPES)[number])) patch.type = body.type
+  if (VALID_AUDIENCES.includes(body.audience as (typeof VALID_AUDIENCES)[number])) patch.audience = body.audience
+  if (VALID_VIBES.includes(body.vibe as (typeof VALID_VIBES)[number])) patch.vibe = body.vibe
+  if (['open', 'full', 'closed'].includes(body.status as string)) patch.status = body.status
+  if (typeof body.mapsUrl === 'string') patch.mapsUrl = cleanUrl(body.mapsUrl)
+  if (typeof body.imageUrl === 'string') patch.imageUrl = cleanUrl(body.imageUrl)
+
+  if (Object.keys(patch).length === 0) {
+    return NextResponse.json({ error: 'Nothing to update' }, { status: 400 })
+  }
+  if (patch.title === '') return NextResponse.json({ error: 'title cannot be empty' }, { status: 400 })
+  if (patch.dateText === '') return NextResponse.json({ error: 'dateText cannot be empty' }, { status: 400 })
+
+  const updated = await updateClubhouseGathering(id, patch)
+  if (!updated) return NextResponse.json({ error: 'Gathering not found' }, { status: 404 })
+  return NextResponse.json({ gathering: updated })
+}
+
 export async function DELETE(request: NextRequest) {
   // Only the host who created it (or a founder) can take a gathering down.
   const gate = await requireApprovedMember()

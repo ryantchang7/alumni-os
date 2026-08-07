@@ -458,6 +458,52 @@ export function renderRsvpConfirmation(input: {
   return { subject, html: shell(inner, input.clubhouseUrl) }
 }
 
+/**
+ * The host sends a note to everyone on the sheet, e.g. the day before:
+ * "we're off the first tee at 8:10, park in the lower lot".
+ */
+export function renderHostMessage(input: {
+  firstName?: string | null
+  gatheringTitle: string
+  dateText: string
+  timeText?: string
+  venue?: string
+  city?: string
+  state?: string
+  hostName: string
+  message: string
+  clubhouseUrl: string
+}): { subject: string; html: string } {
+  const greeting = input.firstName ? `Hi ${input.firstName},` : 'Hi,'
+  const subject = `${input.gatheringTitle} · a note from ${input.hostName}`
+  const locationLine = [input.venue, input.city, input.state].filter(Boolean).join(', ')
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      A note from ${escapeHtml(input.hostName)}.
+    </h1>
+    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${escapeHtml(greeting)} you&rsquo;re on the sheet for this one.
+    </p>
+    <div style="margin:0 0 18px 0;padding:14px 16px;background:${CREAM};border:1px solid #e8dec9;border-radius:8px;">
+      <p style="margin:0 0 6px 0;font-size:16px;line-height:1.3;color:${NAVY};font-family:${SERIF};font-weight:500;">
+        ${escapeHtml(input.gatheringTitle)}
+      </p>
+      <p style="margin:0 0 4px 0;font-size:13px;color:#3d4a5c;">
+        ${escapeHtml(input.dateText)}${input.timeText ? ' &middot; ' + escapeHtml(input.timeText) : ''}
+      </p>
+      ${locationLine ? `<p style="margin:0;font-size:13px;color:${MUTED};">${escapeHtml(locationLine)}</p>` : ''}
+    </div>
+    <div style="margin:0 0 22px 0;padding:16px 18px;border-left:3px solid ${NAVY};background:#ffffff;">
+      <p style="margin:0;font-size:14.5px;line-height:1.65;color:${NAVY};white-space:pre-wrap;">${escapeHtml(input.message)}</p>
+    </div>
+    <p style="margin:0 0 22px 0;">${btn(input.clubhouseUrl, 'Open in the Clubhouse')}</p>
+    <p style="margin:0;font-size:12.5px;color:${MUTED};">
+      You&rsquo;re getting this because you&rsquo;re on the sheet for this one.
+    </p>
+  `
+  return { subject, html: shell(inner, input.clubhouseUrl) }
+}
+
 // ── Host notification (a new RSVP just came in) ─────────────────────────────
 
 export function renderHostRsvpNotification(input: {

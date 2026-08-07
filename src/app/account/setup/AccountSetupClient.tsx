@@ -120,7 +120,7 @@ export default function AccountSetupClient({
               checked in
               {monthCount > 0 ? (
                 <>
-                  {' '}, <span className="italic">{monthCount} came back this month</span>
+                  {' '}<span className="italic">&middot; {monthCount} came back this month</span>
                 </>
               ) : null}
               . Find your card to be found.

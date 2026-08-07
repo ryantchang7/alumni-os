@@ -71,7 +71,7 @@ const VIDEO_EXT_RE = /\.(mp4|mov|m4v|webm)(\?|$)/i
  */
 function gatheringMapQuery(g: GatheringData): string {
   const place = (g.venue ?? '')
-    .split(/\s+[, –-]\s+|\s*\(/)[0]
+    .split(/\s+[—–-]\s+|\s*\(/)[0]
     .replace(/\b(tbd|tba)\b/gi, '')
     .trim()
   return [place, g.city, g.state].filter(Boolean).join(' ').trim()
@@ -161,6 +161,69 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   const [removed, setRemoved] = useState(false)
   const [removing, setRemoving] = useState(false)
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
+
+  // Host tools: fix the details, and send one note to everyone on the sheet.
+  const [editOpen, setEditOpen] = useState(false)
+  const [edit, setEdit] = useState({
+    title: gathering.title,
+    dateText: gathering.dateText,
+    timeText: gathering.timeText ?? '',
+    venue: gathering.venue ?? '',
+    city: gathering.city ?? '',
+    state: gathering.state ?? '',
+    description: gathering.description ?? '',
+  })
+  const [saving, setSaving] = useState(false)
+  const [savedAt, setSavedAt] = useState<string | null>(null)
+
+  const [msgOpen, setMsgOpen] = useState(false)
+  const [msg, setMsg] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sentNote, setSentNote] = useState<string | null>(null)
+
+  async function saveEdit(e: React.FormEvent) {
+    e.preventDefault()
+    setSaving(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/gatherings?id=${encodeURIComponent(gathering.id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(edit),
+      })
+      const j = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(j.error ?? 'Could not save')
+      setSavedAt('Saved. Refresh to see it everywhere.')
+      setEditOpen(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not save')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function sendMessage(e: React.FormEvent) {
+    e.preventDefault()
+    if (!msg.trim()) return
+    setSending(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/gatherings/${gathering.id}/message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg.trim() }),
+      })
+      const j = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(j.error ?? 'Could not send')
+      setSentNote(`Sent to ${j.emailed ?? 0} by email, ${j.notified ?? 0} in the Clubhouse.`)
+      setMsg('')
+      setMsgOpen(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not send')
+    } finally {
+      setSending(false)
+    }
+  }
 
   async function handleRemove() {
     setRemoving(true)
@@ -558,14 +621,94 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
               You&rsquo;re hosting this. Members can pencil themselves in.
             </p>
             {error && <p className="text-xs text-[#990000]">{error}</p>}
-            <button
-              type="button"
-              onClick={() => setConfirmRemoveOpen(true)}
-              disabled={removing}
-              className="text-xs font-semibold text-[#990000] border border-[#990000]/30 hover:bg-[#990000] hover:text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-40"
-            >
-              {removing ? 'Removing…' : 'Remove this gathering'}
-            </button>
+            {savedAt && <p className="text-xs text-[#2d6a4f]">{savedAt}</p>}
+            {sentNote && <p className="text-xs text-[#2d6a4f]">{sentNote}</p>}
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => { setEditOpen(v => !v); setMsgOpen(false) }}
+                className="text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] px-3.5 py-2 rounded-lg transition-colors"
+              >
+                {editOpen ? 'Cancel edit' : 'Edit details'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMsgOpen(v => !v); setEditOpen(false) }}
+                className="text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] px-3.5 py-2 rounded-lg transition-colors"
+              >
+                {msgOpen ? 'Cancel note' : 'Message the sheet'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmRemoveOpen(true)}
+                disabled={removing}
+                className="text-xs font-semibold text-[#990000] border border-[#990000]/30 hover:bg-[#990000] hover:text-white px-3.5 py-2 rounded-lg transition-colors disabled:opacity-40"
+              >
+                {removing ? 'Removing…' : 'Cancel this round'}
+              </button>
+            </div>
+
+            {editOpen && (
+              <form onSubmit={saveEdit} className="mt-1 space-y-2 rounded-lg border border-[rgba(180,168,150,0.5)] p-3 bg-[#fdfcf9]">
+                {([
+                  ['title', 'What is it'],
+                  ['dateText', 'Date'],
+                  ['timeText', 'Time'],
+                  ['venue', 'Course or venue'],
+                  ['city', 'City'],
+                  ['state', 'State'],
+                ] as const).map(([k, label]) => (
+                  <label key={k} className="block">
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-0.5">{label}</span>
+                    <input
+                      value={edit[k]}
+                      onChange={e => setEdit(p => ({ ...p, [k]: e.target.value }))}
+                      className="w-full border border-[rgba(180,168,150,0.5)] rounded-md px-2.5 py-1.5 text-[13px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                    />
+                  </label>
+                ))}
+                <label className="block">
+                  <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-0.5">Details</span>
+                  <textarea
+                    value={edit.description}
+                    onChange={e => setEdit(p => ({ ...p, description: e.target.value }))}
+                    rows={3}
+                    className="w-full border border-[rgba(180,168,150,0.5)] rounded-md px-2.5 py-1.5 text-[13px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="text-[11.5px] font-semibold uppercase tracking-[0.12em] bg-[#0a1628] hover:bg-[#112240] text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-40"
+                >
+                  {saving ? 'Saving…' : 'Save changes'}
+                </button>
+              </form>
+            )}
+
+            {msgOpen && (
+              <form onSubmit={sendMessage} className="mt-1 space-y-2 rounded-lg border border-[rgba(180,168,150,0.5)] p-3 bg-[#fdfcf9]">
+                <p className="text-[11.5px] text-ink-muted">
+                  Goes to everyone on the sheet, in the Clubhouse and by email.
+                </p>
+                <textarea
+                  value={msg}
+                  onChange={e => setMsg(e.target.value)}
+                  rows={3}
+                  maxLength={1200}
+                  placeholder="Off the first tee at 8:10. Park in the lower lot and meet by the range."
+                  className="w-full border border-[rgba(180,168,150,0.5)] rounded-md px-2.5 py-1.5 text-[13px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                />
+                <button
+                  type="submit"
+                  disabled={sending || !msg.trim()}
+                  className="text-[11.5px] font-semibold uppercase tracking-[0.12em] bg-[#0a1628] hover:bg-[#112240] text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-40"
+                >
+                  {sending ? 'Sending…' : 'Send to the sheet'}
+                </button>
+              </form>
+            )}
           </div>
         ) : gathering.status === 'open' ? (
           <>
