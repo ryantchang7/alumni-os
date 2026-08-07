@@ -176,6 +176,56 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<string | null>(null)
 
+  // Managing the sheet itself: who is playing and in which group / tee time.
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [bookOptions, setBookOptions] = useState<{ bookId: string; name: string }[] | null>(null)
+  const [pick, setPick] = useState('')
+  const [groupLabel, setGroupLabel] = useState('')
+  const [adding, setAdding] = useState(false)
+
+  // Load the roster only when the host actually opens the panel.
+  useEffect(() => {
+    if (!sheetOpen || bookOptions) return
+    fetch('/api/member-book/options')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => setBookOptions(d?.members ?? []))
+      .catch(() => setBookOptions([]))
+  }, [sheetOpen, bookOptions])
+
+  async function addToSheet(e: React.FormEvent) {
+    e.preventDefault()
+    const typed = pick.trim()
+    if (!typed) return
+    setAdding(true)
+    setError(null)
+    try {
+      // Prefer an exact Member Book match so the name links to a card;
+      // otherwise send it as a plain name (guests, non-members).
+      const match = bookOptions?.find(o => o.name.toLowerCase() === typed.toLowerCase())
+      const res = await fetch(`/api/gatherings/${gathering.id}/attendees/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          people: [{
+            name: match?.name ?? typed,
+            ...(match ? { bookId: match.bookId } : {}),
+            ...(groupLabel.trim() ? { groupLabel: groupLabel.trim() } : {}),
+          }],
+        }),
+      })
+      const j = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(j.error ?? 'Could not add')
+      const fresh = await fetch(`/api/gatherings/${gathering.id}/attendees`)
+        .then(r => (r.ok ? r.json() : null)).catch(() => null)
+      if (fresh?.attendees) setAttendees(fresh.attendees as Attendee[])
+      setPick('')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not add')
+    } finally {
+      setAdding(false)
+    }
+  }
+
   const [msgOpen, setMsgOpen] = useState(false)
   const [msg, setMsg] = useState('')
   const [sending, setSending] = useState(false)
@@ -581,6 +631,17 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                       </span>
                     )}
                   </span>
+                  {isHost && a.status === 'accepted' && (
+                    <button
+                      type="button"
+                      disabled={rsvpBusy === a.requestId}
+                      onClick={() => respondToRsvp(a.requestId, 'declined')}
+                      className="flex-shrink-0 text-[11px] text-ink-muted hover:text-[#990000] disabled:opacity-40"
+                      title="Take them off the sheet"
+                    >
+                      Remove
+                    </button>
+                  )}
                   {isHost && a.status !== 'accepted' && (
                     <span className="flex items-center gap-2 flex-shrink-0">
                       <button
@@ -634,7 +695,14 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
               </button>
               <button
                 type="button"
-                onClick={() => { setMsgOpen(v => !v); setEditOpen(false) }}
+                onClick={() => { setSheetOpen(v => !v); setEditOpen(false); setMsgOpen(false) }}
+                className="text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] px-3.5 py-2 rounded-lg transition-colors"
+              >
+                {sheetOpen ? 'Done adding' : 'Add to the sheet'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMsgOpen(v => !v); setEditOpen(false); setSheetOpen(false) }}
                 className="text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] px-3.5 py-2 rounded-lg transition-colors"
               >
                 {msgOpen ? 'Cancel note' : 'Message the sheet'}
@@ -648,6 +716,44 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 {removing ? 'Removing…' : 'Cancel this round'}
               </button>
             </div>
+
+            {sheetOpen && (
+              <form onSubmit={addToSheet} className="mt-1 space-y-2 rounded-lg border border-[rgba(180,168,150,0.5)] p-3 bg-[#fdfcf9]">
+                <p className="text-[11.5px] text-ink-muted">
+                  Start typing a name from the Member Book, or write anyone in. The group
+                  is free text, so use it for pairings or tee times.
+                </p>
+                <label className="block">
+                  <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-0.5">Who</span>
+                  <input
+                    list={`book-${gathering.id}`}
+                    value={pick}
+                    onChange={e => setPick(e.target.value)}
+                    placeholder={bookOptions ? 'Start typing a name' : 'Loading the Member Book'}
+                    className="w-full border border-[rgba(180,168,150,0.5)] rounded-md px-2.5 py-1.5 text-[13px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                  <datalist id={`book-${gathering.id}`}>
+                    {(bookOptions ?? []).map(o => <option key={o.bookId} value={o.name} />)}
+                  </datalist>
+                </label>
+                <label className="block">
+                  <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-0.5">Group or tee time</span>
+                  <input
+                    value={groupLabel}
+                    onChange={e => setGroupLabel(e.target.value)}
+                    placeholder="Group 1, or 8:10 AM"
+                    className="w-full border border-[rgba(180,168,150,0.5)] rounded-md px-2.5 py-1.5 text-[13px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  disabled={adding || !pick.trim()}
+                  className="text-[11.5px] font-semibold uppercase tracking-[0.12em] bg-[#0a1628] hover:bg-[#112240] text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-40"
+                >
+                  {adding ? 'Adding…' : 'Add to the sheet'}
+                </button>
+              </form>
+            )}
 
             {editOpen && (
               <form onSubmit={saveEdit} className="mt-1 space-y-2 rounded-lg border border-[rgba(180,168,150,0.5)] p-3 bg-[#fdfcf9]">

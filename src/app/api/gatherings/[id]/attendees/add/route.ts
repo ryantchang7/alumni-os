@@ -17,6 +17,8 @@ import {
   WriteContentionError,
 } from '@/lib/store/local-store'
 import { FOUNDER_EMAILS } from '@/lib/badges'
+import { getMemberById } from '@/lib/member-book/data'
+import { normalizeName } from '@/lib/member-book/bridge'
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -61,11 +63,25 @@ export async function POST(request: Request, { params }: RouteParams) {
   for (const raw of body.people as unknown[]) {
     if (!raw || typeof raw !== 'object') continue
     const o = raw as Record<string, unknown>
-    const name = typeof o.name === 'string' ? o.name.trim().slice(0, 120) : ''
+    let name = typeof o.name === 'string' ? o.name.trim().slice(0, 120) : ''
+    let personId = typeof o.personId === 'string' ? o.personId : undefined
+
+    // The picker sends a Member Book id, which is not the store person id.
+    // Resolve it here so a host-added name still links to a profile.
+    if (!personId && typeof o.bookId === 'string') {
+      const entry = getMemberById(o.bookId)
+      if (entry) {
+        if (!name) name = entry.displayName
+        const target = normalizeName(entry.displayName)
+        const person = store.people.find(pp => normalizeName(pp.canonicalName) === target)
+        if (person) personId = person.id
+      }
+    }
+
     if (!name) continue
     people.push({
       name,
-      ...(typeof o.personId === 'string' ? { personId: o.personId } : {}),
+      ...(personId ? { personId } : {}),
       ...(typeof o.groupLabel === 'string'
         ? { groupLabel: o.groupLabel.trim().slice(0, 40) }
         : {}),
