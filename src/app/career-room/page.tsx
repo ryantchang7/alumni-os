@@ -211,12 +211,23 @@ export default async function CareerRoomPage() {
   // How many members are actually in each field. Without this, twelve of the
   // sixteen tiles are a dead end on launch day: you click Law, you get an
   // empty page, and it reads as broken rather than new.
+  // Count across every member with an enrichment, not the `alumni` list above:
+  // that one is memberRole === 'alumni' only, which excludes current players
+  // and family and made every tile read zero. /member-book's ?industry=
+  // filter spans the whole book, so these have to agree with it.
   const industryCounts = new Map<string, number>()
-  for (const ind of INDUSTRIES) {
-    industryCounts.set(
-      ind.slug,
-      alumni.filter(a => memberHasIndustry(a.enrichment.industry, ind.label)).length,
-    )
+  {
+    const visible = team
+      ? store.personEnrichments.filter(
+          e => e.teamId === team.id && e.visibleToPlayers !== false && e.industry,
+        )
+      : []
+    for (const ind of INDUSTRIES) {
+      industryCounts.set(
+        ind.slug,
+        visible.filter(e => memberHasIndustry(e.industry, ind.label)).length,
+      )
+    }
   }
 
   // Prioritize each "open to X" list for the viewer: same city first,
