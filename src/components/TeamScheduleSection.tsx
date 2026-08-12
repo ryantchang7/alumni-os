@@ -155,7 +155,7 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                         Find scoring on Clippd ↗
                       </a>
                     ) : (
-                      <span className={`text-[11.5px] whitespace-nowrap ${isScotland ? 'text-white/45' : 'text-[#b0a898]'}`}>
+                      <span className={`text-[11.5px] whitespace-nowrap ${isScotland ? 'text-white/60' : 'text-[#b0a898]'}`}>
                         Leaderboard coming soon
                       </span>
                     )

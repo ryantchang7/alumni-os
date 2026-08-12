@@ -5,10 +5,16 @@
  * a token must work exactly once, an address must resolve to ONE account no
  * matter which door it came through, and signing in must never confer approval.
  *
- * Writes to the local JSON store, so back up data/alumni-os.json first.
+ * Without KV configured the store is data/alumni-os.json, a committed file, so
+ * this snapshots it first and puts it back on the way out however it exits.
+ * Skipping that quietly rewrites the seed roster.
  *
  *   npx tsx scripts/test-email-signin.mts
  */
+
+import { copyFileSync } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
 
 import {
   issueEmailLinkToken,
@@ -31,6 +37,19 @@ const ok = (label: string, cond: boolean, detail = '') => {
   ;(cond ? pass : fail).push(label)
   console.log(`  ${cond ? 'PASS' : 'FAIL'}  ${label}${detail ? '  ' + detail : ''}`)
 }
+
+const SEED = join(process.cwd(), 'data', 'alumni-os.json')
+const SNAPSHOT = join(tmpdir(), `alumni-os-seed-${process.pid}.json`)
+copyFileSync(SEED, SNAPSHOT)
+const restoreSeed = () => {
+  try {
+    copyFileSync(SNAPSHOT, SEED)
+  } catch {
+    console.error(`\nCould not restore the seed. Put it back with:\n  cp ${SNAPSHOT} ${SEED}`)
+  }
+}
+process.on('exit', restoreSeed)
+process.on('SIGINT', () => { restoreSeed(); process.exit(130) })
 
 const team = await getTeamBySlug('penn-mens-golf')
 if (!team) {
