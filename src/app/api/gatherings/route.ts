@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse, after } from 'next/server'
 import { auth } from '@/auth'
 import { requireApprovedMember } from '@/lib/auth/guards'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } from '@/lib/seed-data/example-gatherings'
 import { getApprovalState } from '@/lib/access/approval'
+import type { ClubhouseGathering } from '@/lib/store/types'
 
 const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const VALID_AUDIENCES = ['players', 'alumni', 'both'] as const
@@ -128,7 +129,92 @@ export async function POST(request: NextRequest) {
     ...(isExample ? { isExample: true } : {}),
   })
 
+  // Tell the people who could actually show up. Without this you could host a
+  // round and nobody would hear about it unless they happened to open the site.
+  // Mirrors the nearby-request fan-out: match on home state, else city text.
+  //
+  // Runs after the response so the host is not left waiting on a fan-out of
+  // dozens of emails, and still completes, unlike a bare floating promise.
+  //
+  // Examples never notify. They are seeded in batches and would otherwise mail
+  // the whole roster about a round that is not real.
+  if (!isExample) {
+    const hostAccountId = session.accountId
+    after(() => notifyNearbyMembers(gathering, hostAccountId))
+  }
+
   return NextResponse.json({ gathering }, { status: 201 })
+}
+
+/**
+ * In-app bell + web push + email to approved members in the same place.
+ *
+ * Never throws: a notification failure must not fail the post itself, or the
+ * host sees an error for a round that was actually created.
+ */
+async function notifyNearbyMembers(
+  gathering: ClubhouseGathering,
+  hostAccountId: string,
+): Promise<void> {
+  try {
+    const { readStore } = await import('@/lib/store/local-store')
+    const { notifyMany } = await import('@/lib/notifications/notify')
+    const { selectNearbyRecipients, placeLabel, TYPE_LABEL } = await import('@/lib/gatherings/nearby')
+
+    const store = await readStore()
+    const recipients = selectNearbyRecipients({
+      accounts: store.accounts,
+      enrichments: store.personEnrichments,
+      memberships: store.teamMemberships,
+      gathering,
+      hostAccountId,
+    })
+    console.log(
+      `[gatherings] "${gathering.title}" in ${gathering.city ?? ''} ${gathering.state ?? ''}: notifying ${recipients.length}`,
+    )
+    if (recipients.length === 0) return
+
+    const placeText = placeLabel(gathering)
+    const typeLabel = TYPE_LABEL[gathering.type] ?? 'a round'
+    const href = gathering.type === 'round' ? '/the-course' : '/19th-hole'
+
+    await notifyMany(
+      recipients.map(a => a.id),
+      {
+        type: 'new_round',
+        title: `${gathering.hostName} is hosting ${typeLabel} in ${placeText}`,
+        body: [gathering.dateText, gathering.timeText, gathering.venue].filter(Boolean).join(' · '),
+        href,
+      },
+    )
+
+    const withEmail = recipients.filter(a => a.email)
+    if (withEmail.length === 0) return
+
+    const { sendEmailBatch } = await import('@/lib/email/send')
+    const { renderNewRoundEmail } = await import('@/lib/email/templates')
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
+    const url = `${baseUrl}${href}`
+    await sendEmailBatch(
+      withEmail.map(a => {
+        const { subject, html } = renderNewRoundEmail({
+          recipientFirstName: a.name?.split(' ')[0] ?? null,
+          hostName: gathering.hostName,
+          title: gathering.title,
+          typeLabel,
+          placeText,
+          venue: gathering.venue ?? null,
+          dateText: gathering.dateText,
+          timeText: gathering.timeText ?? null,
+          description: gathering.description ?? null,
+          url,
+        })
+        return { to: a.email, subject, html }
+      }),
+    )
+  } catch (err) {
+    console.warn('[gatherings] nearby notify failed (non-fatal):', err)
+  }
 }
 
 /**

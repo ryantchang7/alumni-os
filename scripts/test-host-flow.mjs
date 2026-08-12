@@ -118,7 +118,11 @@ try {
     hostName: 'Ryan Chang', hostPersonId: RYAN_PERSON_ID,
     dateText: 'Saturday, September 27, 2026',
     timeText: '9:00 AM',
-    venue: 'Merion Golf Club', city: 'Ardmore', state: 'PA',
+    venue: 'Merion Golf Club',
+    // Deliberately no city and no state. Posting a round now emails every
+    // member in that area, and this test used to say Ardmore PA, which after
+    // launch would mail every member in Pennsylvania every time it ran.
+    // A round with no location reaches nobody, which is what a test should do.
     description: 'Automated test of the hosting flow.',
   }))
   testId = created.body?.gathering?.id
@@ -143,7 +147,8 @@ try {
   ok('edit saves', edited.status === 200)
   ok('time changed', edited.body?.gathering?.timeText === '7:45 AM', edited.body?.gathering?.timeText)
   ok('venue changed', edited.body?.gathering?.venue === 'Aronimink Golf Club')
-  ok('untouched fields survive', edited.body?.gathering?.city === 'Ardmore')
+  ok('untouched fields survive', edited.body?.gathering?.dateText === 'Saturday, September 27, 2026',
+     edited.body?.gathering?.dateText)
 
   // ── 4. Put someone on the sheet ───────────────────────────────────────────
   console.log('\n4. Adding to the tee sheet')

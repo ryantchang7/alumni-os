@@ -83,3 +83,54 @@ export async function sendEmail(args: SendArgs): Promise<SendResult> {
     return { ok: false, error: msg }
   }
 }
+
+/** Resend rejects bursts, so a fan-out goes out a few at a time. */
+const BATCH_SIZE = 2
+const BATCH_PAUSE_MS = 1100
+const RATE_LIMIT_RETRIES = 3
+
+const isRateLimited = (r: SendResult) =>
+  !r.ok && /rate|429|too many/i.test(r.error ?? '')
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+/**
+ * Send a batch of individually-addressed emails without tripping Resend's
+ * rate limit.
+ *
+ * A launch-day fan-out is dozens of messages. Firing them all at once with
+ * Promise.all gets most of them 429'd, and because a failed send only logs,
+ * they vanish silently: the members never hear, and nothing looks wrong.
+ * This paces them and retries the ones that come back rate limited.
+ *
+ * Returns per-message results in the same order as the input.
+ */
+export async function sendEmailBatch(
+  messages: SendArgs[],
+  /** Injectable purely so the pacing and retry can be tested without Resend. */
+  send: (args: SendArgs) => Promise<SendResult> = sendEmail,
+): Promise<SendResult[]> {
+  const results: SendResult[] = []
+
+  for (let i = 0; i < messages.length; i += BATCH_SIZE) {
+    const slice = messages.slice(i, i + BATCH_SIZE)
+    const sent = await Promise.all(
+      slice.map(async msg => {
+        let result = await send(msg)
+        for (let attempt = 0; attempt < RATE_LIMIT_RETRIES && isRateLimited(result); attempt++) {
+          await sleep(BATCH_PAUSE_MS * (attempt + 2))
+          result = await send(msg)
+        }
+        return result
+      }),
+    )
+    results.push(...sent)
+    if (i + BATCH_SIZE < messages.length) await sleep(BATCH_PAUSE_MS)
+  }
+
+  const failed = results.filter(r => !r.ok).length
+  if (failed > 0) {
+    console.warn(`[email] batch of ${messages.length}: ${failed} failed after retries`)
+  }
+  return results
+}

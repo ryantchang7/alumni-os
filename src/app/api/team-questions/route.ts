@@ -135,11 +135,11 @@ export async function POST(request: Request) {
   try {
     const withEmail = recipientAccounts.filter(a => a.email)
     if (withEmail.length > 0) {
-      const { sendEmail } = await import('@/lib/email/send')
+      const { sendEmailBatch } = await import('@/lib/email/send')
       const { renderTeamQuestionEmail } = await import('@/lib/email/templates')
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
       const answerUrl = `${baseUrl}/team/questions`
-      await Promise.all(
+      await sendEmailBatch(
         withEmail.map(a => {
           const { subject, html } = renderTeamQuestionEmail({
             playerFirstName: a.name?.split(' ')[0] ?? null,
@@ -148,7 +148,7 @@ export async function POST(request: Request) {
             targeted,
             answerUrl,
           })
-          return sendEmail({ to: a.email, subject, html })
+          return { to: a.email, subject, html }
         }),
       )
     }
