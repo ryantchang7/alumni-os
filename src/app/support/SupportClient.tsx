@@ -238,6 +238,14 @@ export default function SupportClient({ status }: Props) {
           <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line mt-6">
             {heroBlurb}
           </p>
+          {/* Said plainly and up front. The tiers below list "full access" as
+              a benefit, which on its own reads like the Clubhouse is a paid
+              site. It is not: access is approval-based, not paywalled. */}
+          <p className="text-white/60 text-[13.5px] leading-relaxed max-w-[640px] mt-5">
+            The Clubhouse is approval-based, not paywalled. Claim your card and
+            you are in, free, forever. Everything below is optional, and it goes
+            to the program.
+          </p>
         </div>
       </div>
 

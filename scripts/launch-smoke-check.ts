@@ -209,9 +209,11 @@ check('support copy does not require payment for access', () => {
 
 // ── Affirmative access vs support framing exists ─────────────────────────
 check('approval-based, not paywalled framing exists somewhere public', () => {
+  // The support page is where it matters: its tiers list "full access" as a
+  // benefit, so without this line the Clubhouse reads as pay-to-enter.
   const targets = [
-    'src/app/launch/page.tsx',
     'src/app/support/SupportClient.tsx',
+    'src/app/launch/page.tsx',
     'src/app/terms/page.tsx',
   ]
   for (const t of targets) {
@@ -251,9 +253,17 @@ check('Member Book data file exists and is non-empty', () => {
 })
 
 // ── Browser title / favicon are configured ────────────────────────────────
-check('layout uses Penn Golf shield favicon', () => {
+check('layout points the favicon at the pennant mark', () => {
   const src = read('src/app/layout.tsx')
-  return src.includes('penn-golf-shield') ? true : 'favicon not pointed at penn-golf-shield'
+  if (!src.includes('/brand/pennant.svg')) return 'favicon not pointed at the pennant SVG'
+  // Safari and older Android ignore an SVG favicon, so a PNG must back it up.
+  return src.includes('favicon-32.png') ? true : 'no PNG fallback alongside the SVG favicon'
+})
+
+check('the apple touch icon exists so the home-screen tile is not blank', () => {
+  const src = read('src/app/layout.tsx')
+  if (!src.includes('/apple-icon-180.png')) return 'no apple touch icon configured'
+  return exists('public/apple-icon-180.png') ? true : 'apple-icon-180.png is missing from /public'
 })
 
 check('default metadata title is "Penn Golf Clubhouse"', () => {
