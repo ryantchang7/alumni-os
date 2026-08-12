@@ -27,6 +27,16 @@ import {
 
 const ease = [0.25, 0.1, 0.25, 1] as const
 
+/** Room emblems in /public/emblems, keyed by the route they belong to. */
+const ROOM_EMBLEM: Record<string, string> = {
+  '/member-book': '/emblems/member-book.png',
+  '/member-map': '/emblems/member-map.png',
+  '/the-course': '/emblems/course.png',
+  '/19th-hole': '/emblems/19th-hole.png',
+  '/moments': '/emblems/moments.png',
+  '/career-room': '/emblems/career-room.png',
+}
+
 const ROOM_ACCENT: Record<string, string> = {
   Ask: '#990000',
   Meet: '#b8860b',
@@ -63,7 +73,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
   return (
     <div className="bg-[#fbf9f6] min-h-[calc(100dvh-60px)]">
       {/* Hero */}
-      <section className="bg-[#0a1628] text-white px-5 sm:px-8 pt-20 pb-24 sm:pt-28 sm:pb-32 relative overflow-hidden">
+      <section className="bg-[#0a1628] text-white px-5 sm:px-8 pt-20 pb-44 sm:pt-28 sm:pb-56 relative overflow-hidden">
         <div className="max-w-[1180px] mx-auto relative z-10">
           <motion.p
             className="text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.32em] text-white/70 mb-5"
@@ -121,7 +131,9 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
           </motion.div>
 
           <motion.p
-            className="mt-10 inline-flex items-center text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/70 px-3 py-1.5 border border-white/15 rounded-full"
+            // Sits over the artwork, so it carries its own tint rather than
+            // relying on whatever happens to be behind it.
+            className="mt-10 inline-flex items-center text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/80 px-3.5 py-2 border border-white/20 rounded-full bg-[#0a1628]/70 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={ready ? { opacity: 1 } : { opacity: 0 }}
             transition={{ delay: 1.05, duration: 0.7, ease }}
@@ -130,7 +142,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
           </motion.p>
         </div>
 
-        {/* Subtle radial in the corner, gives the hero some depth without an image */}
+        {/* Subtle radial in the corner, adds depth behind the artwork */}
         <div
           className="absolute pointer-events-none"
           style={{
@@ -141,6 +153,27 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
             background: 'radial-gradient(ellipse at center, rgba(245,240,232,0.06) 0%, transparent 65%)',
           }}
         />
+
+        {/* The Clubhouse lockup, sitting on the bottom edge as a horizon. It is
+            navy line art on a near-navy ground, so it reads as depth behind the
+            words rather than as a picture pasted on top of them. Masked off at
+            the top so it dissolves into the hero instead of ending on a line. */}
+        <div className="absolute inset-x-0 bottom-0 pointer-events-none select-none" aria-hidden="true">
+          <picture>
+            <source srcSet="/brand/lockup-scene.webp" type="image/webp" media="(min-width: 768px)" />
+            <source srcSet="/brand/lockup-scene-900.webp" type="image/webp" />
+            <img
+              src="/brand/lockup-scene.png"
+              alt=""
+              className="w-full h-auto opacity-[0.34]"
+              style={{
+                maskImage: 'linear-gradient(to bottom, transparent 0%, transparent 22%, #000 62%, #000 100%)',
+                WebkitMaskImage:
+                  'linear-gradient(to bottom, transparent 0%, transparent 22%, #000 62%, #000 100%)',
+              }}
+            />
+          </picture>
+        </div>
       </section>
 
       {/* The film, server-rendered by page.tsx so a slow or failed
@@ -253,7 +286,17 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
                 href={f.href}
                 className="group bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-5 py-4 flex items-start justify-between gap-4 hover:border-[#0a1628]/50 transition-colors"
               >
-                <div className="min-w-0">
+                {/* The room's own emblem, so the list reads as places rather
+                    than as another set of links. Rooms without a crest yet get
+                    the pennant, which keeps every row's text on the same
+                    indent instead of leaving ragged gaps down the column. */}
+                <img
+                  src={ROOM_EMBLEM[f.href] ?? '/brand/pennant.svg'}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-11 h-11 shrink-0 object-contain opacity-90 mt-0.5 rounded-lg"
+                />
+                <div className="min-w-0 flex-1">
                   <p className="text-[#0a1628] font-medium text-[15px] mb-0.5 font-heading">
                     {f.label}
                   </p>
@@ -311,8 +354,18 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
       </section>
 
       {/* Closing CTA */}
-      <section className="bg-[#0a1628] text-white px-5 sm:px-8 py-20 sm:py-24">
-        <div className="max-w-[860px] mx-auto text-center">
+      <section className="bg-[#0a1628] text-white px-5 sm:px-8 pt-20 pb-40 sm:pt-24 sm:pb-52 relative overflow-hidden">
+        {/* Keeps the outlined buttons readable wherever the artwork happens to
+            sit behind them. */}
+        <div
+          className="absolute inset-x-0 top-0 h-[62%] pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 70% 100% at 50% 40%, rgba(10,22,40,0.92) 0%, rgba(10,22,40,0.55) 60%, transparent 100%)',
+          }}
+          aria-hidden="true"
+        />
+        <div className="max-w-[860px] mx-auto text-center relative z-10">
           <p className="text-[10.5px] font-semibold uppercase tracking-[0.32em] text-white/70 mb-4">
             For the Penn Golf family
           </p>
@@ -344,6 +397,26 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
           <p className="mt-10 eyebrow text-gold">
             {tagline}
           </p>
+        </div>
+
+        {/* Bookend: the same horizon the page opened on, so it closes where it
+            started. Fainter here, because this section is the call to act and
+            the buttons have to stay the brightest thing on it. */}
+        <div className="absolute inset-x-0 bottom-0 pointer-events-none select-none" aria-hidden="true">
+          <picture>
+            <source srcSet="/brand/lockup-scene.webp" type="image/webp" media="(min-width: 768px)" />
+            <source srcSet="/brand/lockup-scene-900.webp" type="image/webp" />
+            <img
+              src="/brand/lockup-scene.png"
+              alt=""
+              className="w-full h-auto opacity-[0.20]"
+              style={{
+                maskImage: 'linear-gradient(to bottom, transparent 0%, transparent 34%, #000 74%, #000 100%)',
+                WebkitMaskImage:
+                  'linear-gradient(to bottom, transparent 0%, transparent 34%, #000 74%, #000 100%)',
+              }}
+            />
+          </picture>
         </div>
       </section>
     </div>
