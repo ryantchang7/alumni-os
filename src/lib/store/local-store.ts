@@ -1670,6 +1670,8 @@ export async function upsertAccount(input: {
   name?: string
   image?: string
   teamId: string
+  /** Google asserts the address is verified. Only then may we merge by email. */
+  emailVerified?: boolean
 }): Promise<Account> {
   // CAS-guarded: hundreds of first sign-ins can land in the same minute on
   // launch day; unguarded writes here silently dropped Account rows.
@@ -1686,12 +1688,81 @@ export async function upsertAccount(input: {
       }
       return store.accounts[idx]
     }
+
+    // Someone who signed in by email link first already has a row, keyed by a
+    // placeholder sub. Adopt it instead of creating a second account, or they
+    // would lose the card they claimed the moment they switched to Google.
+    // Only when Google says the address is verified, since this merge is
+    // entirely a claim about who controls that inbox.
+    if (input.emailVerified !== false) {
+      const target = normalizeAccountEmail(input.email)
+      const byEmail = store.accounts.findIndex(
+        a => isPlaceholderSub(a.googleSub) && normalizeAccountEmail(a.email) === target,
+      )
+      if (byEmail !== -1) {
+        store.accounts[byEmail] = {
+          ...store.accounts[byEmail],
+          googleSub: input.googleSub,
+          email: input.email,
+          name: input.name ?? store.accounts[byEmail].name,
+          image: input.image ?? store.accounts[byEmail].image,
+          updatedAt: now,
+        }
+        return store.accounts[byEmail]
+      }
+    }
+
     const account: Account = {
       id: crypto.randomUUID(),
       email: input.email,
       googleSub: input.googleSub,
       name: input.name,
       image: input.image,
+      teamId: input.teamId,
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.accounts.push(account)
+    return account
+  })
+}
+
+const normalizeAccountEmail = (email: string | undefined) => (email ?? '').trim().toLowerCase()
+
+/** Accounts created by an email link carry this instead of a real Google sub. */
+export const EMAIL_SUB_PREFIX = 'emaillink:'
+const isPlaceholderSub = (sub: string | undefined) => !!sub?.startsWith(EMAIL_SUB_PREFIX)
+
+/**
+ * Find or create the account behind a verified email address.
+ *
+ * Matches on email first so that someone who used Google before lands on the
+ * same row (and keeps their claimed card) rather than getting a duplicate.
+ * A new row gets a placeholder googleSub and, critically, no linkedPersonId:
+ * signing in is not approval, they still claim a card like everyone else.
+ */
+export async function upsertAccountByEmail(input: {
+  email: string
+  name?: string
+  teamId: string
+}): Promise<Account> {
+  const target = normalizeAccountEmail(input.email)
+  return mutateStore(store => {
+    const now = new Date().toISOString()
+    const idx = store.accounts.findIndex(a => normalizeAccountEmail(a.email) === target)
+    if (idx !== -1) {
+      store.accounts[idx] = {
+        ...store.accounts[idx],
+        name: store.accounts[idx].name ?? input.name,
+        updatedAt: now,
+      }
+      return store.accounts[idx]
+    }
+    const account: Account = {
+      id: crypto.randomUUID(),
+      email: target,
+      googleSub: `${EMAIL_SUB_PREFIX}${target}`,
+      name: input.name,
       teamId: input.teamId,
       createdAt: now,
       updatedAt: now,

@@ -395,7 +395,7 @@ Penn Men's Golf '28, Brookline, MA`,
     hint: 'The paragraph under the "Sign in to the Clubhouse" heading.',
     kind: 'longtext',
     default:
-      'Sign in with Google to claim your Member Book card and keep your profile up to date.',
+      'Sign in to claim your Member Book card and keep your profile up to date.',
   },
   {
     id: 'parent-signup.body',

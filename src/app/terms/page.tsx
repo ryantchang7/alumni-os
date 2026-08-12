@@ -33,7 +33,7 @@ export default function TermsPage() {
             Your account &amp; security
           </h2>
           <p>
-            You sign in with a Google account. You are responsible for all activity that occurs under your account. Keep your credentials secure and do not share access with others. You may hold only one account, and you may only claim a profile that is genuinely yours. If you suspect unauthorized use of your account, contact us immediately at <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a>.
+            You sign in with a Google account or with a one-time link sent to your email address. You are responsible for all activity that occurs under your account. Keep your credentials secure and do not share access with others. You may hold only one account, and you may only claim a profile that is genuinely yours. If you suspect unauthorized use of your account, contact us immediately at <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a>.
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">

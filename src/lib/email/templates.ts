@@ -314,6 +314,80 @@ export function renderNearbyRequestEmail(input: {
   return { subject, html: shell(inner, input.url) }
 }
 
+/**
+ * A round (or a coffee, drinks, dinner) was posted near you.
+ *
+ * The counterpart to renderNearbyRequestEmail: that one fires when a member is
+ * passing through, this one fires when someone puts a real date on the board.
+ */
+export function renderNewRoundEmail(input: {
+  recipientFirstName?: string | null
+  hostName: string
+  title: string
+  /** "a round" | "coffee" | "drinks" | "dinner" | "an event" */
+  typeLabel: string
+  placeText: string
+  venue?: string | null
+  dateText: string
+  timeText?: string | null
+  description?: string | null
+  url: string
+}): { subject: string; html: string } {
+  const greeting = input.recipientFirstName ? `Hi ${escapeHtml(input.recipientFirstName)},` : 'Hi,'
+  const subject = `${input.hostName} is hosting ${input.typeLabel} in ${input.placeText}`
+  const meta = [
+    escapeHtml(input.dateText),
+    input.timeText ? escapeHtml(input.timeText) : '',
+    input.venue ? escapeHtml(input.venue) : '',
+  ]
+    .filter(Boolean)
+    .join(' &middot; ')
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      There is a new tee sheet near you
+    </h1>
+    <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${greeting} <strong>${escapeHtml(input.hostName)}</strong> posted
+      <strong>${escapeHtml(input.title)}</strong> in ${escapeHtml(input.placeText)}.
+    </p>
+    ${meta ? `<p style="margin:0 0 14px 0;font-size:14px;color:${NAVY};">${meta}</p>` : ''}
+    ${
+      input.description
+        ? `<blockquote style="margin:0 0 14px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:${CREAM};font-size:15px;line-height:1.5;color:${NAVY};">
+      ${escapeHtml(input.description)}
+    </blockquote>`
+        : ''
+    }
+    <p style="margin:0;">${btn(input.url, 'See it and put your name down')}</p>
+    <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
+      You are getting this because your card says you are nearby.
+    </p>
+  `
+  return { subject, html: shell(inner, input.url) }
+}
+
+/** The one-time sign-in link, for members who do not use a Google account. */
+export function renderSignInLinkEmail(input: {
+  url: string
+  minutes: number
+}): { subject: string; html: string } {
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      Your sign-in link
+    </h1>
+    <p style="margin:0 0 18px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      Click below to sign in to the Penn Golf Clubhouse. The link works once and
+      expires in ${input.minutes} minutes.
+    </p>
+    <p style="margin:0;">${btn(input.url, 'Sign in')}</p>
+    <p style="margin:18px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
+      If you did not ask for this, you can ignore it. Nobody can sign in as you
+      without opening this email.
+    </p>
+  `
+  return { subject: 'Your Penn Golf Clubhouse sign-in link', html: shell(inner, input.url) }
+}
+
 // ── Weekly Digest ────────────────────────────────────────────────────────────
 
 interface DigestMember { name: string; classLabel?: string }

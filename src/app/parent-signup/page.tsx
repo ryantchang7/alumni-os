@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useSession, signIn } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { ArrowLeft, Heart } from 'lucide-react'
 import { useSiteContent, useSlot } from '@/lib/site-content/use-site-content'
 
@@ -118,10 +118,10 @@ export default function ParentSignupPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!signedIn) {
-      // Stash the draft, then send the user through Google — we'll
-      // restore + auto-submit when they return.
+      // Stash the draft, then send the user to the login page, which offers
+      // Google and an emailed link. We restore + auto-submit when they return.
       writeDraft({ name: name.trim(), relationship: relationship.trim() })
-      void signIn('google', { callbackUrl: '/parent-signup' })
+      router.push('/login?next=/parent-signup')
       return
     }
     void submitToApi({ name, relationship })
@@ -163,8 +163,8 @@ export default function ParentSignupPage() {
         >
           {!signedIn && sessionStatus !== 'loading' && (
             <div className="mb-6 px-4 py-3 bg-[#fdfcf9] border border-[rgba(180,168,150,0.5)] rounded-lg text-[13.5px] text-[#3d4a5c]">
-              You&rsquo;ll sign in with Google when you submit so we can attach this
-              card to your account.
+              You&rsquo;ll sign in when you submit so we can attach this card to your
+              account. Google or an emailed link, whichever you prefer.
             </div>
           )}
 
@@ -219,7 +219,7 @@ export default function ParentSignupPage() {
                   ? 'Submitting…'
                   : signedIn
                     ? 'Submit for captain review'
-                    : 'Sign in with Google to submit'}
+                    : 'Sign in to submit'}
               </button>
             </div>
           </form>

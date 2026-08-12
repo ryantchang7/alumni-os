@@ -131,7 +131,7 @@ export default function PrivacyPage() {
             Under the California Consumer Privacy Act as amended by the California Privacy Rights Act (CCPA/CPRA), we are required to disclose the categories of personal information we collect. The following categories apply to the Clubhouse, with examples mapped to what we actually collect:
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li><strong>Identifiers.</strong> Name, email address, Google account ID (from Google OAuth sign-in).</li>
+            <li><strong>Identifiers.</strong> Name, email address, and, if you sign in with Google, your Google account ID.</li>
             <li><strong>Customer records.</strong> Profile and member-card fields you fill in: class year, city and state, hometown, home course, handicap, contact preferences, and how you want to help.</li>
             <li><strong>Internet or other electronic network activity.</strong> IP address, request logs (browser type, referring URL, timestamps) collected automatically for security and abuse prevention.</li>
             <li><strong>Geolocation, approximate only.</strong> City, state, and hometown as entered on your member card. We do not collect or use precise GPS location.</li>

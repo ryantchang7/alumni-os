@@ -459,7 +459,7 @@ function AlumniRequestsInner() {
                 onClick={() => router.push('/login?next=/alumni/requests')}
                 className="bg-[#0a1628] hover:bg-[#112240] text-white text-[12.5px] font-semibold px-5 py-2.5 rounded-lg transition-colors"
               >
-                Sign in with Google
+                Sign in
               </button>
             </div>
           )}

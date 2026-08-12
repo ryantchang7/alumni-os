@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import NotificationBell from '@/components/NotificationBell'
 import SuggestTrigger from '@/components/SuggestTrigger'
@@ -129,14 +129,15 @@ function AccountAffordance() {
 
   if (status === 'loading') return null
   if (status !== 'authenticated' || !session) {
+    // Goes to the login page rather than straight to Google: plenty of alumni
+    // have no Google account and sign in by emailed link instead.
     return (
-      <button
-        type="button"
-        onClick={() => signIn('google', { callbackUrl: '/account/profile' })}
+      <Link
+        href="/login?next=/account/profile"
         className="text-[12px] font-medium text-white border border-white/30 hover:border-white/60 px-3 py-2.5 rounded transition-colors focus-visible:ring-2 focus-visible:ring-[#0a1628]/40 focus:outline-none"
       >
         Sign in
-      </button>
+      </Link>
     )
   }
   const name = session.user?.name ?? session.user?.email ?? 'Profile'

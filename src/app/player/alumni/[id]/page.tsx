@@ -249,7 +249,7 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
                   Is this you?
                 </p>
                 <p className="text-[12.5px] text-ink-muted mt-1.5">
-                  Sign in with Google to claim {person.canonicalName.split(' ')[0]}&rsquo;s card and start sharing your story with the Clubhouse.
+                  Sign in to claim {person.canonicalName.split(' ')[0]}&rsquo;s card and start sharing your story with the Clubhouse.
                 </p>
                 <Link
                   href="/login?next=/account/setup"
