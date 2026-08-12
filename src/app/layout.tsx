@@ -40,10 +40,16 @@ export const metadata: Metadata = {
     title: 'Penn Golf',
     statusBarStyle: 'default',
   },
-  // Favicon — the Penn Golf shield in /public. The Apple touch icon is the
-  // navy-backed shield so the iOS home-screen tile isn't transparent/black.
+  // The pennant from the Clubhouse lockup. The full lockup is a wide scene
+  // with a wordmark and turns to mush at tab size, so the icon is the one
+  // element from it that still reads at 32px. SVG first for browsers that
+  // take it, 32px PNG as the fallback; the Apple tile is navy-backed so the
+  // iOS home screen never renders it transparent or black.
   icons: {
-    icon: '/penn-golf-shield.png',
+    icon: [
+      { url: '/brand/pennant.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+    ],
     apple: '/apple-icon-180.png',
   },
   // Absolute base so the OG/Twitter image URLs resolve in link previews.

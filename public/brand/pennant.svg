@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Penn Golf Clubhouse">
+  <!--
+    App icon: the pennant lifted out of the Penn Golf Clubhouse lockup.
+
+    The full lockup is a wide scene with a wordmark, which turns to mud at
+    favicon size. This is the one element from it that survives at 32px: a
+    single bold silhouette, red on navy, with the P drawn as a path so it
+    never depends on a font being installed wherever this gets rasterized.
+
+    A true triangular pennant, matching the flag in the lockup. No ground
+    line: at 32px it stopped reading as ground and started reading as an
+    L-shaped bracket. The pole plus flag alone says golf pin unambiguously.
+
+    The cluster is optically centred (its bounding box is centred on 256,256)
+    and sits inside the middle 80%, so Android's maskable crop cannot clip it.
+  -->
+  <rect width="512" height="512" fill="#0a1628"/>
+
+  <!-- Pole -->
+  <rect x="152" y="108" width="18" height="296" rx="9" fill="#faf7f2"/>
+
+  <!-- Pennant, flying right to a point. -->
+  <path d="M170 122 L412 202 L170 282 Z" fill="#990000"/>
+
+  <!-- P, drawn as outline + counter with evenodd so it is font-independent. -->
+  <g transform="translate(198 157) scale(0.78)">
+    <path fill="#faf7f2" fill-rule="evenodd"
+          d="M0 0 H50 C68 0 80 12 80 30 C80 48 68 58 50 58 H26 V112 H0 Z
+             M26 16 H48 C56 16 60 21 60 29 C60 37 56 42 48 42 H26 Z"/>
+  </g>
+</svg>
