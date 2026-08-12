@@ -54,6 +54,17 @@ ok('rejects an unknown token', (await consumeEmailLinkToken('not-a-real-token'))
 ok('rejects an empty token', (await consumeEmailLinkToken('')) === null)
 ok('rejects an absurdly long token', (await consumeEmailLinkToken('x'.repeat(500))) === null)
 
+// ── 1b. Rate limiting ────────────────────────────────────────────────────────
+console.log('\n1b. One address cannot be mail-bombed')
+const spam = `spam-${Date.now()}@example.com`
+const issued: (string | null)[] = []
+for (let i = 0; i < 8; i++) issued.push(await issueEmailLinkToken(spam))
+const granted = issued.filter(Boolean).length
+ok('stops after the hourly cap', granted === 5, `${granted} of 8 granted`)
+ok('later requests are refused', issued[7] === null)
+ok('a different address is unaffected',
+   (await issueEmailLinkToken(`other-${Date.now()}@example.com`)) !== null)
+
 // ── 2. Address validation ────────────────────────────────────────────────────
 console.log('\n2. Address validation')
 ok('accepts a normal address', isPlausibleEmail('ryan@upenn.edu'))

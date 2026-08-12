@@ -39,6 +39,24 @@ function memGet(key: string): string | null {
   return hit.value
 }
 
+/** Counter shared by both backends so the limit behaves the same either way. */
+async function bumpRequestCount(key: string): Promise<number> {
+  const redis = getRedis()
+  if (redis) {
+    const count = await redis.incr(key)
+    if (count === 1) await redis.expire(key, 3600)
+    return count
+  }
+  const current = Number(memGet(key) ?? 0) + 1
+  const existing = memory.get(key)
+  memory.set(key, {
+    value: String(current),
+    // Keep the original window, so repeated hits cannot keep pushing it out.
+    expiresAt: existing && existing.expiresAt > Date.now() ? existing.expiresAt : Date.now() + 3600_000,
+  })
+  return current
+}
+
 /** Hash before storing: a leaked Redis dump must not hand out live sessions. */
 const hash = (v: string) => createHash('sha256').update(v).digest('hex')
 
@@ -57,13 +75,9 @@ export function isPlausibleEmail(email: string): boolean {
 export async function issueEmailLinkToken(email: string): Promise<string | null> {
   const normalized = normalizeEmail(email)
   const redis = getRedis()
-  const rlKey = `emaillink:rl:${hash(normalized)}`
 
-  if (redis) {
-    const count = await redis.incr(rlKey)
-    if (count === 1) await redis.expire(rlKey, 3600)
-    if (count > MAX_PER_EMAIL_PER_HOUR) return null
-  }
+  const count = await bumpRequestCount(`emaillink:rl:${hash(normalized)}`)
+  if (count > MAX_PER_EMAIL_PER_HOUR) return null
 
   const token = randomBytes(32).toString('base64url')
   const key = `emaillink:${hash(token)}`
