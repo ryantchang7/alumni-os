@@ -551,7 +551,7 @@ function ClubhouseInner() {
           <div className="-mt-5 relative z-10 mb-6 bg-[#0a1628] text-white rounded-2xl px-6 py-6 border border-[#c8a84b]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#c8a84b] mb-1.5">
-                {BOOK_PROOF.members} in the book · Playing since {FOUNDED_YEAR}
+                {BOOK_PROOF.members} in the book · Est. {FOUNDED_YEAR}
               </p>
               <p className="text-white text-lg sm:text-xl font-medium font-heading leading-snug">
                 Your name is already here.

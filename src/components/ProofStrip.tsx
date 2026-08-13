@@ -20,7 +20,7 @@ export default function ProofStrip({
       <p
         className={`text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] ${className}`}
       >
-        {BOOK_PROOF.members} members · Playing since {FOUNDED_YEAR} ·{' '}
+        {BOOK_PROOF.members} members · Est. {FOUNDED_YEAR} ·{' '}
         {BOOK_PROOF.letterYears} letter years
       </p>
     )

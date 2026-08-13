@@ -37,22 +37,21 @@ export interface ProofStat {
 }
 
 /**
- * The year Penn first put a golf team on the course.
+ * The year Penn golf became a varsity program. Confirmed by Ryan.
  *
- * The site said 1899 for a while, which does not appear to be right. Penn was
- * one of five schools invited to the first intercollegiate championship in
- * 1897 but did not send a team until 1901, so 1901 is the first year there is
- * a Penn side on record.
+ * Do not "correct" this to 1901. Penn was invited to the first intercollegiate
+ * championship in 1897 and did not send a team to it until 1901, which is easy
+ * to find and easy to mistake for the founding date. The varsity program is
+ * 1899; 1901 is only the first championship appearance.
  *
- * One constant, used everywhere the year appears, so confirming it with the
- * program is a one-line change and cannot leave two different years on two
- * different pages.
+ * One constant, used everywhere the year appears, so the site can never show
+ * two different years on two different pages.
  */
-export const FOUNDED_YEAR = 1901
+export const FOUNDED_YEAR = 1899
 
 export const BOOK_PROOF_STATS: ProofStat[] = [
   { label: 'Members', value: BOOK_PROOF.members },
-  { label: 'Playing since', value: FOUNDED_YEAR },
+  { label: 'Established', value: FOUNDED_YEAR },
   { label: 'Letter years', value: BOOK_PROOF.letterYears },
 ]
 
