@@ -40,15 +40,16 @@ export const metadata: Metadata = {
     title: 'Penn Golf',
     statusBarStyle: 'default',
   },
-  // The pennant from the Clubhouse lockup. The full lockup is a wide scene
-  // with a wordmark and turns to mush at tab size, so the icon is the one
-  // element from it that still reads at 32px. SVG first for browsers that
-  // take it, 32px PNG as the fallback; the Apple tile is navy-backed so the
-  // iOS home screen never renders it transparent or black.
+  // The Clubhouse artwork, cropped square around the clubhouse and the
+  // pennant. Cropped rather than shrunk: the full lockup is a wide scene with
+  // a wordmark, and reducing all of that to a tab icon leaves mush. This keeps
+  // the building and the flag, which still read once the browser is showing it
+  // at 32px or larger. The Apple tile is navy-backed so the iOS home screen
+  // never renders it transparent or black.
   icons: {
     icon: [
-      { url: '/brand/pennant.svg', type: 'image/svg+xml' },
       { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
     apple: '/apple-icon-180.png',
   },

@@ -21,7 +21,7 @@ import type { AlumniSpotlight, TeamNewsItem } from '@/lib/store/types'
 import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 import NextEventChip from '@/components/NextEventChip'
 import { deriveClassLabel } from '@/lib/class-year'
-import { BOOK_PROOF } from '@/lib/proof'
+import { BOOK_PROOF, FOUNDED_YEAR } from '@/lib/proof'
 import { APPROVAL_PROMISE } from '@/lib/access/promise'
 
 const TOTAL_MEMBERS = getPublicMembers(memberBookEntries).length
@@ -510,7 +510,7 @@ function ClubhouseInner() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            Penn Golf · Clubhouse · Est. 1899
+            Penn Golf · Clubhouse · Est. {FOUNDED_YEAR}
           </motion.p>
           <motion.h1
             className="font-heading text-white text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight leading-tight max-w-2xl"
@@ -551,7 +551,7 @@ function ClubhouseInner() {
           <div className="-mt-5 relative z-10 mb-6 bg-[#0a1628] text-white rounded-2xl px-6 py-6 border border-[#c8a84b]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#c8a84b] mb-1.5">
-                {BOOK_PROOF.members} in the book · {BOOK_PROOF.earliestYear}–{BOOK_PROOF.latestYear} · {BOOK_PROOF.generations} generations
+                {BOOK_PROOF.members} in the book · Playing since {FOUNDED_YEAR}
               </p>
               <p className="text-white text-lg sm:text-xl font-medium font-heading leading-snug">
                 Your name is already here.

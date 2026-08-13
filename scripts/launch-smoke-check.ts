@@ -253,11 +253,12 @@ check('Member Book data file exists and is non-empty', () => {
 })
 
 // ── Browser title / favicon are configured ────────────────────────────────
-check('layout points the favicon at the pennant mark', () => {
+check('layout points the favicon at the Clubhouse mark', () => {
   const src = read('src/app/layout.tsx')
-  if (!src.includes('/brand/pennant.svg')) return 'favicon not pointed at the pennant SVG'
-  // Safari and older Android ignore an SVG favicon, so a PNG must back it up.
-  return src.includes('favicon-32.png') ? true : 'no PNG fallback alongside the SVG favicon'
+  if (!src.includes('favicon-32.png')) return 'no 32px favicon configured'
+  if (!exists('public/favicon-32.png')) return 'favicon-32.png is missing from /public'
+  // A larger PNG too, so retina tabs and bookmarks get the detail.
+  return src.includes('icon-192.png') ? true : 'no larger PNG alongside the 32px favicon'
 })
 
 check('the apple touch icon exists so the home-screen tile is not blank', () => {

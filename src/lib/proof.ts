@@ -36,16 +36,23 @@ export interface ProofStat {
   value: string | number
 }
 
+/**
+ * The year Penn first put a golf team on the course.
+ *
+ * The site said 1899 for a while, which does not appear to be right. Penn was
+ * one of five schools invited to the first intercollegiate championship in
+ * 1897 but did not send a team until 1901, so 1901 is the first year there is
+ * a Penn side on record.
+ *
+ * One constant, used everywhere the year appears, so confirming it with the
+ * program is a one-line change and cannot leave two different years on two
+ * different pages.
+ */
+export const FOUNDED_YEAR = 1901
+
 export const BOOK_PROOF_STATS: ProofStat[] = [
   { label: 'Members', value: BOOK_PROOF.members },
-  {
-    label: 'Years',
-    value:
-      BOOK_PROOF.earliestYear && BOOK_PROOF.latestYear
-        ? `${BOOK_PROOF.earliestYear}–${BOOK_PROOF.latestYear}`
-        : ', ',
-  },
-  { label: 'Generations', value: BOOK_PROOF.generations },
+  { label: 'Playing since', value: FOUNDED_YEAR },
   { label: 'Letter years', value: BOOK_PROOF.letterYears },
 ]
 

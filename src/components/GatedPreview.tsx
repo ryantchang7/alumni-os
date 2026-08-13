@@ -64,8 +64,14 @@ export default function GatedPreview({
           {blurb}
         </p>
 
+        {/* Column count follows the data: the book stats are three now, and
+            a fixed four left a hole in the row. */}
         {shownStats.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-md mx-auto mb-8">
+          <div
+            className={`grid grid-cols-2 gap-3 max-w-md mx-auto mb-8 ${
+              shownStats.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-4'
+            }`}
+          >
             {shownStats.map((s) => (
               <div
                 key={s.label}

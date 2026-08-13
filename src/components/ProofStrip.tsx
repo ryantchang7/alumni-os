@@ -6,7 +6,7 @@
  * `variant="plaques"` is the four-card band for /launch.
  */
 
-import { BOOK_PROOF, BOOK_PROOF_STATS } from '@/lib/proof'
+import { BOOK_PROOF, BOOK_PROOF_STATS, FOUNDED_YEAR } from '@/lib/proof'
 
 export default function ProofStrip({
   variant = 'plaques',
@@ -20,14 +20,14 @@ export default function ProofStrip({
       <p
         className={`text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b] ${className}`}
       >
-        {BOOK_PROOF.members} members · {BOOK_PROOF.earliestYear}–{BOOK_PROOF.latestYear} ·{' '}
-        {BOOK_PROOF.generations} generations
+        {BOOK_PROOF.members} members · Playing since {FOUNDED_YEAR} ·{' '}
+        {BOOK_PROOF.letterYears} letter years
       </p>
     )
   }
 
   return (
-    <div className={`grid grid-cols-2 sm:grid-cols-4 gap-3 ${className}`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-3 gap-3 ${className}`}>
       {BOOK_PROOF_STATS.map(s => (
         <div
           key={s.label}
