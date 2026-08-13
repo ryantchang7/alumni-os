@@ -68,12 +68,18 @@ const BEATS = {
   home: {
     out: 'home-to-hof.mp4',
     start: '/player',
-    seconds: 13.35,
+    // Paced to the narration: three stops down the page rather than one long
+    // ride, so the eye lands on a section while it is being talked about.
+    seconds: 20.0,
     moves: [
+      { kind: 'hold', s: 1.0 },
+      { kind: 'scroll', frac: 0.35, s: 5.2 },
+      { kind: 'hold', s: 1.5 },
+      { kind: 'scroll', frac: 0.7, s: 4.6 },
+      { kind: 'hold', s: 1.6 },
+      { kind: 'scrollBottom', s: 3.4 },
       { kind: 'hold', s: 0.8 },
-      { kind: 'scrollBottom', s: 9.4 },
-      { kind: 'hold', s: 0.6 },
-      { kind: 'reach', s: 1.6, text: /visit the hall of fame/i },
+      { kind: 'reach', s: 1.5, text: /visit the hall of fame/i },
       // Pulse, don't click: the beat has to END on the home page or the next
       // beat cross-dissolves the Hall of Fame with itself.
       { kind: 'pulse', s: 0.4 },
@@ -85,45 +91,56 @@ const BEATS = {
   teamroom: {
     out: 'teamroom.mp4',
     start: '/team-room',
-    seconds: 20.6,
+    seconds: 24.6,
     moves: [
-      { kind: 'hold', s: 0.8 },
-      { kind: 'scrollBottom', s: 14.2 },
-      { kind: 'hold', s: 0.5 },
+      { kind: 'hold', s: 1.0 },
+      { kind: 'scroll', frac: 0.4, s: 5.0 },
+      { kind: 'hold', s: 1.6 },
+      { kind: 'scroll', frac: 0.75, s: 4.4 },
+      { kind: 'hold', s: 1.5 },
+      { kind: 'scrollBottom', s: 3.6 },
+      { kind: 'hold', s: 0.9 },
       { kind: 'reach', s: 1.5, role: 'link', name: /ask the team/i },
       { kind: 'click', s: 0.35 },
-      { kind: 'navHold', s: 3.25 },
+      { kind: 'navHold', s: 4.75 },
     ],
   },
   // Ryan's card: one clean ride down everything a member can fill in.
   profile: {
     out: 'profile.mp4',
     start: '/member-book/ryan-chang',
-    seconds: 11.1,
+    seconds: 12.3,
     redactContact: true,
     moves: [
-      { kind: 'hold', s: 0.9 },
-      { kind: 'scroll', to: 880, s: 8.4, cap: true },
-      { kind: 'hold', s: 1.8 },
+      { kind: 'hold', s: 1.0 },
+      { kind: 'scroll', to: 880, s: 9.0, cap: true },
+      { kind: 'hold', s: 2.3 },
     ],
   },
   // Member Book: ride into the grid, search a name, open the card.
   memberbook: {
     out: 'memberbook.mp4',
     start: '/member-book',
-    seconds: 13.95,
+    seconds: 22.3,
     moves: [
-      { kind: 'hold', s: 0.8 },
-      { kind: 'scroll', to: 380, s: 2.2 },
+      { kind: 'hold', s: 1.0 },
+      { kind: 'scroll', to: 380, s: 2.4 },
+      { kind: 'hold', s: 1.2 },
+      // Ride further into the grid first. The narration is about how many
+      // people are in the book, so it needs to SHOW a lot of people before
+      // it narrows to one of them.
+      { kind: 'scroll', frac: 0.5, s: 3.0 },
+      { kind: 'hold', s: 1.4 },
+      { kind: 'scroll', to: 380, s: 2.0 },
       { kind: 'reach', s: 1.2, selector: '[aria-label="Search the Member Book"]' },
       { kind: 'click', s: 0.3, noNav: true },
       { kind: 'type', s: 2.0, text: 'Cohen' },
-      { kind: 'hold', s: 1.1 },
+      { kind: 'hold', s: 1.3 },
       { kind: 'reach', s: 1.3, text: /adam s\.? cohen/i },
       { kind: 'click', s: 0.35 },
-      { kind: 'navHold', s: 1.1 },
-      { kind: 'scroll', to: 420, s: 2.0, cap: true },
-      { kind: 'hold', s: 1.6 },
+      { kind: 'navHold', s: 1.3 },
+      { kind: 'scroll', to: 420, s: 2.2, cap: true },
+      { kind: 'hold', s: 1.3 },
     ],
   },
   // Member Map: the hometowns toggle lights the country up, then two states
@@ -132,19 +149,19 @@ const BEATS = {
   map: {
     out: 'map.mp4',
     start: '/member-map',
-    seconds: 12.15,
+    seconds: 15.2,
     moves: [
-      { kind: 'hold', s: 0.6 },
-      { kind: 'scroll', to: 340, s: 1.5 },
+      { kind: 'hold', s: 0.8 },
+      { kind: 'scroll', to: 340, s: 1.6 },
       { kind: 'reach', s: 1.1, text: /^hometowns$/i },
       { kind: 'click', s: 0.3, noNav: true },
-      { kind: 'hold', s: 1.2 },
+      { kind: 'hold', s: 1.5 },
       { kind: 'moveTo', s: 1.0, x: 1038, y: 640 }, // Pennsylvania
       { kind: 'click', s: 0.3, noNav: true },
-      { kind: 'hold', s: 1.9 },
+      { kind: 'hold', s: 2.5 },
       { kind: 'moveTo', s: 0.9, x: 775, y: 830 }, // Texas
       { kind: 'click', s: 0.3, noNav: true },
-      { kind: 'hold', s: 3.05 },
+      { kind: 'hold', s: 4.9 },
     ],
   },
   // Chat: the list, then the thread with Ryan's dad. The whole exchange fits
@@ -180,33 +197,39 @@ const BEATS = {
   family: {
     out: 'family.mp4',
     start: '/player/alumni/12db62ee-eaea-4eb6-9bb9-9a2e1f7bec0e',
-    seconds: 6.4,
+    seconds: 7.3,
     // Tighter crop on purpose: it holds on the name, "Penn Golf Family" and
     // "Parent of Ryan Chang C'28" and never reaches the CONTACT row, which
     // carries a real email and phone number.
     zoom: 3.1,
     moves: [
-      { kind: 'hold', s: 1.6 },
-      { kind: 'scroll', to: 120, s: 2.6 },
-      { kind: 'hold', s: 2.2 },
+      { kind: 'hold', s: 1.8 },
+      { kind: 'scroll', to: 120, s: 3.0 },
+      { kind: 'hold', s: 2.5 },
     ],
   },
   // The Course: the round finder, then the whole Host a Round form.
   course: {
     out: 'course-flow.mp4',
     start: '/the-course',
-    seconds: 20.0,
+    seconds: 30.8,
     moves: [
+      { kind: 'hold', s: 1.0 },
+      { kind: 'scroll', to: 900, s: 3.6 },
+      { kind: 'hold', s: 2.0 },
+      // Past the first round card into the rest of the board, so the tee
+      // sheets read as a real list before the beat turns to hosting one.
+      { kind: 'scroll', frac: 0.55, s: 3.2 },
+      { kind: 'hold', s: 2.2 },
+      { kind: 'scroll', to: 150, s: 2.6 },
       { kind: 'hold', s: 0.8 },
-      { kind: 'scroll', to: 900, s: 3.4 },
-      { kind: 'hold', s: 1.4 },
-      { kind: 'scroll', to: 150, s: 2.2 },
-      { kind: 'hold', s: 0.5 },
       { kind: 'reach', s: 1.3, selector: '[data-testid="host-a-round"]' },
       { kind: 'click', s: 0.35 },
-      { kind: 'navHold', s: 1.4 },
-      { kind: 'scrollBottom', s: 7.6 },
-      { kind: 'hold', s: 1.0 },
+      { kind: 'navHold', s: 1.6 },
+      { kind: 'scroll', frac: 0.45, s: 4.0 },
+      { kind: 'hold', s: 1.8 },
+      { kind: 'scrollBottom', s: 4.6 },
+      { kind: 'hold', s: 1.7 },
     ],
   },
 }
@@ -318,10 +341,15 @@ async function runBeat(browser, key) {
           })
         : max
       const from = scrollY
+      // `frac` targets a share of the page rather than a pixel row, which is
+      // what you want for a pause partway down a page whose height you don't
+      // know. `to` stays absolute for the shots that aim at a known element.
       const to =
         move.kind === 'scrollBottom'
           ? Math.min(max, limit)
-          : Math.min(move.to * zoom, max, limit)
+          : move.frac !== undefined
+            ? Math.min(Math.round(Math.min(max, limit) * move.frac), max, limit)
+            : Math.min(move.to * zoom, max, limit)
       for (let i = 0; i < n; i++) {
         const y = from + (to - from) * easeInOut((i + 1) / n)
         await page.evaluate(
