@@ -121,26 +121,23 @@ const BEATS = {
   memberbook: {
     out: 'memberbook.mp4',
     start: '/member-book',
-    seconds: 22.3,
+    // Straight to the search. An earlier version rode deep into the grid and
+    // came back up to fill a longer beat, which just looked like the camera
+    // could not find what it wanted.
+    seconds: 15.65,
     moves: [
       { kind: 'hold', s: 1.0 },
-      { kind: 'scroll', to: 380, s: 2.4 },
-      { kind: 'hold', s: 1.2 },
-      // Ride further into the grid first. The narration is about how many
-      // people are in the book, so it needs to SHOW a lot of people before
-      // it narrows to one of them.
-      { kind: 'scroll', frac: 0.5, s: 3.0 },
-      { kind: 'hold', s: 1.4 },
-      { kind: 'scroll', to: 380, s: 2.0 },
+      { kind: 'scroll', to: 380, s: 2.2 },
+      { kind: 'hold', s: 0.8 },
       { kind: 'reach', s: 1.2, selector: '[aria-label="Search the Member Book"]' },
       { kind: 'click', s: 0.3, noNav: true },
       { kind: 'type', s: 2.0, text: 'Cohen' },
-      { kind: 'hold', s: 1.3 },
+      { kind: 'hold', s: 1.2 },
       { kind: 'reach', s: 1.3, text: /adam s\.? cohen/i },
       { kind: 'click', s: 0.35 },
-      { kind: 'navHold', s: 1.3 },
-      { kind: 'scroll', to: 420, s: 2.2, cap: true },
-      { kind: 'hold', s: 1.3 },
+      { kind: 'navHold', s: 1.4 },
+      { kind: 'scroll', to: 420, s: 2.4, cap: true },
+      { kind: 'hold', s: 1.5 },
     ],
   },
   // Member Map: the hometowns toggle lights the country up, then two states
