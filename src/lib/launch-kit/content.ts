@@ -110,7 +110,7 @@ export const ACCESS_STEPS: AccessStep[] = [
   {
     step: '1',
     label: 'Claim your card',
-    body: 'Find your name in the Member Book and send a quick claim. Takes 30 seconds.',
+    body: 'Players find their name in the Member Book. Family use the family signup. Either way, 30 seconds.',
   },
   {
     step: '2',

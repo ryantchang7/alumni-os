@@ -329,6 +329,52 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
               {accessLine}
             </p>
           </div>
+          {/* Two doors, said plainly and first.
+              Step one used to be "find your name in the Member Book", which is
+              only true if you played. Parents, family and friends of the
+              program are not in the book, so that instruction sent them
+              hunting for a name that was never going to be there. */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+            <Link
+              href="/member-book"
+              className="group bg-[#0a1628] text-white rounded-2xl px-7 py-7 block hover:bg-[#112240] transition-colors"
+            >
+              <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#c8a84b] mb-3">
+                If you played for Penn
+              </p>
+              <p className="text-xl font-medium mb-2 font-heading">
+                Your name is already in the book.
+              </p>
+              <p className="text-[13.5px] text-white/70 leading-relaxed mb-4">
+                Find yourself in the Member Book and hit claim. That is the whole
+                thing. It takes about thirty seconds.
+              </p>
+              <span className="text-[12px] font-semibold text-[#c8a84b] group-hover:underline">
+                Find your name &rarr;
+              </span>
+            </Link>
+
+            <Link
+              href="/parent-signup"
+              className="group bg-white border border-[rgba(180,168,150,0.5)] rounded-2xl px-7 py-7 block hover:border-[#0a1628]/50 transition-colors"
+            >
+              <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#990000] mb-3">
+                If you are family or a friend of the program
+              </p>
+              <p className="text-[#0a1628] text-xl font-medium mb-2 font-heading">
+                You will not be in the book, and that is fine.
+              </p>
+              <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-4">
+                Parents, family, and longtime supporters have their own signup.
+                Tell us who you are and how you are connected, and you get your
+                own card.
+              </p>
+              <span className="text-[12px] font-semibold text-[#990000] group-hover:underline">
+                Sign up as family &rarr;
+              </span>
+            </Link>
+          </div>
+
           <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {ACCESS_STEPS.map(step => (
               <li
