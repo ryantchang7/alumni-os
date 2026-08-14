@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import ProofStrip from '@/components/ProofStrip'
+import SectionEmblemHeader from '@/components/SectionEmblemHeader'
 import {
   HERO_TITLE,
   HERO_SUBTITLE,
@@ -72,109 +73,48 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
 
   return (
     <div className="bg-[#fbf9f6] min-h-[calc(100dvh-60px)]">
-      {/* Hero */}
-      <section className="bg-[#0a1628] text-white px-5 sm:px-8 pt-20 pb-44 sm:pt-28 sm:pb-56 relative overflow-hidden">
-        <div className="max-w-[1180px] mx-auto relative z-10">
-          <motion.p
-            className="text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.32em] text-white/70 mb-5"
-            initial={{ opacity: 0, y: 8 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
-            transition={{ delay: 0.1, duration: 0.7, ease }}
+      {/* Hero.
+          Built from the same SectionEmblemHeader every other room uses, so the
+          public page reads as the same club rather than a different product.
+          It runs 'generous' because it is the front door, but the parts, the
+          eyebrow, the serif title, the gold rule and the art on the right, are
+          identical to the Member Book and The Course. */}
+      <SectionEmblemHeader
+        eyebrow={heroEyebrow}
+        title={HERO_TITLE}
+        subtitle={heroSubtitle}
+        emblemSrc="/brand/quaker-swing.png"
+        emblemAlt="Penn Golf Quaker, mid follow-through"
+        maxWidth="1180px"
+        size="generous"
+      >
+        <p className="text-white/70 text-[14.5px] sm:text-base max-w-2xl leading-relaxed mb-7">
+          {heroBody}
+        </p>
+        <ProofStrip className="mb-7 max-w-2xl" />
+        <motion.div
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md sm:max-w-none"
+          initial={{ opacity: 0, y: 8 }}
+          animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+          transition={{ delay: 0.3, duration: 0.6, ease }}
+        >
+          <Link
+            href="/player"
+            className="inline-flex items-center justify-center bg-[#f5f0e8] text-[#0a1628] font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-white transition-colors tracking-wide"
           >
-            {heroEyebrow}
-          </motion.p>
-          <motion.h1
-            className="text-white text-5xl sm:text-6xl lg:text-[5.5rem] font-medium tracking-tight leading-[1.02] mb-5 max-w-3xl font-heading"
-            initial={{ opacity: 0, y: 16 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-            transition={{ delay: 0.25, duration: 0.85, ease }}
+            Enter the Clubhouse
+          </Link>
+          <Link
+            href="/account/setup"
+            className="inline-flex items-center justify-center border border-white/40 text-white font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-white/10 hover:border-white/60 transition-colors tracking-wide"
           >
-            {HERO_TITLE}
-          </motion.h1>
-          <motion.p
-            className="font-heading text-white/85 text-xl sm:text-2xl max-w-2xl leading-snug mb-5"
-            style={{ fontStyle: 'italic' }}
-            initial={{ opacity: 0, y: 12 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-            transition={{ delay: 0.45, duration: 0.7, ease }}
-          >
-            {heroSubtitle}
-          </motion.p>
-          <motion.p
-            className="text-white/75 text-[14.5px] sm:text-base max-w-2xl leading-relaxed mb-9"
-            initial={{ opacity: 0, y: 8 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
-            transition={{ delay: 0.6, duration: 0.7, ease }}
-          >
-            {heroBody}
-          </motion.p>
-          <ProofStrip className="mb-9 max-w-2xl" />
-
-          <motion.div
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md sm:max-w-none"
-            initial={{ opacity: 0, y: 8 }}
-            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
-            transition={{ delay: 0.75, duration: 0.6, ease }}
-          >
-            <Link
-              href="/player"
-              className="inline-flex items-center justify-center bg-[#f5f0e8] text-[#0a1628] font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-white transition-colors tracking-wide"
-            >
-              Enter the Clubhouse
-            </Link>
-            <Link
-              href="/account/setup"
-              className="inline-flex items-center justify-center border border-white/40 text-white font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-white/10 hover:border-white/60 transition-colors tracking-wide"
-            >
-              Claim Your Member Card
-            </Link>
-          </motion.div>
-
-          <motion.p
-            // Sits over the artwork, so it carries its own tint rather than
-            // relying on whatever happens to be behind it.
-            className="mt-10 inline-flex items-center text-[10.5px] font-semibold uppercase tracking-[0.28em] text-white/80 px-3.5 py-2 border border-white/20 rounded-full bg-[#0a1628]/70 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={ready ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ delay: 1.05, duration: 0.7, ease }}
-          >
-            {tagline}
-          </motion.p>
-        </div>
-
-        {/* Subtle radial in the corner, adds depth behind the artwork */}
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: '-10%',
-            right: '-10%',
-            width: '60%',
-            height: '120%',
-            background: 'radial-gradient(ellipse at center, rgba(245,240,232,0.06) 0%, transparent 65%)',
-          }}
-        />
-
-        {/* The Clubhouse lockup, sitting on the bottom edge as a horizon. It is
-            navy line art on a near-navy ground, so it reads as depth behind the
-            words rather than as a picture pasted on top of them. Masked off at
-            the top so it dissolves into the hero instead of ending on a line. */}
-        <div className="absolute inset-x-0 bottom-0 pointer-events-none select-none" aria-hidden="true">
-          <picture>
-            <source srcSet="/brand/lockup-scene.webp" type="image/webp" media="(min-width: 768px)" />
-            <source srcSet="/brand/lockup-scene-900.webp" type="image/webp" />
-            <img
-              src="/brand/lockup-scene.png"
-              alt=""
-              className="w-full h-auto opacity-[0.34]"
-              style={{
-                maskImage: 'linear-gradient(to bottom, transparent 0%, transparent 22%, #000 62%, #000 100%)',
-                WebkitMaskImage:
-                  'linear-gradient(to bottom, transparent 0%, transparent 22%, #000 62%, #000 100%)',
-              }}
-            />
-          </picture>
-        </div>
-      </section>
+            Claim Your Member Card
+          </Link>
+        </motion.div>
+        <p className="mt-7 inline-flex items-center eyebrow text-gold">
+          {tagline}
+        </p>
+      </SectionEmblemHeader>
 
       {/* The film, server-rendered by page.tsx so a slow or failed
           /api/site-content call can never silently delete it. */}

@@ -23,6 +23,12 @@ interface Props {
   maxWidth?: string
   /** Optional data-testid on the <h1> (some pages assert on it in e2e). */
   titleTestId?: string
+  /**
+   * 'generous' gives the band more air and a larger piece of art. Used by
+   * /launch, which is the public front door and earns a little more presence
+   * than an interior room, while still being built from these same parts.
+   */
+  size?: 'standard' | 'generous'
 }
 
 export default function SectionEmblemHeader({
@@ -34,9 +40,17 @@ export default function SectionEmblemHeader({
   children,
   maxWidth = '1320px',
   titleTestId,
+  size = 'standard',
 }: Props) {
+  const generous = size === 'generous'
+  const pad = generous
+    ? 'pt-14 pb-16 sm:pt-20 sm:pb-24'
+    : 'pt-10 pb-12 sm:pt-12 sm:pb-14'
+  const artHeight = generous
+    ? 'h-32 sm:h-56 lg:h-[18rem]'
+    : 'h-28 sm:h-40 lg:h-52'
   return (
-    <div className="relative overflow-hidden bg-[#060e1a] px-6 sm:px-8 pt-10 pb-12 sm:pt-12 sm:pb-14">
+    <div className={`relative overflow-hidden bg-[#060e1a] px-6 sm:px-8 ${pad}`}>
       <div className="absolute inset-0 opacity-[0.04] pointer-events-none texture-engraved" />
       <div
         className="mx-auto relative flex items-center justify-between gap-4 sm:gap-8"
@@ -52,7 +66,9 @@ export default function SectionEmblemHeader({
             {eyebrow}
           </motion.p>
           <motion.h1
-            className="font-heading text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight leading-[1.05]"
+            className={`font-heading text-white font-medium tracking-tight leading-[1.05] ${
+              generous ? 'text-4xl sm:text-6xl lg:text-7xl' : 'text-4xl sm:text-5xl lg:text-6xl'
+            }`}
             data-testid={titleTestId}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -76,19 +92,28 @@ export default function SectionEmblemHeader({
               {subtitle}
             </motion.p>
           )}
-          {children && <div className="mt-6">{children}</div>}
+          {/* On the generous variant the children run full width BELOW the
+              row instead of inside it. On a phone the art was otherwise
+              stealing half the width from the stat cards and the buttons all
+              the way down the block. */}
+          {children && !generous && <div className="mt-6">{children}</div>}
         </div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <motion.img
           src={emblemSrc}
           alt={emblemAlt}
-          className="flex-shrink-0 h-28 sm:h-40 lg:h-52 w-auto"
+          className={`flex-shrink-0 w-auto ${artHeight}`}
           style={{ filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.55))' }}
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1, ...settle }}
         />
       </div>
+      {children && generous && (
+        <div className="mx-auto relative mt-8 sm:mt-10" style={{ maxWidth }}>
+          {children}
+        </div>
+      )}
     </div>
   )
 }
