@@ -8,7 +8,7 @@
 
 /** Kept next to the video so the two can never drift apart again: this said
  *  "3 minutes" for a while after the narrated cut took the film to 4:38. */
-const RUNTIME = '4 minutes, 38 seconds'
+const RUNTIME = '4 minutes, 51 seconds'
 
 export default function LaunchFilm({
   url,
