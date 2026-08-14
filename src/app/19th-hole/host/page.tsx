@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { Beer, ArrowLeft } from 'lucide-react'
 import PhotoUpload from '@/components/PhotoUpload'
+import NotifyChoice, { type NotifyMode, type InviteOption } from '@/components/gatherings/NotifyChoice'
 
 const TYPE_OPTIONS = [
   { value: 'drinks', label: 'Drinks', helper: 'Bar, lounge, or watering hole.' },
@@ -35,12 +36,25 @@ export default function HostNineteenthHolePage() {
   const [imageUrl, setImageUrl] = useState('')
   const [mapsUrl, setMapsUrl] = useState('')
 
+  const [notifyMode, setNotifyMode] = useState<NotifyMode>('nearby')
+  const [invited, setInvited] = useState<InviteOption[]>([])
+  const [bookOptions, setBookOptions] = useState<InviteOption[]>([])
+
   const [submitting, setSubmitting] = useState(false)
   const [submittedVenue, setSubmittedVenue] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const signedIn = sessionStatus === 'authenticated'
   const approved = signedIn && !!session?.linkedPersonId
+
+  // Names for the invite picker. Same endpoint the Moments tagger uses.
+  useEffect(() => {
+    if (!approved) return
+    fetch('/api/member-book/options')
+      .then(r => (r.ok ? r.json() : { members: [] }))
+      .then(d => setBookOptions((d.members ?? []) as InviteOption[]))
+      .catch(() => {})
+  }, [approved])
   const currentType = TYPE_OPTIONS.find(t => t.value === type)!
 
   async function handleSubmit(e: React.FormEvent) {
@@ -76,6 +90,8 @@ export default function HostNineteenthHolePage() {
           description: description.trim() || undefined,
           imageUrl: imageUrl.trim() || undefined,
           mapsUrl: mapsUrl.trim() || undefined,
+          notifyMode,
+          inviteBookIds: notifyMode === 'invite' ? invited.map(i => i.bookId) : [],
         }),
       })
       if (!res.ok) {
@@ -368,6 +384,17 @@ export default function HostNineteenthHolePage() {
                 className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] resize-none focus:outline-none focus:ring-2 focus:ring-[#b8860b]/30 focus:border-[#b8860b]"
               />
             </div>
+
+            {/* Who hears about it */}
+            <NotifyChoice
+              mode={notifyMode}
+              onModeChange={setNotifyMode}
+              invited={invited}
+              onInvitedChange={setInvited}
+              options={bookOptions}
+              noun="gathering"
+              placeLabel={city.trim() ? `in ${city.trim()}` : 'in that city or state'}
+            />
 
             {error && (
               <div className="px-4 py-3 bg-[#990000]/8 border border-[#990000]/25 rounded-lg">

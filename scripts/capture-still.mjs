@@ -12,10 +12,12 @@ import { chromium } from 'playwright'
 const AUTH = '/Users/ryanchang/dev/penn-golf-clubhouse-video/assets/capture/auth.json'
 const OUT = '/Users/ryanchang/dev/penn-golf-clubhouse-video/public/capture2x'
 const B = 'https://www.penngolfclubhouse.com'
-const [route, name] = process.argv.slice(2)
+const [route, name, mode] = process.argv.slice(2)
+const noAuth = mode === '--no-auth'
 const browser = await chromium.launch()
 const ctx = await browser.newContext({
-  viewport: { width: 3840, height: 2160 }, deviceScaleFactor: 1, storageState: AUTH,
+  viewport: { width: 3840, height: 2160 }, deviceScaleFactor: 1,
+  ...(noAuth ? {} : { storageState: AUTH }),
 })
 await ctx.addInitScript(() => {
   const z = () => { document.documentElement.style.zoom = '2' }

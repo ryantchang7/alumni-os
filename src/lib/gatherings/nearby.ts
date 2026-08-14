@@ -9,6 +9,16 @@
 import type { Account, PersonEnrichment, TeamMembership, ClubhouseGathering } from '@/lib/store/types'
 import { enrichmentStateToCode, CODE_TO_NAME } from '@/lib/map/state-lookup'
 
+/**
+ * Who the host wants told.
+ *
+ * 'nearby' is the default and what everyone got before this existed: anyone
+ * whose card puts them in the same place. 'invite' is for a round that is
+ * really for a few specific people, and 'quiet' posts it to the board without
+ * mailing anyone, which is what you want for a placeholder or a re-post.
+ */
+export type NotifyMode = 'nearby' | 'invite' | 'quiet'
+
 export interface NearbyInput {
   accounts: Account[]
   enrichments: PersonEnrichment[]

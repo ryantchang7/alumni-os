@@ -102,6 +102,14 @@ ok('city alone', placeLabel({ city: 'Ardmore' } as ClubhouseGathering) === 'Ardm
 ok('state alone expands', placeLabel({ state: 'PA' } as ClubhouseGathering) === 'Pennsylvania',
    placeLabel({ state: 'PA' } as ClubhouseGathering))
 
+// ── 6. Notify mode ───────────────────────────────────────────────────────────
+// The mode itself lives in the route, but the contract it relies on is here:
+// 'nearby' must keep doing exactly what it did before the choice existed.
+console.log('\n6. The default mode is unchanged')
+const before = ids()
+ok('nearby still reaches the same people', before.join(',') === 'a-pa,a-play', before.join(','))
+ok('and still excludes the host', !before.includes('a-host'))
+
 console.log('\n' + '='.repeat(60))
 console.log(`  ${pass.length} passed, ${fail.length} failed`)
 if (fail.length) fail.forEach(f => console.log('   FAILED: ' + f))

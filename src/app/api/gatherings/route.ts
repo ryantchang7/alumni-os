@@ -5,6 +5,7 @@ import { FOUNDER_EMAILS } from '@/lib/badges'
 import { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } from '@/lib/seed-data/example-gatherings'
 import { getApprovalState } from '@/lib/access/approval'
 import type { ClubhouseGathering } from '@/lib/store/types'
+import type { NotifyMode } from '@/lib/gatherings/nearby'
 
 const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const VALID_AUDIENCES = ['players', 'alumni', 'both'] as const
@@ -138,9 +139,17 @@ export async function POST(request: NextRequest) {
   //
   // Examples never notify. They are seeded in batches and would otherwise mail
   // the whole roster about a round that is not real.
-  if (!isExample) {
+  // Who hears about it is the host's call. Default stays 'nearby', which is
+  // what every round did before this was a choice.
+  const notifyMode: NotifyMode =
+    body.notifyMode === 'invite' || body.notifyMode === 'quiet' ? body.notifyMode : 'nearby'
+  const inviteBookIds = Array.isArray(body.inviteBookIds)
+    ? (body.inviteBookIds as unknown[]).filter((x): x is string => typeof x === 'string').slice(0, 60)
+    : []
+
+  if (!isExample && notifyMode !== 'quiet') {
     const hostAccountId = session.accountId
-    after(() => notifyNearbyMembers(gathering, hostAccountId))
+    after(() => notifyNearbyMembers(gathering, hostAccountId, notifyMode, inviteBookIds))
   }
 
   return NextResponse.json({ gathering }, { status: 201 })
@@ -155,6 +164,8 @@ export async function POST(request: NextRequest) {
 async function notifyNearbyMembers(
   gathering: ClubhouseGathering,
   hostAccountId: string,
+  mode: NotifyMode = 'nearby',
+  inviteBookIds: string[] = [],
 ): Promise<void> {
   try {
     const { readStore } = await import('@/lib/store/local-store')
@@ -162,15 +173,34 @@ async function notifyNearbyMembers(
     const { selectNearbyRecipients, placeLabel, TYPE_LABEL } = await import('@/lib/gatherings/nearby')
 
     const store = await readStore()
-    const recipients = selectNearbyRecipients({
-      accounts: store.accounts,
-      enrichments: store.personEnrichments,
-      memberships: store.teamMemberships,
-      gathering,
-      hostAccountId,
-    })
+    let recipients
+    if (mode === 'invite') {
+      // Named guests only. Book ids are not store person ids, so resolve them
+      // by name the same way the tee-sheet picker does.
+      const { getMemberById } = await import('@/lib/member-book/data')
+      const { normalizeName } = await import('@/lib/member-book/bridge')
+      const wanted = new Set<string>()
+      for (const id of inviteBookIds) {
+        const entry = getMemberById(id)
+        if (!entry) continue
+        const target = normalizeName(entry.displayName)
+        const person = store.people.find(pp => normalizeName(pp.canonicalName) === target)
+        if (person) wanted.add(person.id)
+      }
+      recipients = store.accounts.filter(
+        a => a.linkedPersonId && wanted.has(a.linkedPersonId) && a.id !== hostAccountId,
+      )
+    } else {
+      recipients = selectNearbyRecipients({
+        accounts: store.accounts,
+        enrichments: store.personEnrichments,
+        memberships: store.teamMemberships,
+        gathering,
+        hostAccountId,
+      })
+    }
     console.log(
-      `[gatherings] "${gathering.title}" in ${gathering.city ?? ''} ${gathering.state ?? ''}: notifying ${recipients.length}`,
+      `[gatherings] "${gathering.title}" (${mode}) in ${gathering.city ?? ''} ${gathering.state ?? ''}: notifying ${recipients.length}`,
     )
     if (recipients.length === 0) return
 
