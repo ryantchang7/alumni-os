@@ -6,10 +6,6 @@
  * ships in the initial HTML now.
  */
 
-/** Kept next to the video so the two can never drift apart again: this said
- *  "3 minutes" for a while after the narrated cut took the film to 4:38. */
-const RUNTIME = '4 minutes, 51 seconds'
-
 export default function LaunchFilm({
   url,
   poster,
@@ -37,13 +33,13 @@ export default function LaunchFilm({
             style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.45)' }}
           />
           <p className="text-[10.5px] font-semibold uppercase tracking-[0.32em] text-[#c8a84b] mb-4">
-            Watch the film
+            The film
           </p>
-          <h2 className="font-heading text-white text-3xl sm:text-4xl font-medium tracking-tight mb-3">
-            A walk through the Clubhouse.
+          <h2 className="font-heading text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight mb-4">
+            Watch the film.
           </h2>
-          <p className="text-white/65 text-[14px] leading-relaxed max-w-xl mx-auto">
-            Ryan takes you through every room, in his own words. {RUNTIME}.
+          <p className="text-white/70 text-[15px] sm:text-base leading-relaxed max-w-xl mx-auto">
+            Ryan takes you through every room in the Clubhouse, in his own words.
           </p>
           <div className="mx-auto mt-7 h-px w-24 bg-[#c8a84b]/60" />
         </div>

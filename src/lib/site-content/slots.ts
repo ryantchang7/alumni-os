@@ -431,9 +431,9 @@ Penn Men's Golf '28, Brookline, MA`,
   {
     id: 'landing.claim-note',
     label: 'Landing, claim note (under buttons)',
-    hint: 'Small line under the buttons clarifying who can claim a profile.',
+    hint: 'Small line under the buttons clarifying who can claim a profile. Empty by default: the two doors further down the page already say it, and better.',
     kind: 'text',
-    default: 'For alumni and current players, find your name and make it yours.',
+    default: '',
   },
   {
     id: 'landing.family-cta',

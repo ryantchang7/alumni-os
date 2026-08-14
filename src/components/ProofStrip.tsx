@@ -12,9 +12,24 @@ export default function ProofStrip({
   variant = 'plaques',
   className = '',
 }: {
-  variant?: 'line' | 'plaques'
+  variant?: 'line' | 'plaques' | 'founded'
   className?: string
 }) {
+  // One plaque, the year the program started. Used on /launch, where the
+  // member and letter-year counts were more numbers than the page needed.
+  if (variant === 'founded') {
+    return (
+      <div className={`inline-flex items-center gap-4 bg-white/[0.06] border border-white/15 rounded-xl px-6 py-4 ${className}`}>
+        <p className="text-white text-3xl sm:text-4xl font-medium font-heading leading-none">
+          {FOUNDED_YEAR}
+        </p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/60">
+          Established
+        </p>
+      </div>
+    )
+  }
+
   if (variant === 'line') {
     return (
       <p

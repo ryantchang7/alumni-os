@@ -36,6 +36,11 @@ const ROOM_EMBLEM: Record<string, string> = {
   '/19th-hole': '/emblems/19th-hole.png',
   '/moments': '/emblems/moments.png',
   '/career-room': '/emblems/career-room.png',
+  // The two rooms with no framed emblem of their own. The Team Room takes the
+  // Quaker; Guided Ask takes a question mark set in the same gold-on-dark
+  // frame, so the column has a mark on every row rather than two blanks.
+  '/team-room': '/emblems/team-room.png',
+  '/ask': '/emblems/ask.png',
 }
 
 const ROOM_ACCENT: Record<string, string> = {
@@ -91,7 +96,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
         <p className="text-white/70 text-[14.5px] sm:text-base max-w-2xl leading-relaxed mb-7">
           {heroBody}
         </p>
-        <ProofStrip className="mb-7 max-w-2xl" />
+        <ProofStrip variant="founded" className="mb-7" />
         <motion.div
           className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md sm:max-w-none"
           initial={{ opacity: 0, y: 8 }}
