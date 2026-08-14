@@ -68,20 +68,19 @@ const BEATS = {
   home: {
     out: 'home-to-hof.mp4',
     start: '/player',
-    // Paced to the narration: three stops down the page rather than one long
-    // ride, so the eye lands on a section while it is being talked about.
-    seconds: 20.0,
+    // Three stops down the page, then the reach for the Hall of Fame. Length
+    // is set by the narration for this beat, and the beat has to END on the
+    // pulse or the next one cross-dissolves the Hall of Fame with itself.
+    seconds: 16.65,
     moves: [
       { kind: 'hold', s: 1.0 },
-      { kind: 'scroll', frac: 0.35, s: 5.2 },
-      { kind: 'hold', s: 1.5 },
-      { kind: 'scroll', frac: 0.7, s: 4.6 },
-      { kind: 'hold', s: 1.6 },
-      { kind: 'scrollBottom', s: 3.4 },
-      { kind: 'hold', s: 0.8 },
-      { kind: 'reach', s: 1.5, text: /visit the hall of fame/i },
-      // Pulse, don't click: the beat has to END on the home page or the next
-      // beat cross-dissolves the Hall of Fame with itself.
+      { kind: 'scroll', frac: 0.4, s: 4.4 },
+      { kind: 'hold', s: 1.2 },
+      { kind: 'scroll', frac: 0.78, s: 3.8 },
+      { kind: 'hold', s: 1.0 },
+      { kind: 'scrollBottom', s: 2.6 },
+      { kind: 'hold', s: 0.4 },
+      { kind: 'reach', s: 1.3, text: /visit the hall of fame/i },
       { kind: 'pulse', s: 0.4 },
       { kind: 'hold', s: 0.55 },
     ],
@@ -91,53 +90,53 @@ const BEATS = {
   teamroom: {
     out: 'teamroom.mp4',
     start: '/team-room',
-    seconds: 24.6,
+    seconds: 20.15,
     moves: [
       { kind: 'hold', s: 1.0 },
-      { kind: 'scroll', frac: 0.4, s: 5.0 },
-      { kind: 'hold', s: 1.6 },
-      { kind: 'scroll', frac: 0.75, s: 4.4 },
-      { kind: 'hold', s: 1.5 },
-      { kind: 'scrollBottom', s: 3.6 },
-      { kind: 'hold', s: 0.9 },
-      { kind: 'reach', s: 1.5, role: 'link', name: /ask the team/i },
+      { kind: 'scroll', frac: 0.4, s: 4.2 },
+      { kind: 'hold', s: 1.3 },
+      { kind: 'scroll', frac: 0.78, s: 3.6 },
+      { kind: 'hold', s: 1.2 },
+      { kind: 'scrollBottom', s: 2.8 },
+      { kind: 'hold', s: 0.7 },
+      { kind: 'reach', s: 1.3, role: 'link', name: /ask the team/i },
       { kind: 'click', s: 0.35 },
-      { kind: 'navHold', s: 4.75 },
+      { kind: 'navHold', s: 3.7 },
     ],
   },
   // Ryan's card: one clean ride down everything a member can fill in.
   profile: {
     out: 'profile.mp4',
     start: '/member-book/ryan-chang',
-    seconds: 12.3,
+    seconds: 12.9,
     redactContact: true,
     moves: [
-      { kind: 'hold', s: 1.0 },
-      { kind: 'scroll', to: 880, s: 9.0, cap: true },
-      { kind: 'hold', s: 2.3 },
+      { kind: 'hold', s: 1.1 },
+      { kind: 'scroll', to: 880, s: 9.3, cap: true },
+      { kind: 'hold', s: 2.5 },
     ],
   },
   // Member Book: ride into the grid, search a name, open the card.
   memberbook: {
     out: 'memberbook.mp4',
     start: '/member-book',
-    // Straight to the search. An earlier version rode deep into the grid and
-    // came back up to fill a longer beat, which just looked like the camera
-    // could not find what it wanted.
-    seconds: 15.65,
+    // One slow ride into the grid while the narration is about how many people
+    // are in the book, then straight to the search. An earlier cut rode deep
+    // and came back up, which read as the camera not finding what it wanted.
+    seconds: 25.45,
     moves: [
-      { kind: 'hold', s: 1.0 },
-      { kind: 'scroll', to: 380, s: 2.2 },
-      { kind: 'hold', s: 0.8 },
-      { kind: 'reach', s: 1.2, selector: '[aria-label="Search the Member Book"]' },
-      { kind: 'click', s: 0.3, noNav: true },
-      { kind: 'type', s: 2.0, text: 'Cohen' },
       { kind: 'hold', s: 1.2 },
-      { kind: 'reach', s: 1.3, text: /adam s\.? cohen/i },
-      { kind: 'click', s: 0.35 },
-      { kind: 'navHold', s: 1.4 },
-      { kind: 'scroll', to: 420, s: 2.4, cap: true },
-      { kind: 'hold', s: 1.5 },
+      { kind: 'scroll', to: 380, s: 4.5 },
+      { kind: 'hold', s: 2.8 },
+      { kind: 'reach', s: 1.4, selector: '[aria-label="Search the Member Book"]' },
+      { kind: 'click', s: 0.35, noNav: true },
+      { kind: 'type', s: 2.6, text: 'Cohen' },
+      { kind: 'hold', s: 1.8 },
+      { kind: 'reach', s: 1.5, text: /adam s\.? cohen/i },
+      { kind: 'click', s: 0.4 },
+      { kind: 'navHold', s: 1.8 },
+      { kind: 'scroll', to: 420, s: 3.6, cap: true },
+      { kind: 'hold', s: 3.5 },
     ],
   },
   // Member Map: the hometowns toggle lights the country up, then two states
@@ -205,11 +204,58 @@ const BEATS = {
       { kind: 'hold', s: 2.5 },
     ],
   },
+  // Moments: the wall, then into the Locker Room, because the narration ends
+  // on "there's a locker room function as well" and the beat used to just pan
+  // a still while he said it.
+  moments: {
+    out: 'moments.mp4',
+    start: '/moments',
+    // Rides the wall past both posts, then points at the Locker Room without
+    // opening it. Pulse, not click: the room is deliberately empty because
+    // what goes in there is team-only, and a promo should show that the door
+    // exists rather than open it on nothing.
+    seconds: 16.85,
+    moves: [
+      { kind: 'hold', s: 1.0 },
+      { kind: 'scroll', frac: 0.30, s: 4.2 },
+      { kind: 'hold', s: 2.2 },
+      { kind: 'scroll', frac: 0.62, s: 3.4 },
+      { kind: 'hold', s: 1.4 },
+      { kind: 'scroll', to: 240, s: 2.0 },
+      { kind: 'reach', s: 1.35, text: /locker room/i },
+      { kind: 'pulse', s: 0.5 },
+      { kind: 'hold', s: 0.8 },
+    ],
+  },
+  // How you get in: both doors. The login page showing Google AND an emailed
+  // link, then the family signup, because family are not in the Member Book.
+  join: {
+    out: 'join.mp4',
+    start: '/login',
+    noAuth: true,
+    seconds: 17.7,
+    moves: [
+      { kind: 'hold', s: 1.0 },
+      { kind: 'reach', s: 1.4, text: /continue with google/i },
+      { kind: 'pulse', s: 0.5 },
+      { kind: 'hold', s: 0.8 },
+      { kind: 'reach', s: 1.2, text: /use my email instead/i },
+      { kind: 'click', s: 0.35, noNav: true },
+      { kind: 'hold', s: 1.8 },
+      { kind: 'goto', s: 1.2, path: '/parent-signup' },
+      { kind: 'hold', s: 1.5 },
+      { kind: 'scroll', to: 300, s: 2.6, cap: true },
+      { kind: 'hold', s: 1.4 },
+      { kind: 'reach', s: 1.2, selector: 'input[type="text"]' },
+      { kind: 'pulse', s: 0.5 },
+      { kind: 'hold', s: 2.25 },
+    ],
+  },
   // The Course: the round finder, then the whole Host a Round form.
   course: {
     out: 'course-flow.mp4',
     start: '/the-course',
-    seconds: 30.8,
+    seconds: 32.0,
     moves: [
       { kind: 'hold', s: 1.0 },
       { kind: 'scroll', to: 900, s: 3.6 },
@@ -225,8 +271,8 @@ const BEATS = {
       { kind: 'navHold', s: 1.6 },
       { kind: 'scroll', frac: 0.45, s: 4.0 },
       { kind: 'hold', s: 1.8 },
-      { kind: 'scrollBottom', s: 4.6 },
-      { kind: 'hold', s: 1.7 },
+      { kind: 'scrollBottom', s: 5.2 },
+      { kind: 'hold', s: 2.35 },
     ],
   },
 }
@@ -246,10 +292,12 @@ async function runBeat(browser, key) {
   rmSync(dir, { recursive: true, force: true })
   mkdirSync(dir, { recursive: true })
 
+  // Signed out on purpose for the join shot: /login bounces an authenticated
+  // visitor straight past the very thing that beat is about.
   const ctx = await browser.newContext({
     viewport: VIEW,
     deviceScaleFactor: 1,
-    storageState: AUTH,
+    ...(beat.noAuth ? {} : { storageState: AUTH }),
   })
   const zoom = beat.zoom ?? Z
   await ctx.addInitScript(zoomLevel => {
@@ -432,6 +480,27 @@ async function runBeat(browser, key) {
           ({ x, y, s }) => window.__cine?.place(x, y, 0.95, s),
           { x: cur.x, y: cur.y, s: scale },
         )
+        await shoot(page, dir, frame++)
+      }
+      continue
+    }
+
+    if (move.kind === 'goto') {
+      // Navigate mid-beat, holding the last frame while the next page paints.
+      await page.goto(B + move.path, { waitUntil: 'domcontentloaded', timeout: 60000 })
+      await page.waitForTimeout(900)
+      await page.evaluate(async () => {
+        const step = window.innerHeight
+        for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
+          window.scrollTo(0, y)
+          await new Promise(r => setTimeout(r, 120))
+        }
+        window.scrollTo(0, 0)
+      })
+      await page.evaluate(CURSOR)
+      scrollY = 0
+      for (let i = 0; i < n; i++) {
+        await page.evaluate(({ x, y }) => window.__cine?.place(x, y, 0.55, 1), { x: cur.x, y: cur.y })
         await shoot(page, dir, frame++)
       }
       continue
