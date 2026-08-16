@@ -11,6 +11,16 @@
  * Run: npm run test:historical-pipeline
  */
 
+// Never write the committed seed: point the store at a scratch copy first.
+// Must run before anything imports the store module.
+import { copyFileSync, mkdtempSync } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
+const __seed = join(process.cwd(), 'data', 'alumni-os.json')
+const __scratch = join(mkdtempSync(join(tmpdir(), 'alumni-store-')), 'alumni-os.json')
+copyFileSync(__seed, __scratch)
+process.env.ALUMNI_STORE_PATH = __scratch
+
 import {
   writeStore,
   createTeam,

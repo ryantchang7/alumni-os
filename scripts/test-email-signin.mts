@@ -5,16 +5,21 @@
  * a token must work exactly once, an address must resolve to ONE account no
  * matter which door it came through, and signing in must never confer approval.
  *
- * Without KV configured the store is data/alumni-os.json, a committed file, so
- * this snapshots it first and puts it back on the way out however it exits.
- * Skipping that quietly rewrites the seed roster.
+ * Without KV configured the store would be data/alumni-os.json, a committed
+ * file, so ALUMNI_STORE_PATH points it at a scratch copy first.
  *
  *   npx tsx scripts/test-email-signin.mts
  */
 
-import { copyFileSync } from 'fs'
+// Never write the committed seed: point the store at a scratch copy first.
+// Must run before anything imports the store module.
+import { copyFileSync, mkdtempSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
+const __seed = join(process.cwd(), 'data', 'alumni-os.json')
+const __scratch = join(mkdtempSync(join(tmpdir(), 'alumni-store-')), 'alumni-os.json')
+copyFileSync(__seed, __scratch)
+process.env.ALUMNI_STORE_PATH = __scratch
 
 import {
   issueEmailLinkToken,
@@ -37,19 +42,6 @@ const ok = (label: string, cond: boolean, detail = '') => {
   ;(cond ? pass : fail).push(label)
   console.log(`  ${cond ? 'PASS' : 'FAIL'}  ${label}${detail ? '  ' + detail : ''}`)
 }
-
-const SEED = join(process.cwd(), 'data', 'alumni-os.json')
-const SNAPSHOT = join(tmpdir(), `alumni-os-seed-${process.pid}.json`)
-copyFileSync(SEED, SNAPSHOT)
-const restoreSeed = () => {
-  try {
-    copyFileSync(SNAPSHOT, SEED)
-  } catch {
-    console.error(`\nCould not restore the seed. Put it back with:\n  cp ${SNAPSHOT} ${SEED}`)
-  }
-}
-process.on('exit', restoreSeed)
-process.on('SIGINT', () => { restoreSeed(); process.exit(130) })
 
 const team = await getTeamBySlug('penn-mens-golf')
 if (!team) {

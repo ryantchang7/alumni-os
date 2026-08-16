@@ -54,7 +54,20 @@ import type {
 // We copy the committed seed to /tmp on cold start and read/write from there.
 const IS_VERCEL = process.env.VERCEL === '1'
 const SEED_PATH = path.join(process.cwd(), 'data', 'alumni-os.json')
-const STORE_PATH = IS_VERCEL ? '/tmp/alumni-os.json' : SEED_PATH
+/**
+ * Where writes land when there is no Redis.
+ *
+ * ALUMNI_STORE_PATH exists so a test can point this at a scratch file. Without
+ * it, any script that imports this module writes straight into the committed
+ * seed, which has silently shrunk the 81-person roster to a 3-person stub more
+ * than once and then failed a dozen unrelated tests that read it back.
+ */
+// Read at call time, not at module load. ESM hoists imports, so a test that
+// sets ALUMNI_STORE_PATH at the top of its file still runs that line AFTER
+// this module has been evaluated. A const here would already be pointing at
+// the committed seed by then.
+const storePath = () =>
+  process.env.ALUMNI_STORE_PATH ?? (IS_VERCEL ? '/tmp/alumni-os.json' : SEED_PATH)
 const REDIS_KEY = 'alumni-os:store:v1'
 
 // Lazy Redis client. Returns null if env vars aren't configured.
@@ -216,17 +229,17 @@ export async function ensureStore(): Promise<void> {
   }
   // File-backed (dev or Vercel-without-KV fallback).
   try {
-    await fs.access(STORE_PATH)
+    await fs.access(storePath())
   } catch {
     if (IS_VERCEL) {
       try {
-        await fs.copyFile(SEED_PATH, STORE_PATH)
+        await fs.copyFile(SEED_PATH, storePath())
       } catch {
-        await fs.writeFile(STORE_PATH, JSON.stringify(EMPTY_STORE, null, 2))
+        await fs.writeFile(storePath(), JSON.stringify(EMPTY_STORE, null, 2))
       }
     } else {
-      await fs.mkdir(path.dirname(STORE_PATH), { recursive: true })
-      await fs.writeFile(STORE_PATH, JSON.stringify(EMPTY_STORE, null, 2))
+      await fs.mkdir(path.dirname(storePath()), { recursive: true })
+      await fs.writeFile(storePath(), JSON.stringify(EMPTY_STORE, null, 2))
     }
   }
 }
@@ -248,10 +261,10 @@ export async function readStore(): Promise<Store> {
   }
   // File-backed fallback
   await ensureStore()
-  const raw = await fs.readFile(STORE_PATH, 'utf-8')
+  const raw = await fs.readFile(storePath(), 'utf-8')
   const normalized = normalizeStore(JSON.parse(raw) as Store)
   if (await ensureBootstrapMembers(normalized)) {
-    await fs.writeFile(STORE_PATH, JSON.stringify(normalized, null, 2))
+    await fs.writeFile(storePath(), JSON.stringify(normalized, null, 2))
   }
   return normalized
 }
@@ -414,7 +427,7 @@ export async function writeStore(store: Store): Promise<void> {
     await redis.set(REDIS_KEY, store)
     return
   }
-  await fs.writeFile(STORE_PATH, JSON.stringify(store, null, 2))
+  await fs.writeFile(storePath(), JSON.stringify(store, null, 2))
 }
 
 // ── Optimistic-concurrency write guard ───────────────────────────────────────
