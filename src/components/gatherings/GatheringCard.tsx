@@ -182,6 +182,24 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   const [pick, setPick] = useState('')
   const [groupLabel, setGroupLabel] = useState('')
   const [adding, setAdding] = useState(false)
+  // People staged for one submit. A host adding a foursome shouldn't have to
+  // fill the same form four times.
+  const [queue, setQueue] = useState<Array<{ name: string; bookId?: string }>>([])
+  const [customGroup, setCustomGroup] = useState(false)
+
+  /** Stage the typed name. Matches the Member Book when it can, so the name
+   *  still links to a card; anything else rides along as a guest. */
+  function queuePerson() {
+    const typed = pick.trim()
+    if (!typed) return
+    const match = bookOptions?.find(o => o.name.toLowerCase() === typed.toLowerCase())
+    setQueue(q =>
+      q.some(x => x.name.toLowerCase() === (match?.name ?? typed).toLowerCase())
+        ? q
+        : [...q, { name: match?.name ?? typed, ...(match ? { bookId: match.bookId } : {}) }],
+    )
+    setPick('')
+  }
 
   // Load the roster only when the host actually opens the panel.
   useEffect(() => {
@@ -194,23 +212,31 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
 
   async function addToSheet(e: React.FormEvent) {
     e.preventDefault()
+    // Whatever is still in the box counts too, so a host who types one name
+    // and hits Add doesn't lose it.
     const typed = pick.trim()
-    if (!typed) return
+    const match = typed
+      ? bookOptions?.find(o => o.name.toLowerCase() === typed.toLowerCase())
+      : undefined
+    const pending = [
+      ...queue,
+      ...(typed && !queue.some(x => x.name.toLowerCase() === (match?.name ?? typed).toLowerCase())
+        ? [{ name: match?.name ?? typed, ...(match ? { bookId: match.bookId } : {}) }]
+        : []),
+    ]
+    if (pending.length === 0) return
     setAdding(true)
     setError(null)
     try {
-      // Prefer an exact Member Book match so the name links to a card;
-      // otherwise send it as a plain name (guests, non-members).
-      const match = bookOptions?.find(o => o.name.toLowerCase() === typed.toLowerCase())
       const res = await fetch(`/api/gatherings/${gathering.id}/attendees/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          people: [{
-            name: match?.name ?? typed,
-            ...(match ? { bookId: match.bookId } : {}),
+          people: pending.map(x => ({
+            name: x.name,
+            ...(x.bookId ? { bookId: x.bookId } : {}),
             ...(groupLabel.trim() ? { groupLabel: groupLabel.trim() } : {}),
-          }],
+          })),
         }),
       })
       const j = await res.json().catch(() => ({}))
@@ -219,6 +245,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         .then(r => (r.ok ? r.json() : null)).catch(() => null)
       if (fresh?.attendees) setAttendees(fresh.attendees as Attendee[])
       setPick('')
+      setQueue([])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not add')
     } finally {
@@ -826,37 +853,119 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             {sheetOpen && (
               <form onSubmit={addToSheet} className="mt-1 space-y-2 rounded-lg border border-[rgba(180,168,150,0.5)] p-3 bg-[#fdfcf9]">
                 <p className="text-[11.5px] text-ink-muted">
-                  Start typing a name from the Member Book, or write anyone in. The group
-                  is free text, so use it for pairings or tee times.
+                  Add as many people as you want, then pick their group once. Anyone who
+                  isn&rsquo;t in the Member Book — a Penn friend, a guest, family — just type
+                  their name and they go on as a guest.
                 </p>
-                <label className="block">
-                  <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-0.5">Who</span>
+
+                <div className="flex gap-2">
                   <input
                     list={`book-${gathering.id}`}
                     value={pick}
                     onChange={e => setPick(e.target.value)}
-                    placeholder={bookOptions ? 'Start typing a name' : 'Loading the Member Book'}
-                    className="w-full border border-[rgba(180,168,150,0.5)] rounded-md px-2.5 py-1.5 text-[13px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        queuePerson()
+                      }
+                    }}
+                    placeholder={bookOptions ? 'Type a name, then Enter' : 'Loading the Member Book'}
+                    className="flex-1 min-w-0 border border-[rgba(180,168,150,0.5)] rounded-md px-2.5 py-1.5 text-[13px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
                   />
                   <datalist id={`book-${gathering.id}`}>
                     {(bookOptions ?? []).map(o => <option key={o.bookId} value={o.name} />)}
                   </datalist>
-                </label>
-                <label className="block">
-                  <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-0.5">Group or tee time</span>
-                  <input
-                    value={groupLabel}
-                    onChange={e => setGroupLabel(e.target.value)}
-                    placeholder="Group 1, or 8:10 AM"
-                    className="w-full border border-[rgba(180,168,150,0.5)] rounded-md px-2.5 py-1.5 text-[13px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
-                  />
-                </label>
+                  <button
+                    type="button"
+                    onClick={queuePerson}
+                    disabled={!pick.trim()}
+                    className="flex-shrink-0 text-[11.5px] font-semibold uppercase tracking-[0.12em] border border-[#0a1628] text-[#0a1628] px-3 py-1.5 rounded-md disabled:opacity-30"
+                  >
+                    Add
+                  </button>
+                </div>
+
+                {queue.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {queue.map((q, i) => (
+                      <span key={`${q.name}-${i}`} className="inline-flex items-center gap-1 rounded-full border border-[rgba(180,168,150,0.7)] bg-white px-2 py-0.5 text-[11.5px] text-[#0a1628]">
+                        {q.name}
+                        {!q.bookId && (
+                          <span className="text-[9.5px] uppercase tracking-[0.1em] text-ink-muted">guest</span>
+                        )}
+                        <button
+                          type="button"
+                          aria-label={`Remove ${q.name}`}
+                          onClick={() => setQueue(qs => qs.filter((_, j) => j !== i))}
+                          className="text-ink-muted hover:text-[#990000] leading-none"
+                        >
+                          &times;
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div>
+                  <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-1">Group</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => { setGroupLabel(''); setCustomGroup(false) }}
+                      aria-pressed={!groupLabel}
+                      className={`rounded-full border px-2.5 py-1 text-[11px] transition-colors ${!groupLabel ? 'border-[#0a1628] bg-[#0a1628] text-white' : 'border-[rgba(180,168,150,0.7)] text-[#0a1628] hover:border-[#0a1628]'}`}
+                    >
+                      No group
+                    </button>
+                    {groupNames.map(g => (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => { setGroupLabel(g); setCustomGroup(false) }}
+                        aria-pressed={groupLabel === g}
+                        className={`rounded-full border px-2.5 py-1 text-[11px] transition-colors ${groupLabel === g ? 'border-[#0a1628] bg-[#0a1628] text-white' : 'border-[rgba(180,168,150,0.7)] text-[#0a1628] hover:border-[#0a1628]'}`}
+                      >
+                        {g}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => { setGroupLabel(nextGroupName); setCustomGroup(false) }}
+                      aria-pressed={groupLabel === nextGroupName}
+                      className={`rounded-full border px-2.5 py-1 text-[11px] transition-colors ${groupLabel === nextGroupName ? 'border-[#0a1628] bg-[#0a1628] text-white' : 'border-dashed border-[rgba(180,168,150,0.9)] text-ink-muted hover:border-[#0a1628] hover:text-[#0a1628]'}`}
+                    >
+                      + {nextGroupName}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setCustomGroup(true); setGroupLabel('') }}
+                      aria-pressed={customGroup}
+                      className={`rounded-full border px-2.5 py-1 text-[11px] transition-colors ${customGroup ? 'border-[#0a1628] text-[#0a1628]' : 'border-dashed border-[rgba(180,168,150,0.9)] text-ink-muted hover:border-[#0a1628] hover:text-[#0a1628]'}`}
+                    >
+                      Tee time&hellip;
+                    </button>
+                  </div>
+                  {customGroup && (
+                    <input
+                      value={groupLabel}
+                      onChange={e => setGroupLabel(e.target.value)}
+                      placeholder="8:10 AM"
+                      autoFocus
+                      className="mt-1.5 w-full border border-[rgba(180,168,150,0.5)] rounded-md px-2.5 py-1.5 text-[13px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#0a1628]/20"
+                    />
+                  )}
+                </div>
+
                 <button
                   type="submit"
-                  disabled={adding || !pick.trim()}
+                  disabled={adding || (queue.length === 0 && !pick.trim())}
                   className="text-[11.5px] font-semibold uppercase tracking-[0.12em] bg-[#0a1628] hover:bg-[#112240] text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-40"
                 >
-                  {adding ? 'Adding…' : 'Add to the sheet'}
+                  {adding
+                    ? 'Adding\u2026'
+                    : `Add ${queue.length + (pick.trim() ? 1 : 0) || ''} ${
+                        queue.length + (pick.trim() ? 1 : 0) === 1 ? 'person' : 'people'
+                      }${groupLabel.trim() ? ` to ${groupLabel.trim()}` : ''}`.replace('  ', ' ')}
                 </button>
               </form>
             )}
