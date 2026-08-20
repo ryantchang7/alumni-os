@@ -60,6 +60,13 @@ try {
   ok('three people on the sheet', rows.length === 3, `${rows.length}`)
   ok('groups came through', rows.filter(r => r.groupLabel === 'Group 1').length === 2)
 
+  console.log('\n1a. Guests: someone with no Member Book card')
+  const guest = rows.find(r => r.name === 'Test Player Three')
+  ok('a non-member goes on the sheet', !!guest)
+  ok('and carries no card link', guest && !guest.bookId && !guest.personId,
+     `bookId=${guest?.bookId} personId=${guest?.personId}`)
+  ok('one request added all three', rows.length === 3, `${rows.length}`)
+
   console.log('\n1. Move one person to a brand new group')
   const mover = rows.find(r => r.name === 'Test Player Two')
   const mv = await api(`/api/gatherings/${id}/attendees`,
