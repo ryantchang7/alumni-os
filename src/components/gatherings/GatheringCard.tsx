@@ -316,6 +316,49 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   const [attendees, setAttendees] = useState<Attendee[] | null>(null)
   const liveCount = attendees ? attendees.length : (interestedCount ?? 0) + (sent ? 1 : 0)
 
+  // Rearranging the sheet. Adding a group is just assigning someone a label
+  // that doesn't exist yet, so there is no separate "create group" call.
+  const [groupBusy, setGroupBusy] = useState<string | null>(null)
+
+  const refetchSheet = async () => {
+    try {
+      const r = await fetch(`/api/gatherings/${gathering.id}/attendees`)
+      const d = r.ok ? await r.json() : null
+      if (d?.attendees) setAttendees(d.attendees as Attendee[])
+    } catch {
+      /* leave the sheet as it is; the next open refetches */
+    }
+  }
+
+  async function moveToGroup(requestId: string, groupLabel: string) {
+    setGroupBusy(requestId)
+    try {
+      await fetch(`/api/gatherings/${gathering.id}/attendees`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId, groupLabel }),
+      })
+      await refetchSheet()
+    } finally {
+      setGroupBusy(null)
+    }
+  }
+
+  /** Rename a group, or dissolve it by passing an empty name. */
+  async function changeWholeGroup(from: string, renameTo: string) {
+    setGroupBusy(`g:${from}`)
+    try {
+      await fetch(`/api/gatherings/${gathering.id}/attendees`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ group: from, renameTo }),
+      })
+      await refetchSheet()
+    } finally {
+      setGroupBusy(null)
+    }
+  }
+
   // Bunch the sheet by the host's pairings. Anyone without a group falls into
   // a single unlabelled block at the end, so a normal RSVP list looks exactly
   // as it did before groups existed.
@@ -333,6 +376,15 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
       if (!y[0]) return -1
       return x[0].localeCompare(y[0], undefined, { numeric: true })
     })
+  })()
+
+  const groupNames = groupedAttendees.map(([l]) => l).filter(Boolean)
+  /** "Group 4" when 1–3 exist, so the common case needs no typing. */
+  const nextGroupName = (() => {
+    const nums = groupNames
+      .map(g => Number(g.match(/(\d+)\s*$/)?.[1]))
+      .filter(n => Number.isFinite(n)) as number[]
+    return `Group ${nums.length ? Math.max(...nums) + 1 : groupNames.length + 1}`
   })()
 
   // Approved members can see the attendee list. Re-fetch after a successful
@@ -600,9 +652,40 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             {groupedAttendees.map(([label, rows]) => (
             <div key={label || '_'} className={label ? 'mb-2.5 last:mb-0' : ''}>
             {label && (
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#c8a84b] mb-1">
-                {label}
-              </p>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#c8a84b]">
+                  {label}
+                </p>
+                {isHost && (
+                  <span className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      type="button"
+                      disabled={groupBusy === `g:${label}`}
+                      onClick={() => {
+                        const next = window.prompt('Rename this group', label)
+                        if (next && next.trim() && next.trim() !== label) {
+                          changeWholeGroup(label, next.trim())
+                        }
+                      }}
+                      className="text-[10px] uppercase tracking-[0.1em] text-ink-muted hover:text-[#0a1628] disabled:opacity-40"
+                    >
+                      Rename
+                    </button>
+                    <button
+                      type="button"
+                      disabled={groupBusy === `g:${label}`}
+                      onClick={() => {
+                        if (window.confirm(`Dissolve ${label}? Everyone stays on the sheet, just without a group.`)) {
+                          changeWholeGroup(label, '')
+                        }
+                      }}
+                      className="text-[10px] uppercase tracking-[0.1em] text-ink-muted hover:text-[#990000] disabled:opacity-40"
+                    >
+                      Dissolve
+                    </button>
+                  </span>
+                )}
+              </div>
             )}
             <ul className={isHost ? 'space-y-1.5' : 'flex flex-wrap gap-x-3 gap-y-1'}>
               {rows.map(a => (
@@ -631,6 +714,29 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                       </span>
                     )}
                   </span>
+                  {isHost && (
+                    <select
+                      value={a.groupLabel?.trim() || ''}
+                      disabled={groupBusy === a.requestId}
+                      aria-label={`Group for ${a.name}`}
+                      onChange={e => {
+                        const v = e.target.value
+                        if (v === '__new') {
+                          const name = window.prompt('New group name', nextGroupName)
+                          if (name && name.trim()) moveToGroup(a.requestId, name.trim())
+                          return
+                        }
+                        moveToGroup(a.requestId, v)
+                      }}
+                      className="flex-shrink-0 text-[11px] border border-[rgba(180,168,150,0.5)] rounded px-1.5 py-0.5 bg-white text-[#0a1628] disabled:opacity-40"
+                    >
+                      <option value="">No group</option>
+                      {groupNames.map(g => (
+                        <option key={g} value={g}>{g}</option>
+                      ))}
+                      <option value="__new">New group…</option>
+                    </select>
+                  )}
                   {isHost && a.status === 'accepted' && (
                     <button
                       type="button"

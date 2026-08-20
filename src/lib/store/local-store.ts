@@ -1516,6 +1516,55 @@ export async function updateClubhouseGatheringRequestStatus(
   return store.clubhouseGatheringRequests[idx]
 }
 
+/**
+ * Move one person to a different group on a tee sheet, or clear their group.
+ *
+ * Pass an empty label to pull someone out of a group without removing them
+ * from the sheet — they fall into the unlabelled block at the end.
+ */
+export async function updateClubhouseGatheringRequestGroup(
+  requestId: string,
+  groupLabel: string | undefined,
+): Promise<ClubhouseGatheringRequest | null> {
+  return mutateStore(store => {
+    const idx = store.clubhouseGatheringRequests.findIndex(r => r.id === requestId)
+    if (idx === -1) return null
+    store.clubhouseGatheringRequests[idx] = {
+      ...store.clubhouseGatheringRequests[idx],
+      groupLabel: groupLabel?.trim() || undefined,
+      updatedAt: new Date().toISOString(),
+    }
+    return store.clubhouseGatheringRequests[idx]
+  })
+}
+
+/**
+ * Rename a whole group, or dissolve it.
+ *
+ * Dissolving (an empty `to`) deliberately keeps everyone on the sheet — losing
+ * a group should never quietly uninvite the people in it. Returns how many
+ * rows moved so the caller can tell the host what happened.
+ */
+export async function renameGatheringGroup(
+  gatheringId: string,
+  from: string,
+  to: string | undefined,
+): Promise<number> {
+  const fromKey = from.trim()
+  const toKey = to?.trim() || undefined
+  return mutateStore(store => {
+    const now = new Date().toISOString()
+    let moved = 0
+    store.clubhouseGatheringRequests = store.clubhouseGatheringRequests.map(r => {
+      if (r.gatheringId !== gatheringId) return r
+      if ((r.groupLabel?.trim() || '') !== fromKey) return r
+      moved++
+      return { ...r, groupLabel: toKey, updatedAt: now }
+    })
+    return moved
+  })
+}
+
 // ── Profile Claim Requests ────────────────────────────────────────────────────
 
 export async function createProfileClaimRequest(input: {
