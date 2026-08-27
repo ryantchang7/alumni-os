@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react'
 import { Flag, ArrowLeft } from 'lucide-react'
 import PhotoUpload from '@/components/PhotoUpload'
 import NotifyChoice, { type NotifyMode, type InviteOption } from '@/components/gatherings/NotifyChoice'
+import { formatGatheringDate } from '@/lib/gatherings/date'
 
 const VIBE_OPTIONS = [
   { value: 'casual', label: 'Casual' },
@@ -21,7 +22,7 @@ export default function HostRoundPage() {
   const [course, setCourse] = useState('')
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
-  const [dateText, setDateText] = useState('')
+  const [dateISO, setDateISO] = useState('')
   const [timeText, setTimeText] = useState('')
   const [vibe, setVibe] = useState<(typeof VIBE_OPTIONS)[number]['value']>('casual')
   const [capacity, setCapacity] = useState('3')
@@ -68,7 +69,8 @@ export default function HostRoundPage() {
           title: course.trim() || 'Penn Golf Round',
           hostName: session?.user?.name ?? 'Penn Golf Member',
           hostPersonId: session?.linkedPersonId,
-          dateText: dateText.trim(),
+          dateISO,
+          dateText: formatGatheringDate(dateISO),
           timeText: timeText.trim() || undefined,
           city: city.trim() || undefined,
           state: state.trim() || undefined,
@@ -105,7 +107,7 @@ export default function HostRoundPage() {
       setCourse('')
       setCity('')
       setState('')
-      setDateText('')
+      setDateISO('')
       setTimeText('')
       setCapacity('3')
       setDescription('')
@@ -276,13 +278,18 @@ export default function HostRoundPage() {
                   Date
                 </label>
                 <input
-                  type="text"
-                  value={dateText}
-                  onChange={(e) => setDateText(e.target.value)}
-                  placeholder="Saturday, June 14"
+                  type="date"
+                  value={dateISO}
+                  onChange={(e) => setDateISO(e.target.value)}
+                  min={new Date().toISOString().slice(0, 10)}
                   required
                   className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-4 py-2.5 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#5a7a3e]/30 focus:border-[#5a7a3e]"
                 />
+                {dateISO && (
+                  <p className="mt-1.5 text-[11px] text-ink-muted">
+                    Shows as “{formatGatheringDate(dateISO)}”
+                  </p>
+                )}
               </div>
               <div>
                 <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#5a7a3e] mb-2">

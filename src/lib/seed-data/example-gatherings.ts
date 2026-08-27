@@ -9,6 +9,7 @@
  * is the live override applied in the API GET route so the live KV
  * doesn't need a migration to backfill the flag.
  */
+import { isPastGathering, gatheringSortKey } from '@/lib/gatherings/date'
 
 export const EXAMPLE_GATHERING_IDS = new Set<string>([
   // Merion round (/the-course)
@@ -41,10 +42,13 @@ export function isHiddenGathering(id: string): boolean {
 /** Seeded EXAMPLE gatherings age out once their date passes — a sample from
  * last month labeled "Upcoming" reads like a dead site. Real gatherings are
  * never auto-hidden. Unparseable dateText = keep. */
-export function isExpiredExampleGathering(g: { isExample?: boolean; dateText: string }): boolean {
+export function isExpiredExampleGathering(g: {
+  isExample?: boolean
+  dateText: string
+  dateISO?: string
+}): boolean {
   if (!g.isExample) return false
-  const t = Date.parse(g.dateText)
-  return !Number.isNaN(t) && t < Date.now() - 24 * 60 * 60 * 1000
+  return isPastGathering(g)
 }
 
 /**
@@ -56,14 +60,10 @@ export function isExpiredExampleGathering(g: { isExample?: boolean; dateText: st
  * was not the first one shown.
  */
 export function byGatheringDate(
-  a: { dateText: string },
-  b: { dateText: string },
+  a: { dateText: string; dateISO?: string },
+  b: { dateText: string; dateISO?: string },
 ): number {
-  const key = (d: string) => {
-    const t = Date.parse(d)
-    return Number.isNaN(t) ? Number.MAX_SAFE_INTEGER : t
-  }
-  return key(a.dateText) - key(b.dateText)
+  return gatheringSortKey(a) - gatheringSortKey(b)
 }
 
 /**

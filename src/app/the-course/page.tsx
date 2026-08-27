@@ -48,6 +48,7 @@ export default async function TheCoursePage() {
 
   let openToRounds: AlumniEntry[] = []
   let rounds: GatheringData[] = []
+  let playedRounds: GatheringData[] = []
   let viewerOptedToRounds = false
   let viewerPersonId: string | undefined
   let viewerAccountId: string | undefined
@@ -197,6 +198,7 @@ export default async function TheCoursePage() {
     }
 
     const { isExampleGathering, isHiddenGathering, isExpiredExampleGathering, byGatheringDate, resolveHostLinks } = await import('@/lib/seed-data/example-gatherings')
+    const { isPastGathering, byMostRecentlyPlayed } = await import('@/lib/gatherings/date')
     rounds = store.clubhouseGatherings
       .filter(
         (g) =>
@@ -219,6 +221,12 @@ export default async function TheCoursePage() {
       // Soonest first. This page reads the store directly, so it doesn't get
       // the ordering /api/gatherings applies.
       .sort(byGatheringDate) as GatheringData[]
+
+    // A round whose day has passed stops being something to join and becomes
+    // a record of what happened. Without this the board only ever grows, and
+    // every past round keeps advertising itself as "Open".
+    playedRounds = rounds.filter(g => !g.isExample && isPastGathering(g)).sort(byMostRecentlyPlayed)
+    rounds = rounds.filter(g => !isPastGathering(g))
 
     for (const r of store.clubhouseGatheringRequests) {
       if (r.teamId !== team.id) continue
@@ -424,6 +432,32 @@ export default async function TheCoursePage() {
                     gathering={g}
                     interestedCount={interestedByGathering.get(g.id) ?? 0}
                     detailHref={`/gatherings/${g.id}`}
+                  />
+                ))}
+              </div>
+            </CourseHoleSection>
+            <CartPathDivider />
+          </div>
+        )}
+
+        {/* Recently Played — the rounds that already happened. Read-only:
+            no RSVP, no calendar, no editing the groups. */}
+        {playedRounds.length > 0 && (
+          <div id="played-section" data-testid="played-section">
+            <CourseHoleSection
+              hole={2}
+              title="Recently Played"
+              rightLabel={`${playedRounds.length} played`}
+              subtitle="Rounds Penn Golf has already teed off."
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {playedRounds.map((g) => (
+                  <GatheringCard
+                    key={g.id}
+                    gathering={g}
+                    interestedCount={interestedByGathering.get(g.id) ?? 0}
+                    detailHref={`/gatherings/${g.id}`}
+                    played
                   />
                 ))}
               </div>

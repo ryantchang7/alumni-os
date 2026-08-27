@@ -18,6 +18,7 @@ export interface GatheringData {
   state?: string
   venue?: string
   dateText: string
+  dateISO?: string
   timeText?: string
   capacity?: number
   audience: 'players' | 'alumni' | 'both'
@@ -112,13 +113,24 @@ export function GatheringStatusPill({ status }: { status: GatheringData['status'
   return null
 }
 
-export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', interestedCount, detailHref }: {
+export function GatheringPlayedPill() {
+  return (
+    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#0a1628]/[0.06] text-[#4a5568] border border-[#0a1628]/15">
+      Played
+    </span>
+  )
+}
+
+export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', interestedCount, detailHref, played = false }: {
   gathering: GatheringData
   teamSlug?: string
   interestedCount?: number
   /** When set, the title + a "View details" link point to the gathering's
    * own page. Omitted on the detail page itself. */
   detailHref?: string
+  /** The day has passed. The card becomes a record of what happened: no
+   * RSVP, no calendar links, no editing the groups — just who played. */
+  played?: boolean
 }) {
   const { data: session, status: sessionStatus } = useSession()
   const approved = sessionStatus === 'authenticated' && !!session?.linkedPersonId
@@ -158,6 +170,9 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Host controls (rename/dissolve groups, remove people) only make sense
+  // while the round is still ahead of us.
+  const canManage = isHost && !played
   const [removed, setRemoved] = useState(false)
   const [removing, setRemoving] = useState(false)
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
@@ -503,7 +518,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                   {VIBE_LABEL[gathering.vibe]}
                 </span>
               )}
-              <GatheringStatusPill status={gathering.status} />
+              {played ? <GatheringPlayedPill /> : <GatheringStatusPill status={gathering.status} />}
               {gathering.isExample && (
                 <span
                   className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted bg-[#fdfcf9] border border-[rgba(180,168,150,0.6)] px-2 py-0.5 rounded-full"
@@ -561,9 +576,9 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             <div className="flex items-center gap-1.5 text-xs text-ink-muted">
               <Users className="w-3 h-3 flex-shrink-0" />
               <span>
-                {liveCount > 0 ? `${liveCount} on the sheet` : null}
-                {liveCount > 0 && gathering.capacity ? ' · ' : null}
-                {gathering.capacity ? `Up to ${gathering.capacity} members` : null}
+                {liveCount > 0 ? `${liveCount} ${played ? 'played' : 'on the sheet'}` : null}
+                {liveCount > 0 && gathering.capacity && !played ? ' · ' : null}
+                {gathering.capacity && !played ? `Up to ${gathering.capacity} members` : null}
               </span>
             </div>
           )}
@@ -635,7 +650,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
 
         {/* Add to calendar, instant Google Cal link + .ics download, right
             on the card so it works without depending on the RSVP email. */}
-        {!gathering.isExample && (
+        {!gathering.isExample && !played && (
           <div className="flex items-center gap-2 flex-wrap mb-4 text-xs">
             <span className="inline-flex items-center gap-1.5 text-ink-muted">
               <CalendarPlus className="w-3.5 h-3.5" />
@@ -683,7 +698,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#c8a84b]">
                   {label}
                 </p>
-                {isHost && (
+                {canManage && (
                   <span className="flex items-center gap-2 flex-shrink-0">
                     <button
                       type="button"
@@ -714,11 +729,11 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 )}
               </div>
             )}
-            <ul className={isHost ? 'space-y-1.5' : 'flex flex-wrap gap-x-3 gap-y-1'}>
+            <ul className={canManage ? 'space-y-1.5' : 'flex flex-wrap gap-x-3 gap-y-1'}>
               {rows.map(a => (
                 <li
                   key={a.requestId}
-                  className={`text-[12.5px] text-[#0a1628] ${isHost ? 'flex items-center justify-between gap-3' : ''}`}
+                  className={`text-[12.5px] text-[#0a1628] ${canManage ? 'flex items-center justify-between gap-3' : ''}`}
                 >
                   <span className="min-w-0">
                     {a.bookId || a.personId ? (
@@ -741,7 +756,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                       </span>
                     )}
                   </span>
-                  {isHost && (
+                  {canManage && (
                     <select
                       value={a.groupLabel?.trim() || ''}
                       disabled={groupBusy === a.requestId}
@@ -764,7 +779,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                       <option value="__new">New group…</option>
                     </select>
                   )}
-                  {isHost && a.status === 'accepted' && (
+                  {canManage && a.status === 'accepted' && (
                     <button
                       type="button"
                       disabled={rsvpBusy === a.requestId}
@@ -775,7 +790,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                       Remove
                     </button>
                   )}
-                  {isHost && a.status !== 'accepted' && (
+                  {canManage && a.status !== 'accepted' && (
                     <span className="flex items-center gap-2 flex-shrink-0">
                       <button
                         type="button"
@@ -804,7 +819,13 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         )}
 
         {/* Action */}
-        {gathering.isExample ? (
+        {played ? (
+          <p className="text-xs text-ink-muted">
+            {liveCount > 0
+              ? `Played by ${liveCount} ${liveCount === 1 ? 'member' : 'members'}.`
+              : 'This round has been played.'}
+          </p>
+        ) : gathering.isExample ? (
           <p className="text-xs text-ink-muted italic">
             Sample gathering, host a real one to replace it.
           </p>

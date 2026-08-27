@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { requireApprovedMember } from '@/lib/auth/guards'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import { isExampleGathering, isHiddenGathering, isExpiredExampleGathering } from '@/lib/seed-data/example-gatherings'
+import { gatheringSortKey, isPastGathering } from '@/lib/gatherings/date'
 import { getApprovalState } from '@/lib/access/approval'
 import type { ClubhouseGathering } from '@/lib/store/types'
 import type { NotifyMode } from '@/lib/gatherings/nearby'
@@ -10,6 +11,8 @@ import type { NotifyMode } from '@/lib/gatherings/nearby'
 const VALID_TYPES = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const VALID_AUDIENCES = ['players', 'alumni', 'both'] as const
 const VALID_VIBES = ['casual', 'competitive', 'career', 'social', 'formal'] as const
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
 /** Normalize a pasted link — prefix https:// when missing, validate, else drop. */
 function cleanUrl(raw: unknown): string | undefined {
@@ -45,17 +48,27 @@ export async function GET(request: NextRequest) {
     gatherings = gatherings.filter(g => g.type === typeFilter)
   }
 
-  // Chronological, not alphabetical — parse the human dateText; unparseable
-  // dates sort last (they're usually vague like "Championship Weekend").
-  const sortKey = (d: string) => {
-    const t = Date.parse(d)
-    return Number.isNaN(t) ? Number.MAX_SAFE_INTEGER : t
-  }
+  // Chronological, not alphabetical. gatheringSortKey prefers dateISO and
+  // guards the yearless-dateText trap; unparseable dates sort last.
   const sorted = gatherings
-    .sort((a, b) => sortKey(a.dateText) - sortKey(b.dateText))
-    .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) }))
+    .sort((a, b) => gatheringSortKey(a) - gatheringSortKey(b))
+    .map(g => ({
+      ...g,
+      isExample: isExampleGathering(g.id, g.isExample),
+      // Computed, never stored: a gathering becomes past on its own as the
+      // day rolls over. Callers that only want one side pass ?when=.
+      isPast: isPastGathering(g),
+    }))
     .filter(g => !isExpiredExampleGathering(g))
-  return NextResponse.json({ gatherings: sorted })
+
+  // ?when=upcoming (the default board) | played (the record) | all
+  const when = request.nextUrl.searchParams.get('when')
+  const filtered =
+    when === 'upcoming' ? sorted.filter(g => !g.isPast)
+    : when === 'played' ? sorted.filter(g => g.isPast && !g.isExample).reverse()
+    : sorted
+
+  return NextResponse.json({ gatherings: filtered })
 }
 
 export async function POST(request: NextRequest) {
@@ -83,6 +96,7 @@ export async function POST(request: NextRequest) {
   const title = typeof body.title === 'string' ? body.title.trim().slice(0, 160) : ''
   const hostName = typeof body.hostName === 'string' ? body.hostName.trim().slice(0, 160) : ''
   const dateText = typeof body.dateText === 'string' ? body.dateText.trim().slice(0, 160) : ''
+  const dateISO = typeof body.dateISO === 'string' ? body.dateISO.trim().slice(0, 10) : ''
   const audience = body.audience as string
 
   if (!VALID_TYPES.includes(type as (typeof VALID_TYPES)[number])) {
@@ -91,6 +105,9 @@ export async function POST(request: NextRequest) {
   if (!title) return NextResponse.json({ error: 'title required' }, { status: 400 })
   if (!hostName) return NextResponse.json({ error: 'hostName required' }, { status: 400 })
   if (!dateText) return NextResponse.json({ error: 'dateText required' }, { status: 400 })
+  if (dateISO && !ISO_DATE.test(dateISO)) {
+    return NextResponse.json({ error: 'dateISO must be YYYY-MM-DD' }, { status: 400 })
+  }
   if (!VALID_AUDIENCES.includes(audience as (typeof VALID_AUDIENCES)[number])) {
     return NextResponse.json({ error: 'Invalid audience' }, { status: 400 })
   }
@@ -120,6 +137,7 @@ export async function POST(request: NextRequest) {
     state: typeof body.state === 'string' ? body.state.trim().slice(0, 40) : undefined,
     venue: typeof body.venue === 'string' ? body.venue.trim().slice(0, 200) : undefined,
     dateText,
+    dateISO: dateISO || undefined,
     timeText: typeof body.timeText === 'string' ? body.timeText.trim().slice(0, 80) : undefined,
     capacity: typeof body.capacity === 'number' ? body.capacity : undefined,
     audience: audience as (typeof VALID_AUDIENCES)[number],
@@ -289,6 +307,13 @@ export async function PATCH(request: NextRequest) {
   str('state', 40)
   str('venue', 200)
   str('dateText', 160)
+  if (typeof body.dateISO === 'string') {
+    const v = body.dateISO.trim()
+    if (v && !ISO_DATE.test(v)) {
+      return NextResponse.json({ error: 'dateISO must be YYYY-MM-DD' }, { status: 400 })
+    }
+    patch.dateISO = v || undefined
+  }
   str('timeText', 80)
   str('hostName', 160)
   if (typeof body.capacity === 'number') patch.capacity = body.capacity

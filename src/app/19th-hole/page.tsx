@@ -41,6 +41,7 @@ export default async function NineteenthHolePage() {
   let openToCoffee: AlumniEntry[] = []
   let cityGroups: { city: string; count: number; coffeeCount: number }[] = []
   let socialGatherings: GatheringData[] = []
+  let playedGatherings: GatheringData[] = []
   const interestedByGathering = new Map<string, number>()
   // Surfaced to the client so it can show a subtle "You're listed here
   // too — edit your profile to change" chip when the viewer has opted
@@ -165,6 +166,13 @@ export default async function NineteenthHolePage() {
       }))
       .filter(g => !isExpiredExampleGathering(g)) as GatheringData[]
 
+    // Past gatherings become a record, not something to RSVP to.
+    const { isPastGathering, byMostRecentlyPlayed } = await import('@/lib/gatherings/date')
+    playedGatherings = socialGatherings
+      .filter(g => !g.isExample && isPastGathering(g))
+      .sort(byMostRecentlyPlayed)
+    socialGatherings = socialGatherings.filter(g => !isPastGathering(g))
+
     // Open Requests with social intents — visiting members looking for
     // drinks / coffee / dinner.
     const { getOpenRequestsForTeam } = await import('@/lib/store/local-store')
@@ -204,6 +212,7 @@ export default async function NineteenthHolePage() {
 
       <NineteenthHoleClient
         gatherings={socialGatherings}
+        playedGatherings={playedGatherings}
         openToCoffee={openToCoffee}
         cityGroups={cityGroups}
         interestedCounts={Object.fromEntries(interestedByGathering)}

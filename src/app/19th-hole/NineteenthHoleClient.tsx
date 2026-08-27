@@ -37,6 +37,7 @@ function memberCareerLine(entry: AlumniEntry): string | null {
 
 interface Props {
   gatherings: GatheringData[]
+  playedGatherings?: GatheringData[]
   openToCoffee: AlumniEntry[]
   cityGroups: { city: string; count: number; coffeeCount: number }[]
   interestedCounts?: Record<string, number>
@@ -64,6 +65,7 @@ const TYPE_LABELS: Record<TypeFilter, string> = {
 
 export default function NineteenthHoleClient({
   gatherings,
+  playedGatherings = [],
   openToCoffee,
   cityGroups,
   interestedCounts,
@@ -156,6 +158,25 @@ export default function NineteenthHoleClient({
                   detailHref={`/gatherings/${g.id}`}
                 />
               ))}
+            </div>
+          )}
+
+          {playedGatherings.length > 0 && (
+            <div className="mt-8">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-3">
+                Recently gathered
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {playedGatherings.map(g => (
+                  <GatheringCard
+                    key={g.id}
+                    gathering={g}
+                    interestedCount={interestedCounts?.[g.id] ?? 0}
+                    detailHref={`/gatherings/${g.id}`}
+                    played
+                  />
+                ))}
+              </div>
             </div>
           )}
         </section>

@@ -283,7 +283,12 @@ export interface ClubhouseGathering {
   city?: string
   state?: string
   venue?: string
+  /** Human-readable, host-typed: "Saturday, August 22, 2026". Display only. */
   dateText: string
+  /** Machine-readable YYYY-MM-DD. The answer to "has this happened yet?".
+   * Optional because gatherings created before the host form captured a real
+   * date only have `dateText` — see src/lib/gatherings/date.ts. */
+  dateISO?: string
   timeText?: string
   capacity?: number
   audience: 'players' | 'alumni' | 'both'
