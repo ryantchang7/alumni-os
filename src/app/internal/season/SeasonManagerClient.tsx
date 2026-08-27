@@ -386,18 +386,22 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
               </div>
             </div>
 
-            <div>
-              <label className={labelCls}>Preview image (optional)</label>
-              <p className="text-[11px] text-ink-muted mb-2 -mt-0.5">
-                Leave blank to auto-pull the picture from the link. Upload one to override it.
-              </p>
-              <PhotoUpload
-                value={form.previewImageUrl}
-                onChange={url => setForm(f => ({ ...f, previewImageUrl: url }))}
-                label=""
-                shape="wide"
-              />
-            </div>
+            {/* Only meaningful once there's a link to preview. Posting a gear
+                haul with no link shouldn't show two upload boxes. */}
+            {form.linkUrl.trim() && (
+              <div>
+                <label className={labelCls}>Preview image (optional)</label>
+                <p className="text-[11px] text-ink-muted mb-2 -mt-0.5">
+                  Leave blank to auto-pull the picture from the link. Upload one to override it.
+                </p>
+                <PhotoUpload
+                  value={form.previewImageUrl}
+                  onChange={url => setForm(f => ({ ...f, previewImageUrl: url }))}
+                  label=""
+                  shape="wide"
+                />
+              </div>
+            )}
 
             {error && <p className="text-xs text-[#990000]">{error}</p>}
 
