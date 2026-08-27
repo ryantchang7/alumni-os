@@ -3,7 +3,30 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import PhotoUpload from '@/components/PhotoUpload'
+import MediaThumbStrip from '@/components/moments/MediaThumbStrip'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import { formatGatheringDate } from '@/lib/gatherings/date'
+
+type Media = { url: string; type: 'image' | 'video' }
+
+const MAX_MEDIA = 12
+
+/** The Saturday just gone — most team things happen on a weekend. */
+function lastSaturday(): string {
+  const d = new Date()
+  // 6 = Saturday. Always step back at least one day, so on a Saturday this
+  // means the previous one rather than today.
+  const back = ((d.getDay() - 6 + 7) % 7) || 7
+  d.setDate(d.getDate() - back)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+/** Local YYYY-MM-DD, offset by whole days. today() = '2026-08-26'. */
+function today(offsetDays = 0): string {
+  const d = new Date()
+  d.setDate(d.getDate() + offsetDays)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
 
 type Kind = 'qualifying' | 'tournament' | 'stat' | 'note'
 
@@ -12,6 +35,8 @@ interface SeasonUpdate {
   kind: Kind
   title: string
   dateText: string
+  dateISO?: string
+  media?: Media[]
   body?: string
   linkUrl?: string
   linkLabel?: string
@@ -39,7 +64,13 @@ const KIND_LABELS: Record<Kind, string> = {
 const EMPTY_FORM = {
   kind: 'tournament' as Kind,
   title: '',
-  dateText: '',
+  // Pre-filled with today: posting something that happened today, which is
+  // the common case, should take zero clicks on the date.
+  dateISO: today(),
+  // Only used when the date is a label rather than a day.
+  dateLabel: '',
+  useLabel: false,
+  media: [] as Media[],
   body: '',
   linkUrl: '',
   linkLabel: '',
@@ -89,7 +120,10 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
     setForm({
       kind: u.kind,
       title: u.title,
-      dateText: u.dateText,
+      dateISO: u.dateISO ?? '',
+      dateLabel: u.dateISO ? '' : u.dateText,
+      useLabel: !u.dateISO,
+      media: u.media ?? [],
       body: u.body ?? '',
       linkUrl: u.linkUrl ?? '',
       linkLabel: u.linkLabel ?? '',
@@ -101,7 +135,12 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.title.trim() || !form.dateText.trim()) return
+    const resolvedDateText = form.useLabel
+      ? form.dateLabel.trim()
+      : form.dateISO
+        ? formatGatheringDate(form.dateISO)
+        : ''
+    if (!form.title.trim() || !resolvedDateText) return
     setSubmitting(true)
     setError(null)
     try {
@@ -109,7 +148,9 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
         teamSlug: 'penn-mens-golf',
         kind: form.kind,
         title: form.title.trim(),
-        dateText: form.dateText.trim(),
+        dateText: resolvedDateText,
+        dateISO: form.useLabel ? '' : form.dateISO,
+        media: form.media,
         body: form.body.trim(),
         linkUrl: form.linkUrl.trim(),
         linkLabel: form.linkLabel.trim(),
@@ -210,15 +251,56 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
                 </select>
               </div>
               <div>
-                <label className={labelCls}>Date *</label>
-                <input
-                  type="text"
-                  value={form.dateText}
-                  onChange={e => setForm(f => ({ ...f, dateText: e.target.value }))}
-                  placeholder="e.g. May 28 or Championship Weekend"
-                  className={inputCls}
-                  required
-                />
+                <div className="flex items-baseline justify-between gap-2">
+                  <label className={labelCls}>Date *</label>
+                  <button
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, useLabel: !f.useLabel }))}
+                    className="text-[11px] text-ink-muted hover:text-[#0a1628] underline underline-offset-2"
+                  >
+                    {form.useLabel ? 'Pick a day' : 'Use a label'}
+                  </button>
+                </div>
+                {form.useLabel ? (
+                  <input
+                    type="text"
+                    value={form.dateLabel}
+                    onChange={e => setForm(f => ({ ...f, dateLabel: e.target.value }))}
+                    placeholder="e.g. Championship Weekend"
+                    className={inputCls}
+                    required
+                  />
+                ) : (
+                  <>
+                    <input
+                      type="date"
+                      value={form.dateISO}
+                      onChange={e => setForm(f => ({ ...f, dateISO: e.target.value }))}
+                      className={inputCls}
+                      required
+                    />
+                    <div className="flex items-center gap-1.5 mt-1.5">
+                      {[
+                        { label: 'Today', iso: today() },
+                        { label: 'Yesterday', iso: today(-1) },
+                        { label: 'Last Sat', iso: lastSaturday() },
+                      ].map(q => (
+                        <button
+                          key={q.label}
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, dateISO: q.iso }))}
+                          className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+                            form.dateISO === q.iso
+                              ? 'bg-[#0a1628] text-white border-[#0a1628]'
+                              : 'bg-white text-ink-muted border-[rgba(180,168,150,0.5)] hover:border-[#0a1628]'
+                          }`}
+                        >
+                          {q.label}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -243,6 +325,42 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
                 placeholder="Results, finishes, who's in contention, low rounds…"
                 className={`${inputCls} resize-none`}
               />
+            </div>
+
+            <div>
+              <label className={labelCls}>
+                Photos {form.media.length > 0 ? `(${form.media.length}/${MAX_MEDIA})` : '(optional)'}
+              </label>
+              <p className="text-[11px] text-ink-muted mb-2 -mt-0.5">
+                Gear haul, travel day, the range. Drag to reorder — the first one leads the post.
+              </p>
+              {form.media.length > 0 && (
+                <div className="mb-3">
+                  <MediaThumbStrip
+                    items={form.media}
+                    onChange={next => setForm(f => ({ ...f, media: next }))}
+                  />
+                </div>
+              )}
+              {form.media.length < MAX_MEDIA && (
+                <PhotoUpload
+                  value=""
+                  onChange={url => {
+                    if (!url) return
+                    const type: 'image' | 'video' = /\.(mp4|mov|m4v|webm)(\?|$)/i.test(url) ? 'video' : 'image'
+                    setForm(f =>
+                      f.media.length >= MAX_MEDIA || f.media.some(m => m.url === url)
+                        ? f
+                        : { ...f, media: [...f.media, { url, type }] },
+                    )
+                  }}
+                  label=""
+                  shape="wide"
+                  allowVideo
+                  multiple
+                  maxFiles={MAX_MEDIA - form.media.length}
+                />
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -285,7 +403,11 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
 
             <button
               type="submit"
-              disabled={submitting || !form.title.trim() || !form.dateText.trim()}
+              disabled={
+                submitting ||
+                !form.title.trim() ||
+                (form.useLabel ? !form.dateLabel.trim() : !form.dateISO)
+              }
               className="text-sm font-semibold bg-[#0a1628] text-white px-5 py-2.5 rounded-lg disabled:opacity-40 hover:bg-[#0a1628]/85 transition-colors"
             >
               {submitting ? 'Saving…' : editingId ? 'Save changes' : 'Post update'}

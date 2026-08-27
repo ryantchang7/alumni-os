@@ -12,9 +12,29 @@ import {
 import { detectStoreBackend } from '@/lib/launch/persistence-check'
 import { fetchLinkPreview } from '@/lib/link-preview/fetch-link-preview'
 import { notifyMany } from '@/lib/notifications/notify'
-import type { SeasonUpdate } from '@/lib/store/types'
+import type { SeasonUpdate, PostMedia } from '@/lib/store/types'
 
 const VALID_KINDS = new Set<SeasonUpdate['kind']>(['qualifying', 'tournament', 'stat', 'note'])
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
+const MAX_MEDIA = 12
+
+/** Accept only well-formed {url,type} entries, capped, order preserved. */
+function parseMedia(raw: unknown): PostMedia[] | undefined {
+  if (!Array.isArray(raw)) return undefined
+  const out: PostMedia[] = []
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue
+    const url = (item as { url?: unknown }).url
+    const type = (item as { type?: unknown }).type
+    if (typeof url !== 'string' || !url.trim()) continue
+    if (type !== 'image' && type !== 'video') continue
+    if (out.some(m => m.url === url.trim())) continue
+    out.push({ url: url.trim().slice(0, 600), type })
+    if (out.length >= MAX_MEDIA) break
+  }
+  return out
+}
 
 type PreviewFields = Pick<SeasonUpdate, 'previewImageUrl' | 'previewTitle' | 'previewDescription'>
 
@@ -82,6 +102,12 @@ export async function POST(request: Request) {
   if (!title) return NextResponse.json({ error: 'title required' }, { status: 400 })
   if (!dateText) return NextResponse.json({ error: 'dateText required' }, { status: 400 })
 
+  const dateISO = typeof body.dateISO === 'string' ? body.dateISO.trim() : ''
+  if (dateISO && !ISO_DATE.test(dateISO)) {
+    return NextResponse.json({ error: 'dateISO must be YYYY-MM-DD' }, { status: 400 })
+  }
+  const media = parseMedia(body.media)
+
   const linkUrl = cleanUrl(body.linkUrl)
   const preview = await resolvePreview(linkUrl, cleanUrl(body.previewImageUrl))
 
@@ -90,6 +116,8 @@ export async function POST(request: Request) {
     kind,
     title,
     dateText,
+    dateISO: dateISO || undefined,
+    media: media && media.length > 0 ? media : undefined,
     body: typeof body.body === 'string' && body.body.trim() ? body.body.trim() : undefined,
     linkUrl,
     linkLabel: typeof body.linkLabel === 'string' && body.linkLabel.trim() ? body.linkLabel.trim() : undefined,
@@ -151,6 +179,17 @@ export async function PATCH(request: Request) {
   if (typeof body.dateText === 'string') {
     if (!body.dateText.trim()) return NextResponse.json({ error: 'dateText cannot be empty' }, { status: 400 })
     patch.dateText = body.dateText.trim()
+  }
+  if (typeof body.dateISO === 'string') {
+    const v = body.dateISO.trim()
+    if (v && !ISO_DATE.test(v)) {
+      return NextResponse.json({ error: 'dateISO must be YYYY-MM-DD' }, { status: 400 })
+    }
+    patch.dateISO = v || undefined
+  }
+  if (body.media !== undefined) {
+    const m = parseMedia(body.media)
+    patch.media = m && m.length > 0 ? m : undefined
   }
   if (typeof body.body === 'string') patch.body = body.body.trim() || undefined
   if (body.linkUrl !== undefined) patch.linkUrl = cleanUrl(body.linkUrl)

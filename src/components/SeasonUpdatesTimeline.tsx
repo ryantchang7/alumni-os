@@ -92,6 +92,38 @@ export default function SeasonUpdatesTimeline({ updates }: { updates: SeasonUpda
               {u.body && (
                 <p className="text-sm text-ink-muted mt-1.5 leading-relaxed whitespace-pre-line">{u.body}</p>
               )}
+              {u.media && u.media.length > 0 && (
+                <div
+                  className={`mt-3 grid gap-1.5 ${
+                    u.media.length === 1
+                      ? 'grid-cols-1'
+                      : u.media.length === 2
+                        ? 'grid-cols-2'
+                        : 'grid-cols-2 sm:grid-cols-3'
+                  }`}
+                >
+                  {u.media.map(m =>
+                    m.type === 'video' ? (
+                      <video
+                        key={m.url}
+                        src={m.url}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        className="w-full rounded-lg border border-[rgba(180,168,150,0.35)] bg-black aspect-[4/3] object-cover"
+                      />
+                    ) : (
+                      <img
+                        key={m.url}
+                        src={m.url}
+                        alt=""
+                        loading="lazy"
+                        className="w-full rounded-lg border border-[rgba(180,168,150,0.35)] aspect-[4/3] object-cover"
+                      />
+                    ),
+                  )}
+                </div>
+              )}
               {u.linkUrl && (
                 u.previewImageUrl ? (
                   <a

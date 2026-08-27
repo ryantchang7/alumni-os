@@ -448,6 +448,12 @@ export interface TeamNewsItem {
  * /internal/season (unlike TeamNewsItem, which is auto-fetched). Surfaces as
  * a timeline in the Team Room, newest first.
  */
+/** One photo or video in a post, in display order. */
+export interface PostMedia {
+  url: string
+  type: 'image' | 'video'
+}
+
 export interface SeasonUpdate {
   id: string
   teamId: string
@@ -455,8 +461,12 @@ export interface SeasonUpdate {
   kind: 'qualifying' | 'tournament' | 'stat' | 'note'
   /** Headline, e.g. "Ivy Championship" or "Regional Qualifier". */
   title: string
-  /** Freeform date/label, e.g. "May 28" or "Championship Weekend". */
+  /** Freeform date/label, e.g. "May 28" or "Championship Weekend". Display
+   * only — a label like "Championship Weekend" is deliberately allowed. */
   dateText: string
+  /** Machine-readable YYYY-MM-DD when the update has a real date. Set by the
+   * date picker; absent for label-style dateText. See src/lib/gatherings/date.ts. */
+  dateISO?: string
   /** The update itself — results, context, who's in contention. */
   body?: string
   /** Optional link to paste — results page, GolfStat, a tweet, an article. */
@@ -469,6 +479,10 @@ export interface SeasonUpdate {
   /** Auto-pulled OG title/description for the link preview card. */
   previewTitle?: string
   previewDescription?: string
+  /** Photos/videos attached to the update itself — a gear haul, a range
+   * session, travel day. Distinct from previewImageUrl, which belongs to
+   * the pasted link's preview card. */
+  media?: PostMedia[]
   createdAt: string
   updatedAt: string
 }
@@ -490,7 +504,7 @@ export interface ClubhouseMoment {
   photoUrl: string
   /** Multi-media support: every photo/video in the post, in order. When
    *  present, photoUrl/mediaType mirror media[0] for backwards compat. */
-  media?: { url: string; type: 'image' | 'video' }[]
+  media?: PostMedia[]
   /** 'image' (default) or 'video'. Older records without this field are
    *  treated as 'image' by the UI. */
   mediaType?: 'image' | 'video'
