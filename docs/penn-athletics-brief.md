@@ -1,40 +1,35 @@
-# Penn Golf Clubhouse — full brief for outside analysis
+# Penn Golf Clubhouse — final brief
 
-**Purpose.** This is a handoff document. It exists so a fresh reader (human or
-model) with no prior context can reason rigorously about one decision: *how, and
-on what terms, Ryan Chang should approach Penn Athletics about the site he
-built.* Everything below is verified against the live production site and the
-repository on 2026-08-26 unless explicitly flagged as unverified.
+**Purpose.** A handoff document. It exists so a fresh reader with no prior
+context can reason rigorously about one decision: *how Ryan Chang should approach
+Penn Athletics about the site he built, and what he should do in the next six
+weeks.* Everything is verified against the live production site and repository as
+of 2026-08-27 unless flagged otherwise.
 
-**Reader instruction.** Do not accept the framing in Section 6 uncritically. It
-is one reading of the facts in Sections 2-5. Section 10 lists where it is most
-likely wrong.
+**Reader instruction.** Sections 6 and 9 argue a specific position. Section 13
+lists where that position is most likely wrong. Push on it rather than inheriting
+it.
 
 ---
 
 ## 1. Who and what
 
-Ryan Chang. Penn men's golf team member (current student-athlete). Email
-rtchang@upenn.edu. Over roughly the past year he single-handedly designed, built,
-and shipped **penngolfclubhouse.com**, a private web application for Penn Men's
-Golf alumni and current players.
+Ryan Chang, current Penn men's golf student-athlete, rtchang@upenn.edu. Over
+roughly the past year he single-handedly designed, built, shipped, and filmed
+**penngolfclubhouse.com**, a private web application for Penn Men's Golf alumni
+and current players.
 
-He is not a professional software engineer. He describes himself as an
-intermediate-level student developer. The work was done with heavy AI assistance.
-This matters for assessing durability, not for assessing whether the thing works
-— it demonstrably works.
+He is a student developer, not a professional engineer, and built this with heavy
+AI assistance. That bears on long-term maintainability, not on whether it works.
+It demonstrably works.
 
-**Constraint that sets the clock:** his access and standing as a *current*
-student-athlete expires when he graduates. A current player walking into an
-Athletics office is a fundamentally different conversation than an alum emailing
-in. Verified separately: the launch film references an October Scotland trip,
-which dates the film's freshness to roughly October 2026.
+**The clock:** his standing as a *current* player is the thing that gets him in a
+room. It expires at graduation.
 
 ---
 
-## 2. What actually exists (verified)
+## 2. What exists (verified)
 
-### Scale of the software
 | Measure | Value |
 |---|---|
 | Application pages | 86 |
@@ -42,361 +37,360 @@ which dates the film's freshness to roughly October 2026.
 | React components | 68 |
 | Lines of TypeScript/TSX | 65,548 |
 | Unit test scripts | 15 |
-| End-to-end (Playwright) specs | 12 |
+| End-to-end Playwright specs | 12 |
 
-Stack: Next.js 16.2.6, React 19.2.4, TypeScript 5, Tailwind 4, NextAuth v5,
-Vercel Blob storage, Stripe, Resend (transactional email). Deployed on Vercel at
-penngolfclubhouse.com. This is a real production application, not a prototype.
+Next.js 16.2.6, React 19.2.4, TypeScript 5, Tailwind 4, NextAuth v5, Vercel Blob,
+Stripe, Resend. Live on Vercel.
 
-### What the product does
-Grouped by the actual routes that exist:
+**What it does:** a Member Book registry across generations; a claim flow where
+alumni claim their own roster entry subject to approval; The Course (organized
+rounds with tee sheets and group assignment); The 19th Hole (coffee, drinks,
+dinners); Open Requests ("I'm in town"); Moments (photo/video wall); Locker Room
+(players-and-alumni-only tier); Career Room (find members by industry); Ask
+(a current player requests an intro to an alum); Team Room and The Season
+(schedule, results, updates with galleries); direct chat; a member map; Hall of
+Fame; and ~25 internal routes for roster scraping, data quality, the claims
+queue, and launch readiness.
 
-- **The Member Book** (`/member-book`) — a registry of Penn Men's Golf players
-  across generations. Filterable by decade, sortable.
-- **Claim flow** (`/alumni/claim`, `/profile/claim`) — an alum finds themselves
-  in the roster history and claims their own entry. Claims are reviewed and
-  approved by a captain/founder before the person becomes a member.
-- **The Course** (`/the-course`) — organized rounds. A host opens a tee time,
-  members pencil themselves in, the host arranges them into groups on a tee
-  sheet. Google Maps preview, calendar export (Google + .ics).
-- **The 19th Hole** (`/19th-hole`) — the same mechanic for non-golf gatherings:
-  coffee, drinks, dinner, events.
-- **Open Requests** (`/requests/new`) — "I'm in town, anyone want to play."
-- **Moments** (`/moments`) — a shared photo/video wall. Multi-media posts,
-  reactions, comments, tagging.
-- **Locker Room** (`/locker-room`) — players-and-alumni-only tier, excludes
-  coaches and family.
-- **Career Room** (`/career-room`) — find members by industry; career posts.
-- **Ask / outreach** (`/ask`, `/player/outreach/[id]`) — a current player
-  requests an introduction to an alum for career advice, mentorship, etc.
-- **Team Room / The Season** (`/team-room`, `/internal/season`) — schedule,
-  results, and team updates with photo galleries.
-- **Chat** (`/chat`) — direct messaging between members.
-- **Member Map** (`/member-map`) — where members live now.
-- **Hall of Fame, Spotlight, Meet the Team, Team Travel, Team Questions.**
-- **Builder / internal tooling** (`/builder/*`, `/internal/*`, ~25 routes) — the
-  roster-scraping and data-quality pipeline, claims queue, launch readiness
-  dashboard, roles management.
+**The film:** public at `/launch`. Verified by probing the served file — **4:51,
+1920×1080, 53 MB.** A 64-second cut also exists in 1080p and 4K. No music bed;
+that decision was never finalized.
 
-### The film
-Public at `https://www.penngolfclubhouse.com/launch`. Verified by probing the
-actual served file: **4 minutes 51 seconds, 1920×1080, 53 MB.** A short cut also
-exists (64 seconds, rendered in both 1080p and 4K). Ryan wrote, shot, narrated,
-and edited it. The films have no music bed — a decision he never finalized.
+**The roster archive — the rare asset.** 340 members spanning **1930 to 2030**,
+built from public pennathletics.com roster pages season by season, each record
+carrying `sourceUrls` and a confidence score.
 
-### The roster archive — the genuinely rare asset
-The Member Book holds **340 members spanning 1930 to 2030.** Verified counts per
-decade:
+| Decade | Members | Decade | Members |
+|---|---|---|---|
+| 2020s | 30 | 1970s | 43 |
+| 2010s | 31 | 1960s | 46 |
+| 2000s | 29 | 1950s | 35 |
+| 1990s | 18 | 1940s | 43 |
+| 1980s | 18 | 1930s | ~47 |
 
-| Decade | Members |
-|---|---|
-| 2020s | 30 |
-| 2010s | 31 |
-| 2000s | 29 |
-| 1990s | 18 |
-| 1980s | 18 |
-| 1970s | 43 |
-| 1960s | 46 |
-| 1950s | 35 |
-| 1940s | 43 |
-| 1930s | remainder to 340 (~47) |
-
-Source: public roster pages on pennathletics.com, scraped season by season, with
-per-record `sourceUrls` and a confidence score retained. Roughly 90 years of Penn
-men's golf roster history, reconstructed and structured.
-
-**Assess this carefully.** It is plausible that no structured version of this
-archive exists anywhere inside Penn Athletics itself. If true, it is the single
-most valuable and least replicable thing Ryan holds. It is also the thing most
-likely to raise a data-governance question.
+Roughly 90 years of Penn men's golf history, structured. It is plausible that no
+equivalent structured archive exists inside Penn Athletics. That is unverified
+and worth checking.
 
 ---
 
-## 3. What is *not* true — the traction reality
-
-This is where the story turns. Live production metrics, 2026-08-26:
+## 3. The traction reality
 
 | Metric | Value |
 |---|---|
 | Approved member accounts | **3** |
-| Pending claims | 1 |
-| Approved claims | 2 |
-| Declined claims | 3 |
+| Pending / approved / declined claims | 1 / 2 / 3 |
 | Moments posted | 2 (both July) |
-| Career posts | 0 |
-| Open requests | 0 |
-| Active supporters (paying) | 0 |
-| Donations | $0 |
+| Career posts, Open Requests | 0, 0 |
+| Paying supporters, donations | 0, $0 |
 | Chat conversations | 1 |
-| Team memberships in system | 83 |
 
-**The product is finished. The adoption is approximately zero.** Three accounts,
-one of which is Ryan.
+**The product is finished. Adoption is approximately zero.**
 
-Two real events have ever existed on the site: the Aug 22-23 2026 preseason trip
-(Belmont Country Club, then The International's Pines Course), which the team
-genuinely used — 15 players across 4 groups at Belmont, 12 at The International.
-Both are now in the past. As of today the upcoming board contains **one** card
-and it is a seeded EXAMPLE (a placeholder "Merion Alumni Round").
-
-No photos from the preseason trip were ever posted. Ryan has two team photos from
-it; they have never made it onto the site.
+Two real events have ever existed: the Aug 22-23 2026 preseason trip (Belmont
+Country Club, then The International's Pines Course), which the team genuinely
+used — 15 players in 4 groups at Belmont, 12 at The International. Both are now
+past. The upcoming board currently holds **one** card and it is a seeded
+placeholder. No photos from the trip were ever posted.
 
 ---
 
-## 4. The central asymmetry — read this twice
+## 4. The central asymmetry
 
-Contact-data coverage across the 83 alumni profiles in the system:
+Contact coverage across the 83 alumni profiles in the system:
 
 | Field | Count |
 |---|---|
 | Email address | **3** |
 | Phone number | **0** |
 | LinkedIn URL | **1** |
-| City | 3 |
-| Employer | 0 |
 
-**Ryan has 340 names and 3 ways to contact anyone.**
+**340 names. 3 ways to contact anyone.** The archive came from public pages;
+public pages don't list emails.
 
-He knows *who* every Penn golfer since 1930 is. He has almost no ability to reach
-a single one of them. The roster archive was built from public pages that list
-names and years; public pages do not list email addresses.
+Consequences:
+- The launch runbook's "send the alumni email to ~340 people" step **has no list
+  behind it.** It cannot happen as written.
+- A small launch through personal relationships is still possible — the current
+  team by group text, plus a handful of recent alumni he knows. Realistic ceiling
+  perhaps 20-40 people, almost all 2020s.
+- Everything beyond that requires an institutional channel.
 
-This single fact restructures the entire strategic question:
-
-- The launch runbook in the repo assumes a "send the alumni email" step to
-  roughly 340 people. **There is no list behind that step.** It cannot happen as
-  written.
-- A small soft launch *is* still possible, entirely through Ryan's personal
-  relationships: the current team via group text, plus a handful of recent alumni
-  he knows personally. That path needs nothing from Penn.
-- Everything beyond that — the other ~330 people, the ones who make a *network*
-  rather than a group chat — is unreachable without an institutional channel.
-
-Penn Athletics is not a growth accelerant here. **It is the only door.**
+*(A previously flagged spreadsheet, `Belmont CC Networking List.xlsx`, has been
+ruled out by Ryan as a contact source. This conclusion stands unqualified.)*
 
 ---
 
-## 5. What Penn Athletics has and appears to want
+## 5. Scotland — the opening
 
-Reported by Ryan, not independently verified: Penn Athletics is currently trying
-to connect athletics alumni "on LinkedIn and stuff" — i.e. manually, without a
-purpose-built tool and apparently without a vendor.
+This reframes everything, and it was sitting on Ryan's own site the whole time.
 
-If accurate, that implies:
-- An acknowledged problem they are actively spending effort on.
-- No incumbent contract to displace (much easier than a replacement sale).
-- Their asset is exactly Ryan's gap: **contactable alumni and the institutional
-  right to contact them.**
-- Their scope is ~33 varsity programs; golf is one.
+**Penn Golf is going to Scotland, October 12–17 2026. Today is August 27 — 46
+days out.**
 
-**Flag for the analyst:** verify whether Penn already uses an alumni-engagement
-platform (Graduway, Almabase, PeopleGrove, Hivebrite are the common ones in this
-category) either at the Athletics level or university-wide via Penn Alumni
-Relations. If such a contract exists, the entire approach changes from "fill a
-gap" to "integrate with or displace an incumbent," which is a far harder sale for
-an undergraduate.
+- **Oct 12–14:** the St Andrews Links Collegiate. Penn, Texas, Washington, and
+  St Andrews. Both Penn's men's and women's teams. Two rounds stroke play on the
+  Jubilee, final day match play **on the Old Course**. All three days **televised
+  on Golf Channel.**
+- **Oct 14–17:** the alumni tour. "The Penn Golf family joins them across the
+  pond." Three nights at the Old Course Hotel. Castle Course (alumni only),
+  Kingsbarns, Carnoustie. Dinner at Rusacks overlooking the Old Course, farewell
+  dinner at the Carnoustie clubhouse. Daily ballot for the Old Course.
+- **Oct 15 at Kingsbarns: "Penn coaches and student-athletes join the group."**
+
+Registration ran through **June 30, 2026** at three levels: **Bronze $5,000,
+Silver $7,500, Gold $10,000**, the upper tiers folding in a tax-deductible gift
+to the Penn Golf annual fund that sponsors student-athletes on the trip.
+
+Read what that means:
+
+1. **A list of the most engaged Penn Golf alumni alive already exists.** People
+   who paid five to ten thousand dollars to fly to Scotland with the team are, by
+   revealed preference, the most committed alumni in the entire population. Ryan
+   has no way to reach 337 people — but *someone* has the contact details for
+   this specific, pre-qualified group.
+2. **Ryan will physically be with them.** He is on the team. The team competes
+   Oct 12–14, and student-athletes join the alumni group at Kingsbarns on Oct 15.
+   He will spend days alongside exactly the people he needs.
+3. **October is peak attention on Penn Golf.** Three days on Golf Channel.
+4. **Registration closing is not a loss.** It was never a signup hook. It is
+   better than that: a defined, funded, committed group with a date.
 
 ---
 
-## 6. First-principles reading of the deal
+## 6. Who to actually contact — already answered
 
-Strip away the framing of a student asking for a favor and look at what each side
-holds.
+The "which person at Penn Athletics" question is solved, and Ryan answered it
+himself months ago. His own Scotland page says:
 
-**Ryan holds:**
-1. A working, deployed, non-trivial application specific to this exact problem.
-2. A ~90-year structured roster archive Penn may not itself possess.
-3. A 4:51 film that makes the case emotionally.
-4. Insider credibility — he is a rostered athlete, not a vendor.
-5. Proof, small but real, that the software works under live conditions (a
-   15-person tee sheet actually run on it).
+> The trip is organized with the **Penn Champions Club**. For anything about the
+> Scotland Tour, confirmations, logistics, or details, reach **Charlie Carroll**
+> at the Penn Champions Club.
+> **ccarrol2@upenn.edu · (215) 898-8899**
 
-**Penn Athletics holds:**
-1. Contactable alumni, with consent and legitimacy.
-2. The authority to endorse something to alumni without it reading as spam.
-3. Distribution across ~33 programs.
-4. Continuity that outlasts any one student's graduation.
+The Penn Champions Club is Penn Athletics' donor and alumni-engagement arm.
+Charlie Carroll runs the alumni side of the Scotland tour.
 
-**Neither side's asset produces value alone.** Ryan's software with no alumni is
-a demo. Penn's alumni list with no product is a spreadsheet and a LinkedIn
-search. That is genuine complementarity, and complementarity — not enthusiasm —
-is what makes a partnership rational for both parties.
+This matters enormously:
+- **Not a cold staff-directory guess.** A named person running the exact program
+  Ryan's product serves.
+- **Warm-ish already.** Ryan built and published a page promoting their trip and
+  directing people to Charlie.
+- **Their model is his model.** The Champions Club converts alumni engagement
+  into giving — the Scotland packages literally bundle annual-fund gifts. A tool
+  that deepens alumni connection is not a side project to them; it is their
+  function.
 
-### The counterintuitive move on the data problem
-The instinct is to hide the weakness: don't mention that you hold 340 people's
-names with no relationship to them. That instinct is wrong, for three reasons.
+**Correction to earlier advice:** the previous recommendation was "coach first,
+then Athletics." With a named contact who owns the relevant program, coach-first
+is now optional rather than necessary. A mention from his coach still helps, but
+it is no longer the gate.
 
-1. They will work it out. The first competent question is "where did this data
-   come from," and a hesitant answer is fatal.
-2. Volunteering it converts the liability into the *reason for the meeting*: "I
-   built the archive from public pages. I deliberately have no contact
-   information for these people, and I'm not going to go around Penn to get it.
-   That's exactly why I'm sitting here."
-3. It signals judgment. An undergraduate who proactively raises the governance
-   question before being asked reads as someone safe to work with — which is the
-   real thing being evaluated in that room.
+---
+
+## 7. First-principles reading of the deal
+
+**Ryan holds:** a working deployed application specific to this problem; a
+~90-year structured roster archive; a 4:51 film; insider credibility as a
+rostered athlete; and small but real proof it works under live conditions (a
+15-person tee sheet actually run on it).
+
+**The Champions Club holds:** contactable alumni with consent and legitimacy;
+the authority to endorse something so it doesn't read as spam; a funded alumni
+program already in motion; and continuity beyond any one student.
+
+**Neither asset produces value alone.** Software with no alumni is a demo. An
+alumni list with no product is a spreadsheet and a LinkedIn search. That is
+genuine complementarity, which is what makes a partnership rational rather than
+charitable.
+
+### The counterintuitive move on the data question
+Do not hide that he holds 340 names with no relationship to those people. Lead
+with it:
+
+> I built the archive from public roster pages. I deliberately have no contact
+> information for these people, and I'm not going to go around Penn to get it.
+> That's exactly why I'm here.
+
+Three reasons: they will work it out anyway and a hesitant answer is fatal; it
+converts the liability into the reason for the meeting; and it signals judgment,
+which is the actual thing being assessed when an undergraduate is in that room.
 
 ### On sequencing
-The earlier working assumption was "get traction first, pitch second," on the
-logic that 40 users beats 3. Section 4 substantially weakens that: Ryan cannot
-manufacture meaningful traction without the channel he'd be asking for. The
-realistic ceiling on a purely personal-network launch is the current roster plus
-a handful of recent alumni — perhaps 20-40 people, heavily skewed to the 2020s.
-
-That is still worth doing before the meeting, but reframe *why*: not to prove
-scale, but to ensure that when someone from Athletics clicks the link, the site
-shows real people and real upcoming events rather than one seeded placeholder.
-The bar is "this is alive," not "this has traction."
-
-**Concretely, before any meeting:** post the trip photos, post 2-3 real upcoming
-events, get the current roster onto the site. That is days of work, not months,
-and requires nothing from anyone else.
+The earlier logic — "build traction first, pitch second" — is substantially
+weakened by Section 4. Ryan *cannot* manufacture meaningful traction without the
+channel he'd be asking for. The bar before a meeting is therefore not "this has
+traction" but **"this is alive"**: real people, real upcoming events, no
+placeholder cards.
 
 ---
 
-## 7. Risks, stated honestly
+## 8. How to move forward
 
-1. **Monetization conflict — likely the most underrated risk.** The codebase
-   contains live Stripe subscription tiers: **$10/month (Member) and $20/month
-   (Founding Member)**, plus a parent tier and a donations path. Currently zero
-   subscribers and zero revenue. But a student proposing to charge Penn alumni a
-   monthly fee, on a member list derived from Penn roster data, under an
-   Athletics partnership, is a complication that Athletics *will* notice.
-   Ryan needs a settled position before the meeting. Plausible options: turn
-   billing off entirely for any Penn-partnered deployment; keep it purely
-   donation-based; or disclose it upfront and let Penn set the terms. Walking in
-   without having decided is the bad outcome.
+A concrete six-week sequence, built around the only hard deadline that exists.
 
+### This week (Aug 27 – Sep 2) — make the site alive
+Nothing here needs anyone else's permission.
+1. **Post the preseason trip photos.** Two team photos exist and have never been
+   uploaded. `/moments/new`, multi-upload, 30 seconds.
+2. **Post 2–3 real upcoming events.** Right now the only upcoming card is a
+   placeholder. A fall round, a Philadelphia coffee, anything real.
+3. **Get the current roster on.** Group text, the 64-second cut, a direct link.
+   This is the one population he can reach unilaterally, and they are the people
+   who will be in Scotland with him.
+4. **Post the gear haul** using the new team-update flow.
+
+Target by Sep 2: no placeholder cards, ≥15 real accounts, ≥6 photos.
+
+### Week of Sep 1 — email Charlie Carroll
+Not a partnership pitch. A specific, time-boxed, zero-cost offer:
+
+> Give the Scotland group a place to organize the trip and keep it afterwards.
+
+The ask is small enough to say yes to in one reply: twenty minutes, and a
+forward of one email to the registered travellers. What Ryan offers in return is
+concrete — tee sheets for the Castle Course, Kingsbarns and Carnoustie; a place
+to post photos each evening; and, the part that actually matters to the Champions
+Club, **a relationship that persists after everyone flies home.** A one-week trip
+becomes an ongoing connection, which is precisely what drives repeat giving.
+
+Why this beats a generic partnership pitch: it has a deadline, a pre-qualified
+user group, an obvious success metric, no cost to Penn, and it solves a problem
+Charlie already has.
+
+### September — onboard the Scotland group
+If Charlie forwards it, every registered traveller who claims a profile is worth
+more than fifty cold signups. These are $5,000–$10,000 alumni. Have the site
+genuinely ready: their names in the Member Book, the Scotland rounds already on
+the board as real gatherings.
+
+### Oct 12–17 — the trip is the launch
+Not a metaphor. Ryan is on site with the most engaged alumni in the population
+during the highest-visibility week Penn Golf will have all year. Run the tee
+sheets live. Post photos daily. Let people see it working while standing in it.
+Golf Channel is covering the first three days.
+
+### Late October — go back with their own numbers
+Return to the Champions Club with results from *their* event: how many
+travellers joined, what they posted, what happened after. That is when the
+broader conversation — other teams, an ongoing arrangement — becomes a real
+discussion rather than a speculative one.
+
+---
+
+## 9. Risks
+
+1. **Monetization conflict — the most underrated.** The codebase has live Stripe
+   tiers: **$10/month (Member), $20/month (Founding)**, plus a parent tier and
+   donations. Zero subscribers today. But a student proposing to charge Penn
+   alumni monthly, on a list derived from Penn roster data, under a Champions
+   Club partnership — while the Champions Club is itself soliciting gifts from
+   the same people — is a real conflict. **Decide the position before the
+   meeting.** Cleanest option: billing off entirely for anything Penn-partnered.
+   A competing ask on the same alumni is the fastest way to lose this.
 2. **Data governance.** 340 real people, publicly sourced, no consent obtained,
-   held by a private individual. Ryan must be able to state precisely: what is
-   stored, where it came from, who can see it, how removal works, and that
-   nothing is sold or shared. If any of that is not currently true in the
-   product, it should be made true before the meeting rather than described
-   aspirationally.
-
-3. **Ownership ambiguity.** He built it alone and owns it. "Partnership" can mean
-   anything from a pilot licence to Penn assuming control. He should decide his
-   floor beforehand. Negotiating live, as an undergraduate flattered to be in the
-   room, is how people give things away.
-
-4. **Single-person continuity.** One student, graduating. 65,548 lines with no
-   second maintainer. Any institution will ask what happens after. He needs an
-   answer even if it's "I intend to keep running it, and here's what handover
-   would look like."
-
-5. **Institutional pace.** Athletics departments move in months. This must not
-   block the small launch, which needs nothing from them.
-
-6. **Unproven demand.** The honest position: nobody yet knows whether Penn golf
-   alumni want this. Three accounts is not evidence either way. Claiming
-   product-market fit would be false and easily punctured.
+   held privately. He must be able to state exactly what is stored, where it came
+   from, who sees it, and how removal works — and it must already be true in the
+   product, not aspirational.
+3. **Ownership ambiguity.** He built it alone and owns it. Decide the floor
+   beforehand: he owns the platform, Penn gets a pilot licence. Do not negotiate
+   live while flattered to be in the room.
+4. **Single-person continuity.** 65,548 lines, one graduating student, no second
+   maintainer. Have an answer.
+5. **Timing risk.** 46 days is enough, but only if the Charlie email goes out in
+   early September. Sent in October it is worthless — everyone will be in
+   Scotland or recovering from it.
+6. **Unproven demand.** Nobody yet knows whether alumni want this. Three accounts
+   is not evidence either way. Claiming product-market fit would be false and
+   trivially punctured.
 
 ---
 
-## 8. The outreach, as currently drafted
+## 10. The outreach drafts
 
-Full drafts live in `docs/penn-athletics-outreach.md` in the repository. Summary
-of the approach:
+Full text in `docs/penn-athletics-outreach.md`. **Note: those drafts predate the
+Scotland finding and are now partly superseded.** They assume a cold approach via
+coach to an unnamed Associate AD. The correct version is warmer, names Charlie
+Carroll, and leads with the Scotland offer rather than a general partnership ask.
+The governance and ownership answers in Section 3 of that document remain
+correct and should be carried forward verbatim.
 
-**Sequence: coach first.** A cold email from a student-athlete to an Associate AD
-is weak. The same message forwarded by his coach gets read. The coach note is
-short, states what was built, cites the trip as proof it was used, and asks for
-one specific thing: an introduction to whoever owns alumni engagement.
-
-**The Athletics email** leads with identity (current player, coach's referral),
-describes the site in plain language, cites the Boston trip as the single
-proof-of-use, names the gap it fills, and makes a deliberately small ask: twenty
-minutes, plus the question of whether there's a legitimate way to reach Penn golf
-alumni. It closes with one line about applicability to other teams — enough to
-plant the idea, not enough to oversell.
-
-Deliberate choices in the copy: no "platform," no "engagement," no
-"network effects." Athletics staff hear vendor language constantly, and Ryan's
-entire advantage is that he is not a vendor.
-
-**Links to include:**
+Links to include:
 - Film: https://www.penngolfclubhouse.com/launch
 - Site: https://www.penngolfclubhouse.com
+- Scotland page he already built: https://www.penngolfclubhouse.com/scotland
+
+Copy principles that still hold: no "platform," no "engagement," no "network
+effects." Champions Club staff hear vendor language constantly, and Ryan's entire
+advantage is that he is not a vendor.
 
 ---
 
-## 9. Open questions only Ryan can answer
+## 11. Open questions only Ryan can answer
 
-1. **What is the actual ask?** Three materially different options: (a) permission
-   and a channel to reach Penn golf alumni, nothing more; (b) a formal pilot for
-   golf with Athletics promotion; (c) a multi-team deployment. These have very
-   different odds and timelines. (a) is nearly free for Penn to grant; (c) is a
-   procurement conversation measured in quarters.
-2. **Is the October Scotland trip open to alumni or team-only?** It is named in
-   the film. If alumni can attend it is the strongest possible launch hook and it
-   is time-boxed.
-3. **What is on his Desktop at `Belmont CC Networking List.xlsx` (dated
-   2026-08-14)?** If it contains alumni contact information, Section 4's
-   conclusion weakens considerably. It has deliberately not been opened.
-4. **What is his position on charging money?** See Risk 1.
-5. **What is his ownership floor?** See Risk 3.
-6. **Which specific person at Penn Athletics?** Development / Advancement /
-   Alumni Relations are the likely functions. The name should come from his coach
-   or the pennathletics.com staff directory, not a guess.
+1. **Is he definitely going to Scotland?** Section 8 assumes yes. If not, the
+   entire plan needs rebuilding around a different anchor.
+2. **Does he already know Charlie Carroll personally?** He built a page promoting
+   Charlie's trip. If they've corresponded, the email is a follow-up rather than
+   an introduction.
+3. **What is the actual ask?** (a) permission and a channel; (b) a Scotland
+   pilot; (c) multi-team deployment. Section 8 recommends (b) as the entry point
+   because it is nearly free for Penn to grant. (c) is a procurement conversation
+   measured in quarters.
+4. **Position on charging money?** See Risk 1.
+5. **Ownership floor?** See Risk 3.
+6. **Roughly how many alumni registered for Scotland?** Determines whether this
+   is a 10-person or 40-person pilot. Charlie knows; Ryan may not.
 
 ---
 
-## 10. Where this analysis is most likely wrong
+## 12. Where this analysis is most likely wrong
 
-An outside reader should stress-test these specifically:
-
-- **The "only door" claim (Section 4)** may be too strong. Alternative channels
-  exist: Penn's general alumni directory (QuakerNet), class notes, LinkedIn
-  outreach one at a time, the golf team's own alumni gatherings, word of mouth
-  through the current roster's parents. None scale well, but "only" may be
-  overstated.
-- **The complementarity framing (Section 6)** assumes Penn Athletics perceives a
-  problem worth solving. They may consider LinkedIn adequate, or view alumni
-  contact as belonging to central Alumni Relations rather than Athletics, in
-  which case Ryan is pitching the wrong department entirely.
-- **The archive's rarity** is asserted, not verified. Penn may hold complete
-  structured roster history already.
-- **"Coach first" is asserted as obviously correct.** It costs time and gives the
-  coach a veto. A direct approach might be faster if the right name is known.
-- **The recommendation to launch small before pitching** could be wrong if speed
-  matters more than polish — the graduation clock is real, and a meeting in
-  September with a thin site may beat a meeting in November with a fuller one.
-- **Zero traction may simply be disqualifying** regardless of framing, and the
-  correct move might be to spend a semester getting to 50 real alumni users by
-  any means available before approaching anyone institutional.
+- **The Scotland pilot may be too small to matter.** If only 8 alumni registered,
+  a successful pilot proves very little and burns the one warm contact.
+- **Charlie Carroll may be the wrong function.** Champions Club is
+  fundraising-led. Alumni *engagement* may sit with central Penn Alumni Relations,
+  and a development officer may see this as a distraction from soliciting gifts.
+- **The timing may be actively bad.** Six weeks before a major trip is when an
+  organizer is most overloaded. The same email in November might get more
+  attention, at the cost of missing the event.
+- **Introducing an unofficial tool to paying travellers carries institutional
+  risk** that Penn may simply decline — an unvetted student-run site touching
+  $10,000 donors is a plausible no regardless of merit.
+- **"340 names, 3 emails" may overstate the barrier.** QuakerNet, class notes,
+  the current roster's parents, and one-at-a-time LinkedIn outreach all exist.
+  None scale, but "only door" is probably too strong.
+- **Zero traction may simply be disqualifying,** and the right move might be a
+  semester of getting to 50 real users by any means before approaching anyone
+  institutional.
+- **The archive's rarity is asserted, not verified.** Penn may already hold
+  complete structured roster history.
 
 ---
 
-## Appendix: engineering work completed 2026-08-26
+## Appendix: engineering completed 2026-08-26
 
-Two substantive changes shipped and verified on production this session.
-
-**1. Past rounds become records.** Gatherings had no past-date logic at all: four
-days after the preseason trip, both rounds still displayed as "Open," were
-counted in the board's open tally, still offered calendar links, and still
-exposed live group-editing controls. Root cause was that gatherings stored only a
-host-typed free-text date. Two parser traps were found and fixed:
+**Past rounds become records.** Gatherings had no past-date logic at all: four
+days after the preseason trip, both rounds still showed as "Open," counted in the
+open tally, offered calendar links, and exposed live group-editing controls. Root
+cause: gatherings stored only a host-typed free-text date. Two parser traps found
+and fixed:
 
 - `Date.parse("Saturday, June 14")` → **2001-06-14**. This was the host form's
-  own placeholder text, so following the form's example produced a date 25 years
-  in the past, which would sort a new round to the top of the board and then
-  immediately bury it as already played.
-- `Date.parse("Alumni Weekend, 2026")` → **2026-01-01**. The parser extracts a
-  year and ignores everything else, inventing a January date for any label that
-  merely contains a year.
+  own placeholder, so following the form's example produced a date 25 years past,
+  sorting a new round to the top of the board and then burying it as played.
+- `Date.parse("Alumni Weekend, 2026")` → **2026-01-01**. The parser grabs a year
+  and ignores the rest, inventing a January date for any label containing a year.
 
-A dedicated date module now requires text to actually name a month or numeric
-date, reads a yearless date as the *next* such day, and treats anything it cannot
-date as never-past (the safe direction is always to leave a gathering visible).
-Both host forms now capture a real ISO date. Past rounds move to a "Recently
-Played" section, read-only, showing who played. 24 unit tests cover it. Verified
-live: the board went from "3 OPEN" to "1 OPEN" plus "2 PLAYED."
+A dedicated date module now requires text to name a month or numeric date, reads
+a yearless date as the *next* such day, and treats undatable text as never-past
+(the safe direction is to leave a gathering visible). Both host forms capture a
+real ISO date. Past rounds move to a read-only "Recently Played" section. 24 unit
+tests. Verified live: the board went from "3 OPEN" to "1 OPEN" and "2 PLAYED."
 
-**2. Faster team updates.** Posting a team update (e.g. a gear haul) required
-typing a date by hand and permitted one image, which was actually the link-
-preview override. Now: a date picker pre-set to today with Today / Yesterday /
-Last Sat shortcuts, a one-tap escape to free-text for labels like "Championship
-Weekend," up to 12 photos or videos with drag-to-reorder, and a gallery that
-renders in The Season. The link-preview upload is hidden until a link is present.
-Verified live.
+**Faster team updates.** Posting an update required typing a date by hand and
+allowed one image, which was really the link-preview override. Now: a date picker
+pre-set to today with Today / Yesterday / Last Sat shortcuts, a one-tap escape to
+free text for labels like "Championship Weekend," up to 12 photos or videos with
+drag-to-reorder, and a gallery rendering in The Season. The link-preview upload
+is hidden until a link exists. Verified live.

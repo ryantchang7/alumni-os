@@ -1,14 +1,86 @@
 # Penn Athletics outreach
 
-Drafts for showing Penn Athletics the Clubhouse. Order matters: **coach first.**
-A cold email to an Associate AD from a student-athlete usually goes nowhere; the
-same email forwarded by your coach gets read.
+> **Updated 2026-08-27.** The primary approach is now the Scotland email in
+> Section 0, addressed to Charlie Carroll at the Penn Champions Club. The
+> coach-first drafts below it are the fallback for a general partnership
+> conversation later. The governance and ownership answers in Section 3 apply to
+> both and should be carried into any meeting verbatim.
 
 Links to include:
 - Film: https://www.penngolfclubhouse.com/launch
 - Site: https://www.penngolfclubhouse.com
+- Scotland page: https://www.penngolfclubhouse.com/scotland
 
-Fill in: `[year]` (junior/senior), `[Coach]`, `[Name]`, your phone.
+---
+
+## 0. The Scotland email — send this first, week of Sep 1
+
+**To:** Charlie Carroll, Penn Champions Club — ccarrol2@upenn.edu
+**Subject:** `Scotland tour — something that might be useful for the group`
+
+> Hi Charlie,
+>
+> I'm Ryan Chang, [year] on the men's golf team. I'll be over for the Links
+> Collegiate in October.
+>
+> Over the past year I built penngolfclubhouse.com, a private site for Penn Golf
+> alumni and current players. Alumni claim their spot in the roster history,
+> which I've reconstructed back to the 1930s, see where former teammates ended
+> up, and set up rounds with each other. Our team used it to run the tee sheet
+> for the preseason trip in Boston last weekend, 15 players across four groups.
+> I also built the Scotland page on it that points people to you.
+>
+> The reason I'm writing: I'd like to offer it to the Scotland group, at no cost
+> and with no obligation.
+>
+> Practically that means tee sheets for the Castle Course, Kingsbarns and
+> Carnoustie, a place to post photos each evening, and a private space where the
+> people on this trip stay connected once everyone flies home. That last part is
+> the one I think is worth something to you. A week in Scotland is a lot of
+> goodwill, and right now it ends when the flights do.
+>
+> Two asks, both small:
+>
+> 1. Twenty minutes to show you the site and a short film I made about it.
+> 2. If you think it's useful, forward one email from me to the registered
+>    travellers. I have no contact information for Penn Golf alumni and I don't
+>    want to go around Penn to get any, which is a large part of why I'm writing
+>    to you rather than to them.
+>
+> If it works for this trip, the same thing works for any team.
+>
+> Film: https://www.penngolfclubhouse.com/launch
+> Site: https://www.penngolfclubhouse.com
+>
+> Thanks,
+> Ryan Chang
+> rtchang@upenn.edu · [phone]
+
+**Why it's built this way**
+- The Scotland page he already built is the warm opener. Use it in sentence three,
+  not as a footnote.
+- "At no cost and with no obligation" removes the procurement reflex immediately.
+- The persistence-after-the-trip line is the actual pitch. The Champions Club
+  converts engagement into giving; a trip that ends cleanly is value evaporating.
+- Volunteering the no-contact-data fact *before* being asked is the single
+  strongest move in the email. It pre-empts the killer question and reads as
+  judgment rather than as a confession.
+- The ask is one forwarded email. That is small enough to answer in one reply.
+- One line on other teams. Enough to plant, not enough to oversell.
+
+**Before sending, make sure the site is alive.** Charlie will click the link
+within a minute of reading. If the board shows a placeholder round and three
+accounts, the email has actively cost something. See Section 8 of the brief.
+
+---
+
+## Fallback drafts (general partnership, no named contact)
+
+Use these only if the Champions Club route stalls. Order matters here:
+**coach first** — a cold email to an unnamed Associate AD from a student-athlete
+usually goes nowhere.
+
+Fill in: `[year]`, `[Coach]`, `[Name]`, your phone.
 
 ---
 
