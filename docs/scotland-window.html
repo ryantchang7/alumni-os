@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Scotland Window</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+</head>
+<body>
+
+<style>
+  /* ── Tokens: complete light palette on bare :root ───────────────── */
+  :root {
+    --paper:      #FBFAF7;
+    --paper-2:    #F3F1EC;
+    --card:       #FFFFFF;
+    --ink:        #0A1628;
+    --ink-2:      #33405A;
+    --ink-3:      #6B7689;
+    --rule:       #DDD9D0;
+    --rule-soft:  #EAE7E0;
+    --penn:       #990000;
+    --gold:       #8A6D1F;
+    --gold-bright:#C8A84B;
+    --green:      #2D6A4F;
+    --band:       #0A1628;
+    --band-ink:   #F4F2EC;
+    --band-ink-2: #A9B3C4;
+    --shadow:     0 1px 2px rgba(10,22,40,.05), 0 8px 24px -12px rgba(10,22,40,.14);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:      #0B1220;
+      --paper-2:    #111A2B;
+      --card:       #121C2E;
+      --ink:        #EDEFF3;
+      --ink-2:      #B4BECD;
+      --ink-3:      #7C8798;
+      --rule:       #24314A;
+      --rule-soft:  #1B2537;
+      --penn:       #FF6B6B;
+      --gold:       #D9B45C;
+      --gold-bright:#E4C875;
+      --green:      #5FBE92;
+      --band:       #060C16;
+      --band-ink:   #EDEFF3;
+      --band-ink-2: #8F9BAE;
+      --shadow:     0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:      #0B1220;
+    --paper-2:    #111A2B;
+    --card:       #121C2E;
+    --ink:        #EDEFF3;
+    --ink-2:      #B4BECD;
+    --ink-3:      #7C8798;
+    --rule:       #24314A;
+    --rule-soft:  #1B2537;
+    --penn:       #FF6B6B;
+    --gold:       #D9B45C;
+    --gold-bright:#E4C875;
+    --green:      #5FBE92;
+    --band:       #060C16;
+    --band-ink:   #EDEFF3;
+    --band-ink-2: #8F9BAE;
+    --shadow:     0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+  }
+
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 22px; }
+
+  /* ── Type scale ─────────────────────────────────────────────────── */
+  h1, h2, h3 { font-family: Newsreader, ui-serif, Georgia, serif; text-wrap: balance; margin: 0; font-weight: 500; }
+  h1 { font-size: clamp(2.4rem, 6.5vw, 3.5rem); line-height: 1.05; letter-spacing: -.018em; }
+  h2 { font-size: clamp(1.55rem, 3.6vw, 2.05rem); line-height: 1.16; letter-spacing: -.012em; }
+  h3 { font-size: 1.13rem; line-height: 1.3; font-weight: 600; }
+  p  { margin: 0 0 1.05em; }
+  a  { color: var(--penn); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  strong { font-weight: 600; }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .69rem; font-weight: 600;
+    letter-spacing: .17em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  /* ── Masthead ───────────────────────────────────────────────────── */
+  .masthead { padding: 60px 0 34px; border-bottom: 1px solid var(--rule); }
+  .masthead .eyebrow { color: var(--penn); }
+  .masthead h1 { margin: 14px 0 16px; }
+  .standfirst { font-size: 1.13rem; color: var(--ink-2); max-width: 60ch; margin: 0; }
+  .byline {
+    margin-top: 24px; display: flex; flex-wrap: wrap; gap: 8px 18px;
+    font-family: "IBM Plex Mono", monospace; font-size: .73rem; color: var(--ink-3);
+  }
+  .byline span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex: none; }
+
+  /* ── Sections ───────────────────────────────────────────────────── */
+  section { padding: 44px 0; border-bottom: 1px solid var(--rule-soft); }
+  section:last-of-type { border-bottom: 0; }
+  .sec-head { margin-bottom: 22px; }
+  .sec-head h2 { margin-top: 7px; }
+
+  /* ── The thesis band: the one bold moment ───────────────────────── */
+  .band {
+    background: var(--band); color: var(--band-ink);
+    margin: 0; padding: 58px 0 54px;
+  }
+  .band .eyebrow { color: var(--gold-bright); }
+  .band h2 { color: var(--band-ink); margin: 12px 0 26px; }
+  .band p { color: var(--band-ink-2); }
+  .band p strong { color: var(--band-ink); font-weight: 500; }
+
+  .figures {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2px; background: rgba(255,255,255,.11);
+    border: 1px solid rgba(255,255,255,.11); border-radius: 3px;
+    overflow: hidden; margin: 0 0 26px;
+  }
+  .fig { background: var(--band); padding: 22px 20px; }
+  .fig .n {
+    font-family: Newsreader, serif; font-size: 3.1rem; line-height: .95;
+    font-variant-numeric: tabular-nums; color: var(--band-ink); display: block;
+  }
+  .fig .n.hot { color: var(--gold-bright); }
+  .fig .l {
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem;
+    letter-spacing: .13em; text-transform: uppercase;
+    color: var(--band-ink-2); margin-top: 11px; display: block;
+  }
+
+  /* ── Countdown ──────────────────────────────────────────────────── */
+  .countdown {
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    padding: 20px 22px; border-radius: 3px;
+    background: color-mix(in srgb, var(--gold-bright) 13%, transparent);
+    border: 1px solid color-mix(in srgb, var(--gold-bright) 34%, transparent);
+    margin-bottom: 26px;
+  }
+  .countdown .days {
+    font-family: Newsreader, serif; font-size: 2.7rem; line-height: 1;
+    font-variant-numeric: tabular-nums; color: var(--gold);
+  }
+  .countdown .what { font-size: .95rem; color: var(--ink-2); }
+  .countdown .what b { color: var(--ink); font-weight: 600; }
+
+  /* ── Tables ─────────────────────────────────────────────────────── */
+  .scroll { overflow-x: auto; margin: 0 0 22px; }
+  table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+  th, td { text-align: left; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--rule-soft); }
+  th {
+    font-family: "IBM Plex Mono", monospace; font-size: .67rem; font-weight: 600;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
+    border-bottom-color: var(--rule);
+  }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: "IBM Plex Mono", monospace; padding-right: 0; }
+  td.num b { color: var(--penn); font-weight: 600; }
+
+  /* ── Callouts ───────────────────────────────────────────────────── */
+  .note {
+    background: var(--card); border: 1px solid var(--rule);
+    border-radius: 3px; padding: 20px 22px; margin: 0 0 22px; box-shadow: var(--shadow);
+  }
+  .note > :last-child { margin-bottom: 0; }
+  .note .eyebrow { display: block; margin-bottom: 9px; }
+  .note.flag { border-left: 3px solid var(--penn); }
+  .note.flag .eyebrow { color: var(--penn); }
+  .note.good { border-left: 3px solid var(--green); }
+  .note.good .eyebrow { color: var(--green); }
+
+  /* ── Dated plan: a real sequence, so it gets real markers ───────── */
+  .plan { list-style: none; padding: 0; margin: 0; }
+  .plan li { display: grid; grid-template-columns: 92px 1fr; gap: 20px; padding: 20px 0; border-top: 1px solid var(--rule-soft); }
+  .plan li:first-child { border-top: 1px solid var(--rule); }
+  .when {
+    font-family: "IBM Plex Mono", monospace; font-size: .71rem; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--penn);
+    padding-top: 3px; line-height: 1.5;
+  }
+  .plan h3 { margin-bottom: 6px; }
+  .plan p { font-size: .95rem; color: var(--ink-2); margin-bottom: 0; }
+  .plan ul { margin: 9px 0 0; padding-left: 17px; font-size: .95rem; color: var(--ink-2); }
+  .plan ul li { display: list-item; border: 0; padding: 2px 0; }
+
+  /* ── Email block ────────────────────────────────────────────────── */
+  .email {
+    background: var(--paper-2); border: 1px solid var(--rule);
+    border-radius: 3px; padding: 24px 24px 20px; margin-bottom: 20px;
+  }
+  .email .hdr {
+    font-family: "IBM Plex Mono", monospace; font-size: .76rem; color: var(--ink-3);
+    padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid var(--rule);
+    display: grid; gap: 4px;
+  }
+  .email .hdr b { color: var(--ink); font-weight: 600; }
+  .email p { font-size: .95rem; }
+  .email p:last-child { margin-bottom: 0; }
+
+  code {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .87em; background: var(--paper-2);
+    border: 1px solid var(--rule-soft); border-radius: 2px;
+    padding: 1px 5px; color: var(--ink-2);
+  }
+  .band code { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.14); color: var(--band-ink); }
+
+  /* Contents */
+  .toc { padding: 30px 0 6px; }
+  .toc ol { list-style: none; margin: 12px 0 0; padding: 0; columns: 2; column-gap: 34px; }
+  .toc li { break-inside: avoid; border-top: 1px solid var(--rule-soft); padding: 7px 0; }
+  .toc a {
+    color: var(--ink-2); text-decoration: none; font-size: .89rem;
+    display: flex; gap: 11px; align-items: baseline;
+  }
+  .toc a:hover { color: var(--penn); }
+  .toc .k {
+    font-family: "IBM Plex Mono", monospace; font-size: .69rem;
+    color: var(--ink-3); flex: none; font-variant-numeric: tabular-nums;
+  }
+
+  /* Two-sided ledger */
+  .ledger { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule);
+            border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; margin: 0 0 22px; }
+  .ledger > div { background: var(--card); padding: 20px 21px; }
+  .ledger h3 { font-size: 1rem; margin-bottom: 12px; }
+  .ledger ul { margin: 0; padding-left: 16px; font-size: .91rem; color: var(--ink-2); }
+  .ledger li { padding: 4px 0; }
+  .ledger .lhs h3 { color: var(--penn); }
+  .ledger .rhs h3 { color: var(--gold); }
+
+  /* Spec grid */
+  .spec { display: grid; grid-template-columns: repeat(auto-fit, minmax(126px,1fr)); gap: 1px;
+          background: var(--rule); border: 1px solid var(--rule); border-radius: 3px;
+          overflow: hidden; margin: 0 0 22px; }
+  .spec div { background: var(--card); padding: 15px 16px; }
+  .spec .v { font-family: "IBM Plex Mono", monospace; font-size: 1.32rem; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .spec .k { font-size: .73rem; color: var(--ink-3); margin-top: 5px; line-height: 1.35; }
+
+  /* Question list */
+  .qs { list-style: none; margin: 0; padding: 0; counter-reset: q; }
+  .qs li { border-top: 1px solid var(--rule-soft); padding: 15px 0 15px 38px; position: relative; counter-increment: q; }
+  .qs li:first-child { border-top: 1px solid var(--rule); }
+  .qs li::before {
+    content: counter(q); position: absolute; left: 0; top: 15px;
+    font-family: "IBM Plex Mono", monospace; font-size: .74rem; font-weight: 600;
+    color: var(--penn); font-variant-numeric: tabular-nums;
+  }
+  .qs b { display: block; margin-bottom: 3px; }
+  .qs span { font-size: .93rem; color: var(--ink-2); }
+
+  .risks { list-style: none; margin: 0; padding: 0; counter-reset: r; }
+  .risks > li { border-top: 1px solid var(--rule-soft); padding: 16px 0 16px 38px; position: relative; counter-increment: r; }
+  .risks > li:first-child { border-top: 1px solid var(--rule); }
+  .risks > li::before {
+    content: counter(r); position: absolute; left: 0; top: 16px;
+    font-family: "IBM Plex Mono", monospace; font-size: .74rem; font-weight: 600;
+    color: var(--ink-3); font-variant-numeric: tabular-nums;
+  }
+  .risks b { display: block; margin-bottom: 3px; }
+  .risks p { font-size: .93rem; color: var(--ink-2); margin: 0; }
+  .risks li.top::before { color: var(--penn); }
+
+  code {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .87em; background: var(--paper-2);
+    border: 1px solid var(--rule-soft); border-radius: 2px;
+    padding: 1px 5px; color: var(--ink-2);
+  }
+  .band code { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.14); color: var(--band-ink); }
+
+  ul.plain { padding-left: 18px; }
+  ul.plain li { padding: 3px 0; }
+
+  .why { font-size: .9rem; color: var(--ink-3); }
+  .why li { padding: 3px 0; }
+
+  footer { padding: 40px 0 64px; color: var(--ink-3); font-size: .84rem; }
+  footer a { color: var(--ink-2); }
+
+  @media (max-width: 620px) {
+    .ledger { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+  }
+  @media (max-width: 560px) {
+    .plan li { grid-template-columns: 1fr; gap: 7px; }
+    .fig .n { font-size: 2.6rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Penn Golf Clubhouse &middot; Decision brief</p>
+    <h1>The Scotland Window</h1>
+    <p class="standfirst">
+      The product is finished and nobody is using it. There is exactly one opening
+      to fix that, it belongs to someone whose name is already on your own site,
+      and it closes in six weeks.
+    </p>
+    <div class="byline">
+      <span><span class="dot"></span> Verified against production</span>
+      <span>27 August 2026</span>
+      <span>penngolfclubhouse.com</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <p class="eyebrow">Contents</p>
+    <ol>
+      <li><a href="#who"><span class="k">01</span> Who and what</a></li>
+      <li><a href="#exists"><span class="k">02</span> What exists, verified</a></li>
+      <li><a href="#traction"><span class="k">03</span> The traction reality</a></li>
+      <li><a href="#asymmetry"><span class="k">04</span> The central asymmetry</a></li>
+      <li><a href="#scotland"><span class="k">05</span> Scotland, the opening</a></li>
+      <li><a href="#contact"><span class="k">06</span> Who to contact</a></li>
+      <li><a href="#deal"><span class="k">07</span> Reading the deal</a></li>
+      <li><a href="#forward"><span class="k">08</span> How to move forward</a></li>
+      <li><a href="#email"><span class="k">09</span> The email</a></li>
+      <li><a href="#risks"><span class="k">10</span> Risks</a></li>
+      <li><a href="#questions"><span class="k">11</span> Open questions</a></li>
+      <li><a href="#wrong"><span class="k">12</span> Where this is wrong</a></li>
+      <li><a href="#shipped"><span class="k">13</span> Engineering appendix</a></li>
+    </ol>
+  </nav>
+
+  <section id="who">
+    <div class="sec-head">
+      <p class="eyebrow">01 &middot; Who and what</p>
+      <h2>A rostered player who shipped a real application</h2>
+    </div>
+    <p>
+      Ryan Chang, current Penn men's golf student-athlete. Over roughly the past
+      year he single-handedly designed, built, shipped and filmed
+      penngolfclubhouse.com, a private site for Penn Men's Golf alumni and current
+      players.
+    </p>
+    <p>
+      He is a student developer rather than a professional engineer, and built this
+      with heavy AI assistance. That bears on long-term maintainability, not on
+      whether it works. It demonstrably works.
+    </p>
+    <div class="note flag">
+      <span class="eyebrow">The clock</span>
+      <p style="margin-bottom:0">
+        His standing as a <strong>current</strong> player is the thing that gets him in a
+        room at all. A rostered athlete walking into an Athletics office is a
+        different conversation from an alum emailing in, and it expires at
+        graduation. Every recommendation here is shaped by that.
+      </p>
+    </div>
+  </section>
+
+  <section id="exists">
+    <div class="sec-head">
+      <p class="eyebrow">02 &middot; What exists</p>
+      <h2>Verified against production</h2>
+    </div>
+    <div class="spec">
+      <div><div class="v">86</div><div class="k">Application pages</div></div>
+      <div><div class="v">109</div><div class="k">API endpoints</div></div>
+      <div><div class="v">68</div><div class="k">Components</div></div>
+      <div><div class="v">65,548</div><div class="k">Lines of TypeScript</div></div>
+      <div><div class="v">15</div><div class="k">Unit suites</div></div>
+      <div><div class="v">12</div><div class="k">End-to-end specs</div></div>
+    </div>
+    <p>
+      Next.js 16.2.6, React 19.2.4, TypeScript 5, Tailwind 4, NextAuth v5, Vercel
+      Blob, Stripe, Resend. Live on Vercel. This is a production application, not a
+      prototype.
+    </p>
+
+    <h3 style="margin:26px 0 10px">What it does</h3>
+    <p>
+      A <strong>Member Book</strong> registry across generations, and a claim flow where
+      alumni claim their own roster entry subject to approval. <strong>The Course</strong>
+      runs organized rounds with tee sheets and group assignment;
+      <strong>The 19th Hole</strong> does the same for coffee, drinks and dinners;
+      <strong>Open Requests</strong> covers "I'm in town." Then
+      <strong>Moments</strong> (a photo and video wall), <strong>Locker Room</strong>
+      (a players-and-alumni-only tier), <strong>Career Room</strong> (find members by
+      industry), and <strong>Ask</strong> (a current player requests an introduction to
+      an alum). Plus Team Room and The Season, direct chat, a member map, Hall of
+      Fame, and around 25 internal routes for roster scraping, data quality, the
+      claims queue and launch readiness.
+    </p>
+
+    <h3 style="margin:26px 0 10px">The film</h3>
+    <p>
+      Public at <code>/launch</code>. Probed from the file actually served:
+      <strong>4 minutes 51 seconds, 1920 by 1080, 53 MB.</strong> A 64 second cut also
+      exists in 1080p and 4K. Neither has a music bed; that decision was never
+      finalized.
+    </p>
+
+    <h3 style="margin:26px 0 10px">The roster archive, the rare asset</h3>
+    <p>
+      340 members spanning <strong>1930 to 2030</strong>, built from public
+      pennathletics.com roster pages season by season, each record carrying its
+      source URLs and a confidence score. Roughly 90 years of Penn men's golf,
+      structured.
+    </p>
+    <div class="scroll">
+      <table>
+        <tr><th>Decade</th><th class="num">Members</th><th>Decade</th><th class="num">Members</th></tr>
+        <tr><td>2020s</td><td class="num">30</td><td>1970s</td><td class="num">43</td></tr>
+        <tr><td>2010s</td><td class="num">31</td><td>1960s</td><td class="num">46</td></tr>
+        <tr><td>2000s</td><td class="num">29</td><td>1950s</td><td class="num">35</td></tr>
+        <tr><td>1990s</td><td class="num">18</td><td>1940s</td><td class="num">43</td></tr>
+        <tr><td>1980s</td><td class="num">18</td><td>1930s</td><td class="num">~47</td></tr>
+      </table>
+    </div>
+    <p style="margin-bottom:0">
+      Note the shape: the archive is <em>deepest</em> in the 1940s to 1970s, which is
+      also where members are least likely to be reachable or living. It is plausible
+      that no equivalent structured archive exists inside Penn Athletics. That is
+      asserted, not verified, and worth checking.
+    </p>
+  </section>
+
+  <section id="traction">
+    <div class="sec-head">
+      <p class="eyebrow">03 &middot; Where things stand</p>
+      <h2>Built, verified, unused</h2>
+    </div>
+    <p>
+      86 pages, 109 API endpoints, 65,548 lines of TypeScript, 15 unit suites and
+      12 end-to-end specs, live on Vercel. A 4 minute 51 second film at
+      <code>/launch</code>. A Member Book holding 340 Penn golfers spanning 1930 to
+      2030, reconstructed season by season from public roster pages.
+    </p>
+    <p>Against that:</p>
+    <div class="scroll">
+      <table>
+        <tr><td>Approved member accounts</td><td class="num"><b>3</b></td></tr>
+        <tr><td>Photos on the wall</td><td class="num">2, both from July</td></tr>
+        <tr><td>Real upcoming events</td><td class="num"><b>0</b></td></tr>
+        <tr><td>Career posts, open requests</td><td class="num">0, 0</td></tr>
+        <tr><td>Paying supporters, donations</td><td class="num">0, $0</td></tr>
+      </table>
+    </div>
+    <p>
+      The preseason trip did happen on the site: 15 players across four groups at
+      Belmont, 12 at The International. That is the only evidence anyone has ever
+      really used this. Both rounds are now past, and the upcoming board holds a
+      single card that is a seeded placeholder.
+    </p>
+  </section>
+</div>
+
+<div class="band" id="asymmetry">
+  <div class="wrap">
+    <p class="eyebrow">04 &middot; The constraint everything else follows from</p>
+    <h2>340 names. Three ways to reach anyone.</h2>
+    <div class="figures">
+      <div class="fig"><span class="n">340</span><span class="l">In the Member Book</span></div>
+      <div class="fig"><span class="n hot">3</span><span class="l">Email addresses</span></div>
+      <div class="fig"><span class="n hot">1</span><span class="l">LinkedIn URLs</span></div>
+      <div class="fig"><span class="n hot">0</span><span class="l">Phone numbers</span></div>
+    </div>
+    <p>
+      You know who every Penn golfer since 1930 is. You cannot contact almost any
+      of them. The archive was built from public pages, and public pages do not
+      list email addresses.
+    </p>
+    <p>
+      <strong>The launch runbook's "send the alumni email to 340 people" step has no
+      list behind it.</strong> It cannot happen as written. A launch through people
+      you personally know still works, and its realistic ceiling is 20 to 40
+      people, nearly all from the 2020s.
+    </p>
+    <p>
+      This is why the advice from earlier flips. Penn is not an accelerant for
+      reaching the other 330. It is the only channel. That argues for going
+      sooner, not for waiting to build traction you have no way to build.
+    </p>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="scotland">
+    <div class="sec-head">
+      <p class="eyebrow">05 &middot; The opening</p>
+      <h2>Scotland, and it was on your site the whole time</h2>
+    </div>
+
+    <div class="countdown">
+      <span class="days" id="days">46</span>
+      <span class="what">
+        <b>days until the St Andrews Links Collegiate</b><br>
+        Tournament 12 to 14 October. Alumni tour 14 to 17 October.
+      </span>
+    </div>
+
+    <p>
+      Penn competes against Texas, Washington and St Andrews, men's and women's
+      teams both, two rounds on the Jubilee and match play on the Old Course.
+      <strong>All three days televised on Golf Channel.</strong> Then the alumni tour:
+      Old Course Hotel, the Castle Course, Kingsbarns, Carnoustie, dinner at
+      Rusacks above the eighteenth.
+    </p>
+    <p>
+      Registration ran through 30 June at <strong>$5,000, $7,500 and $10,000</strong>,
+      the upper tiers folding a tax-deductible gift into the Penn Golf annual fund.
+      You told me registration has closed and treated that as a loss. It is the
+      opposite.
+    </p>
+
+    <div class="note good">
+      <span class="eyebrow">What a closed registration actually means</span>
+      <ul class="plain">
+        <li><strong>The list already exists.</strong> People who paid five to ten
+          thousand dollars to fly to Scotland with the team are, by revealed
+          preference, the most committed alumni in the entire population. Someone
+          has their contact details.</li>
+        <li><strong>You will be standing next to them.</strong> Your own Scotland
+          page says coaches and student-athletes join the group at Kingsbarns on
+          15 October.</li>
+        <li><strong>October is peak attention on Penn Golf.</strong> Three days of
+          national coverage.</li>
+        <li><strong>It was never a signup hook.</strong> It is better: a defined,
+          funded, committed group with a fixed date.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="sec-head">
+      <p class="eyebrow">06 &middot; Who to contact</p>
+      <h2>You answered this months ago</h2>
+    </div>
+    <p>Your own <code>/scotland</code> page reads:</p>
+    <div class="note">
+      <p style="margin-bottom:0">
+        The trip is organized with the <strong>Penn Champions Club</strong>. For anything
+        about the Scotland Tour, confirmations, logistics, or details, reach
+        <strong>Charlie Carroll</strong> at the Penn Champions Club.<br>
+        <a href="mailto:ccarrol2@upenn.edu">ccarrol2@upenn.edu</a> &middot; (215) 898-8899
+      </p>
+    </div>
+    <p>
+      The Champions Club is Penn Athletics' donor and alumni engagement arm. Charlie
+      runs the alumni side of this trip. So the "which person at Penn Athletics"
+      question is solved, and it is not a staff-directory guess.
+    </p>
+    <ul class="plain">
+      <li><strong>Already warm.</strong> You built and published a page promoting
+        their trip and pointing people to him.</li>
+      <li><strong>Their model is your model.</strong> The Champions Club converts
+        alumni engagement into giving. The Scotland packages literally bundle
+        annual fund gifts. A tool that deepens alumni connection is not a side
+        project to them, it is their function.</li>
+    </ul>
+    <p class="why" style="margin-bottom:0">
+      This supersedes the earlier "coach first" advice. With a named contact who
+      owns the relevant program, your coach is helpful but no longer the gate.
+    </p>
+  </section>
+
+  <section id="deal">
+    <div class="sec-head">
+      <p class="eyebrow">07 &middot; First principles</p>
+      <h2>Reading the deal</h2>
+    </div>
+    <p>
+      Strip away the framing of a student asking a favour and look at what each side
+      actually holds.
+    </p>
+    <div class="ledger">
+      <div class="lhs">
+        <h3>Ryan holds</h3>
+        <ul>
+          <li>A working, deployed application built for exactly this problem</li>
+          <li>A 90 year structured roster archive Penn may not itself possess</li>
+          <li>A 4:51 film that makes the case emotionally</li>
+          <li>Insider credibility: a rostered athlete, not a vendor</li>
+          <li>Small but real proof it works, a 15 person tee sheet actually run on it</li>
+        </ul>
+      </div>
+      <div class="rhs">
+        <h3>The Champions Club holds</h3>
+        <ul>
+          <li>Contactable alumni, with consent and legitimacy</li>
+          <li>Authority to endorse something so it does not read as spam</li>
+          <li>A funded alumni programme already in motion</li>
+          <li>Reach across roughly 33 varsity programmes</li>
+          <li>Continuity that outlasts any one student</li>
+        </ul>
+      </div>
+    </div>
+    <p>
+      <strong>Neither asset produces value alone.</strong> Software with no alumni is a
+      demo. An alumni list with no product is a spreadsheet and a LinkedIn search.
+      That is genuine complementarity, and complementarity rather than enthusiasm is
+      what makes a partnership rational for both sides.
+    </p>
+
+    <h3 style="margin:26px 0 10px">The counterintuitive move on the data question</h3>
+    <p>
+      The instinct is to hide it: do not mention that you hold 340 people's names
+      with no relationship to any of them. That instinct is wrong. Lead with it:
+    </p>
+    <div class="note">
+      <p style="margin-bottom:0">
+        <em>"I built the archive from public roster pages. I deliberately have no
+        contact information for these people, and I'm not going to go around Penn to
+        get it. That's exactly why I'm here."</em>
+      </p>
+    </div>
+    <p>
+      Three reasons. They will work it out anyway, and a hesitant answer is fatal.
+      It converts the liability into the reason for the meeting. And it signals
+      judgment, which is the actual thing being assessed when an undergraduate is in
+      that room.
+    </p>
+
+    <h3 style="margin:26px 0 10px">On sequencing</h3>
+    <p style="margin-bottom:0">
+      The earlier logic was "build traction first, pitch second." Section 04
+      substantially weakens that: Ryan cannot manufacture meaningful traction without
+      the channel he would be asking for. The bar before a meeting is therefore not
+      <em>this has traction</em> but <strong>this is alive</strong>. Real people, real
+      upcoming events, no placeholder cards.
+    </p>
+  </section>
+
+  <section id="forward">
+    <div class="sec-head">
+      <p class="eyebrow">08 &middot; Six weeks, in order</p>
+      <h2>How to move forward</h2>
+    </div>
+    <ol class="plan">
+      <li>
+        <div class="when">This week</div>
+        <div>
+          <h3>Make the site alive</h3>
+          <p>None of this needs anyone's permission, and all of it is a prerequisite
+             for the email. Charlie will click the link within a minute of reading it.</p>
+          <ul>
+            <li>Post the two preseason trip photos. They have never been uploaded.</li>
+            <li>Post two or three real upcoming events, so the board is not a placeholder.</li>
+            <li>Get the current roster on by group text with the 64 second cut. They are the people who will be in Scotland with you.</li>
+            <li>Post the gear haul using the new update flow.</li>
+          </ul>
+          <p style="margin-top:10px"><strong>Target by 2 September:</strong> no placeholder cards, 15 or more real accounts, 6 or more photos.</p>
+        </div>
+      </li>
+      <li>
+        <div class="when">Week of<br>1 Sep</div>
+        <div>
+          <h3>Email Charlie Carroll</h3>
+          <p>Not a partnership pitch. A specific, zero-cost, time-boxed offer: give
+             the Scotland group a place to organize the trip and keep it afterwards.
+             Tee sheets for the Castle Course, Kingsbarns and Carnoustie, somewhere
+             to post photos each evening, and a space where the relationships
+             survive the flight home. That last part is what is actually worth
+             something to a fundraising office.</p>
+        </div>
+      </li>
+      <li>
+        <div class="when">September</div>
+        <div>
+          <h3>Onboard the travellers</h3>
+          <p>Every registered traveller who claims a profile is worth more than fifty
+             cold signups. Have their names in the Member Book and the Scotland
+             rounds on the board as real gatherings before they arrive.</p>
+        </div>
+      </li>
+      <li>
+        <div class="when">12 to 17<br>Oct</div>
+        <div>
+          <h3>The trip is the launch</h3>
+          <p>Not a metaphor. You are on site with the most engaged alumni in the
+             population during the most visible week Penn Golf will have all year.
+             Run the tee sheets live, post photos daily, let people see it working
+             while they are standing inside it.</p>
+        </div>
+      </li>
+      <li>
+        <div class="when">Late Oct</div>
+        <div>
+          <h3>Go back with their own numbers</h3>
+          <p>Return to the Champions Club with results from their event: who joined,
+             what they posted, what happened afterwards. That is when other teams
+             and an ongoing arrangement become a real conversation instead of a
+             speculative one.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="email">
+    <div class="sec-head">
+      <p class="eyebrow">09 &middot; Send this, week of 1 September</p>
+      <h2>The email</h2>
+    </div>
+    <div class="email">
+      <div class="hdr">
+        <span>To: <b>Charlie Carroll, Penn Champions Club</b> &lt;ccarrol2@upenn.edu&gt;</span>
+        <span>Subject: <b>Scotland tour, something that might be useful for the group</b></span>
+      </div>
+      <p>Hi Charlie,</p>
+      <p>I'm Ryan Chang, [year] on the men's golf team. I'll be over for the Links
+         Collegiate in October.</p>
+      <p>Over the past year I built penngolfclubhouse.com, a private site for Penn
+         Golf alumni and current players. Alumni claim their spot in the roster
+         history, which I've reconstructed back to the 1930s, see where former
+         teammates ended up, and set up rounds with each other. Our team used it to
+         run the tee sheet for the preseason trip in Boston last weekend, 15 players
+         across four groups. I also built the Scotland page on it that points people
+         to you.</p>
+      <p>The reason I'm writing: I'd like to offer it to the Scotland group, at no
+         cost and with no obligation.</p>
+      <p>Practically that means tee sheets for the Castle Course, Kingsbarns and
+         Carnoustie, a place to post photos each evening, and a private space where
+         the people on this trip stay connected once everyone flies home. That last
+         part is the one I think is worth something to you. A week in Scotland is a
+         lot of goodwill, and right now it ends when the flights do.</p>
+      <p>Two asks, both small:</p>
+      <p>1. Twenty minutes to show you the site and a short film I made about it.<br>
+         2. If you think it's useful, forward one email from me to the registered
+         travellers. I have no contact information for Penn Golf alumni and I don't
+         want to go around Penn to get any, which is a large part of why I'm writing
+         to you rather than to them.</p>
+      <p>If it works for this trip, the same thing works for any team.</p>
+      <p>Film: penngolfclubhouse.com/launch<br>
+         Site: penngolfclubhouse.com</p>
+      <p>Thanks,<br>Ryan Chang<br>rtchang@upenn.edu &middot; [phone]</p>
+    </div>
+    <ul class="why">
+      <li>The Scotland page you already built is the warm opener. It belongs in
+        sentence three, not in a footnote.</li>
+      <li>"At no cost and with no obligation" kills the procurement reflex on contact.</li>
+      <li>Volunteering the no-contact-data fact before being asked is the strongest
+        move in the email. It pre-empts the question that would otherwise end the
+        conversation, and it reads as judgment rather than as a confession.</li>
+      <li>The ask is one forwarded email. Small enough to answer in one reply.</li>
+      <li>No "platform", no "engagement", no "network effects". They hear vendor
+        language constantly, and your whole advantage is that you are not a vendor.</li>
+    </ul>
+  </section>
+
+  <section id="risks">
+    <div class="sec-head">
+      <p class="eyebrow">10 &middot; Before any meeting</p>
+      <h2>Risks, honestly stated</h2>
+    </div>
+    <ol class="risks">
+      <li class="top">
+        <b>Monetization conflict, the one I underrated</b>
+        <p>
+          The codebase has live Stripe tiers at <strong>$10 and $20 a month</strong>, plus
+          a parent tier and donations. Zero subscribers today. But proposing to
+          charge Penn alumni monthly, on a list derived from Penn roster data, under
+          a Champions Club partnership, while the Champions Club is soliciting gifts
+          from those same people, is a direct conflict. Cleanest fix: billing off
+          entirely for anything Penn-partnered. A competing ask on the same alumni is
+          the fastest way to lose this.
+        </p>
+      </li>
+      <li class="top">
+        <b>Data governance</b>
+        <p>
+          340 real people, publicly sourced, no consent obtained, held privately. Be
+          able to state exactly what is stored, where it came from, who can see it,
+          and how someone is removed. It must already be true in the product, not
+          aspirational. Then say it first, before being asked.
+        </p>
+      </li>
+      <li class="top">
+        <b>Ownership ambiguity</b>
+        <p>
+          Built alone, owned alone. "Partnership" spans everything from a pilot
+          licence to Penn assuming control. Decide the floor beforehand: you own the
+          platform, Penn gets a pilot licence. Do not negotiate specifics live while
+          flattered to be in the room.
+        </p>
+      </li>
+      <li>
+        <b>Single-person continuity</b>
+        <p>
+          65,548 lines, one graduating student, no second maintainer. Any institution
+          will ask what happens after. Have an answer even if it is "I intend to keep
+          running it, and here is what a handover would look like."
+        </p>
+      </li>
+      <li>
+        <b>Timing</b>
+        <p>
+          46 days is enough, but only if the email goes out in early September. Sent
+          in October it is worthless, because everyone will be in Scotland or
+          recovering from it.
+        </p>
+      </li>
+      <li>
+        <b>Unproven demand</b>
+        <p>
+          Nobody yet knows whether Penn Golf alumni want this. Three accounts is not
+          evidence either way. Claiming product-market fit would be false and
+          trivially punctured, so do not.
+        </p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="questions">
+    <div class="sec-head">
+      <p class="eyebrow">11 &middot; Only Ryan can answer these</p>
+      <h2>Open questions</h2>
+    </div>
+    <ol class="qs">
+      <li><b>Are you definitely going to Scotland?</b>
+        <span>The entire plan assumes yes. If not, it needs rebuilding around a
+        different anchor.</span></li>
+      <li><b>Do you already know Charlie Carroll?</b>
+        <span>You built a page promoting his trip. If you have corresponded, the
+        email is a follow-up rather than an introduction, and it should read that
+        way.</span></li>
+      <li><b>What is the actual ask?</b>
+        <span>Permission and a channel; a Scotland pilot; or a multi-team
+        deployment. The plan recommends the pilot as the entry point because it is
+        nearly free for Penn to grant. Multi-team is a procurement conversation
+        measured in quarters.</span></li>
+      <li><b>What is your position on charging money?</b>
+        <span>See risk 1. This one has to be settled before you send anything.</span></li>
+      <li><b>What is your ownership floor?</b>
+        <span>See risk 3. Decide it while calm, not while flattered.</span></li>
+      <li><b>Roughly how many alumni registered for Scotland?</b>
+        <span>Determines whether this is a 10 person or a 40 person pilot. Charlie
+        knows and you may not. It is a reasonable thing to ask in the first
+        reply.</span></li>
+    </ol>
+  </section>
+
+  <section id="wrong">
+    <div class="sec-head">
+      <p class="eyebrow">12 &middot; Argue with this</p>
+      <h2>Where I am most likely wrong</h2>
+    </div>
+    <ul class="plain">
+      <li><strong>The pilot may be too small to matter.</strong> If only eight alumni
+        registered, success proves little and burns your one warm contact.</li>
+      <li><strong>Charlie may be the wrong function.</strong> Champions Club is
+        fundraising-led. Alumni engagement may sit with central Penn Alumni
+        Relations, and a development officer could see this as a distraction from
+        soliciting gifts.</li>
+      <li><strong>The timing may be actively bad.</strong> Six weeks out is when a trip
+        organizer is most overloaded. November might get more attention, at the cost
+        of missing the event entirely.</li>
+      <li><strong>Penn may simply decline on risk.</strong> An unvetted student-run
+        site touching $10,000 donors is a plausible no regardless of merit.</li>
+      <li><strong>"Only channel" is probably too strong.</strong> QuakerNet, class
+        notes, the current roster's parents, one-at-a-time LinkedIn outreach. None
+        scale, but they exist.</li>
+      <li><strong>Zero traction may just be disqualifying,</strong> and the right move
+        might be a semester of reaching 50 real users by any means before
+        approaching anyone institutional.</li>
+      <li><strong>The archive's rarity is asserted, not verified.</strong> Penn may
+        already hold complete structured roster history.</li>
+    </ul>
+  </section>
+
+  <section id="shipped">
+    <div class="sec-head">
+      <p class="eyebrow">13 &middot; Shipped 26 August</p>
+      <h2>What changed on the site</h2>
+    </div>
+    <h3 style="margin-bottom:8px">Past rounds become records</h3>
+    <p>
+      Four days after the trip, both rounds still showed as Open, counted in the
+      open tally, offered calendar links and exposed live group editing. Gatherings
+      had no past-date logic at all. The root cause was that they stored only a
+      host-typed free-text date, and two parser traps were waiting in it:
+    </p>
+    <div class="scroll">
+      <table>
+        <tr><th>Input</th><th>JavaScript reads it as</th></tr>
+        <tr><td><code>"Saturday, June 14"</code></td><td class="num"><b>2001-06-14</b></td></tr>
+        <tr><td><code>"Alumni Weekend, 2026"</code></td><td class="num"><b>2026-01-01</b></td></tr>
+      </table>
+    </div>
+    <p>
+      The first was the host form's own placeholder text, so following the form's
+      example produced a date 25 years in the past, which would sort a brand new
+      round to the top of the board and then bury it as already played. The second
+      grabs a year and ignores everything else. Both are fixed, both host forms now
+      capture a real date, past rounds move to a read-only Recently Played section,
+      and 24 tests cover it. Verified live: the board went from 3 OPEN to 1 OPEN
+      and 2 PLAYED.
+    </p>
+    <h3 style="margin:26px 0 8px">Team updates in twenty seconds</h3>
+    <p style="margin-bottom:0">
+      The date is now a picker starting on today with Today, Yesterday and Last Sat
+      shortcuts, with a one-tap escape to free text for labels like Championship
+      Weekend. Up to 12 photos or videos, drag to reorder, rendering as a gallery in
+      The Season. The link preview upload stays hidden until there is a link.
+    </p>
+  </section>
+
+  <footer>
+    Sources: live production metrics, the Member Book, the served film file, and
+    <code>/scotland</code>, all read 26 to 27 August 2026. Full markdown in
+    <code>docs/penn-athletics-brief.md</code>, drafts in
+    <code>docs/penn-athletics-outreach.md</code>.
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var target = Date.UTC(2026, 9, 12); // 12 October 2026
+    var el = document.getElementById('days');
+    if (!el) return;
+    var now = new Date();
+    var todayUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    var d = Math.round((target - todayUTC) / 86400000);
+    el.textContent = d > 0 ? d : (d === 0 ? 'Today' : 'Past');
+  })();
+</script>
+</body>
+</html>
