@@ -15,10 +15,11 @@ import YourEraSection from '@/components/YourEraSection'
 import ClubhouseChecklist from '@/components/ClubhouseChecklist'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import CoachIntroCard from '@/components/CoachIntroCard'
+import SeasonUpdateTiles from '@/components/SeasonUpdateTiles'
 import MemberOnlyTease from '@/components/MemberOnlyTease'
 import AlumniCard from '@/components/alumni/AlumniCard'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
-import type { AlumniSpotlight, TeamNewsItem } from '@/lib/store/types'
+import type { AlumniSpotlight, TeamNewsItem, SeasonUpdate } from '@/lib/store/types'
 import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 import NextEventChip from '@/components/NextEventChip'
 import { deriveClassLabel } from '@/lib/class-year'
@@ -427,6 +428,7 @@ function ClubhouseInner() {
   const [profiles, setProfiles] = useState<PlayerProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [newsItems, setNewsItems] = useState<TeamNewsItem[]>([])
+  const [teamUpdates, setTeamUpdates] = useState<SeasonUpdate[]>([])
   const [onboarding, setOnboarding] = useState<OnboardingStatus | null>(null)
   const [billingStatus, setBillingStatus] = useState<{
     signedIn: boolean
@@ -448,6 +450,11 @@ function ClubhouseInner() {
     fetch(`/api/team/news?teamSlug=${teamSlug}&limit=4`)
       .then(r => (r.ok ? r.json() : { items: [] }))
       .then(data => setNewsItems(data.items ?? []))
+      .catch(() => {})
+
+    fetch(`/api/team/updates?teamSlug=${teamSlug}&limit=3`)
+      .then(r => (r.ok ? r.json() : { updates: [] }))
+      .then(data => setTeamUpdates(data.updates ?? []))
       .catch(() => {})
 
     fetch('/api/account/onboarding-status')
@@ -786,8 +793,13 @@ function ClubhouseInner() {
             which is not a headline and would age off the feed in a week. */}
         <div className="mb-10 space-y-4">
           {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* The coach card and the team's own updates share one row under the
+              Penn Athletics strip. The tiles run a size down from the news
+              tiles above so the block reads as four headlines plus a
+              follow-on, rather than as eight equal headlines. */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
             <CoachIntroCard />
+            <SeasonUpdateTiles updates={teamUpdates} />
           </div>
         </div>
 

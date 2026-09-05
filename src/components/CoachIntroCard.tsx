@@ -16,8 +16,13 @@ import { ArrowUpRight } from 'lucide-react'
 
 const COACH = {
   name: 'Ivana Shah',
-  role: 'Assistant Coach',
-  blurb: 'Joined the Penn men’s golf program in August 2026.',
+  role: 'Volunteer Assistant Coach',
+  blurb:
+    'Joined the program in August 2026. Four years on Akron’s golf team, a ' +
+    'four-time WCGA All-American Scholar, and one of 30 national honorees for ' +
+    'the NCAA Woman of the Year award out of 225,000 student-athletes. She has ' +
+    'a biomedical engineering degree, works at Johnson & Johnson MedTech, and ' +
+    'co-founded Call To Action, a volunteer group in the Akron area.',
   profileUrl: 'https://pennathletics.com/staff-directory/ivana-shah/2996',
   // Sidearm's CDN blocks hot-linking from some origins, so this goes through
   // the same wsrv proxy the news thumbnails use.
