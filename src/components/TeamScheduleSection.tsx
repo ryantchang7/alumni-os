@@ -177,6 +177,50 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
           )
         })}
       </ol>
+
+      {/* Finished events, kept as a record rather than dropped. They leave the
+          board above so the schedule only ever shows what is still ahead, but
+          a season with results is the whole point of following the team. */}
+      {finished.length > 0 && (
+        <div className="mt-6">
+          <h4 className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-2.5">
+            Results
+          </h4>
+          <ul className="space-y-1.5">
+            {finished.map(s => (
+              <li
+                key={s.id}
+                className="flex items-baseline justify-between gap-3 flex-wrap rounded-lg border border-[rgba(180,168,150,0.3)] bg-[#fdfcf9] px-4 py-2.5"
+              >
+                <span className="min-w-0 flex items-baseline gap-2.5">
+                  <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[#990000] whitespace-nowrap">
+                    {formatRange(s.startDate, s.endDate)}
+                  </span>
+                  <span className="text-[13.5px] font-semibold text-[#0a1628] truncate">
+                    {s.eventName}
+                  </span>
+                </span>
+                <span className="flex items-baseline gap-3 whitespace-nowrap">
+                  <span className="text-[12.5px] font-semibold text-[#0a1628]">
+                    {s.resultText}
+                  </span>
+                  {s.linkUrl && (
+                    <a
+                      href={s.linkUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11.5px] font-semibold text-[#990000] hover:underline"
+                    >
+                      Leaderboard &rarr;
+                    </a>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1.5 text-xs font-semibold">
         <a
           href="https://pennathletics.com/sports/mens-golf/schedule"
