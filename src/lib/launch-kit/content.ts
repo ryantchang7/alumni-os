@@ -334,7 +334,7 @@ Hey [first name],
 
 This spring at Ivy Champs at Baltusrol, with Patrick Cooper hosting and so many of you on the property, I felt something Penn Golf has always had but never quite captured in one place. A family.
 
-So I spent the summer building Penn Golf Clubhouse, a private home for the program. I made a 3-minute film that shows the whole thing:
+So I spent the summer building Penn Golf Clubhouse, a private home for the program. I made a 5-minute film that shows the whole thing:
 
 ▶ Watch the film → penngolfclubhouse.com/launch
 

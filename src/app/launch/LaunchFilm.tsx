@@ -17,31 +17,21 @@ export default function LaunchFilm({
   return (
     <section
       id="film"
-      className="relative overflow-hidden px-5 sm:px-8 py-20 sm:py-24 bg-[#07101f] border-y border-white/10"
+      className="relative overflow-hidden px-5 sm:px-8 py-10 sm:py-14 bg-[#07101f] border-y border-white/10"
     >
       {/* Its own darker ground and a gold rule, so the film reads as an event
           on the page rather than as one more block of navy. */}
       <div className="max-w-4xl mx-auto relative z-10">
-        <div className="text-center mb-9">
-          <img
-            src="/brand/mark-1024.png"
-            alt=""
-            aria-hidden="true"
-            width={72}
-            height={72}
-            className="mx-auto mb-5 w-[72px] h-[72px] rounded-2xl border border-white/15"
-            style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.45)' }}
-          />
-          <p className="text-[10.5px] font-semibold uppercase tracking-[0.32em] text-[#c8a84b] mb-4">
-            The film
+        {/* Deliberately short. Anyone who clicked "Watch the film" or landed on
+            #film came to press play, and the old stack — mark, eyebrow, 60px
+            heading, subtitle, rule — pushed the video most of a screen down. */}
+        <div className="text-center mb-5 sm:mb-6">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.32em] text-[#c8a84b] mb-2">
+            The film · 5 minutes
           </p>
-          <h2 className="font-heading text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight mb-4">
-            Watch the film.
+          <h2 className="font-heading text-white text-2xl sm:text-3xl font-medium tracking-tight">
+            Every room in the Clubhouse, in Ryan&rsquo;s own words.
           </h2>
-          <p className="text-white/70 text-[15px] sm:text-base leading-relaxed max-w-xl mx-auto">
-            Ryan takes you through every room in the Clubhouse, in his own words.
-          </p>
-          <div className="mx-auto mt-7 h-px w-24 bg-[#c8a84b]/60" />
         </div>
 
         <video

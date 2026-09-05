@@ -154,7 +154,7 @@ export default function LandingPage() {
             href="/launch"
             className="text-[12.5px] text-white/85 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
           >
-            Watch the 3-minute film →
+            Watch the 5-minute film →
           </Link>
         </motion.div>
 

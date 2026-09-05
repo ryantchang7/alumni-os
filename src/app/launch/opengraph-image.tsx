@@ -79,7 +79,7 @@ export default function OpengraphImage() {
             />
           </div>
           <div style={{ fontSize: 30, color: 'rgba(255,255,255,0.85)' }}>
-            Watch the film · 3 minutes
+            Watch the film · 5 minutes
           </div>
         </div>
         <div

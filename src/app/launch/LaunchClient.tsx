@@ -126,7 +126,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
       {film}
 
       {/* Founder note */}
-      <section className="px-5 sm:px-8 py-20 sm:py-24">
+      <section className="px-5 sm:px-8 py-12 sm:py-16">
         <div className="max-w-3xl mx-auto">
           <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-5">
             A note from the founder
@@ -156,7 +156,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
       </section>
 
       {/* Four-room cards: Ask / Meet / Play / Gather */}
-      <section className="px-5 sm:px-8 pb-20 sm:pb-24">
+      <section className="px-5 sm:px-8 pb-12 sm:pb-16">
         <div className="max-w-[1180px] mx-auto">
           <div className="text-center mb-10 sm:mb-12">
             <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-3">
@@ -212,7 +212,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
       </section>
 
       {/* Feature walkthrough */}
-      <section className="bg-[#0a1628]/[0.03] border-y border-[rgba(180,168,150,0.4)] px-5 sm:px-8 py-20 sm:py-24">
+      <section className="bg-[#0a1628]/[0.03] border-y border-[rgba(180,168,150,0.4)] px-5 sm:px-8 py-12 sm:py-16">
         <div className="max-w-[1180px] mx-auto">
           <div className="mb-10 sm:mb-12">
             <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-3">
@@ -259,7 +259,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
       </section>
 
       {/* How access works */}
-      <section className="px-5 sm:px-8 py-20 sm:py-24">
+      <section className="px-5 sm:px-8 py-12 sm:py-16">
         <div className="max-w-[1080px] mx-auto">
           <div className="mb-10 sm:mb-12">
             <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-3">
@@ -344,8 +344,52 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
         </div>
       </section>
 
+      {/* Who built this. Deliberately small and near the end: the page argues
+          for the Clubhouse first, and only then says who is behind it. A face
+          and a hometown do more for trust here than another paragraph. */}
+      <section className="px-5 sm:px-8 pb-12 sm:pb-16">
+        <div className="max-w-[720px] mx-auto">
+          <div className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl p-6 sm:p-7 flex flex-col sm:flex-row gap-5 sm:gap-6 items-start"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/ryan-chang.jpg"
+              alt="Ryan Chang"
+              width={733}
+              height={1100}
+              loading="lazy"
+              className="w-28 sm:w-32 flex-shrink-0 rounded-xl object-cover aspect-[3/4] border border-[rgba(180,168,150,0.45)]"
+            />
+            <div className="min-w-0">
+              <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#990000] mb-2">
+                Who built this
+              </p>
+              <p className="text-[#0a1628] text-xl font-medium font-heading">
+                Ryan Chang
+              </p>
+              <p className="text-[12.5px] text-ink-muted mb-3">
+                Penn Men&rsquo;s Golf &rsquo;28 · Brookline, Massachusetts
+              </p>
+              <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed">
+                I built the Clubhouse over the past year, on my own. There was no
+                way for a Penn golfer from 1994 and one from 2026 to find each
+                other, and that seemed like the wrong way for a program with this
+                much history to work. If you carried the bag, this is yours too.
+              </p>
+              <a
+                href="mailto:rtchang@upenn.edu"
+                className="inline-block text-[12.5px] font-semibold text-[#990000] hover:underline mt-3"
+              >
+                rtchang@upenn.edu
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Closing CTA */}
-      <section className="bg-[#0a1628] text-white px-5 sm:px-8 pt-20 pb-40 sm:pt-24 sm:pb-52 relative overflow-hidden">
+      <section className="bg-[#0a1628] text-white px-5 sm:px-8 pt-14 pb-28 sm:pt-16 sm:pb-36 relative overflow-hidden">
         {/* Keeps the outlined buttons readable wherever the artwork happens to
             sit behind them. */}
         <div
