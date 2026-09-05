@@ -18,11 +18,12 @@ const COACH = {
   name: 'Ivana Shah',
   role: 'Volunteer Assistant Coach',
   blurb:
-    'Joined the program in August 2026. Four years on Akron’s golf team, a ' +
-    'four-time WCGA All-American Scholar, and one of 30 national honorees for ' +
-    'the NCAA Woman of the Year award out of 225,000 student-athletes. She has ' +
-    'a biomedical engineering degree, works at Johnson & Johnson MedTech, and ' +
-    'co-founded Call To Action, a volunteer group in the Akron area.',
+    'Joined the program in August 2026, while earning her MBA at Wharton. ' +
+    'Four years on Akron’s golf team, a four-time WCGA All-American Scholar, ' +
+    'and one of 30 national honorees for the NCAA Woman of the Year award out ' +
+    'of 225,000 student-athletes. Biomedical engineering degree, works at ' +
+    'Johnson & Johnson MedTech, and co-founded Call To Action, a volunteer ' +
+    'group in the Akron area.',
   profileUrl: 'https://pennathletics.com/staff-directory/ivana-shah/2996',
   // Sidearm's CDN blocks hot-linking from some origins, so this goes through
   // the same wsrv proxy the news thumbnails use.
@@ -61,7 +62,7 @@ export default function CoachIntroCard() {
       href={COACH.profileUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block bg-white border border-[rgba(180,168,150,0.4)] rounded-xl p-4 hover:border-[#0a1628]/40 hover:shadow-md transition-all h-full"
+      className="group flex flex-col bg-white border border-[rgba(180,168,150,0.4)] rounded-xl p-4 hover:border-[#0a1628]/40 hover:shadow-md transition-all h-full"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
     >
       <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-3">
@@ -78,7 +79,11 @@ export default function CoachIntroCard() {
           </p>
         </div>
       </div>
-      <p className="text-[12.5px] text-[#3d4a5c] leading-relaxed mt-3">{COACH.blurb}</p>
+      {/* Clamped so one long biography cannot set the height of the whole
+          row. The rest is a click away on her staff page. */}
+      <p className="text-[12.5px] text-[#3d4a5c] leading-relaxed mt-3 line-clamp-5 flex-1">
+        {COACH.blurb}
+      </p>
       <span className="text-[11px] font-semibold text-[#0a1628] mt-2.5 inline-flex items-center gap-1 group-hover:text-[#990000] transition-colors">
         Full bio on pennathletics.com
         <ArrowUpRight className="w-3 h-3" />

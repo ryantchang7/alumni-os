@@ -62,14 +62,22 @@ export default function SeasonUpdateTiles({
                 )}
               </div>
             )}
-            <div className="p-3">
+            <div className="p-3 flex flex-col flex-1">
               <p className="text-[8.5px] font-bold uppercase tracking-[0.14em] text-[#990000] mb-1">
                 {KIND_LABELS[u.kind]}
               </p>
               <p className="text-[#0a1628] text-[12.5px] font-medium leading-snug line-clamp-2 font-heading group-hover:text-[#990000] transition-colors">
                 {u.title}
               </p>
-              <p className="text-[10px] text-ink-muted mt-1.5 flex items-center gap-1">
+              {/* The note written with the post. Clamped, because these run
+                  from one line to a paragraph and the tiles sit in a row
+                  with the coach card. */}
+              {u.body && (
+                <p className="text-[11px] text-[#3d4a5c] leading-relaxed mt-1.5 line-clamp-3 whitespace-pre-line">
+                  {u.body}
+                </p>
+              )}
+              <p className="text-[10px] text-ink-muted mt-auto pt-2 flex items-center gap-1">
                 {u.dateText}
                 <ArrowUpRight className="w-2.5 h-2.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
               </p>
@@ -77,7 +85,7 @@ export default function SeasonUpdateTiles({
           </>
         )
         const cls =
-          'group block bg-white border border-[rgba(180,168,150,0.4)] rounded-xl overflow-hidden hover:shadow-md transition-shadow'
+          'group flex flex-col h-full bg-white border border-[rgba(180,168,150,0.4)] rounded-xl overflow-hidden hover:shadow-md transition-shadow'
         const style = { boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }
         return u.linkUrl ? (
           <a

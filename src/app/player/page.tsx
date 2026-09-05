@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, Suspense } from 'react'
+import { useCallback, useEffect, useRef, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion, animate } from 'framer-motion'
@@ -438,6 +438,42 @@ function ClubhouseInner() {
   const [currentSpotlight, setCurrentSpotlight] = useState<AlumniSpotlight | null>(null)
   const [membersOn, setMembersOn] = useState<number | null>(null)
 
+  /**
+   * News and the team's own updates, always straight from the server.
+   *
+   * These are the two things on this page that change while someone is
+   * looking at it: a post goes up, a post comes down, Penn publishes a
+   * story. `no-store` keeps a stale copy out of the browser cache, and the
+   * setters replace the whole list rather than merging, so a deleted post
+   * actually disappears instead of lingering.
+   */
+  const loadTeamFeed = useCallback(() => {
+    fetch(`/api/team/news?teamSlug=${teamSlug}&limit=4`, { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : { items: [] }))
+      .then(data => setNewsItems(data.items ?? []))
+      .catch(() => {})
+
+    fetch(`/api/team/updates?teamSlug=${teamSlug}&limit=3`, { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : { updates: [] }))
+      .then(data => setTeamUpdates(data.updates ?? []))
+      .catch(() => {})
+  }, [teamSlug])
+
+  // A tab left open all afternoon showed whatever was true when it loaded.
+  // Coming back to it is the moment someone expects to see what is new, so
+  // refetch then rather than polling.
+  useEffect(() => {
+    const onFocus = () => {
+      if (document.visibilityState === 'visible') loadTeamFeed()
+    }
+    document.addEventListener('visibilitychange', onFocus)
+    window.addEventListener('focus', onFocus)
+    return () => {
+      document.removeEventListener('visibilitychange', onFocus)
+      window.removeEventListener('focus', onFocus)
+    }
+  }, [loadTeamFeed])
+
   useEffect(() => {
     fetch(`/api/player/profiles?teamSlug=${teamSlug}`)
       .then(r => (r.ok ? r.json() : { profiles: [] }))
@@ -447,15 +483,7 @@ function ClubhouseInner() {
       })
       .catch(() => setLoading(false))
 
-    fetch(`/api/team/news?teamSlug=${teamSlug}&limit=4`)
-      .then(r => (r.ok ? r.json() : { items: [] }))
-      .then(data => setNewsItems(data.items ?? []))
-      .catch(() => {})
-
-    fetch(`/api/team/updates?teamSlug=${teamSlug}&limit=3`)
-      .then(r => (r.ok ? r.json() : { updates: [] }))
-      .then(data => setTeamUpdates(data.updates ?? []))
-      .catch(() => {})
+    loadTeamFeed()
 
     fetch('/api/account/onboarding-status')
       .then(r => (r.ok ? r.json() : { linked: false }))
@@ -487,7 +515,7 @@ function ClubhouseInner() {
         }
       })
       .catch(() => {})
-  }, [teamSlug])
+  }, [teamSlug, loadTeamFeed])
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
@@ -797,7 +825,7 @@ function ClubhouseInner() {
               Penn Athletics strip. The tiles run a size down from the news
               tiles above so the block reads as four headlines plus a
               follow-on, rather than as eight equal headlines. */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <CoachIntroCard />
             <SeasonUpdateTiles updates={teamUpdates} />
           </div>
