@@ -11,11 +11,12 @@
 import Link from 'next/link'
 import type { TeamTravelStop } from '@/lib/store/types'
 import { currentSeasonLabel } from '@/lib/class-year'
+import { usEasternToday } from '@/lib/us-date'
+import { clippdSearchUrl } from '@/lib/clippd/penn-tournaments'
 
 const SCOTLAND_RE = /scotland|st andrews/i
 
-function daysUntilStart(startDate: string): number {
-  const today = new Date().toISOString().slice(0, 10)
+function daysUntilStart(startDate: string, today: string): number {
   return Math.round((Date.parse(startDate + 'T00:00:00Z') - Date.parse(today + 'T00:00:00Z')) / 86400000)
 }
 
@@ -38,20 +39,30 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
   if (stops.length === 0) return null
 
   const sorted = [...stops].sort((a, b) => a.startDate.localeCompare(b.startDate))
-  const todayISO = new Date().toISOString().slice(0, 10)
+  // US Eastern, not UTC. Stops are US calendar dates, so a UTC "today" rolled
+  // over around 8pm ET and aged an event out on the evening of its own last day.
+  const todayISO = usEasternToday()
   const nextUp = sorted.find(s => s.startDate > todayISO) ?? null
   const liveIds = new Set(
     sorted.filter(s => s.startDate <= todayISO && todayISO <= (s.endDate ?? s.startDate)).map(s => s.id),
   )
-  const daysToNext = nextUp
-    ? Math.round((Date.parse(nextUp.startDate + 'T00:00:00Z') - Date.parse(todayISO + 'T00:00:00Z')) / 86400000)
-    : null
+  const daysToNext = nextUp ? daysUntilStart(nextUp.startDate, todayISO) : null
+
+  // Once a tournament is over it stops being schedule. Anything finished
+  // leaves the board; the ones with a result reappear below as a record, and
+  // the ones without simply go, rather than dimming there forever.
+  const upcoming = sorted.filter(s => (s.endDate ?? s.startDate) >= todayISO)
+  const finished = sorted
+    .filter(s => (s.endDate ?? s.startDate) < todayISO && s.resultText)
+    .reverse()
+
+  if (upcoming.length === 0 && finished.length === 0) return null
 
   return (
     <div>
       <h3 className="text-sm font-semibold text-[#0a1628] mb-4 uppercase tracking-[0.1em]">{currentSeasonLabel()} Schedule</h3>
       <ol className="space-y-3">
-        {sorted.map(s => {
+        {upcoming.map(s => {
           const isScotland = SCOTLAND_RE.test(`${s.eventName} ${s.locationText}`)
           const isLive = liveIds.has(s.id)
           const isNextUp = !isLive && liveIds.size === 0 && nextUp?.id === s.id
@@ -145,9 +156,9 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                       View leaderboard →
                     </a>
                   ) : !isPast ? (
-                    isLive || daysUntilStart(s.startDate) <= 7 ? (
+                    isLive || daysUntilStart(s.startDate, todayISO) <= 7 ? (
                       <a
-                        href="https://scoreboard.clippd.com"
+                        href={clippdSearchUrl(s.eventName)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`text-[12.5px] font-semibold whitespace-nowrap hover:underline ${isScotland ? 'text-[#c8a84b]' : 'text-[#990000]'}`}
