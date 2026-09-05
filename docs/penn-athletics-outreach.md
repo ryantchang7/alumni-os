@@ -85,6 +85,85 @@ cards are clearly tagged as samples.
 
 ---
 
+## 0b. The email Charlie forwards — have this ready before you send Section 0
+
+The Section 0 ask is "forward one email from me to the registered travellers."
+If he says yes, he will want that email the same day. Do not make him wait while
+you write it.
+
+Assume it arrives forwarded by Charlie, so it inherits his endorsement and does
+not need to argue for legitimacy. Shorter than the Charlie email. The hook is not
+the tee sheets, it is a man in his sixties finding his own roster.
+
+**Subject:** `Your spot in the Penn Golf roster, before Scotland`
+
+> Hi all,
+>
+> I'm Ryan Chang, a current player on the men's golf team. I'll be in Scotland
+> with you in October.
+>
+> Over the past year I built penngolfclubhouse.com, a private site for Penn Golf
+> alumni and current players. I reconstructed the roster history season by season
+> from Penn's own records, back to the 1930s. About 340 players. Your team is in
+> there.
+>
+> You can claim your own spot, see where former teammates ended up, and set up
+> rounds with them.
+>
+> For the trip, the three tour rounds are already on the site as tee sheets:
+>
+> - The Castle Course, Wednesday October 14
+> - Kingsbarns, Thursday October 15
+> - Carnoustie, Friday October 16
+>
+> You can see who else is playing and sort out groups before anyone lands.
+>
+> The part I hope is worth something: a week in Scotland is a lot of goodwill,
+> and normally it ends when the flights do. This gives it somewhere to live.
+>
+> Claim your spot: penngolfclubhouse.com
+> A short film about why I built it: penngolfclubhouse.com/launch
+>
+> See you in October,
+> Ryan Chang
+> rtchang@upenn.edu
+
+**One line you have to decide before this goes out.** The site has live Stripe
+tiers at $10 and $20 a month with zero subscribers. This email goes to people who
+just gave Penn five to ten thousand dollars, forwarded by the office that
+solicited it. If billing is on, you are making a competing ask on the same alumni
+through the Champions Club's own channel, and that is the fastest way to lose the
+relationship.
+
+Pick one before sending:
+
+- **Billing off for Penn-partnered use.** Cleanest. Add a line: "It is free, and
+  it will stay free for anyone who played at Penn." Costs you a revenue model you
+  do not currently have, and buys the one thing you need.
+- **Billing stays, say nothing.** Do not do this. They will find the pricing page
+  and it will look like the real motive was always the credit card.
+
+---
+
+## 0c. The team group text — send this first, it needs nobody's permission
+
+83 team memberships exist and only 3 people have approved accounts. This is the
+one population reachable without Charlie, and they are the people who will be
+standing next to you in Scotland. Fifteen real accounts changes the Charlie email
+from "I built a thing" to "the team already uses it."
+
+> Made a site for Penn Golf, players and alumni going back to the 1930s. We ran
+> the Belmont tee sheet on it last month. The Scotland rounds are on there now
+> too. Takes a minute to claim your spot: penngolfclubhouse.com
+>
+> 60 second thing on why I built it if you're curious: penngolfclubhouse.com/launch
+
+Send it to the team thread, not individually. Then text five specific people
+directly and ask them to actually do it, because a group text with no reply is a
+group text nobody acts on.
+
+---
+
 ## Fallback drafts (general partnership, no named contact)
 
 Use these only if the Champions Club route stalls. Order matters here:
