@@ -14,6 +14,7 @@ import OnTheLoopStrip from '@/components/OnTheLoopStrip'
 import YourEraSection from '@/components/YourEraSection'
 import ClubhouseChecklist from '@/components/ClubhouseChecklist'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
+import CoachIntroCard from '@/components/CoachIntroCard'
 import MemberOnlyTease from '@/components/MemberOnlyTease'
 import AlumniCard from '@/components/alumni/AlumniCard'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
@@ -781,12 +782,14 @@ function ClubhouseInner() {
           <ScotlandTourBanner variant="featured" />
         </div>
 
-        {/* From the box. Penn Athletics news */}
-        {newsItems.length > 0 && (
-          <div className="mb-10">
-            <TeamNewsStrip items={newsItems} />
+        {/* From the box. Penn Athletics news, then the staff introduction,
+            which is not a headline and would age off the feed in a week. */}
+        <div className="mb-10 space-y-4">
+          {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <CoachIntroCard />
           </div>
-        )}
+        </div>
 
         {/* 4 primary rooms */}
         <div className={`${welcomeName || onboarding?.linked || newsItems.length > 0 ? 'mt-2' : '-mt-5'} relative z-10 mb-12`}>

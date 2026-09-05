@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import type { Person, TeamMembership, TeamNewsItem, SeasonUpdate } from '@/lib/store/types'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
+import CoachIntroCard from '@/components/CoachIntroCard'
+import CompactSeasonUpdates from '@/components/CompactSeasonUpdates'
 import FoundersWall from '@/components/FoundersWall'
 import CaptainsLineup from '@/components/CaptainsLineup'
 import MemberAvatar from '@/components/MemberAvatar'
@@ -181,7 +183,18 @@ export default async function TeamRoomPage() {
 
         {/* Latest from Penn Athletics, sits at the top of the Team Room
             since it's the most "current team" thing here */}
-        {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
+        <div className="space-y-4">
+          {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
+          {/* The staff introduction and the team's own updates sit under the
+              Penn Athletics feed, so "From the box" is everything current
+              about the team rather than only what Penn chose to publish. */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <CoachIntroCard />
+            <div className="lg:col-span-2">
+              <CompactSeasonUpdates updates={seasonUpdates} />
+            </div>
+          </div>
+        </div>
 
         {/* Clubhouse Captains, first content section so captains are front
             and center. Captains ALSO appear in the roster/alumni sections
@@ -262,7 +275,7 @@ export default async function TeamRoomPage() {
 
           <TeamScheduleSection stops={travelStops} />
 
-          <h3 className="text-sm font-semibold text-[#0a1628] mt-8 mb-4 uppercase tracking-[0.1em]">Latest updates</h3>
+          <h3 id="season-updates" className="text-sm font-semibold text-[#0a1628] mt-8 mb-4 uppercase tracking-[0.1em] scroll-mt-24">Latest updates</h3>
           <SeasonUpdatesTimeline updates={seasonUpdates} />
         </section>
 
