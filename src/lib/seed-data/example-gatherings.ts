@@ -8,6 +8,14 @@
  * Source of truth for the data itself is `data/alumni-os.json`. This Set
  * is the live override applied in the API GET route so the live KV
  * doesn't need a migration to backfill the flag.
+ *
+ * WARNING: as of 2026-09-05 not one of these ids exists in production. The
+ * live seeds were re-created at some point with fresh uuids, so every
+ * EXAMPLE badge you see on the site comes from the stored `isExample` flag
+ * via the `dataFlag` argument below, and this Set matches nothing. Keeping
+ * it as a harmless fallback, but do not assume an id here is the live one —
+ * read the id off /api/gatherings first. Hiding Merion by the id listed
+ * here silently did nothing until the real id was used.
  */
 import { isPastGathering, gatheringSortKey } from '@/lib/gatherings/date'
 
@@ -33,7 +41,10 @@ export const HIDDEN_GATHERING_IDS = new Set<string>([
   // preseason), so the seed is no longer holding an empty room open — it was
   // just sorting a sample above the real thing for anyone we send there.
   // The 19th Hole seeds stay: that page has no real gatherings yet.
-  '97b7f0a8-20fb-4fe1-936d-628f61996826',
+  //
+  // NB: this is the *live* id, which is not the one in EXAMPLE_GATHERING_IDS
+  // above. See the warning on that set before adding anything here.
+  '7da4f508-c983-4ad8-9c77-f8e486e23363',
 ])
 
 export function isExampleGathering(id: string, dataFlag?: boolean): boolean {
