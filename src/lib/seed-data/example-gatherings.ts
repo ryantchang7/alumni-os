@@ -29,6 +29,11 @@ export const EXAMPLE_GATHERING_IDS = new Set<string>([
  * returning so the existing KV data doesn't need a manual delete. */
 export const HIDDEN_GATHERING_IDS = new Set<string>([
   '8951fd85-1d3b-452f-81f5-5da9eedc879f', // Summer Clubhouse. NYC dinner
+  // Merion. The Course now carries five real rounds (three Scotland, two
+  // preseason), so the seed is no longer holding an empty room open — it was
+  // just sorting a sample above the real thing for anyone we send there.
+  // The 19th Hole seeds stay: that page has no real gatherings yet.
+  '97b7f0a8-20fb-4fe1-936d-628f61996826',
 ])
 
 export function isExampleGathering(id: string, dataFlag?: boolean): boolean {

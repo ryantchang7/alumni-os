@@ -13,64 +13,75 @@ Links to include:
 
 ---
 
-## 0. The Scotland email — send this first, week of Sep 1
+## 0. The Scotland email — send this
 
 **To:** Charlie Carroll, Penn Champions Club — ccarrol2@upenn.edu
-**Subject:** `Scotland tour — something that might be useful for the group`
+**Subject:** `Scotland tour — something for the group`
+
+Written assuming Charlie can place you as a current player, so it skips the
+self-introduction and goes straight to the offer.
 
 > Hi Charlie,
 >
-> I'm Ryan Chang, [year] on the men's golf team. I'll be over for the Links
-> Collegiate in October.
+> Quick one ahead of Scotland.
 >
 > Over the past year I built penngolfclubhouse.com, a private site for Penn Golf
 > alumni and current players. Alumni claim their spot in the roster history,
 > which I've reconstructed back to the 1930s, see where former teammates ended
 > up, and set up rounds with each other. Our team used it to run the tee sheet
-> for the preseason trip in Boston last weekend, 15 players across four groups.
-> I also built the Scotland page on it that points people to you.
+> for the preseason trip in Boston last month, 15 players across four groups.
+> The Scotland page that points people to you is on it too.
 >
-> The reason I'm writing: I'd like to offer it to the Scotland group, at no cost
-> and with no obligation.
+> I'd like to offer it to the Scotland group, at no cost and with no obligation.
 >
-> Practically that means tee sheets for the Castle Course, Kingsbarns and
-> Carnoustie, a place to post photos each evening, and a private space where the
-> people on this trip stay connected once everyone flies home. That last part is
-> the one I think is worth something to you. A week in Scotland is a lot of
-> goodwill, and right now it ends when the flights do.
+> The three tour rounds are already up as tee sheets, Castle Course, Kingsbarns
+> and Carnoustie, so you can see exactly what the group would get:
+> penngolfclubhouse.com/the-course
 >
-> Two asks, both small:
+> The part I think is actually worth something to you is what happens after. A
+> week in Scotland is a lot of goodwill, and right now it ends when the flights
+> do. This gives those relationships somewhere to live.
+>
+> Two small asks:
 >
 > 1. Twenty minutes to show you the site and a short film I made about it.
 > 2. If you think it's useful, forward one email from me to the registered
 >    travellers. I have no contact information for Penn Golf alumni and I don't
->    want to go around Penn to get any, which is a large part of why I'm writing
->    to you rather than to them.
+>    want to go around Penn to get any, which is most of why I'm writing to you
+>    and not to them.
 >
-> If it works for this trip, the same thing works for any team.
+> If it works for this trip, it works for any team.
 >
-> Film: https://www.penngolfclubhouse.com/launch
-> Site: https://www.penngolfclubhouse.com
+> Film: penngolfclubhouse.com/launch
+> Site: penngolfclubhouse.com
 >
 > Thanks,
-> Ryan Chang
+> Ryan
 > rtchang@upenn.edu · [phone]
 
-**Why it's built this way**
-- The Scotland page he already built is the warm opener. Use it in sentence three,
-  not as a footnote.
-- "At no cost and with no obligation" removes the procurement reflex immediately.
-- The persistence-after-the-trip line is the actual pitch. The Champions Club
-  converts engagement into giving; a trip that ends cleanly is value evaporating.
-- Volunteering the no-contact-data fact *before* being asked is the single
-  strongest move in the email. It pre-empts the killer question and reads as
-  judgment rather than as a confession.
-- The ask is one forwarded email. That is small enough to answer in one reply.
-- One line on other teams. Enough to plant, not enough to oversell.
+**Fill in before sending:** `[phone]`. That is the only placeholder left.
 
-**Before sending, make sure the site is alive.** Charlie will click the link
-within a minute of reading. If the board shows a placeholder round and three
-accounts, the email has actively cost something. See Section 8 of the brief.
+**Why it is built this way**
+- No self-introduction, because he can place you. Opening with "I'm Ryan Chang,
+  a senior on the team" to someone who knows you reads as stiff.
+- The live tee sheets are the proof. He can click and see Castle Course,
+  Kingsbarns and Carnoustie sitting there rather than take your word for it.
+- "At no cost and with no obligation" kills the procurement reflex on contact.
+- Volunteering the no-contact-data fact before being asked is the strongest move
+  in the email. It pre-empts the question that would otherwise end the
+  conversation, and reads as judgment rather than as a confession.
+- The ask is one forwarded email. Small enough to answer in one reply.
+- No "platform", no "engagement", no "network effects". They hear vendor
+  language constantly and your whole advantage is that you are not a vendor.
+
+**What he sees when he clicks.** The Course is now entirely real: three Scotland
+rounds open (Castle Course, Kingsbarns, Carnoustie) and two preseason rounds in
+Recently Played (Belmont, The International). The Merion sample that used to sit
+above them is hidden as of 2026-09-04.
+
+The 19th Hole still carries four EXAMPLE cards, because no real gathering exists
+there yet. That page is not linked from this email. If he browses to it, the
+cards are clearly tagged as samples.
 
 ---
 
