@@ -8,6 +8,7 @@
  */
 
 import { useState } from 'react'
+import { ArrowUpRight, Link as LinkIcon } from 'lucide-react'
 import type { SeasonUpdate } from '@/lib/store/types'
 import LinkPreviewImage from '@/components/LinkPreviewImage'
 
@@ -125,41 +126,47 @@ export default function SeasonUpdatesTimeline({ updates }: { updates: SeasonUpda
                 </div>
               )}
               {u.linkUrl && (
-                u.previewImageUrl ? (
-                  <a
-                    href={u.linkUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block mt-3 rounded-lg overflow-hidden border border-[rgba(180,168,150,0.4)] hover:border-[#0a1628]/30 transition-colors group/link"
-                  >
+                /* One card shape whether or not the link had an OG image.
+                   The old no-image branch was a thin outlined pill that read
+                   as a tag rather than something to press, so pasted links
+                   with no preview were being missed. */
+                <a
+                  href={u.linkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-3 rounded-xl overflow-hidden border border-[rgba(180,168,150,0.45)] bg-white hover:border-[#0a1628]/40 hover:shadow-md transition-all group/link"
+                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+                >
+                  {u.previewImageUrl ? (
                     <LinkPreviewImage
                       src={u.previewImageUrl}
                       className="w-full h-40 object-cover bg-[#fdfcf9]"
                     />
-                    <div className="px-3.5 py-3">
+                  ) : null}
+                  <div className="flex items-center gap-3 px-3.5 py-3">
+                    {!u.previewImageUrl && (
+                      /* Stands in for the missing thumbnail so the row still
+                         reads as a link card and not a line of text. */
+                      <span className="flex-shrink-0 w-11 h-11 rounded-lg bg-[#0a1628] flex items-center justify-center">
+                        <LinkIcon className="w-4 h-4 text-[#c8a84b]" />
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1">
                       <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
                         {linkDomain(u.linkUrl)}
                       </p>
                       {(u.previewTitle || u.linkLabel) && (
-                        <p className="text-[13px] font-semibold text-[#0a1628] mt-1 leading-snug line-clamp-2">
+                        <p className="text-[13px] font-semibold text-[#0a1628] mt-0.5 leading-snug line-clamp-2">
                           {u.previewTitle || u.linkLabel}
                         </p>
                       )}
-                      <span className="text-xs text-[#990000] font-medium mt-1.5 inline-block group-hover/link:underline">
-                        {u.linkLabel || 'View'} &rarr;
+                      <span className="text-xs text-[#990000] font-semibold mt-1 inline-flex items-center gap-1 group-hover/link:underline">
+                        {u.linkLabel || 'Open link'}
+                        <ArrowUpRight className="w-3 h-3" />
                       </span>
                     </div>
-                  </a>
-                ) : (
-                  <a
-                    href={u.linkUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-[#990000] hover:underline font-medium mt-2.5 border border-[#990000]/25 rounded-full px-3 py-1.5"
-                  >
-                    {u.linkLabel || linkDomain(u.linkUrl)} &rarr;
-                  </a>
-                )
+                  </div>
+                </a>
               )}
             </div>
           </li>
