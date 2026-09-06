@@ -125,8 +125,21 @@ async function main() {
   const finished = await planResultSync([stop({})], [item({})], html, '2026-09-07')
   ok('a finished event with a recap is matched', finished.plan[0].status === 'matched', finished.plan[0].resultText)
 
-  const stillOn = await planResultSync([stop({})], [item({})], html, '2026-09-06')
-  ok('an event ending today is left alone', stillOn.plan[0].status === 'not-finished')
+  const lastDay = await planResultSync([stop({})], [item({})], html, '2026-09-06')
+  ok('a final recap on the last day closes the event', lastDay.plan[0].status === 'matched', lastDay.plan[0].resultText)
+
+  const midEvent = await planResultSync([stop({})],
+    [item({ title: "Men's Golf Third After Day 1 at Alex Lagowitz Memorial" })], html, '2026-09-06')
+  ok('a day-1 recap does NOT close it', midEvent.plan[0].status !== 'matched', midEvent.plan[0].status)
+
+  const future = await planResultSync(
+    [stop({ startDate: '2026-09-26', endDate: '2026-09-27', eventName: 'Alex Lagowitz Memorial' })],
+    [item({})], html, '2026-09-06')
+  ok('an event still in the future is untouched', future.plan[0].status === 'not-finished')
+
+  const early = await planResultSync([stop({})],
+    [item({ publishedAt: '2026-09-05T18:00:00.000Z' })], html, '2026-09-06')
+  ok('a recap published before the last day is ignored', early.plan[0].status === 'no-article')
 
   const manual = await planResultSync([stop({ resultText: '2nd of 13' })], [item({})], html, '2026-09-07')
   ok('a hand-typed result is never overwritten', manual.plan[0].status === 'already-set')

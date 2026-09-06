@@ -9,8 +9,9 @@
  * Rules it will not break:
  *  - A result typed in by hand is never overwritten. The founder outranks
  *    the parser, always.
- *  - Only stops whose last day has passed are considered, so an in-progress
- *    tournament cannot be closed out by an over-eager match.
+ *  - An event still scheduled into the future is never touched. One whose
+ *    last day is today can be closed, but only by a final-result headline
+ *    published on that day or later, so a mid-tournament recap cannot end it.
  *  - A recap has to be about the right tournament: published in the event's
  *    own window and sharing distinctive words with its name.
  *  - Anything uncertain is skipped and reported, not guessed at.
@@ -97,9 +98,13 @@ export async function planResultSync(
       plan.push({ eventName: stop.eventName, status: 'already-set' })
       continue
     }
-    // Only look at events that are actually over. An event ending today is
-    // left alone until tomorrow, so a recap of round two cannot close it.
-    if (endOf(stop) >= today) {
+    // Events still scheduled into the future are never touched. An event
+    // whose last day is today CAN be closed, but only by a recap that is
+    // both a final-result headline and published on that last day or after,
+    // which is what parseResult and the window below enforce. Waiting for
+    // midnight instead left the board calling a finished tournament "Live"
+    // for hours after Penn had published the standings.
+    if (endOf(stop) > today) {
       plan.push({ eventName: stop.eventName, status: 'not-finished' })
       continue
     }
@@ -107,9 +112,11 @@ export async function planResultSync(
     // A recap lands from the last day up to about a week afterwards.
     const inWindow = news.filter(n => {
       const published = (n.publishedAt ?? n.fetchedAt).slice(0, 10)
-      const afterStart = daysBetween(published, stop.startDate) >= 0
+      // Not before the last day: a recap written mid-tournament cannot be
+      // the final word, whatever its headline says.
+      const onOrAfterEnd = daysBetween(published, endOf(stop)) >= 0
       const beforeCutoff = daysBetween(published, endOf(stop)) <= 8
-      return afterStart && beforeCutoff
+      return onOrAfterEnd && beforeCutoff
     })
 
     const scored = inWindow
