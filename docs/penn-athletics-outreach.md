@@ -85,6 +85,49 @@ cards are clearly tagged as samples.
 
 ---
 
+## 0a. Who actually owns what, from Penn's own staff directory
+
+Checked 2026-09-06 against pennathletics.com/staff-directory. This matters
+because the two names that look like the alumni people are not.
+
+**Development and Alumni Relations, which is the Penn Champions Club.** This is
+the alumni function.
+
+| Person | Title | Email |
+|---|---|---|
+| Tim Folan | Senior Associate AD, Development and Alumni Relations | tfolan@upenn.edu |
+| Charlie Carroll | Associate Director of Development, Major Gifts (**GOLF**, GYM, FENC, SPRINT, TEN) | ccarrol2@upenn.edu |
+
+**Student-Athlete Success.** This is *current* students: academics, careers,
+leadership. Not alumni.
+
+| Person | Title | Email |
+|---|---|---|
+| Denise Poole | Senior Associate AD, Student-Athlete Success | see directory |
+| Amy Sullivan | Assistant AD, Leadership / Director of PAWLA | see directory |
+| Emily Galvin | Assistant AD, Leadership / Associate Director of PAWLA | egalvin@upenn.edu |
+| Langston Livingston | Associate Director, Student-Athlete Success (Academics and **Career Success**) | langliv@upenn.edu |
+
+PAWLA is the Penn Athletics Wharton Leadership Academy.
+
+**What follows from that:**
+
+1. **The Scotland ask stays with Charlie.** He holds the golf portfolio and he
+   is named on your own Scotland page as the contact for the trip. Langston and
+   Emily cannot give you the traveller list; it is not their function.
+2. **Tim Folan is the escalation, not Langston or Emily.** He owns Development
+   *and* Alumni Relations and sits above Charlie. If Charlie goes quiet for a
+   week, Tim is the next email.
+3. **Do not CC Tim on the first email to Charlie.** Copying someone's boss on a
+   cold ask reads as pressure and costs you the goodwill you are relying on.
+   Charlie first, alone. Tim after, if needed.
+4. **Langston and Emily are still worth writing to, for a different thing.**
+   Their remit is careers and leadership for current athletes, and that is
+   exactly what the Career Room and Ask were built for. That is a separate
+   email, in Section 0d, and it does not compete with the Scotland one.
+
+---
+
 ## 0b. The email Charlie forwards — have this ready before you send Section 0
 
 The Section 0 ask is "forward one email from me to the registered travellers."
@@ -161,6 +204,67 @@ from "I built a thing" to "the team already uses it."
 Send it to the team thread, not individually. Then text five specific people
 directly and ask them to actually do it, because a group text with no reply is a
 group text nobody acts on.
+
+---
+
+## 0d. Langston Livingston and Emily Galvin — the careers pitch
+
+A different email for a different job. Their remit is current student-athletes:
+academics, careers, leadership. They cannot help with Scotland and should not be
+asked to. What they can do is tell you whether the Career Room and Ask are
+useful to the athletes they already advise, and they are the people who would
+carry it to other teams.
+
+Send this on its own, not as a variation of the Charlie email. To both of them,
+no CC. They are peers on the same team, so addressing them together is normal.
+
+**To:** langliv@upenn.edu, egalvin@upenn.edu
+**Subject:** `Something I built for connecting student-athletes to alumni`
+
+> Hi Langston and Emily,
+>
+> I'm Ryan Chang, a junior on the men's golf team.
+>
+> Over the past year I built penngolfclubhouse.com, a private site for Penn Golf
+> alumni and current players. I reconstructed our roster history back to the
+> 1930s from Penn's public records, about 340 players, and built a way for
+> current players to find alumni by what they do now and ask them for advice or
+> an introduction.
+>
+> That second part is why I'm writing to you rather than to the development
+> office. Two rooms are worth twenty minutes of your time: the Career Room,
+> where you filter alumni by industry, and Ask, where a current player requests
+> an introduction to a specific alum and it goes to them as a real message
+> instead of a cold LinkedIn note.
+>
+> I built it for golf because that is my team. None of it is specific to golf.
+>
+> I am not asking for money or a commitment. I would like your read on whether
+> it is useful to the athletes you work with, and if it is, what it would take
+> to put it in front of another team.
+>
+> Film: penngolfclubhouse.com/launch
+> Site: penngolfclubhouse.com
+>
+> Thanks,
+> Ryan Chang
+> rtchang@upenn.edu · [phone]
+
+**Why it is built this way**
+- It names the reason they are the right recipients in the third paragraph, so
+  they do not spend the email wondering why it came to them.
+- "I am not asking for money or a commitment" matters more here than with
+  Charlie. Their budget is not the point and they should not think it is.
+- The ask is their opinion, which is free to give and hard to refuse, and the
+  second half of it plants multi-team without pitching it.
+- It does not mention Scotland. That is Charlie's conversation and mixing them
+  makes both harder.
+
+**If they ask how many people use it, tell them the truth.** Three approved
+accounts today, and the team used it to run a 15-player tee sheet on the
+preseason trip. Claiming traction you do not have is the one thing that would
+lose this room, and "I built the thing and now I need the channel" is a
+perfectly respectable position for a student to be in.
 
 ---
 
