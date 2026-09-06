@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/cron/refresh-news",
+      "path": "/api/cron/season-sync",
       "schedule": "0 * * * *"
     },
     {

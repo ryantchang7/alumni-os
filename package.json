@@ -39,7 +39,8 @@
     "import:penn-master:apply": "tsx scripts/import-penn-master-list.ts --apply",
     "export:penn-master": "tsx scripts/export-penn-master-list.ts",
     "deploy": "vercel --prod",
-    "test:gathering-dates": "tsx scripts/test-gathering-dates.ts"
+    "test:gathering-dates": "tsx scripts/test-gathering-dates.ts",
+    "test:season-results": "tsx scripts/test-season-results.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

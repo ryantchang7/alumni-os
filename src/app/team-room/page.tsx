@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Person, TeamMembership, TeamNewsItem, SeasonUpdate } from '@/lib/store/types'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
+import { refreshSeasonIfStale } from '@/lib/season/auto-refresh'
 import CoachIntroCard from '@/components/CoachIntroCard'
 import CompactSeasonUpdates from '@/components/CompactSeasonUpdates'
 import FoundersWall from '@/components/FoundersWall'
@@ -95,6 +96,10 @@ export default async function TeamRoomPage() {
       .filter((x): x is PlayerEntry => x !== null)
       .sort((a, b) => a.person.canonicalName.localeCompare(b.person.canonicalName))
     newsItems = await getRecentTeamNewsItems(team.id, 4)
+    // If the feed has gone stale, catch it up after this response is sent.
+    // The hourly cron is the floor; this is what makes the page current for
+    // whoever looks next, without making this render wait for the network.
+    refreshSeasonIfStale(team.id, newsItems)
     seasonUpdates = await getSeasonUpdatesForTeam(team.id)
     travelStops = await getTravelStops(team.id)
     currentPlayers = store.teamMemberships
