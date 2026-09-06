@@ -42,19 +42,34 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
   // US Eastern, not UTC. Stops are US calendar dates, so a UTC "today" rolled
   // over around 8pm ET and aged an event out on the evening of its own last day.
   const todayISO = usEasternToday()
-  const nextUp = sorted.find(s => s.startDate > todayISO) ?? null
+
+  /**
+   * An event is done when the founder has posted a result for it, or when its
+   * last day has passed.
+   *
+   * The result is what makes this immediate. A tournament that ends today is
+   * still "live" by the calendar for the rest of the day, so the board went on
+   * advertising the Alex Lagowitz Memorial as in progress for hours after Penn
+   * Athletics had published the final standings. Entering a result says the
+   * event is over more reliably than the clock does.
+   */
+  const isFinished = (s: TeamTravelStop) =>
+    !!s.resultText?.trim() || (s.endDate ?? s.startDate) < todayISO
+
+  const upcoming = sorted.filter(s => !isFinished(s))
+  // Past events without a result are kept too. Dropping them meant an event
+  // Penn had covered simply vanished off the season the next morning.
+  const finished = sorted.filter(isFinished).reverse()
+
+  // Both derived from what is actually still ahead, so a finished event cannot
+  // hold the "Live" badge or block the next one from being called next up.
+  const nextUp = upcoming.find(s => s.startDate > todayISO) ?? null
   const liveIds = new Set(
-    sorted.filter(s => s.startDate <= todayISO && todayISO <= (s.endDate ?? s.startDate)).map(s => s.id),
+    upcoming
+      .filter(s => s.startDate <= todayISO && todayISO <= (s.endDate ?? s.startDate))
+      .map(s => s.id),
   )
   const daysToNext = nextUp ? daysUntilStart(nextUp.startDate, todayISO) : null
-
-  // Once a tournament is over it stops being schedule. Anything finished
-  // leaves the board; the ones with a result reappear below as a record, and
-  // the ones without simply go, rather than dimming there forever.
-  const upcoming = sorted.filter(s => (s.endDate ?? s.startDate) >= todayISO)
-  const finished = sorted
-    .filter(s => (s.endDate ?? s.startDate) < todayISO && s.resultText)
-    .reverse()
 
   if (upcoming.length === 0 && finished.length === 0) return null
 
@@ -201,9 +216,13 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
                   </span>
                 </span>
                 <span className="flex items-baseline gap-3 whitespace-nowrap">
-                  <span className="text-[12.5px] font-semibold text-[#0a1628]">
-                    {s.resultText}
-                  </span>
+                  {s.resultText ? (
+                    <span className="text-[12.5px] font-semibold text-[#0a1628]">
+                      {s.resultText}
+                    </span>
+                  ) : (
+                    <span className="text-[11.5px] text-[#b0a898]">Result not posted</span>
+                  )}
                   {s.linkUrl && (
                     <a
                       href={s.linkUrl}
