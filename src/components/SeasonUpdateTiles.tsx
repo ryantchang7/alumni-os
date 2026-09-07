@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowUpRight, Link as LinkIcon } from 'lucide-react'
 import type { SeasonUpdate } from '@/lib/store/types'
@@ -33,6 +33,12 @@ function mediaSizing(bodyLength: number): string {
 
 function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
   const [expanded, setExpanded] = useState(false)
+  // Whether the note is actually too tall for the room the card has. Cards in
+  // a row stretch to the tallest of them, so a short note in a tall card had
+  // space going spare underneath it and was still being cut off with a "More"
+  // nobody needed to press.
+  const [clipped, setClipped] = useState(false)
+  const bodyRef = useRef<HTMLParagraphElement | null>(null)
   const thumb = thumbFor(u)
   const body = (u.body ?? '').trim()
   const hasBody = body.length > 0
@@ -87,8 +93,9 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
       </p>
       {hasBody && (
         <p
-          className={`text-[11px] text-[#3d4a5c] leading-relaxed mt-1.5 whitespace-pre-line ${
-            expanded ? '' : 'line-clamp-3'
+          ref={bodyRef}
+          className={`text-[11px] text-[#3d4a5c] leading-relaxed mt-1.5 whitespace-pre-line min-h-0 ${
+            expanded ? '' : 'flex-1 overflow-hidden'
           }`}
         >
           {body}
@@ -96,7 +103,7 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
       )}
       <span className="text-[10px] text-ink-muted mt-auto pt-2 flex items-center gap-1">
         {u.dateText}
-        {hasBody ? (
+        {hasBody && (clipped || expanded) ? (
           <span className="ml-auto text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#990000]">
             {expanded ? 'Less' : 'More'}
           </span>
@@ -107,6 +114,22 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
     </>
   )
 
+  // Measured rather than guessed from character count: how much fits depends
+  // on the card's width and on how tall its neighbours made the row.
+  useEffect(() => {
+    const el = bodyRef.current
+    if (!el || !hasBody) return
+    const measure = () => {
+      if (expanded) return
+      setClipped(el.scrollHeight - el.clientHeight > 1)
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    if (el.parentElement) ro.observe(el.parentElement)
+    return () => ro.disconnect()
+  }, [hasBody, expanded, body])
+
   const textCls = 'p-3 flex flex-col flex-1 text-left w-full'
 
   return (
@@ -115,7 +138,7 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
     >
       {mediaNode}
-      {hasBody ? (
+      {hasBody && (clipped || expanded) ? (
         <button
           type="button"
           onClick={() => setExpanded(v => !v)}
@@ -124,6 +147,8 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
         >
           {text}
         </button>
+      ) : hasBody ? (
+        <div className={textCls}>{text}</div>
       ) : u.linkUrl ? (
         <a href={u.linkUrl} target="_blank" rel="noopener noreferrer" className={textCls}>
           {text}
