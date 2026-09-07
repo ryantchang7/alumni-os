@@ -14,6 +14,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { checkCronAuth } from '@/lib/cron-auth'
+import { requireFounder } from '@/lib/auth/guards'
 import { deriveClassLabel } from '@/lib/class-year'
 import { alertFounders } from '@/lib/ops/alert'
 
@@ -31,10 +32,18 @@ function formatWeekOf(now: Date): string {
 }
 
 async function runJob(req: NextRequest) {
-  if (!checkCronAuth(req)) return unauthorized()
-
   const teamSlug = req.nextUrl.searchParams.get('teamSlug') ?? 'penn-mens-golf'
-  const dryRun = req.nextUrl.searchParams.get('dryRun') === '1'
+  let dryRun = req.nextUrl.searchParams.get('dryRun') === '1'
+
+  // A founder can preview the digest, but only ever as a dry run. Sending is
+  // gated on the cron secret alone, because a real send goes to alumni
+  // inboxes and cannot be taken back: one absent-minded visit to this URL in
+  // a signed-in browser should not be able to mail the alumni body.
+  if (!checkCronAuth(req)) {
+    const gate = await requireFounder()
+    if (!gate.ok) return unauthorized()
+    dryRun = true
+  }
 
   const {
     readStore,
@@ -213,6 +222,7 @@ async function runJob(req: NextRequest) {
       newsItems: newsItems.length,
       result: result ? `${result.eventName}: ${result.resultText}` : null,
       nextUp: nextUp ? `${nextUp.eventName} in ${nextUp.daysAway}d` : null,
+      recipients: (await getAllLinkedAccountsForTeam(team.id)).length,
     })
   }
 
