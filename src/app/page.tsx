@@ -152,7 +152,7 @@ export default function LandingPage() {
           <ProofStrip variant="line" />
           <Link
             href="/launch"
-            className="text-[12.5px] text-white/85 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
+            className="inline-block py-2.5 text-[12.5px] text-white/85 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
           >
             Watch the 5-minute film →
           </Link>

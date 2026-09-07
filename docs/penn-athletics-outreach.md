@@ -36,7 +36,7 @@ self-introduction and goes straight to the offer.
 >
 > The three tour rounds are already up as tee sheets, Castle Course, Kingsbarns
 > and Carnoustie, so you can see exactly what the group would get:
-> penngolfclubhouse.com/the-course
+> penngolfclubhouse.com/scotland
 >
 > The part I think is actually worth something to you is what happens after. A
 > week in Scotland is a lot of goodwill, and right now it ends when the flights
@@ -74,10 +74,23 @@ self-introduction and goes straight to the offer.
 - No "platform", no "engagement", no "network effects". They hear vendor
   language constantly and your whole advantage is that you are not a vendor.
 
-**What he sees when he clicks.** The Course is now entirely real: three Scotland
-rounds open (Castle Course, Kingsbarns, Carnoustie) and two preseason rounds in
-Recently Played (Belmont, The International). The Merion sample that used to sit
-above them is hidden as of 2026-09-04.
+**What he sees when he clicks. Checked signed-out on a phone, 2026-09-07.**
+
+This link changed, and the reason matters. It used to point at
+`/the-course`, which is **members only**: a signed-out visitor gets a
+"Claim your card to see open tee times" door and none of the rounds. Castle
+Course, Kingsbarns and Carnoustie are all invisible to him. Charlie is
+Athletics staff, not a Penn Golf alum, so he cannot claim a card either. The
+email would have promised him proof and handed him a locked door.
+
+`/scotland` is fully public and is the better page for him anyway: it carries
+all three courses, the Old Course Hotel, the Rusacks dinner, the Champions
+Club, and it names Charlie as the contact. He is looking at a page you built
+about his own trip.
+
+The Course itself is entirely real once signed in: three Scotland rounds open
+and two preseason rounds in Recently Played. Worth showing in the meeting, on
+your screen, rather than linking cold.
 
 The 19th Hole still carries four EXAMPLE cards, because no real gathering exists
 there yet. That page is not linked from this email. If he browses to it, the

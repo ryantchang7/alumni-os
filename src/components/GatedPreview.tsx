@@ -104,13 +104,13 @@ export default function GatedPreview({
         <div className="mt-7 pt-6 border-t border-[rgba(180,168,150,0.3)] flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           <Link
             href="/member-book"
-            className="text-[12px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors"
+            className="inline-block py-2 text-[12px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors"
           >
             Browse the Member Book &rarr;
           </Link>
           <Link
             href="/launch"
-            className="text-[12px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors"
+            className="inline-block py-2 text-[12px] font-semibold text-[#0a1628] hover:text-[#990000] transition-colors"
           >
             Watch the film &rarr;
           </Link>
