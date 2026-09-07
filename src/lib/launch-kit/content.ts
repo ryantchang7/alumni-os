@@ -27,7 +27,7 @@ export const CLOSING_LINE = 'Come into the Clubhouse.'
 
 /* ── Founder note (used on /launch) ──────────────────────────────── */
 
-export const FOUNDER_NOTE = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
+export const FOUNDER_NOTE = `Hey Penn Men's Golf family.
 
 This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many other Penn Golf guys were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family. Generations standing on the same range, pulling for the same program.
 

@@ -145,10 +145,10 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
             <img
               src="/brand/ryan-chang.jpg"
               alt="Ryan Chang"
-              width={733}
-              height={1100}
+              width={285}
+              height={379}
               loading="lazy"
-              className="w-32 sm:w-44 flex-shrink-0 self-start rounded-xl object-cover aspect-[3/4] border border-[rgba(180,168,150,0.45)]"
+              className="w-32 sm:w-40 flex-shrink-0 self-start rounded-xl object-cover aspect-[3/4] border border-[rgba(180,168,150,0.45)]"
             />
             <div className="min-w-0">
             {founderNote.split('\n\n').map((para, i) => {
