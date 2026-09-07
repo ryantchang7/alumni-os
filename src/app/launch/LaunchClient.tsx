@@ -133,14 +133,11 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
 
       {/* Founder note */}
       <section className="px-5 sm:px-8 py-12 sm:py-16">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-ink-muted mb-5">
             A note from the founder
           </p>
-          <div
-            className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-8 sm:px-10 sm:py-12 flex flex-col sm:flex-row gap-6 sm:gap-8"
-            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.05)' }}
-          >
+          <div className="flex flex-col sm:flex-row items-start gap-5 sm:gap-7">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/brand/ryan-chang.jpg"
@@ -148,9 +145,13 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
               width={285}
               height={379}
               loading="lazy"
-              className="w-32 sm:w-40 flex-shrink-0 self-start rounded-xl object-cover aspect-[3/4] border border-[rgba(180,168,150,0.45)]"
+              className="w-32 sm:w-44 flex-shrink-0 rounded-2xl object-cover aspect-[3/4] border border-[rgba(180,168,150,0.45)]"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.05)' }}
             />
-            <div className="min-w-0">
+            <div
+              className="bg-white border border-[rgba(180,168,150,0.4)] rounded-2xl px-7 py-8 sm:px-9 sm:py-10 min-w-0 flex-1"
+              style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.05)' }}
+            >
             {founderNote.split('\n\n').map((para, i) => {
               const isSig = para.startsWith('. ')
               return (

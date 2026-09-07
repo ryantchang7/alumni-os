@@ -227,12 +227,14 @@ export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
   const { data: session, status } = useSession()
-  // Signed-out visitors get 'The Film' — the pitch was otherwise reachable
-  // only from the emailed URL and the footer.
-  const visibleNavEntries: NavEntry[] =
-    status === 'authenticated'
-      ? navEntries
-      : [...navEntries, { type: 'link' as const, label: 'The Film', href: '/launch' }]
+  // Everyone gets 'The Film'. It was hidden from members on the reasoning
+  // that they had already joined and did not need the pitch, but members are
+  // exactly the people who forward it to an alum who has not, and they had no
+  // way back to it short of typing the URL.
+  const visibleNavEntries: NavEntry[] = [
+    ...navEntries,
+    { type: 'link' as const, label: 'The Film', href: '/launch' },
+  ]
   const email = (session?.user?.email ?? '').toLowerCase().trim()
   const isFounder = FOUNDER_EMAILS.has(email)
 
