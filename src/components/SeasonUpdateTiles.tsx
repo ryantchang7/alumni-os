@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowUpRight, Link as LinkIcon } from 'lucide-react'
 import type { SeasonUpdate } from '@/lib/store/types'
@@ -33,16 +33,25 @@ function mediaSizing(bodyLength: number): string {
 
 function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
   const [expanded, setExpanded] = useState(false)
-  // Whether the note is actually too tall for the room the card has. Cards in
-  // a row stretch to the tallest of them, so a short note in a tall card had
-  // space going spare underneath it and was still being cut off with a "More"
-  // nobody needed to press.
-  const [clipped, setClipped] = useState(false)
-  const bodyRef = useRef<HTMLParagraphElement | null>(null)
   const thumb = thumbFor(u)
   const body = (u.body ?? '').trim()
   const hasBody = body.length > 0
   const mediaCls = mediaSizing(body.length)
+
+  /**
+   * Whether this note is long enough to be worth hiding behind a "More".
+   *
+   * Decided on length rather than by measuring the rendered box. Measuring is
+   * the more precise idea and it is what was tried first, but a card in a
+   * stretched row grows to fit its own text, so the note never overflowed and
+   * the affordance never appeared. Length needs no layout, behaves the same
+   * on the server and the client, and the exact cutoff does not matter much:
+   * the point is that an ordinary note shows in full.
+   *
+   * 500 characters is about fourteen lines in the narrowest column these
+   * tiles get, which is where the collapsed height is capped.
+   */
+  const longNote = body.length > 500
 
   const media = (
     <div className={`relative w-full ${mediaCls}`}>
@@ -93,14 +102,11 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
       </p>
       {hasBody && (
         <p
-          ref={bodyRef}
-          // Fills the room the card has, up to a ceiling. Without the ceiling
-          // a card grows to fit its own text, so nothing ever overflows and
-          // More could never appear, and one long note would stretch the whole
-          // row. 14rem is roughly a dozen lines: past that it stops being a
-          // tile and starts being an article.
+          // A short note is not capped at all, so it shows in full. Only a
+          // long one is held to 14rem, roughly a dozen lines, past which it
+          // stops being a tile and starts being an article.
           className={`text-[11px] text-[#3d4a5c] leading-relaxed mt-1.5 whitespace-pre-line min-h-0 ${
-            expanded ? '' : 'flex-1 overflow-hidden max-h-56'
+            longNote && !expanded ? 'flex-1 overflow-hidden max-h-56' : ''
           }`}
         >
           {body}
@@ -108,7 +114,7 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
       )}
       <span className="text-[10px] text-ink-muted mt-auto pt-2 flex items-center gap-1">
         {u.dateText}
-        {hasBody && (clipped || expanded) ? (
+        {hasBody && longNote ? (
           <span className="ml-auto text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#990000]">
             {expanded ? 'Less' : 'More'}
           </span>
@@ -119,33 +125,15 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
     </>
   )
 
-  // Measured rather than guessed from character count: how much fits depends
-  // on the card's width and on how tall its neighbours made the row.
-  useEffect(() => {
-    const el = bodyRef.current
-    if (!el || !hasBody) return
-    const measure = () => {
-      if (expanded) return
-      setClipped(el.scrollHeight - el.clientHeight > 1)
-    }
-    measure()
-    const ro = new ResizeObserver(measure)
-    ro.observe(el)
-    if (el.parentElement) ro.observe(el.parentElement)
-    return () => ro.disconnect()
-  }, [hasBody, expanded, body])
-
   const textCls = 'p-3 flex flex-col flex-1 text-left w-full'
 
   return (
     <div
-      data-clipped={clipped ? '1' : '0'}
-      data-hasbody={hasBody ? '1' : '0'}
       className="group flex flex-col h-full bg-white border border-[rgba(180,168,150,0.4)] rounded-xl overflow-hidden hover:shadow-md transition-shadow"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
     >
       {mediaNode}
-      {hasBody && (clipped || expanded) ? (
+      {hasBody && longNote ? (
         <button
           type="button"
           onClick={() => setExpanded(v => !v)}
