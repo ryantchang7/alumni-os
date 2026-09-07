@@ -93,8 +93,12 @@ async function runJob(req: NextRequest) {
       if (g.teamId !== team.id || g.status === 'closed') return false
       if (isHiddenGathering(g.id) || isExampleGathering(g.id, g.isExample)) return false
       if (isPastGathering(g)) return false
+      // gatheringSortKey returns MAX_SAFE_INTEGER, not Infinity, for text it
+      // cannot date ("Championship Weekend"). Those are kept: the codebase's
+      // rule everywhere else is that an undatable gathering stays visible.
       const when = gatheringSortKey(g)
-      return !Number.isFinite(when) || when - now.getTime() <= HORIZON_MS
+      if (when === Number.MAX_SAFE_INTEGER) return true
+      return when - now.getTime() <= HORIZON_MS
     })
     .sort((a, b) => gatheringSortKey(a) - gatheringSortKey(b))
     .map(g => ({ title: g.title, dateText: g.dateText, city: g.city }))
