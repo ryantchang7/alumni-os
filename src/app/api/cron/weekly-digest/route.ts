@@ -96,18 +96,17 @@ async function runJob(req: NextRequest) {
   const { isExampleGathering, isHiddenGathering } = await import(
     '@/lib/seed-data/example-gatherings'
   )
-  const HORIZON_MS = 30 * 24 * 60 * 60 * 1000
+  // Whatever is still ahead, soonest first. There was a thirty-day window
+  // here, which sounded sensible and would have hidden the Scotland rounds
+  // from every digest until mid-September: they are the only thing on the
+  // board and they are five weeks out. If a round is the next one there is,
+  // it is the answer to "where could you play" however far off it is. The
+  // template caps the list at three regardless.
   const gatherings = store.clubhouseGatherings
     .filter(g => {
       if (g.teamId !== team.id || g.status === 'closed') return false
       if (isHiddenGathering(g.id) || isExampleGathering(g.id, g.isExample)) return false
-      if (isPastGathering(g)) return false
-      // gatheringSortKey returns MAX_SAFE_INTEGER, not Infinity, for text it
-      // cannot date ("Championship Weekend"). Those are kept: the codebase's
-      // rule everywhere else is that an undatable gathering stays visible.
-      const when = gatheringSortKey(g)
-      if (when === Number.MAX_SAFE_INTEGER) return true
-      return when - now.getTime() <= HORIZON_MS
+      return !isPastGathering(g)
     })
     .sort((a, b) => gatheringSortKey(a) - gatheringSortKey(b))
     .map(g => ({ title: g.title, dateText: g.dateText, city: g.city }))
