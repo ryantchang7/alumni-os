@@ -28,7 +28,9 @@ function shell(inner: string, footerCtaUrl?: string, unsubscribeUrl?: string): s
           ${
             footerCtaUrl
               ? `<p style="margin:32px 0 0 0;font-size:11px;color:${MUTED};">
-                  Replying to this email goes nowhere. Visit the Clubhouse at
+                  This address isn&rsquo;t monitored, but Ryan reads
+                  <a href="mailto:rtchang@upenn.edu" style="color:${NAVY};text-decoration:underline;">rtchang@upenn.edu</a>.
+                  The Clubhouse is at
                   <a href="${footerCtaUrl}" style="color:${NAVY};text-decoration:underline;">${footerCtaUrl.replace(/^https?:\/\//, '')}</a>.
                 </p>`
               : ''
@@ -393,12 +395,28 @@ export function renderSignInLinkEmail(input: {
 interface DigestMember { name: string; classLabel?: string }
 interface DigestGathering { title: string; dateText: string; city?: string }
 interface DigestCareerPost { kind: 'ask' | 'offer'; headline: string; sector: string; postedByName: string }
-interface DigestMoment { caption: string; postedByName: string }
+interface DigestMoment { caption: string; postedByName: string; photoUrl?: string; mediaType?: 'image' | 'video' }
 interface DigestNewsItem { title: string; sourceUrl: string }
+interface DigestResult { eventName: string; resultText: string; dateRange: string; leaderboardUrl?: string }
+interface DigestNextUp { eventName: string; dateRange: string; locationText?: string; daysAway: number }
 
+/**
+ * The weekly note to alumni.
+ *
+ * Ordered for the person receiving it, not for the database. An alum who
+ * graduated in 1994 does not know this year's new members and cannot act on
+ * a career post from someone they have never met, but they do want to know
+ * how the team played. So the team leads, then anything they could actually
+ * turn up to, then the people.
+ *
+ * Every section is capped. A complete list of everything that happened is a
+ * report; three things worth knowing is an email.
+ */
 export function renderWeeklyDigest(input: {
   teamName: string
   weekOf: string
+  result?: DigestResult
+  nextUp?: DigestNextUp
   newMembers: DigestMember[]
   asks: DigestCareerPost[]
   offers: DigestCareerPost[]
@@ -407,66 +425,194 @@ export function renderWeeklyDigest(input: {
   newsItems: DigestNewsItem[]
   clubhouseUrl: string
 }): { subject: string; html: string } {
-  const counts: string[] = []
-  if (input.newMembers.length) counts.push(`${input.newMembers.length} joined`)
-  if (input.gatherings.length) counts.push(`${input.gatherings.length} on the books`)
-  if (input.asks.length || input.offers.length) {
-    counts.push(`${input.asks.length + input.offers.length} on the floor`)
-  }
-  const subject = counts.length
-    ? `${input.teamName} · This week: ${counts.join(' · ')}`
-    : `${input.teamName} · A quiet week at the Clubhouse`
+  const CAP = 3
+
+  /**
+   * Lead with the most newsworthy single thing rather than a tally. A count
+   * of things a reader cannot picture ("2 on the books") is not a reason to
+   * open an email; a score is.
+   */
+  const subject = (() => {
+    if (input.result) {
+      return `${input.teamName} · ${input.result.resultText.split(' · ')[0]} at ${input.result.eventName}`
+    }
+    if (input.nextUp && input.nextUp.daysAway <= 8) {
+      const when = input.nextUp.daysAway <= 1 ? 'tomorrow' : `in ${input.nextUp.daysAway} days`
+      return `${input.teamName} · ${input.nextUp.eventName} ${when}`
+    }
+    if (input.gatherings.length === 1) {
+      return `${input.teamName} · ${input.gatherings[0].title}`
+    }
+    if (input.gatherings.length > 1) {
+      return `${input.teamName} · ${input.gatherings.length} rounds on the board`
+    }
+    if (input.asks.length) {
+      return `${input.teamName} · A player is asking for help`
+    }
+    if (input.newMembers.length) {
+      const n = input.newMembers.length
+      return `${input.teamName} · ${n === 1 ? `${input.newMembers[0].name} joined` : `${n} more joined the Clubhouse`}`
+    }
+    return `${input.teamName} · This week at the Clubhouse`
+  })()
 
   const sec = (title: string, body: string): string => `
-    <div style="margin:24px 0 0 0;">
+    <div style="margin:26px 0 0 0;padding:0 0 0 0;">
       <p style="margin:0 0 8px 0;font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:${MUTED};">${title}</p>
       ${body}
     </div>
   `
   const li = (s: string): string => `<p style="margin:0 0 6px 0;font-size:14px;line-height:1.55;color:#0a1628;">${s}</p>`
+  const more = (n: number, label: string): string =>
+    n > 0
+      ? `<p style="margin:6px 0 0 0;font-size:12px;color:${MUTED};">and ${n} more ${label}.</p>`
+      : ''
 
   const sections: string[] = []
-  if (input.newMembers.length) {
-    sections.push(sec('New members',
-      input.newMembers.map(m => li(
-        `<strong>${escapeHtml(m.name)}</strong>${m.classLabel ? ` <span style="color:${MUTED}">· ${escapeHtml(m.classLabel)}</span>` : ''}`
-      )).join('')
-    ))
+
+  // 1. The team. The reason an alum opens this at all.
+  if (input.result || input.nextUp) {
+    const rows: string[] = []
+    if (input.result) {
+      rows.push(`
+        <p style="margin:0 0 4px 0;font-family:${SERIF};font-size:19px;line-height:1.25;color:${NAVY};">
+          ${escapeHtml(input.result.resultText)}
+        </p>
+        <p style="margin:0 0 2px 0;font-size:13.5px;color:#3d4a5c;">
+          ${escapeHtml(input.result.eventName)} <span style="color:${MUTED}">· ${escapeHtml(input.result.dateRange)}</span>
+        </p>
+        ${
+          input.result.leaderboardUrl
+            ? `<p style="margin:6px 0 0 0;font-size:12.5px;"><a href="${input.result.leaderboardUrl}" style="color:${NAVY};text-decoration:underline;">Full leaderboard</a></p>`
+            : ''
+        }
+      `)
+    }
+    if (input.nextUp) {
+      const when =
+        input.nextUp.daysAway <= 0
+          ? 'under way now'
+          : input.nextUp.daysAway === 1
+            ? 'tomorrow'
+            : `in ${input.nextUp.daysAway} days`
+      rows.push(`
+        <p style="margin:${input.result ? '14px' : '0'} 0 2px 0;font-size:14px;line-height:1.5;color:#0a1628;">
+          <strong>Next up, ${escapeHtml(when)}:</strong> ${escapeHtml(input.nextUp.eventName)}
+        </p>
+        <p style="margin:0;font-size:13px;color:${MUTED};">
+          ${escapeHtml(input.nextUp.dateRange)}${input.nextUp.locationText ? ' · ' + escapeHtml(input.nextUp.locationText) : ''}
+        </p>
+      `)
+    }
+    sections.push(
+      sec(
+        'The team',
+        `<div style="padding:14px 16px;background:${CREAM};border:1px solid #e8dec9;border-radius:8px;">${rows.join('')}</div>`,
+      ),
+    )
   }
+
+  // 2. Things a reader could actually turn up to.
   if (input.gatherings.length) {
-    sections.push(sec('On the books',
-      input.gatherings.map(g => li(
-        `<strong>${escapeHtml(g.title)}</strong> <span style="color:${MUTED}">· ${escapeHtml(g.dateText)}${g.city ? ' · ' + escapeHtml(g.city) : ''}</span>`
-      )).join('')
-    ))
+    sections.push(
+      sec(
+        'Where you could play',
+        input.gatherings
+          .slice(0, CAP)
+          .map(g =>
+            li(
+              `<strong>${escapeHtml(g.title)}</strong> <span style="color:${MUTED}">· ${escapeHtml(g.dateText)}${g.city ? ' · ' + escapeHtml(g.city) : ''}</span>`,
+            ),
+          )
+          .join('') + more(input.gatherings.length - CAP, 'on the board'),
+      ),
+    )
   }
+
+  // 3. Asks before offers. Alumni respond to being needed.
   if (input.asks.length) {
-    sections.push(sec('Asks on the floor',
-      input.asks.map(p => li(
-        `<strong>${escapeHtml(p.headline)}</strong> <span style="color:${MUTED}">· ${escapeHtml(p.sector)} · ${escapeHtml(p.postedByName)}</span>`
-      )).join('')
-    ))
+    sections.push(
+      sec(
+        input.asks.length === 1 ? 'Someone is asking' : 'People are asking',
+        input.asks
+          .slice(0, CAP)
+          .map(p =>
+            li(
+              `<strong>${escapeHtml(p.headline)}</strong> <span style="color:${MUTED}">· ${escapeHtml(p.sector)} · ${escapeHtml(p.postedByName)}</span>`,
+            ),
+          )
+          .join('') + more(input.asks.length - CAP, 'asks'),
+      ),
+    )
   }
   if (input.offers.length) {
-    sections.push(sec('Offers on the floor',
-      input.offers.map(p => li(
-        `<strong>${escapeHtml(p.headline)}</strong> <span style="color:${MUTED}">· ${escapeHtml(p.sector)} · ${escapeHtml(p.postedByName)}</span>`
-      )).join('')
-    ))
+    sections.push(
+      sec(
+        'Offered up',
+        input.offers
+          .slice(0, CAP)
+          .map(p =>
+            li(
+              `<strong>${escapeHtml(p.headline)}</strong> <span style="color:${MUTED}">· ${escapeHtml(p.sector)} · ${escapeHtml(p.postedByName)}</span>`,
+            ),
+          )
+          .join('') + more(input.offers.length - CAP, 'offers'),
+      ),
+    )
   }
+
+  // 4. Moments, with the photo rather than only its caption.
   if (input.moments.length) {
-    sections.push(sec('Moments',
-      input.moments.map(m => li(
-        `<em style="color:#3d4a5c">${escapeHtml(m.caption.slice(0, 100))}${m.caption.length > 100 ? '…' : ''}</em> <span style="color:${MUTED}">· ${escapeHtml(m.postedByName)}</span>`
-      )).join('')
-    ))
+    const lead = input.moments.find(m => m.photoUrl && m.mediaType !== 'video')
+    const body =
+      (lead?.photoUrl
+        ? `<a href="${input.clubhouseUrl}"><img src="${lead.photoUrl}" alt="" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 8px 0;"></a>`
+        : '') +
+      input.moments
+        .slice(0, 2)
+        .map(m =>
+          li(
+            `<em style="color:#3d4a5c">${escapeHtml(m.caption.slice(0, 90))}${m.caption.length > 90 ? '…' : ''}</em> <span style="color:${MUTED}">· ${escapeHtml(m.postedByName)}</span>`,
+          ),
+        )
+        .join('') + more(input.moments.length - 2, 'posted')
+    sections.push(sec('Posted this week', body))
   }
+
+  // 5. Who joined. Brief, and last of the people sections, because a name
+  //    from a class you never overlapped with means little on its own.
+  if (input.newMembers.length) {
+    const names = input.newMembers
+      .slice(0, 6)
+      .map(
+        m =>
+          `${escapeHtml(m.name)}${m.classLabel ? ` <span style="color:${MUTED}">${escapeHtml(m.classLabel)}</span>` : ''}`,
+      )
+      .join(', ')
+    sections.push(
+      sec(
+        input.newMembers.length === 1 ? 'New in the book' : 'New in the book',
+        li(names) + more(input.newMembers.length - 6, 'claimed a card'),
+      ),
+    )
+  }
+
+  // 6. Penn's own headlines last, capped. They are already public, so they
+  //    are the least exclusive thing in here.
   if (input.newsItems.length) {
-    sections.push(sec('From the box · Penn Athletics',
-      input.newsItems.map(n => li(
-        `<a href="${n.sourceUrl}" style="color:${NAVY};text-decoration:underline;">${escapeHtml(n.title)}</a>`
-      )).join('')
-    ))
+    sections.push(
+      sec(
+        'From the box',
+        input.newsItems
+          .slice(0, 2)
+          .map(n =>
+            li(
+              `<a href="${n.sourceUrl}" style="color:${NAVY};text-decoration:underline;">${escapeHtml(n.title)}</a>`,
+            ),
+          )
+          .join(''),
+      ),
+    )
   }
 
   const inner = `
@@ -475,7 +621,7 @@ export function renderWeeklyDigest(input: {
     </h1>
     <p style="margin:0 0 8px 0;font-size:13px;color:${MUTED};">${escapeHtml(input.weekOf)}</p>
     ${sections.join('')}
-    <div style="margin:32px 0 0 0;">${btn(input.clubhouseUrl, 'Open the Clubhouse')}</div>
+    <div style="margin:30px 0 0 0;">${btn(input.clubhouseUrl, 'Open the Clubhouse')}</div>
   `
   return {
     subject,

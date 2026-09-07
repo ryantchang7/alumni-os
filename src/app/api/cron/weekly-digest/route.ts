@@ -80,13 +80,23 @@ async function runJob(req: NextRequest) {
       postedByName: p.postedByName,
     }))
 
+  // What a reader could still turn up to, rather than what happened to be
+  // typed in this week. A round posted a month ago and happening on Saturday
+  // is the useful one; a round created on Tuesday for next spring is not.
+  const { isPastGathering, gatheringSortKey } = await import('@/lib/gatherings/date')
+  const { isExampleGathering, isHiddenGathering } = await import(
+    '@/lib/seed-data/example-gatherings'
+  )
+  const HORIZON_MS = 30 * 24 * 60 * 60 * 1000
   const gatherings = store.clubhouseGatherings
-    .filter(
-      g =>
-        g.teamId === team.id &&
-        Date.parse(g.createdAt) >= cutoffMs &&
-        g.status !== 'closed',
-    )
+    .filter(g => {
+      if (g.teamId !== team.id || g.status === 'closed') return false
+      if (isHiddenGathering(g.id) || isExampleGathering(g.id, g.isExample)) return false
+      if (isPastGathering(g)) return false
+      const when = gatheringSortKey(g)
+      return !Number.isFinite(when) || when - now.getTime() <= HORIZON_MS
+    })
+    .sort((a, b) => gatheringSortKey(a) - gatheringSortKey(b))
     .map(g => ({ title: g.title, dateText: g.dateText, city: g.city }))
 
   const moments = store.moments
@@ -96,7 +106,56 @@ async function runJob(req: NextRequest) {
         m.status === 'published' &&
         Date.parse(m.createdAt) >= cutoffMs,
     )
-    .map(m => ({ caption: m.caption, postedByName: m.postedByName }))
+    .map(m => ({
+      caption: m.caption,
+      postedByName: m.postedByName,
+      photoUrl: m.photoUrl,
+      mediaType: m.mediaType,
+    }))
+
+  // The team. This is what an alum opens the email for, and it was missing
+  // entirely: the digest could go out the day after a tournament and never
+  // mention it.
+  const { usEasternToday } = await import('@/lib/us-date')
+  const todayISO = usEasternToday()
+  const stops = store.teamTravelStops
+    .filter(t => t.teamId === team.id)
+    .sort((a, b) => a.startDate.localeCompare(b.startDate))
+  const dayDiff = (iso: string) =>
+    Math.round((Date.parse(iso + 'T00:00:00Z') - Date.parse(todayISO + 'T00:00:00Z')) / 86400000)
+  const rangeOf = (t: { startDate: string; endDate?: string }) => {
+    const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', timeZone: 'UTC' }
+    const a = new Date(`${t.startDate}T00:00:00Z`).toLocaleDateString('en-US', opts)
+    if (!t.endDate || t.endDate === t.startDate) return a
+    const b = new Date(`${t.endDate}T00:00:00Z`)
+    return `${a}\u2013${b.getUTCDate()}`
+  }
+  const finishedThisWeek = stops
+    .filter(t => {
+      if (!t.resultText?.trim()) return false
+      const ended = t.endDate ?? t.startDate
+      return dayDiff(ended) <= 0 && dayDiff(ended) >= -8
+    })
+    .pop()
+  const result = finishedThisWeek
+    ? {
+        eventName: finishedThisWeek.eventName,
+        resultText: finishedThisWeek.resultText!,
+        dateRange: rangeOf(finishedThisWeek),
+        leaderboardUrl: finishedThisWeek.linkUrl,
+      }
+    : undefined
+  const upcomingStop = stops.find(
+    t => !t.resultText?.trim() && (t.endDate ?? t.startDate) >= todayISO,
+  )
+  const nextUp = upcomingStop
+    ? {
+        eventName: upcomingStop.eventName,
+        dateRange: rangeOf(upcomingStop),
+        locationText: upcomingStop.locationText,
+        daysAway: dayDiff(upcomingStop.startDate),
+      }
+    : undefined
 
   const newsItems = (await getRecentTeamNewsItems(team.id, 4)).map(n => ({
     title: n.title,
@@ -108,6 +167,8 @@ async function runJob(req: NextRequest) {
   const { subject, html } = renderWeeklyDigest({
     teamName: team.teamName,
     weekOf: formatWeekOf(now),
+    result,
+    nextUp,
     newMembers,
     asks: careerPosts.filter(p => p.kind === 'ask'),
     offers: careerPosts.filter(p => p.kind === 'offer'),
@@ -120,7 +181,11 @@ async function runJob(req: NextRequest) {
   // Clubhouse activity is what justifies the email. News alone doesn't —
   // counting it meant a dead week still sent "A quiet week at the Clubhouse"
   // containing nothing but Penn Athletics headlines.
+  // A result posted this week justifies the email on its own: it is the one
+  // thing every alum wants and none of them get anywhere else. A bare "next
+  // up" does not, or a quiet January would mail everyone every Sunday.
   const hasContent =
+    Boolean(result) ||
     newMembers.length + gatherings.length + careerPosts.length + moments.length > 0
 
   if (!hasContent) {
@@ -142,6 +207,8 @@ async function runJob(req: NextRequest) {
       gatherings: gatherings.length,
       moments: moments.length,
       newsItems: newsItems.length,
+      result: result ? `${result.eventName}: ${result.resultText}` : null,
+      nextUp: nextUp ? `${nextUp.eventName} in ${nextUp.daysAway}d` : null,
     })
   }
 
