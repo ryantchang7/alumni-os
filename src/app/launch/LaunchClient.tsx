@@ -93,10 +93,10 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
         maxWidth="1180px"
         size="generous"
       >
-        <p className="text-white/70 text-[14.5px] sm:text-base max-w-2xl leading-relaxed mb-7">
+        <p className="text-white/70 text-[14.5px] sm:text-base max-w-2xl leading-relaxed mb-5">
           {heroBody}
         </p>
-        <ProofStrip variant="founded" className="mb-7" />
+        <ProofStrip variant="founded" className="mb-5" />
         <motion.div
           className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md sm:max-w-none"
           initial={{ opacity: 0, y: 8 }}
@@ -116,7 +116,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
             Claim Your Member Card
           </Link>
         </motion.div>
-        <p className="mt-7 inline-flex items-center eyebrow text-gold">
+        <p className="mt-5 inline-flex items-center eyebrow text-gold">
           {tagline}
         </p>
       </SectionEmblemHeader>
@@ -372,10 +372,11 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
                 Penn Men&rsquo;s Golf &rsquo;28 · Brookline, Massachusetts
               </p>
               <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed">
-                I built the Clubhouse over the past year, on my own. There was no
-                way for a Penn golfer from 1994 and one from 2026 to find each
-                other, and that seemed like the wrong way for a program with this
-                much history to work. If you carried the bag, this is yours too.
+                I built the Clubhouse over the past year, on my own. It was
+                difficult for a Penn golfer from 1994 and one from 2026 to find
+                each other. The longer I spent around this program the more I
+                realized what a special community it is, and I wanted to build
+                something for it. If you carried the bag, this is yours too.
               </p>
               <a
                 href="mailto:rtchang@upenn.edu"

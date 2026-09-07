@@ -17,7 +17,7 @@ export default function LaunchFilm({
   return (
     <section
       id="film"
-      className="relative overflow-hidden px-5 sm:px-8 py-10 sm:py-14 bg-[#07101f] border-y border-white/10"
+      className="relative overflow-hidden px-5 sm:px-8 pt-8 pb-10 sm:pt-10 sm:pb-14 bg-[#07101f] border-y border-white/10"
     >
       {/* Its own darker ground and a gold rule, so the film reads as an event
           on the page rather than as one more block of navy. */}

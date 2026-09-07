@@ -43,11 +43,14 @@ export default function SectionEmblemHeader({
   size = 'standard',
 }: Props) {
   const generous = size === 'generous'
+  // 'generous' is the launch page's front door and nothing else uses it. It
+  // ran tall enough to push the film, which is the whole point of that page,
+  // entirely below the fold, so it is now merely roomy rather than vast.
   const pad = generous
-    ? 'pt-14 pb-16 sm:pt-20 sm:pb-24'
+    ? 'pt-10 pb-10 sm:pt-12 sm:pb-12'
     : 'pt-10 pb-12 sm:pt-12 sm:pb-14'
   const artHeight = generous
-    ? 'h-32 sm:h-56 lg:h-[18rem]'
+    ? 'h-28 sm:h-44 lg:h-56'
     : 'h-28 sm:h-40 lg:h-52'
   return (
     <div className={`relative overflow-hidden bg-[#060e1a] px-6 sm:px-8 ${pad}`}>
@@ -110,7 +113,7 @@ export default function SectionEmblemHeader({
         />
       </div>
       {children && generous && (
-        <div className="mx-auto relative mt-8 sm:mt-10" style={{ maxWidth }}>
+        <div className="mx-auto relative mt-6 sm:mt-7" style={{ maxWidth }}>
           {children}
         </div>
       )}
