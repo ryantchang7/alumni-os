@@ -139,6 +139,8 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
 
   return (
     <div
+      data-clipped={clipped ? '1' : '0'}
+      data-hasbody={hasBody ? '1' : '0'}
       className="group flex flex-col h-full bg-white border border-[rgba(180,168,150,0.4)] rounded-xl overflow-hidden hover:shadow-md transition-shadow"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}
     >
