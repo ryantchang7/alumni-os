@@ -47,7 +47,7 @@ export default function SectionEmblemHeader({
   // ran tall enough to push the film, which is the whole point of that page,
   // entirely below the fold, so it is now merely roomy rather than vast.
   const pad = generous
-    ? 'pt-10 pb-10 sm:pt-12 sm:pb-12'
+    ? 'pt-9 pb-9 sm:pt-10 sm:pb-10'
     : 'pt-10 pb-12 sm:pt-12 sm:pb-14'
   const artHeight = generous
     ? 'h-28 sm:h-44 lg:h-56'
@@ -70,7 +70,7 @@ export default function SectionEmblemHeader({
           </motion.p>
           <motion.h1
             className={`font-heading text-white font-medium tracking-tight leading-[1.05] ${
-              generous ? 'text-4xl sm:text-6xl lg:text-7xl' : 'text-4xl sm:text-5xl lg:text-6xl'
+              generous ? 'text-4xl sm:text-5xl lg:text-6xl' : 'text-4xl sm:text-5xl lg:text-6xl'
             }`}
             data-testid={titleTestId}
             initial={{ opacity: 0, y: 8 }}

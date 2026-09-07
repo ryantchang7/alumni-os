@@ -96,7 +96,6 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
         <p className="text-white/70 text-[14.5px] sm:text-base max-w-2xl leading-relaxed mb-5">
           {heroBody}
         </p>
-        <ProofStrip variant="founded" className="mb-5" />
         <motion.div
           className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md sm:max-w-none"
           initial={{ opacity: 0, y: 8 }}
@@ -116,14 +115,21 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
             Claim Your Member Card
           </Link>
         </motion.div>
-        <p className="mt-5 inline-flex items-center eyebrow text-gold">
-          {tagline}
-        </p>
       </SectionEmblemHeader>
 
       {/* The film, server-rendered by page.tsx so a slow or failed
           /api/site-content call can never silently delete it. */}
       {film}
+
+      {/* Founding proof and the tagline, moved down from the hero. Neither
+          needs to be read before the film, and above it they were pushing the
+          video off the first screen on a laptop. */}
+      <section className="px-5 sm:px-8 py-7 sm:py-8 bg-[#0a1628] border-b border-white/10">
+        <div className="max-w-[1180px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <ProofStrip variant="founded" />
+          <p className="eyebrow text-gold">{tagline}</p>
+        </div>
+      </section>
 
       {/* Founder note */}
       <section className="px-5 sm:px-8 py-12 sm:py-16">
