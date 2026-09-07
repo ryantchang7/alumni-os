@@ -94,8 +94,13 @@ function UpdateTile({ u, href }: { u: SeasonUpdate; href: string }) {
       {hasBody && (
         <p
           ref={bodyRef}
+          // Fills the room the card has, up to a ceiling. Without the ceiling
+          // a card grows to fit its own text, so nothing ever overflows and
+          // More could never appear, and one long note would stretch the whole
+          // row. 14rem is roughly a dozen lines: past that it stops being a
+          // tile and starts being an article.
           className={`text-[11px] text-[#3d4a5c] leading-relaxed mt-1.5 whitespace-pre-line min-h-0 ${
-            expanded ? '' : 'flex-1 overflow-hidden'
+            expanded ? '' : 'flex-1 overflow-hidden max-h-56'
           }`}
         >
           {body}
