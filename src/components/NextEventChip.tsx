@@ -20,7 +20,7 @@ export default function NextEventChip() {
   const [next, setNext] = useState<TeamTravelStop | null>(null)
 
   useEffect(() => {
-    fetch('/api/team-travel')
+    fetch('/api/team-travel', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : { stops: [] }))
       .then((d: { stops?: TeamTravelStop[] }) => {
         const today = new Date().toISOString().slice(0, 10)

@@ -196,7 +196,7 @@ export default function AskClient() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/player/profiles?teamSlug=penn-mens-golf')
+    fetch('/api/player/profiles?teamSlug=penn-mens-golf', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : { profiles: [] })
       .then(d => {
         setProfiles(d.profiles ?? [])

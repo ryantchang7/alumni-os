@@ -23,7 +23,7 @@ export default function StudioClient() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/internal/site-content')
+    fetch('/api/internal/site-content', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (!d) return

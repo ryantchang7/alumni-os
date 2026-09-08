@@ -350,7 +350,7 @@ function AlumniRequestsInner() {
   const [updatingId, setUpdatingId] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch(`/api/player/profiles?teamSlug=${teamSlug}`)
+    fetch(`/api/player/profiles?teamSlug=${teamSlug}`, { cache: 'no-store' })
       .then(r => r.json())
       .then(data => setProfiles(
         (data.profiles ?? []).filter((p: AlumniProfile) => p.personId !== personId)
@@ -362,7 +362,7 @@ function AlumniRequestsInner() {
     if (!personId) return
     setLoading(true)
     setError(null)
-    fetch(`/api/alumni/requests?teamSlug=${teamSlug}&personId=${personId}`)
+    fetch(`/api/alumni/requests?teamSlug=${teamSlug}&personId=${personId}`, { cache: 'no-store' })
       .then(r => {
         if (!r.ok) throw new Error(`Failed to load (${r.status})`)
         return r.json()

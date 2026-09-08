@@ -134,7 +134,7 @@ export default function SupportClient({ status }: Props) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/billing/status')
+    fetch('/api/billing/status', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (!d) return
@@ -147,7 +147,7 @@ export default function SupportClient({ status }: Props) {
       })
       .catch(() => setConfigured(false))
 
-    fetch('/api/founders')
+    fetch('/api/founders', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (d?.founders) setFounders(d.founders)

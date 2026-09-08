@@ -49,7 +49,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
 
   useEffect(() => {
     if (!approved) return
-    fetch('/api/player/your-era')
+    fetch('/api/player/your-era', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => setData(d))
       .catch(() => setData(null))

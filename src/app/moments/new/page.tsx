@@ -35,7 +35,7 @@ function NewMomentForm() {
 
   useEffect(() => {
     if (!approved) return
-    fetch('/api/me/access')
+    fetch('/api/me/access', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (d?.canSeeLockerRoom) {
@@ -53,7 +53,7 @@ function NewMomentForm() {
   // The whole Member Book for the tag picker — tag anyone, claimed or not.
   useEffect(() => {
     if (!approved) return
-    fetch('/api/member-book/options')
+    fetch('/api/member-book/options', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : { members: [] }))
       .then(d => setMembers((d.members ?? []) as Array<{ bookId: string; name: string }>))
       .catch(() => {})

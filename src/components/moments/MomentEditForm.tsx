@@ -65,11 +65,11 @@ export default function MomentEditForm({
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/member-book/options')
+    fetch('/api/member-book/options', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => setOptions(Array.isArray(d.members) ? d.members : []))
       .catch(() => {})
-    fetch('/api/me/access')
+    fetch('/api/me/access', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => setCanSeeLockerRoom(!!d.canSeeLockerRoom))
       .catch(() => {})

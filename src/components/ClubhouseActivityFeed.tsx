@@ -57,7 +57,7 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    fetch('/api/clubhouse/activity')
+    fetch('/api/clubhouse/activity', { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         setData(d)

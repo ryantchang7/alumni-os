@@ -154,7 +154,7 @@ function AgentInner() {
     if (!teamSlug) { setLoading(false); return }
     setLoading(true)
     setLoadError(null)
-    fetch(`/api/agent/summary?teamSlug=${encodeURIComponent(teamSlug)}`)
+    fetch(`/api/agent/summary?teamSlug=${encodeURIComponent(teamSlug)}`, { cache: 'no-store' })
       .then(r => {
         if (!r.ok) return r.json().then(d => { throw new Error(d.error ?? `HTTP ${r.status}`) })
         return r.json() as Promise<AgentSummaryResponse>
@@ -164,7 +164,7 @@ function AgentInner() {
         setRosterUrl(prev => prev || data.team.websiteUrl || '')
         // If pending entries exist and we have no extraction result yet, fetch them
         if (data.counts.extractedPending > 0 && !extractionResult) {
-          fetch(`/api/roster/entries?teamSlug=${encodeURIComponent(teamSlug)}`)
+          fetch(`/api/roster/entries?teamSlug=${encodeURIComponent(teamSlug)}`, { cache: 'no-store' })
             .then(r => r.ok ? r.json() : Promise.resolve([]))
             .then((entries: ExtractedEntry[]) => {
               setPendingEntries(entries.filter(e => e.status === 'extracted'))
@@ -214,7 +214,7 @@ function AgentInner() {
     setPromotionError(null)
     try {
       // Get current extracted entries, filter high-confidence
-      const r = await fetch(`/api/roster/entries?teamSlug=${encodeURIComponent(teamSlug)}`)
+      const r = await fetch(`/api/roster/entries?teamSlug=${encodeURIComponent(teamSlug)}`, { cache: 'no-store' })
       if (!r.ok) throw new Error('Failed to load roster entries')
       const entries = (await r.json()) as ExtractedEntry[]
       const highConfIds = entries

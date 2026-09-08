@@ -25,8 +25,8 @@ function HistoryInner() {
   useEffect(() => {
     if (!teamSlug) return
     Promise.all([
-      fetch(`/api/teams?slug=${teamSlug}`).then(r => r.json()),
-      fetch(`/api/scrape/historical/runs?teamSlug=${teamSlug}`).then(r => r.json()),
+      fetch(`/api/teams?slug=${teamSlug}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/api/scrape/historical/runs?teamSlug=${teamSlug}`, { cache: 'no-store' }).then(r => r.json()),
     ]).then(([teamData, runsData]) => {
       if (teamData && !teamData.error) setTeam(teamData as Team)
       if (runsData.runs?.length > 0) {

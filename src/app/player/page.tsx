@@ -46,7 +46,7 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`/api/gatherings?teamSlug=${teamSlug}`)
+    fetch(`/api/gatherings?teamSlug=${teamSlug}`, { cache: 'no-store' })
       .then(r => r.ok ? r.json() : { gatherings: [] })
       .then(d => {
         const all: GatheringSnippet[] = d.gatherings ?? []
@@ -475,7 +475,7 @@ function ClubhouseInner() {
   }, [loadTeamFeed])
 
   useEffect(() => {
-    fetch(`/api/player/profiles?teamSlug=${teamSlug}`)
+    fetch(`/api/player/profiles?teamSlug=${teamSlug}`, { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : { profiles: [] }))
       .then(data => {
         setProfiles(data.profiles ?? [])
@@ -485,12 +485,12 @@ function ClubhouseInner() {
 
     loadTeamFeed()
 
-    fetch('/api/account/onboarding-status')
+    fetch('/api/account/onboarding-status', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : { linked: false }))
       .then((data: OnboardingStatus) => setOnboarding(data))
       .catch(() => setOnboarding({ linked: false }))
 
-    fetch('/api/billing/status')
+    fetch('/api/billing/status', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (!d) return
@@ -502,12 +502,12 @@ function ClubhouseInner() {
       })
       .catch(() => {})
 
-    fetch('/api/spotlights')
+    fetch('/api/spotlights', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : { spotlight: null }))
       .then(d => setCurrentSpotlight(d.spotlight ?? null))
       .catch(() => {})
 
-    fetch('/api/clubhouse/activity')
+    fetch('/api/clubhouse/activity', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (d?.totals?.membersClaimed != null) {

@@ -99,7 +99,7 @@ function EnrichListInner() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`/api/alumni/profiles?teamSlug=${encodeURIComponent(teamSlug)}`)
+      const res = await fetch(`/api/alumni/profiles?teamSlug=${encodeURIComponent(teamSlug)}`, { cache: 'no-store' })
       const data = await res.json()
       if (!res.ok) {
         setError(data.error ?? `HTTP ${res.status}`)

@@ -72,7 +72,7 @@ export default function GatheringsManager() {
   const [createSuccess, setCreateSuccess] = useState(false)
 
   useEffect(() => {
-    fetch('/api/gatherings?teamSlug=penn-mens-golf')
+    fetch('/api/gatherings?teamSlug=penn-mens-golf', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : { gatherings: [] })
       .then(d => { setGatherings(d.gatherings ?? []); setLoading(false) })
       .catch(() => setLoading(false))

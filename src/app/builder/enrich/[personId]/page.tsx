@@ -152,8 +152,8 @@ function EnrichPersonInner() {
     setError(null)
     try {
       const [profileRes, enrichmentRes] = await Promise.all([
-        fetch(`/api/alumni/profiles/${personId}?teamSlug=${encodeURIComponent(teamSlug)}`),
-        fetch(`/api/alumni/enrichment?teamSlug=${encodeURIComponent(teamSlug)}&personId=${encodeURIComponent(personId)}`),
+        fetch(`/api/alumni/profiles/${personId}?teamSlug=${encodeURIComponent(teamSlug)}`, { cache: 'no-store' }),
+        fetch(`/api/alumni/enrichment?teamSlug=${encodeURIComponent(teamSlug)}&personId=${encodeURIComponent(personId)}`, { cache: 'no-store' }),
       ])
 
       const [profileData, enrichmentData]: [PersonProfile, EnrichmentData] = await Promise.all([

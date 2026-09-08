@@ -266,7 +266,7 @@ function MemberBookPageInner() {
   const [familySupporters, setFamilySupporters] = useState<FamilySupporterEntry[]>([])
 
   useEffect(() => {
-    fetch('/api/player/profiles?teamSlug=penn-mens-golf')
+    fetch('/api/player/profiles?teamSlug=penn-mens-golf', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (!d?.profiles) return
@@ -315,7 +315,7 @@ function MemberBookPageInner() {
       })
       .catch(() => {})
 
-    fetch('/api/founders')
+    fetch('/api/founders', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (d?.founders) setFounders(d.founders as FounderEntry[])

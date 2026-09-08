@@ -23,7 +23,7 @@ export default function NewChatPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/chat/members')
+    fetch('/api/chat/members', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : { members: [] }))
       .then(d => {
         setMembers(d.members ?? [])

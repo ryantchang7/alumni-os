@@ -45,7 +45,7 @@ export default function HostRoundPage() {
   // Names for the invite picker. Same endpoint the Moments tagger uses.
   useEffect(() => {
     if (!approved) return
-    fetch('/api/member-book/options')
+    fetch('/api/member-book/options', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : { members: [] }))
       .then(d => setBookOptions((d.members ?? []) as InviteOption[]))
       .catch(() => {})

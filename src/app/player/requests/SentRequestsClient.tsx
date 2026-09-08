@@ -158,7 +158,7 @@ export default function SentRequestsClient() {
     if (!fromName) return
     setLoading(true)
     setError(null)
-    fetch(`/api/player/requests?teamSlug=penn-mens-golf&fromName=${encodeURIComponent(fromName)}`)
+    fetch(`/api/player/requests?teamSlug=penn-mens-golf&fromName=${encodeURIComponent(fromName)}`, { cache: 'no-store' })
       .then(r => r.ok ? r.json() : Promise.reject(r))
       .then(d => {
         setRequests(d.requests ?? [])

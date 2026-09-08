@@ -9,7 +9,7 @@ let inflight: Promise<Record<string, string>> | null = null
 async function fetchAll(): Promise<Record<string, string>> {
   if (cache) return cache
   if (inflight) return inflight
-  inflight = fetch('/api/site-content')
+  inflight = fetch('/api/site-content', { cache: 'no-store' })
     .then(r => (r.ok ? r.json() : { values: {} }))
     .then(d => {
       cache = (d.values ?? {}) as Record<string, string>

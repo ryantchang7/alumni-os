@@ -165,7 +165,7 @@ function OutreachPageInner() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch(`/api/player/profiles/${id}?teamSlug=${teamSlug}`)
+    fetch(`/api/player/profiles/${id}?teamSlug=${teamSlug}`, { cache: 'no-store' })
       .then(r => {
         if (!r.ok) { setNotFoundState(true); setLoading(false); return null }
         return r.json()

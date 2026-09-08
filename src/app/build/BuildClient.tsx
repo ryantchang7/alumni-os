@@ -127,7 +127,7 @@ function BuildPageInner() {
   const [importError, setImportError] = useState<string | null>(null)
 
   const fetchPeople = useCallback(async () => {
-    const res = await fetch(`/api/build/people?teamSlug=${TEAM_SLUG}`)
+    const res = await fetch(`/api/build/people?teamSlug=${TEAM_SLUG}`, { cache: 'no-store' })
     if (!res.ok) {
       setTeamExists(false)
       setLoading(false)

@@ -121,7 +121,7 @@ function AccountAffordance() {
       setUploadedPhoto(null)
       return
     }
-    fetch('/api/me/access')
+    fetch('/api/me/access', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => setUploadedPhoto(d?.photoUrl ?? null))
       .catch(() => setUploadedPhoto(null))

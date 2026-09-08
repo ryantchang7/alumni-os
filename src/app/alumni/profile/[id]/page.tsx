@@ -140,7 +140,7 @@ function AlumniProfileInner() {
   const justClaimed = searchParams.get('claimed') === '1'
 
   useEffect(() => {
-    fetch(`/api/alumni/self-profile?teamSlug=${teamSlug}&personId=${personId}`)
+    fetch(`/api/alumni/self-profile?teamSlug=${teamSlug}&personId=${personId}`, { cache: 'no-store' })
       .then(r => {
         if (!r.ok) throw new Error(`Not found (${r.status})`)
         return r.json()

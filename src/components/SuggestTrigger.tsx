@@ -29,7 +29,7 @@ export default function SuggestTrigger() {
   useEffect(() => {
     if (!open || fetchedRef.current) return
     fetchedRef.current = true
-    fetch('/api/me/access')
+    fetch('/api/me/access', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then((d: { name?: string; email?: string } | null) => {
         if (d) {

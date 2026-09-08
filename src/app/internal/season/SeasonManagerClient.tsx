@@ -98,7 +98,7 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/internal/season?teamSlug=penn-mens-golf')
+    fetch('/api/internal/season?teamSlug=penn-mens-golf', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : { updates: [] }))
       .then(d => {
         setUpdates(d.updates ?? [])

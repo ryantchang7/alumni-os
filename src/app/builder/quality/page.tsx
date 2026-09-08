@@ -21,10 +21,10 @@ function QualityInner() {
     setLoading(true)
     setError(null)
     Promise.all([
-      fetch(`/api/graph/quality?teamSlug=${teamSlug}`).then(r => r.json()),
-      fetch(`/api/graph/duplicates?teamSlug=${teamSlug}`).then(r => r.json()),
-      fetch(`/api/graph/coverage?teamSlug=${teamSlug}`).then(r => r.json()),
-      fetch(`/api/graph/missing-fields?teamSlug=${teamSlug}`).then(r => r.json()),
+      fetch(`/api/graph/quality?teamSlug=${teamSlug}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/api/graph/duplicates?teamSlug=${teamSlug}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/api/graph/coverage?teamSlug=${teamSlug}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/api/graph/missing-fields?teamSlug=${teamSlug}`, { cache: 'no-store' }).then(r => r.json()),
     ])
       .then(([q, d, c, m]) => {
         if (q.error) { setError(q.error); return }

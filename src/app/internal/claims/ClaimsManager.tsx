@@ -33,7 +33,7 @@ export default function ClaimsManager() {
   const [bulk, setBulk] = useState<{ done: number; total: number } | null>(null)
 
   useEffect(() => {
-    fetch('/api/profile/claims')
+    fetch('/api/profile/claims', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : { claims: [] })
       .then(d => {
         setClaims(d.claims ?? [])

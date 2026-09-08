@@ -219,7 +219,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   // Load the roster only when the host actually opens the panel.
   useEffect(() => {
     if (!sheetOpen || bookOptions) return
-    fetch('/api/member-book/options')
+    fetch('/api/member-book/options', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => setBookOptions(d?.members ?? []))
       .catch(() => setBookOptions([]))
@@ -256,7 +256,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
       })
       const j = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(j.error ?? 'Could not add')
-      const fresh = await fetch(`/api/gatherings/${gathering.id}/attendees`)
+      const fresh = await fetch(`/api/gatherings/${gathering.id}/attendees`, { cache: 'no-store' })
         .then(r => (r.ok ? r.json() : null)).catch(() => null)
       if (fresh?.attendees) setAttendees(fresh.attendees as Attendee[])
       setPick('')
@@ -364,7 +364,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
 
   const refetchSheet = async () => {
     try {
-      const r = await fetch(`/api/gatherings/${gathering.id}/attendees`)
+      const r = await fetch(`/api/gatherings/${gathering.id}/attendees`, { cache: 'no-store' })
       const d = r.ok ? await r.json() : null
       if (d?.attendees) setAttendees(d.attendees as Attendee[])
     } catch {
@@ -434,7 +434,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   useEffect(() => {
     if (!approved || gathering.isExample) return
     let alive = true
-    fetch(`/api/gatherings/${gathering.id}/attendees`)
+    fetch(`/api/gatherings/${gathering.id}/attendees`, { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (alive && d?.attendees) setAttendees(d.attendees as Attendee[])

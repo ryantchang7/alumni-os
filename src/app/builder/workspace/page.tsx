@@ -132,11 +132,11 @@ function WorkspaceInner() {
     setError(null)
 
     Promise.all([
-      fetch(`/api/demo/readiness?teamSlug=${teamSlug}`).then(r => {
+      fetch(`/api/demo/readiness?teamSlug=${teamSlug}`, { cache: 'no-store' }).then(r => {
         if (!r.ok) throw new Error(`Readiness fetch failed: ${r.status}`)
         return r.json() as Promise<ReadinessData>
       }),
-      fetch(`/api/scrape/historical/runs?teamSlug=${teamSlug}`).then(r => {
+      fetch(`/api/scrape/historical/runs?teamSlug=${teamSlug}`, { cache: 'no-store' }).then(r => {
         if (!r.ok) throw new Error(`Historical runs fetch failed: ${r.status}`)
         return r.json() as Promise<HistoricalRunsData>
       }),

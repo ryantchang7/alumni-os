@@ -264,7 +264,7 @@ export default function TeamQuestionsPage() {
   const [answeredIds, setAnsweredIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    fetch('/api/team-questions')
+    fetch('/api/team-questions', { cache: 'no-store' })
       .then(async r => {
         if (r.status === 401) {
           setGate('signin')

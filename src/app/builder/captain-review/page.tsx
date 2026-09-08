@@ -33,7 +33,7 @@ function CaptainReviewInner() {
   const [publishError, setPublishError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch(`/api/alumni/profiles?teamSlug=${teamSlug}`)
+    fetch(`/api/alumni/profiles?teamSlug=${teamSlug}`, { cache: 'no-store' })
       .then(r => {
         if (!r.ok) throw new Error(`Failed to load profiles (${r.status})`)
         return r.json()

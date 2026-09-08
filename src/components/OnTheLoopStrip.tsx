@@ -57,7 +57,7 @@ export default function OnTheLoopStrip({ approved }: Props) {
   const [members, setMembers] = useState<OnTheLoopMember[] | null>(null)
 
   useEffect(() => {
-    fetch('/api/clubhouse/activity')
+    fetch('/api/clubhouse/activity', { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => setMembers((d?.onTheLoop ?? []) as OnTheLoopMember[]))
       .catch(() => setMembers([]))

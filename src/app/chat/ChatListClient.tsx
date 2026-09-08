@@ -39,7 +39,7 @@ export default function ChatListClient() {
     let cancelled = false
     async function fetchOnce() {
       try {
-        const res = await fetch('/api/chat/conversations')
+        const res = await fetch('/api/chat/conversations', { cache: 'no-store' })
         if (!res.ok) throw new Error('Failed to load')
         const data = await res.json()
         if (!cancelled) {
