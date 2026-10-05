@@ -226,6 +226,48 @@ export default async function ScotlandPage() {
         </div>
       </section>
 
+      {/* The way in.
+          This page is public, it is what the Champions Club email points at,
+          and it is what a traveller lands on when they go looking for their
+          own trip. Every link on it used to go outward: Penn Athletics,
+          Charlie's inbox, a LinkedIn profile. Somebody could read the whole
+          thing and have nowhere to go. */}
+      <section className="px-5 sm:px-8 pb-14 sm:pb-16">
+        <div className="max-w-[1080px] mx-auto">
+          <div
+            className="bg-white border border-[rgba(180,168,150,0.45)] rounded-2xl px-7 sm:px-10 py-9 sm:py-11"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.05)' }}
+          >
+            <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#990000] mb-3">
+              Going on the trip?
+            </p>
+            <h2 className="text-[#0a1628] text-2xl sm:text-3xl font-medium font-heading mb-3">
+              The three tour rounds are already on the board.
+            </h2>
+            <p className="text-[#3d4a5c] text-[14.5px] leading-relaxed max-w-2xl mb-6">
+              The Castle Course, Kingsbarns and Carnoustie are set up as tee
+              sheets inside the Clubhouse, so you can see who else is playing and
+              sort out groups before anyone lands. Claim your spot in the Member
+              Book and you are in, free, for good.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md sm:max-w-none">
+              <Link
+                href="/account/setup"
+                className="inline-flex items-center justify-center bg-[#0a1628] text-white font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-[#112240] transition-colors tracking-wide"
+              >
+                Claim Your Member Card
+              </Link>
+              <Link
+                href="/member-book"
+                className="inline-flex items-center justify-center border border-[rgba(180,168,150,0.7)] text-[#0a1628] font-semibold text-sm px-7 py-3.5 rounded-lg hover:border-[#0a1628]/50 transition-colors tracking-wide"
+              >
+                Find Your Name
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Contact + closing */}
       <section className="px-5 sm:px-8 pb-20">
         <div className="max-w-[1080px] mx-auto">
@@ -254,7 +296,8 @@ export default async function ScotlandPage() {
             <Link href="/moments" className="text-[#0a1628] font-medium hover:underline">
               Moments
             </Link>{' '}
-            when we&rsquo;re back, the whole clubhouse will want to see it.
+            from the trip, not after it. The whole clubhouse will be watching
+            from home.
           </p>
           <p className="text-[11px] text-[#b0a898] mt-3">
             Photos: Kohjiro Kinno / St Andrews Links Trust · College Links Golf
