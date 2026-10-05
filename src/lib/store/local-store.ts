@@ -1481,16 +1481,23 @@ export async function getAllSiteContent(): Promise<Record<string, string>> {
   return { ...(store.siteContent ?? {}) }
 }
 
+/**
+ * Goes through mutateStore rather than read-modify-writeStore, so a write
+ * landing at the same moment is retried instead of silently overwritten.
+ * This used to take the unguarded path, which was survivable while the only
+ * caller was one person in the studio, and stopped being survivable once the
+ * season sync started stamping a heartbeat here on page views.
+ */
 export async function setSiteContent(slot: string, value: string): Promise<void> {
-  const store = await readStore()
-  if (!store.siteContent) store.siteContent = {}
-  const trimmed = value.trim()
-  if (trimmed.length === 0) {
-    delete store.siteContent[slot]
-  } else {
-    store.siteContent[slot] = trimmed
-  }
-  await writeStore(store)
+  await mutateStore(store => {
+    if (!store.siteContent) store.siteContent = {}
+    const trimmed = value.trim()
+    if (trimmed.length === 0) {
+      delete store.siteContent[slot]
+    } else {
+      store.siteContent[slot] = trimmed
+    }
+  })
 }
 
 export async function getRequestsForGathering(gatheringId: string): Promise<ClubhouseGatheringRequest[]> {
