@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { upload } from '@vercel/blob/client'
 import { Upload, ImageIcon, Camera } from 'lucide-react'
 import PhotoCropper from './PhotoCropper'
 
@@ -56,32 +57,49 @@ export default function PhotoUpload({
   const [pickedFile, setPickedFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null)
+  /** Percentage for a single large file going browser-to-Blob. A video can
+   * take a while on hotel wifi, and a button that just says "Uploading" with
+   * no movement reads as broken. */
+  const [pct, setPct] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const isVideoValue = !!value && VIDEO_EXT_RE.test(value)
 
   /**
-   * Vercel rejects a request body over about 4.5 MB before our route ever
-   * runs, so the friendly "video too big" message the API returns is never
-   * the one a person sees: they get an opaque failure instead. Checking here
-   * means the answer arrives instantly, without uploading anything.
-   *
-   * Photos are downscaled to well under this first, so in practice only a
-   * video, or an image the browser could not decode and shrink, lands here.
+   * Vercel rejects a request body over about 4.5 MB before our upload route
+   * runs, so anything bigger cannot go through the function at all.
+   * Downscaled photos are far under it; videos never are.
    */
-  const UPLOAD_CEILING = 4.2 * 1024 * 1024
-
-  function tooBigMessage(file: File): string | null {
-    if (file.size <= UPLOAD_CEILING) return null
-    const mb = (file.size / 1024 / 1024).toFixed(1)
-    return file.type.startsWith('video/')
-      ? `That clip is ${mb} MB and the limit is 4 MB, which is only a few seconds. Trim it first, or post a photo instead.`
-      : `That photo is ${mb} MB and could not be shrunk on this device. Try another photo, or take a fresh one with the camera.`
-  }
+  const FUNCTION_BODY_CEILING = 4.2 * 1024 * 1024
+  /** Matches the cap the token route pins onto the client token. */
+  const MAX_DIRECT_BYTES = 200 * 1024 * 1024
 
   async function postFile(file: File): Promise<{ url: string; mediaType?: 'image' | 'video' }> {
-    const oversize = tooBigMessage(file)
-    if (oversize) throw new Error(oversize)
+    const isVideo = file.type.startsWith('video/')
+
+    // Anything too big for the function goes browser-to-Blob instead, which
+    // is the only way a video can post. Multipart above 5 MB so a dropped
+    // connection retries one part rather than the whole clip, which matters
+    // on the kind of wifi a links clubhouse has.
+    if (isVideo || file.size > FUNCTION_BODY_CEILING) {
+      if (file.size > MAX_DIRECT_BYTES) {
+        const mb = (file.size / 1024 / 1024).toFixed(0)
+        throw new Error(`That file is ${mb} MB. The limit is 200 MB, so trim it first.`)
+      }
+      try {
+        setPct(0)
+        const blob = await upload(file.name, file, {
+          access: 'public',
+          handleUploadUrl: '/api/upload/blob-token',
+          multipart: file.size > 5 * 1024 * 1024,
+          onUploadProgress: p => setPct(Math.round(p.percentage)),
+        })
+        return { url: blob.url, mediaType: isVideo ? 'video' : 'image' }
+      } finally {
+        setPct(null)
+      }
+    }
+
     const form = new FormData()
     form.append('file', file)
     const res = await fetch('/api/upload/image', { method: 'POST', body: form })
@@ -310,7 +328,9 @@ export default function PhotoUpload({
             >
               <Upload className="w-3.5 h-3.5" />
               {uploading
-                ? progress
+                ? pct !== null
+                  ? `Uploading ${pct}%…`
+                  : progress
                   ? `Uploading ${progress.done}/${progress.total}…`
                   : 'Uploading…'
                 : multiple
