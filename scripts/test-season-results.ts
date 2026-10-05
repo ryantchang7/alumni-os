@@ -64,6 +64,14 @@ ok(
   'reads an even-par total',
   pennTeamScore('The Quakers finished at even-par 864.') === '864 (E)',
 )
+ok(
+  'knows "the Red and Blue" is Penn',
+  pennTeamScore('The Red and Blue shot 27-over-par 307.') === '307 (+27)',
+)
+ok(
+  'still refuses a rival total after a Red and Blue mention',
+  pennTeamScore('The Red and Blue trailed as Harvard closed at 9-over-par 289.') === null,
+)
 
 console.log('\n── Whole recaps (the two real ones, reproduced) ──')
 const lagowitz = parseResult(
@@ -99,6 +107,34 @@ ok(
   'a mid-event recap returns nothing at all',
   parseResult("Men's Golf Third After Day 1 at Ivy League Championship",
     article('Penn sits third after the opening round.', 'Penn shot 4-over-par 292.')) === null,
+)
+
+ok(
+  'reads the "in Nth place out of N teams" phrasing',
+  parseResult(
+    "Men's Golf Finishes Ninth at Macdonald Cup; Chang Goes Top 10",
+    article(
+      "The University of Pennsylvania men's golf team wrapped up the 48th playing of the Macdonald Cup in ninth place out of 11 teams.",
+      'The Red and Blue shot 27-over-par 307. Harvard finished first at 9-over-par 289.',
+    ),
+  )?.resultText === '9th of 11 · 307 (+27)',
+  String(parseResult("Men's Golf Finishes Ninth at Macdonald Cup; Chang Goes Top 10",
+    article("The University of Pennsylvania men's golf team wrapped up the 48th playing of the Macdonald Cup in ninth place out of 11 teams.",
+      'The Red and Blue shot 27-over-par 307. Harvard finished first at 9-over-par 289.'))?.resultText),
+)
+
+ok(
+  "never reports a rival's placing as Penn's",
+  parseResult(
+    "Men's Golf Finishes Ninth at the Macdonald Cup",
+    article(
+      'Harvard finished first at the Macdonald Cup.',
+      'Penn wrapped up in ninth place out of 11 teams.',
+    ),
+  )?.resultText === '9th of 11',
+  String(parseResult("Men's Golf Finishes Ninth at the Macdonald Cup",
+    article('Harvard finished first at the Macdonald Cup.',
+      'Penn wrapped up in ninth place out of 11 teams.'))?.resultText),
 )
 
 console.log('\n── Matching a recap to the right tournament ──')
@@ -137,9 +173,22 @@ async function main() {
     [item({})], html, '2026-09-06')
   ok('an event still in the future is untouched', future.plan[0].status === 'not-finished')
 
-  const early = await planResultSync([stop({})],
+  // The Macdonald Cup case: Penn published the recap a day before the end
+  // date the schedule carried, and the old window threw it away.
+  const earlyRecap = await planResultSync([stop({})],
+    [item({ publishedAt: '2026-09-05T18:00:00.000Z' })], html, '2026-09-07')
+  ok('a recap published on the first day still counts once the event is over',
+    earlyRecap.plan[0].status === 'matched', earlyRecap.plan[0].resultText)
+
+  // ...but only because the event has finished. Mid-event it is untouchable.
+  const midEventWindow = await planResultSync([stop({ endDate: '2026-09-08' })],
     [item({ publishedAt: '2026-09-05T18:00:00.000Z' })], html, '2026-09-06')
-  ok('a recap published before the last day is ignored', early.plan[0].status === 'no-article')
+  ok('the same recap cannot close an event still running',
+    midEventWindow.plan[0].status === 'not-finished')
+
+  const beforeStart = await planResultSync([stop({})],
+    [item({ publishedAt: '2026-09-01T18:00:00.000Z' })], html, '2026-09-07')
+  ok('a recap published before the event began is ignored', beforeStart.plan[0].status === 'no-article')
 
   const manual = await planResultSync([stop({ resultText: '2nd of 13' })], [item({})], html, '2026-09-07')
   ok('a hand-typed result is never overwritten', manual.plan[0].status === 'already-set')

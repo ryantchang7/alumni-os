@@ -109,14 +109,25 @@ export async function planResultSync(
       continue
     }
 
-    // A recap lands from the last day up to about a week afterwards.
+    // A recap lands any time from the first day to about a week after the
+    // last one.
+    //
+    // This used to demand the recap be published on or after the stop's end
+    // date, which sounds right and silently lost a real result: Penn
+    // published "Finishes Ninth at Macdonald Cup" on 26 September while the
+    // schedule had the event running to the 27th, so the one recap that
+    // existed was a day "too early" and was thrown out. Scheduled end dates
+    // come from Clippd and drift from when play actually finishes, by a day
+    // either way, which is exactly the margin that rule had no room for.
+    //
+    // Nothing is lost by widening it. A mid-tournament recap is rejected by
+    // the headline screen in parseResult, and an event that has not reached
+    // its last day is skipped above before this ever runs.
     const inWindow = news.filter(n => {
       const published = (n.publishedAt ?? n.fetchedAt).slice(0, 10)
-      // Not before the last day: a recap written mid-tournament cannot be
-      // the final word, whatever its headline says.
-      const onOrAfterEnd = daysBetween(published, endOf(stop)) >= 0
+      const onOrAfterStart = daysBetween(published, stop.startDate) >= 0
       const beforeCutoff = daysBetween(published, endOf(stop)) <= 8
-      return onOrAfterEnd && beforeCutoff
+      return onOrAfterStart && beforeCutoff
     })
 
     const scored = inWindow

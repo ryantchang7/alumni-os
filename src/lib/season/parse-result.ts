@@ -86,18 +86,66 @@ export function isFinalResultHeadline(title: string): boolean {
  * individual rounds ("a 4-under-par 68") and individual 54-hole scores are
  * excluded by requiring Penn to be the nearest team named beforehand.
  */
+/**
+ * Is the number that follows this run-up Penn's?
+ *
+ * Penn's own recaps call the team Penn, the Quakers, the Red and Blue, or
+ * the University of Pennsylvania, switching between sentences. The team has
+ * to be the nearest one named: a rival mentioned in between means the figure
+ * belongs to them.
+ */
+function attributedToPenn(lead: string): boolean {
+  const lower = lead.toLowerCase()
+  const at = Math.max(
+    lower.lastIndexOf('penn'),
+    lower.lastIndexOf('quaker'),
+    lower.lastIndexOf('red and blue'),
+  )
+  if (at === -1) return false
+  return !RIVALS.test(lead.slice(at))
+}
+
 export function pennTeamScore(text: string): string | null {
   const re = /(\d+)-(over|under)-par\s+(\d{3})\b|\beven-par\s+(\d{3})\b/gi
   let m: RegExpExecArray | null
   while ((m = re.exec(text))) {
-    const lead = text.slice(Math.max(0, m.index - 90), m.index)
-    const lower = lead.toLowerCase()
-    const pennAt = Math.max(lower.lastIndexOf('penn'), lower.lastIndexOf('quaker'))
-    if (pennAt === -1) continue
-    // A rival named between Penn and the number means the number is theirs.
-    if (RIVALS.test(lead.slice(pennAt))) continue
+    if (!attributedToPenn(text.slice(Math.max(0, m.index - 90), m.index))) continue
     if (m[3]) return `${m[3]} (${m[2].toLowerCase() === 'over' ? '+' : '-'}${m[1]})`
     if (m[4]) return `${m[4]} (E)`
+  }
+  return null
+}
+
+/**
+ * Penn's finishing position, in either phrasing Penn uses, and only when the
+ * sentence is about Penn.
+ *
+ * Taking the first placing in the article is not safe. A recap that says
+ * Penn "wrapped up in ninth place" and then that "Harvard finished first"
+ * would otherwise be read as a Penn win, which is the worst thing this file
+ * can produce.
+ */
+function pennPlacing(
+  text: string,
+): { place: number; field: number | null; tied: boolean } | null {
+  const re =
+    /\bfinish(?:ed|es)?\s+(tied\s+for\s+)?([A-Za-z0-9]+)|\bin\s+(?:a\s+)?(tied\s+for\s+)?([A-Za-z0-9]+)\s+place\b/gi
+  let m: RegExpExecArray | null
+  while ((m = re.exec(text))) {
+    if (!attributedToPenn(text.slice(Math.max(0, m.index - 120), m.index))) continue
+    const word = (m[2] ?? m[4] ?? '').toLowerCase()
+    const numeric = /^(\d+)(st|nd|rd|th)?$/.exec(word)
+    const place = ORDINAL_WORDS[word] ?? (numeric ? Number.parseInt(numeric[1], 10) : null)
+    if (!place) continue
+    // The field size trails the placing closely in both phrasings. Looking
+    // further afield would happily pick up another event's.
+    const after = text.slice(m.index, m.index + 90)
+    const f = after.match(/(?:out\s+)?of\s+(\d+)\s+teams?/i)
+    return {
+      place,
+      field: f ? Number.parseInt(f[1], 10) : null,
+      tied: Boolean(m[1] ?? m[3]),
+    }
   }
   return null
 }
@@ -110,21 +158,11 @@ export function parseResult(title: string, html: string): ParsedResult | null {
   if (!isFinalResultHeadline(title)) return null
 
   const text = articleText(html)
-  const m = text.match(
-    /\bfinish(?:ed|es)?\s+(tied\s+for\s+)?([A-Za-z0-9]+)(?:\s+(?:out\s+)?of\s+(\d+)\s+teams?)?/i,
-  )
+  const found = pennPlacing(text)
 
-  let place: number | null = null
-  let field: number | null = null
-  let tied = false
-
-  if (m) {
-    tied = Boolean(m[1])
-    const word = m[2].toLowerCase()
-    const numeric = /^(\d+)(st|nd|rd|th)?$/.exec(word)
-    place = ORDINAL_WORDS[word] ?? (numeric ? Number.parseInt(numeric[1], 10) : null)
-    if (place && m[3]) field = Number.parseInt(m[3], 10)
-  }
+  let place: number | null = found?.place ?? null
+  let field: number | null = found?.field ?? null
+  const tied = found?.tied ?? false
 
   // "Wins"/"captures" is a first-place headline even when the body never
   // says "finished first".
