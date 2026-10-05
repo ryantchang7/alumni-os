@@ -60,7 +60,28 @@ export default function PhotoUpload({
 
   const isVideoValue = !!value && VIDEO_EXT_RE.test(value)
 
+  /**
+   * Vercel rejects a request body over about 4.5 MB before our route ever
+   * runs, so the friendly "video too big" message the API returns is never
+   * the one a person sees: they get an opaque failure instead. Checking here
+   * means the answer arrives instantly, without uploading anything.
+   *
+   * Photos are downscaled to well under this first, so in practice only a
+   * video, or an image the browser could not decode and shrink, lands here.
+   */
+  const UPLOAD_CEILING = 4.2 * 1024 * 1024
+
+  function tooBigMessage(file: File): string | null {
+    if (file.size <= UPLOAD_CEILING) return null
+    const mb = (file.size / 1024 / 1024).toFixed(1)
+    return file.type.startsWith('video/')
+      ? `That clip is ${mb} MB and the limit is 4 MB, which is only a few seconds. Trim it first, or post a photo instead.`
+      : `That photo is ${mb} MB and could not be shrunk on this device. Try another photo, or take a fresh one with the camera.`
+  }
+
   async function postFile(file: File): Promise<{ url: string; mediaType?: 'image' | 'video' }> {
+    const oversize = tooBigMessage(file)
+    if (oversize) throw new Error(oversize)
     const form = new FormData()
     form.append('file', file)
     const res = await fetch('/api/upload/image', { method: 'POST', body: form })
