@@ -125,6 +125,49 @@ export default function SeasonUpdatesTimeline({ updates }: { updates: SeasonUpda
                   )}
                 </div>
               )}
+              {u.table && u.table.rows.length > 0 && (
+                /* Numbers lifted off a spreadsheet. Scrolls inside its own
+                   box so a wide sheet never makes the page scroll sideways
+                   on a phone. */
+                <div className="mt-3 rounded-lg border border-[rgba(180,168,150,0.4)] bg-white overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-[12px] border-collapse">
+                      <thead>
+                        <tr className="bg-[#fbf9f6]">
+                          {u.table.columns.map((c, i) => (
+                            <th
+                              key={i}
+                              className="text-left font-semibold text-[10px] uppercase tracking-[0.1em] text-ink-muted px-3 py-2 whitespace-nowrap border-b border-[rgba(180,168,150,0.4)]"
+                            >
+                              {c}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {u.table.rows.map((r, i) => (
+                          <tr key={i} className={i % 2 ? 'bg-[#fdfcf9]' : undefined}>
+                            {r.map((c, j) => (
+                              <td
+                                key={j}
+                                className={`px-3 py-1.5 whitespace-nowrap text-[#0a1628] ${
+                                  j === 0 ? 'font-medium' : 'tabular-nums'
+                                }`}
+                              >
+                                {c}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="text-[10.5px] text-ink-muted px-3 py-1.5 border-t border-[rgba(180,168,150,0.3)]">
+                    From {u.table.fileName}
+                    {u.table.truncated ? ', trimmed to fit' : ''}
+                  </p>
+                </div>
+              )}
               {u.linkUrl && (
                 /* One card shape whether or not the link had an OG image.
                    The old no-image branch was a thin outlined pill that read

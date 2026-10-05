@@ -12,7 +12,8 @@ import {
 import { detectStoreBackend } from '@/lib/launch/persistence-check'
 import { fetchLinkPreview } from '@/lib/link-preview/fetch-link-preview'
 import { notifyMany } from '@/lib/notifications/notify'
-import type { SeasonUpdate, PostMedia } from '@/lib/store/types'
+import type { SeasonUpdate, PostMedia, SeasonTable } from '@/lib/store/types'
+import { MAX_TABLE_COLS, MAX_TABLE_ROWS } from '@/lib/season/parse-sheet'
 
 const VALID_KINDS = new Set<SeasonUpdate['kind']>(['qualifying', 'tournament', 'stat', 'note'])
 
@@ -20,6 +21,34 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 const MAX_MEDIA = 12
 
 /** Accept only well-formed {url,type} entries, capped, order preserved. */
+/**
+ * Re-validate the table the client echoes back from /parse-sheet. It made
+ * the round trip through a browser, so its shape is an assertion, not a
+ * fact, and this is what gets stored and rendered to everyone.
+ */
+function parseTable(raw: unknown): SeasonTable | undefined {
+  if (!raw || typeof raw !== 'object') return undefined
+  const t = raw as Partial<SeasonTable>
+  if (!Array.isArray(t.columns) || !Array.isArray(t.rows)) return undefined
+  const columns = t.columns.slice(0, MAX_TABLE_COLS).map(c => String(c ?? '').slice(0, 60))
+  if (columns.length === 0) return undefined
+  const rows = t.rows
+    .slice(0, MAX_TABLE_ROWS)
+    .filter(Array.isArray)
+    .map(r =>
+      Array.from({ length: columns.length }, (_, i) =>
+        String((r as unknown[])[i] ?? '').slice(0, 60),
+      ),
+    )
+  if (rows.length === 0) return undefined
+  return {
+    columns,
+    rows,
+    fileName: String(t.fileName ?? 'sheet').slice(0, 120),
+    truncated: Boolean(t.truncated),
+  }
+}
+
 function parseMedia(raw: unknown): PostMedia[] | undefined {
   if (!Array.isArray(raw)) return undefined
   const out: PostMedia[] = []
@@ -107,6 +136,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'dateISO must be YYYY-MM-DD' }, { status: 400 })
   }
   const media = parseMedia(body.media)
+  const table = parseTable(body.table)
 
   const linkUrl = cleanUrl(body.linkUrl)
   const preview = await resolvePreview(linkUrl, cleanUrl(body.previewImageUrl))
@@ -118,6 +148,7 @@ export async function POST(request: Request) {
     dateText,
     dateISO: dateISO || undefined,
     media: media && media.length > 0 ? media : undefined,
+    table,
     body: typeof body.body === 'string' && body.body.trim() ? body.body.trim() : undefined,
     linkUrl,
     linkLabel: typeof body.linkLabel === 'string' && body.linkLabel.trim() ? body.linkLabel.trim() : undefined,
@@ -191,6 +222,7 @@ export async function PATCH(request: Request) {
     const m = parseMedia(body.media)
     patch.media = m && m.length > 0 ? m : undefined
   }
+  if (body.table !== undefined) patch.table = parseTable(body.table)
   if (typeof body.body === 'string') patch.body = body.body.trim() || undefined
   if (body.linkUrl !== undefined) patch.linkUrl = cleanUrl(body.linkUrl)
   if (typeof body.linkLabel === 'string') patch.linkLabel = body.linkLabel.trim() || undefined

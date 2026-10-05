@@ -43,8 +43,16 @@ interface SeasonUpdate {
   previewImageUrl?: string
   previewTitle?: string
   previewDescription?: string
+  table?: SheetTable
   createdAt: string
   updatedAt: string
+}
+
+interface SheetTable {
+  columns: string[]
+  rows: string[][]
+  fileName: string
+  truncated: boolean
 }
 
 const KIND_OPTIONS: { value: Kind; label: string }[] = [
@@ -75,6 +83,7 @@ const EMPTY_FORM = {
   linkUrl: '',
   linkLabel: '',
   previewImageUrl: '',
+  table: null as SheetTable | null,
 }
 
 interface PersistenceStatus {
@@ -95,6 +104,7 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState({ ...EMPTY_FORM })
   const [submitting, setSubmitting] = useState(false)
+  const [sheetBusy, setSheetBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -128,6 +138,7 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
       linkUrl: u.linkUrl ?? '',
       linkLabel: u.linkLabel ?? '',
       previewImageUrl: u.previewImageUrl ?? '',
+      table: u.table ?? null,
     })
     setShowForm(true)
     setError(null)
@@ -155,6 +166,7 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
         linkUrl: form.linkUrl.trim(),
         linkLabel: form.linkLabel.trim(),
         previewImageUrl: form.previewImageUrl.trim(),
+        table: form.table,
         ...(editingId ? { id: editingId } : {}),
       }
       const res = await fetch('/api/internal/season', {
@@ -361,6 +373,91 @@ export default function SeasonManagerClient({ isFounder = false }: { isFounder?:
                   maxFiles={MAX_MEDIA - form.media.length}
                 />
               )}
+            </div>
+
+            {/* Qualifying and tournament averages usually already exist in a
+                spreadsheet. Reading the file beats retyping a table into a
+                textarea, and the numbers end up on the card rather than in
+                an attachment nobody opens. */}
+            <div>
+              <label className={labelCls}>
+                Stats sheet (optional){' '}
+                <span className="font-normal text-ink-muted">.xlsx or .csv, first sheet, first row is the header</span>
+              </label>
+              {form.table ? (
+                <div className="rounded-lg border border-[rgba(180,168,150,0.5)] bg-[#fbf9f6] p-3">
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <p className="text-xs font-semibold text-[#0a1628] truncate">
+                      {form.table.fileName}
+                      <span className="font-normal text-ink-muted">
+                        {' '}· {form.table.rows.length} rows, {form.table.columns.length} columns
+                        {form.table.truncated ? ' (trimmed)' : ''}
+                      </span>
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, table: null }))}
+                      className="text-xs font-semibold text-[#990000] hover:underline flex-shrink-0"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="text-[11px] border-collapse">
+                      <thead>
+                        <tr>
+                          {form.table.columns.map((c, i) => (
+                            <th key={i} className="text-left font-semibold text-ink-muted border-b border-[rgba(180,168,150,0.5)] pr-4 pb-1 whitespace-nowrap">
+                              {c}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {form.table.rows.slice(0, 4).map((r, i) => (
+                          <tr key={i}>
+                            {r.map((c, j) => (
+                              <td key={j} className="pr-4 py-0.5 text-[#0a1628] whitespace-nowrap">{c}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {form.table.rows.length > 4 && (
+                    <p className="text-[11px] text-ink-muted mt-1">
+                      and {form.table.rows.length - 4} more rows
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <input
+                  type="file"
+                  accept=".xlsx,.xlsm,.csv,.tsv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                  disabled={sheetBusy}
+                  onChange={async e => {
+                    const file = e.target.files?.[0]
+                    e.target.value = ''
+                    if (!file) return
+                    setSheetBusy(true)
+                    setError(null)
+                    try {
+                      const fd = new FormData()
+                      fd.append('file', file)
+                      const res = await fetch('/api/internal/season/parse-sheet', { method: 'POST', body: fd })
+                      const j = await res.json().catch(() => ({}))
+                      if (!res.ok) throw new Error(j.error ?? 'Could not read that file.')
+                      setForm(f => ({ ...f, table: j.table as SheetTable }))
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : 'Could not read that file.')
+                    } finally {
+                      setSheetBusy(false)
+                    }
+                  }}
+                  className="text-sm text-[#3a4657] file:mr-3 file:rounded-lg file:border-0 file:bg-[#0a1628] file:px-4 file:py-2 file:text-white file:text-xs file:font-semibold"
+                />
+              )}
+              {sheetBusy && <p className="text-xs text-ink-muted mt-1">Reading the sheet…</p>}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

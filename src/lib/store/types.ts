@@ -448,6 +448,14 @@ export interface TeamNewsItem {
  * /internal/season (unlike TeamNewsItem, which is auto-fetched). Surfaces as
  * a timeline in the Team Room, newest first.
  */
+/** A table parsed out of an uploaded spreadsheet. */
+export interface SeasonTable {
+  columns: string[]
+  rows: string[][]
+  fileName: string
+  truncated: boolean
+}
+
 /** One photo or video in a post, in display order. */
 export interface PostMedia {
   url: string
@@ -483,6 +491,10 @@ export interface SeasonUpdate {
    * session, travel day. Distinct from previewImageUrl, which belongs to
    * the pasted link's preview card. */
   media?: PostMedia[]
+  /** A small table lifted out of an uploaded spreadsheet: qualifying scores,
+   * tournament averages. Parsed on upload and stored as text, so rendering
+   * never depends on the file still being around. */
+  table?: SeasonTable
   createdAt: string
   updatedAt: string
 }
