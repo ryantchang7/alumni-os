@@ -88,7 +88,12 @@ export default function PhotoUpload({
       }
       try {
         setPct(0)
-        const blob = await upload(file.name, file, {
+        // Some camera captures arrive with no usable name, and an empty
+        // pathname is rejected outright. The random suffix the token route
+        // pins on means a generic name can never collide.
+        const ext = isVideo ? 'mp4' : 'jpg'
+        const name = (file.name || '').trim().replace(/[^\w.\-]+/g, '_') || `upload-${Date.now()}.${ext}`
+        const blob = await upload(name, file, {
           access: 'public',
           handleUploadUrl: '/api/upload/blob-token',
           multipart: file.size > 5 * 1024 * 1024,
