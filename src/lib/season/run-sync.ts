@@ -29,6 +29,7 @@ export async function runSeasonSync(
     getRecentTeamNewsItems,
     getTravelStops,
     updateTravelStop,
+    setSiteContent,
   } = await import('@/lib/store/local-store')
   const { fetchPennGolfNews } = await import('@/lib/news/penn-golf-feed')
 
@@ -92,6 +93,27 @@ export async function runSeasonSync(
         })
         linked.push(`${stop.eventName}: ${hit.url}`)
       }
+    }
+  }
+
+  // A heartbeat, so "is the site keeping itself up to date" is a question
+  // with an answer rather than a hope. Nothing else reads this; it exists to
+  // be looked at, which matters most when nobody is at a laptop to notice
+  // that the hourly job quietly stopped.
+  if (!dryRun) {
+    try {
+      await setSiteContent(
+        'season-sync.last-run',
+        JSON.stringify({
+          at: new Date().toISOString(),
+          newsFetched: fetched.length,
+          newsAdded: added,
+          resultsWritten: written.length,
+          linksWritten: linked.length,
+        }),
+      )
+    } catch {
+      // A heartbeat that fails must never fail the sync it is reporting on.
     }
   }
 
