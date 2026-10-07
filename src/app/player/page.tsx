@@ -46,12 +46,20 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`/api/gatherings?teamSlug=${teamSlug}`, { cache: 'no-store' })
+    // ?when=upcoming matters. Without it the route returns every gathering
+    // ever held, oldest first, so this panel was picking the FIRST round in
+    // that list and calling it what is on: for weeks it advertised the
+    // August preseason trip to Belmont as something coming up.
+    fetch(`/api/gatherings?teamSlug=${teamSlug}&when=upcoming`, { cache: 'no-store' })
       .then(r => r.ok ? r.json() : { gatherings: [] })
       .then(d => {
-        const all: GatheringSnippet[] = d.gatherings ?? []
+        // Seeded samples are badged elsewhere, but this panel answers "what
+        // is actually happening", and a sample is not happening.
+        const all: GatheringSnippet[] = (d.gatherings ?? []).filter(
+          (g: GatheringSnippet) => !g.isExample,
+        )
         setTotalCount(all.length)
-        // Pick one of each type class: round, social (coffee/drinks/dinner), event
+        // One of each type class: round, social (coffee/drinks/dinner), event
         const round = all.find(g => g.type === 'round')
         const social = all.find(g => g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner')
         const event = all.find(g => g.type === 'event')
@@ -75,9 +83,9 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
       >
         <MemberOnlyTease
           icon={CalendarDays}
-          title="This Week in the Clubhouse"
+          title="Coming Up in the Clubhouse"
           count={totalCount}
-          countLabel={totalCount === 1 ? 'gathering this week' : 'gatherings this week'}
+          countLabel={totalCount === 1 ? 'gathering coming up' : 'gatherings coming up'}
           valueProp="Members see what's on, who's hosting, and can RSVP."
         />
       </motion.div>
@@ -94,7 +102,7 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
       data-testid="this-week-panel"
     >
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-base font-semibold text-[#0a1628]">This Week in the Clubhouse</h2>
+        <h2 className="text-base font-semibold text-[#0a1628]">Coming Up in the Clubhouse</h2>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {gatherings.map(g => (
@@ -870,7 +878,7 @@ function ClubhouseInner() {
         {/* Alumni Spotlight compact card, only when one exists */}
         {currentSpotlight && <SpotlightCard spotlight={currentSpotlight} />}
 
-        {/* This Week in the Clubhouse, moved up so what's HAPPENING this
+        {/* Coming Up in the Clubhouse, moved up so what's HAPPENING this
             week sits near the top of the page, not at the bottom. */}
         <ThisWeekPanel teamSlug={teamSlug} approved={!!onboarding?.linked} />
 
