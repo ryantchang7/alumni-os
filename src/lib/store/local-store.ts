@@ -71,6 +71,30 @@ const storePath = () =>
   process.env.ALUMNI_STORE_PATH ?? (IS_VERCEL ? '/tmp/alumni-os.json' : SEED_PATH)
 const REDIS_KEY = 'alumni-os:store:v1'
 
+/** Bumped by every write. Reading it costs a few bytes instead of the whole
+ *  store, which is what makes the cache below worth having. */
+const REV_KEY = `${REDIS_KEY}:rev`
+
+/**
+ * Last store we downloaded, kept per warm instance and keyed by revision.
+ *
+ * The store is one Redis key, so a read is a full download. Checking the
+ * revision first costs a few bytes, and when nothing has changed since the
+ * last download, which is almost always, the blob never moves. That is the
+ * difference between a bill that scales with page views and one that scales
+ * with edits.
+ *
+ * Held as JSON text and re-parsed per read on purpose: callers mutate what
+ * they are handed, and sharing one object would let a caller's edit leak
+ * into everyone else's view. Parsing locally is CPU, which is free here;
+ * downloading again is bandwidth, which is the thing being paid for.
+ */
+let storeCache: { rev: number; json: string; at: number } | null = null
+
+/** Re-download at least this often even when the revision looks unchanged,
+ *  so a write that somehow skipped the counter cannot pin stale data. */
+const STORE_CACHE_MAX_AGE_MS = 60_000
+
 // Lazy Redis client. Returns null if env vars aren't configured.
 let _redis: Redis | null | undefined
 let _warnedFsFallback = false
@@ -224,7 +248,10 @@ export async function ensureStore(): Promise<void> {
     const existing = await redis.get(REDIS_KEY)
     if (existing == null) {
       const seed = await readSeed()
-      await redis.set(REDIS_KEY, seed)
+      // Through writeStore so the revision advances here too. This is the
+      // only write that ever skipped it, and a cache keyed on revision has
+      // to be able to trust that every write moves the number.
+      await writeStore(seed)
     }
     return
   }
@@ -253,16 +280,30 @@ export async function ensureStore(): Promise<void> {
 async function readStoreUncached(): Promise<Store> {
   const redis = getRedis()
   if (redis) {
+    // Ask what revision we are on. A few bytes, against a blob that is
+    // hundreds of kilobytes and growing.
+    const rev = Number((await redis.get<number>(REV_KEY)) ?? 0)
+    if (
+      storeCache &&
+      storeCache.rev === rev &&
+      Date.now() - storeCache.at < STORE_CACHE_MAX_AGE_MS
+    ) {
+      return JSON.parse(storeCache.json) as Store
+    }
+
     let parsed = (await redis.get<Store>(REDIS_KEY)) ?? null
     if (!parsed) {
       // Cold init — seed Redis from the committed JSON, then return it.
       parsed = await readSeed()
-      await redis.set(REDIS_KEY, parsed)
+      await writeStore(parsed)
     }
     const normalized = normalizeStore(parsed)
     if (await ensureBootstrapMembers(normalized)) {
-      await redis.set(REDIS_KEY, normalized)
+      // Goes through writeStore so the revision advances with it.
+      await writeStore(normalized)
+      return normalized
     }
+    storeCache = { rev, json: JSON.stringify(normalized), at: Date.now() }
     return normalized
   }
   // File-backed fallback
@@ -451,6 +492,11 @@ export async function writeStore(store: Store): Promise<void> {
   const redis = getRedis()
   if (redis) {
     await redis.set(REDIS_KEY, store)
+    // Advance the revision so every reader's cache knows to re-download.
+    // Only the compare-and-swap path used to do this, which meant a write
+    // through here was invisible to anything caching on revision.
+    const rev = await redis.incr(REV_KEY)
+    storeCache = { rev: Number(rev), json: JSON.stringify(store), at: Date.now() }
     return
   }
   await fs.writeFile(storePath(), JSON.stringify(store, null, 2))
@@ -463,7 +509,6 @@ export async function writeStore(store: Store): Promise<void> {
 // revision, applies the mutator, then commits with a compare-and-set: if the
 // revision moved underneath us we re-read and retry. Hot/concurrent write paths
 // use this instead of readStore()+writeStore().
-const REV_KEY = `${REDIS_KEY}:rev`
 const MUTATE_MAX_RETRIES = 8
 
 /**
