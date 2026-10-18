@@ -1,62 +1,22 @@
 /**
- * Keep the season fresh on page views, not only on the hour.
+ * RETIRED 2026-10-18, kept as a record of why.
  *
- * The cron is the floor: it guarantees the site catches up even if nobody
- * visits. This is the ceiling. When someone opens the Team Room and the
- * data has gone stale, a sync is kicked off after the response has already
- * been sent, so the page itself is never slowed down and the next viewer,
- * or a reload a moment later, sees the new state.
+ * This fired a full season sync after a Team Room render whenever the news
+ * looked stale: fetch the RSS, read the store, write the store. It was added
+ * as insurance because nobody could prove the hourly cron was running.
  *
- * Deliberately conservative:
- *  - Staleness is read off the news we already store, so this needs no new
- *    state of its own.
- *  - An in-process flag stops one instance from starting several at once.
- *  - Every failure is swallowed. A dead Penn feed or a slow Clippd must
- *    never take the Team Room down with it.
+ * The cron is running. It proved itself by failing loudly every hour on the
+ * hour when the database was suspended, which is the evidence that was
+ * missing all along.
+ *
+ * Meanwhile this was doing real damage. The store lives under one Redis key,
+ * so each pass downloaded and rewrote the whole blob, on page views, with
+ * compare-and-swap retries on top. That is bandwidth spent to duplicate work
+ * the cron already does, and the free tier's 10 GB ran out mid-week with
+ * alumni arriving.
+ *
+ * If a manual catch-up is ever wanted again, hit /api/cron/season-sync while
+ * signed in as founder. Do not reattach work to page renders.
  */
 
-import { after } from 'next/server'
-
-/** How old the newest fetch may be before a page view triggers a refresh. */
-const STALE_AFTER_MS = 15 * 60 * 1000
-
-/** Per-instance guard against several overlapping runs. */
-let inFlight = false
-let lastRunAt = 0
-
-export function isStale(items: Array<{ fetchedAt?: string }>, now = Date.now()): boolean {
-  if (items.length === 0) return true
-  const newest = items.reduce((max, i) => {
-    const t = i.fetchedAt ? Date.parse(i.fetchedAt) : 0
-    return t > max ? t : max
-  }, 0)
-  if (!newest) return true
-  return now - newest > STALE_AFTER_MS
-}
-
-/**
- * Run the season sync in the background if the data looks stale.
- * Safe to call on every render; it decides for itself whether to do anything.
- */
-export function refreshSeasonIfStale(
-  teamId: string,
-  news: Array<{ fetchedAt?: string }>,
-): void {
-  if (inFlight) return
-  if (Date.now() - lastRunAt < STALE_AFTER_MS) return
-  if (!isStale(news)) return
-
-  inFlight = true
-  lastRunAt = Date.now()
-
-  after(async () => {
-    try {
-      const { runSeasonSync } = await import('@/lib/season/run-sync')
-      await runSeasonSync(teamId)
-    } catch {
-      // Silent on purpose. The cron will try again on the hour.
-    } finally {
-      inFlight = false
-    }
-  })
-}
+export {}

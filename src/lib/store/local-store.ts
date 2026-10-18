@@ -6,6 +6,7 @@
 //   3. /tmp fallback on Vercel without KV — ephemeral, writes survive within
 //      a single warm function instance only. Old behavior; do not rely on it.
 
+import { cache } from 'react'
 import fs from 'fs/promises'
 import path from 'path'
 import { Redis } from '@upstash/redis'
@@ -244,7 +245,12 @@ export async function ensureStore(): Promise<void> {
   }
 }
 
-export async function readStore(): Promise<Store> {
+/**
+ * The uncached read. Every call is a full download of the store blob from
+ * Redis, which is the whole point of the memoised wrapper below: use that
+ * one everywhere except where freshness is load-bearing.
+ */
+async function readStoreUncached(): Promise<Store> {
   const redis = getRedis()
   if (redis) {
     let parsed = (await redis.get<Store>(REDIS_KEY)) ?? null
@@ -268,6 +274,26 @@ export async function readStore(): Promise<Store> {
   }
   return normalized
 }
+
+/**
+ * Memoised for the life of one request.
+ *
+ * The store lives under a single Redis key, so every reader downloads the
+ * entire blob, and 32 exported helpers each called readStore() on their own.
+ * One Team Room render did six full downloads; one Clubhouse home did roughly
+ * ten across its API calls. That is how a free tier's 10 GB of monthly
+ * bandwidth went in a few weeks once alumni actually started arriving, and it
+ * suspended the database mid-week.
+ *
+ * React's cache() dedupes within a single render pass, so those six downloads
+ * become one. It is per-request, not a shared cache: two visitors still get
+ * their own read, and nothing goes stale between requests.
+ *
+ * mutateStore deliberately does NOT use this. Its compare-and-swap has to see
+ * the current revision, and handing it a memoised copy would make every write
+ * race against a stale snapshot.
+ */
+export const readStore = cache(readStoreUncached)
 
 // ── Bootstrap members ────────────────────────────────────────────────────────
 // Specific members the captain has asked to land in the store without
@@ -470,7 +496,7 @@ export async function mutateStore<T>(
   const redis = getRedis()
   // File-backed/dev path: single process, no contention to guard against.
   if (!redis) {
-    const store = await readStore()
+    const store = await readStoreUncached()
     const result = await mutator(store)
     await writeStore(store)
     return result
@@ -479,7 +505,7 @@ export async function mutateStore<T>(
     // Read the revision BEFORE the store so a write landing mid-read makes the
     // CAS fail (rather than silently overwriting with stale data).
     const expectedRev = Number((await redis.get<number>(REV_KEY)) ?? 0)
-    const store = await readStore()
+    const store = await readStoreUncached()
     const result = await mutator(store)
     const ok = await redis.eval(
       CAS_SCRIPT,
