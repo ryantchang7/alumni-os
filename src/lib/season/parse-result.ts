@@ -128,15 +128,27 @@ export function pennTeamScore(text: string): string | null {
 function pennPlacing(
   text: string,
 ): { place: number; field: number | null; tied: boolean } | null {
+  // "<ordinal> place" without requiring a preceding "in", because Penn's own
+  // headlines read "with Fourth Place Finish".
   const re =
-    /\bfinish(?:ed|es)?\s+(tied\s+for\s+)?([A-Za-z0-9]+)|\bin\s+(?:a\s+)?(tied\s+for\s+)?([A-Za-z0-9]+)\s+place\b/gi
+    /\bfinish(?:ed|es)?\s+(tied\s+for\s+)?([A-Za-z0-9]+)|\b(?:in\s+)?(?:a\s+)?(tied\s+for\s+)?([A-Za-z0-9]+)\s+place\b/gi
   let m: RegExpExecArray | null
   while ((m = re.exec(text))) {
     if (!attributedToPenn(text.slice(Math.max(0, m.index - 120), m.index))) continue
     const word = (m[2] ?? m[4] ?? '').toLowerCase()
-    const numeric = /^(\d+)(st|nd|rd|th)?$/.exec(word)
+    // A bare numeral is not a placing. Match play reports margins the same
+    // shape a placing would take: "Oliver Uribe also finished 5 down" is a
+    // six-hole deficit, and reading it as fifth put a wrong number on the
+    // site for the biggest event of the year. Written placings always carry
+    // a suffix or a word: "finished 4th", "finished fourth".
+    const numeric = /^(\d+)(st|nd|rd|th)$/.exec(word)
     const place = ORDINAL_WORDS[word] ?? (numeric ? Number.parseInt(numeric[1], 10) : null)
     if (!place) continue
+    // Belt and braces: reject anything immediately followed by match-play
+    // margin language, whatever shape the number arrived in.
+    if (/^\s*(down|up|&amp;|holes?\b)/i.test(text.slice(m.index + m[0].length, m.index + m[0].length + 12))) {
+      continue
+    }
     // The field size trails the placing closely in both phrasings. Looking
     // further afield would happily pick up another event's.
     const after = text.slice(m.index, m.index + 90)
@@ -158,11 +170,26 @@ export function parseResult(title: string, html: string): ParsedResult | null {
   if (!isFinalResultHeadline(title)) return null
 
   const text = articleText(html)
-  const found = pennPlacing(text)
 
-  let place: number | null = found?.place ?? null
-  let field: number | null = found?.field ?? null
-  const tied = found?.tied ?? false
+  // The headline is the cleanest statement of where Penn finished: Penn
+  // writes it unambiguously ("Finishes Sixth at ...", "with Fourth Place
+  // Finish"), while the body is full of individual scores and match-play
+  // margins shaped exactly like a placing.
+  //
+  // The field size, though, only ever appears in the body ("out of 13
+  // teams"), so both are read and combined: the headline decides the
+  // position, the body supplies the size, and the size is only taken when
+  // the body's placing agrees with the headline's. Where they disagree the
+  // body was talking about something else, and its number belongs to that
+  // something else.
+  const fromTitle = pennPlacing(`Penn ${title}`)
+  const fromBody = pennPlacing(text)
+  const agrees = fromBody && fromTitle ? fromBody.place === fromTitle.place : !fromTitle
+
+  let place: number | null = fromTitle?.place ?? fromBody?.place ?? null
+  let field: number | null =
+    fromTitle?.field ?? (agrees ? (fromBody?.field ?? null) : null)
+  const tied = Boolean(fromTitle?.tied) || Boolean(agrees && fromBody?.tied)
 
   // "Wins"/"captures" is a first-place headline even when the body never
   // says "finished first".

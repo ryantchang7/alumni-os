@@ -137,6 +137,31 @@ ok(
       'Penn wrapped up in ninth place out of 11 teams.'))?.resultText),
 )
 
+console.log('\n── Match play, where a margin looks exactly like a placing ──')
+ok(
+  'reads the headline, not "finished 5 down" in the body',
+  parseResult(
+    'Penn Finishes St. Andrews Week with Fourth Place Finish',
+    article(
+      "The University of Pennsylvania men's golf team fell to Washington, 5-1, in match play at St. Andrews on Wednesday.",
+      'Wesley Hu battled with Grady Miller but fell 6 down with a 74. Oliver Uribe also finished 5 down. Hayden Adams finished 8 down to Finn Koelle.',
+    ),
+  )?.resultText === '4th',
+  String(parseResult('Penn Finishes St. Andrews Week with Fourth Place Finish',
+    article("The University of Pennsylvania men's golf team fell to Washington, 5-1, in match play at St. Andrews on Wednesday.",
+      'Wesley Hu battled with Grady Miller but fell 6 down with a 74. Oliver Uribe also finished 5 down.'))?.resultText),
+)
+ok(
+  'a bare numeral is never a placing on its own',
+  parseResult("Men's Golf Finishes Play at the Macdonald Cup",
+    article('Penn finished 5 down in the final match.')) === null,
+)
+ok(
+  'but a numeral with a suffix still counts',
+  parseResult("Men's Golf Finishes 4th at the Princeton Invitational",
+    article('Penn finished 4th of 9 teams.'))?.resultText === '4th of 9',
+)
+
 console.log('\n── Matching a recap to the right tournament ──')
 ok('Lagowitz headline matches the Lagowitz stop',
   nameOverlap('Alex Lagowitz Memorial', "Men's Golf Finishes Sixth at Alex Lagowitz Memorial") >= 0.5)
