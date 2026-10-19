@@ -174,6 +174,17 @@ ok('Lagowitz headline does NOT match the Macdonald Cup',
 ok('generic words alone do not make a match',
   nameOverlap('Ivy League Championships', "Men's Golf Wins the Colgate Invitational") < 0.5)
 
+// A numeral in the name has to turn up in the headline. "Big 5 Championship"
+// is otherwise carried by the single word "big".
+ok('Big 5 headline matches the Big 5 stop',
+  nameOverlap('Big 5 Championship', 'Quakers Finish Second at Big 5 Championship') >= 0.5)
+ok('Big 5 matches a headline that drops the word Championship',
+  nameOverlap('Big 5 Championship', "Men's Golf Wins Big 5 Title") >= 0.5)
+ok('an unrelated headline containing "big" does NOT match Big 5',
+  nameOverlap('Big 5 Championship', 'Penn Golf Has a Big Day in the Rain') === 0)
+ok('a name without numerals is unaffected',
+  nameOverlap('Alex Lagowitz Memorial', 'Penn Finishes Sixth at Alex Lagowitz Memorial') === 1)
+
 async function main() {
   console.log('\n── The planner ──')
   const stop = (over: Partial<TeamTravelStop>): TeamTravelStop => ({

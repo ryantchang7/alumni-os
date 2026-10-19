@@ -38,7 +38,10 @@ function tokens(s: string): Set<string> {
       .toLowerCase()
       .replace(/[^a-z0-9\s]/g, ' ')
       .split(/\s+/)
-      .filter(w => w.length > 2 && !STOP_WORDS.has(w)),
+      // Numerals are kept whatever their length: the "5" in "Big 5" is the
+      // most identifying part of that name, and dropping it left the name
+      // as the single word "big".
+      .filter(w => (w.length > 2 || /^\d+$/.test(w)) && !STOP_WORDS.has(w)),
   )
 }
 
@@ -51,6 +54,14 @@ export function nameOverlap(eventName: string, headline: string): number {
   const a = tokens(eventName)
   const b = tokens(headline)
   if (a.size === 0) return 0
+  // Every numeral in the name must appear in the headline. A number is the
+  // most distinctive part of an event name and the least likely to be
+  // dropped when a headline refers to it, so absence is decisive rather
+  // than merely a lower score. Without this "Big 5 Championship" carries
+  // only the word "big", and "Penn Golf Has a Big Day in the Rain" matched
+  // it outright — the shape of mistake that puts a wrong result on the
+  // site, which is the one thing this file exists to prevent.
+  for (const w of a) if (/^\d+$/.test(w) && !b.has(w)) return 0
   let hits = 0
   for (const w of a) if (b.has(w)) hits++
   return hits / a.size
