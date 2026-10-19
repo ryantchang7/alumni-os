@@ -14,7 +14,11 @@ import {
   isFinalResultHeadline,
   pennTeamScore,
 } from '../src/lib/season/parse-result'
-import { nameOverlap, planResultSync } from '../src/lib/season/sync-results'
+import {
+  nameOverlap,
+  planResultSync,
+  resolveReparseTarget,
+} from '../src/lib/season/sync-results'
 import type { TeamNewsItem, TeamTravelStop } from '../src/lib/store/types'
 
 const pass: string[] = []
@@ -226,6 +230,64 @@ async function main() {
   const stale = await planResultSync([stop({})],
     [item({ publishedAt: '2026-09-30T18:00:00.000Z' })], html, '2026-10-05')
   ok('a recap published weeks later is not used', stale.plan[0].status === 'no-article')
+
+  // ── Re-deriving one stop on purpose ──
+  //
+  // The only path that may overwrite a published result. It exists because
+  // the parser once stored a match-play margin ("finished 5 down") as 5th
+  // for St Andrews, where Penn finished 4th. Everything here is about it
+  // staying narrow enough that it can never do that damage in reverse.
+  console.log('\n── Re-deriving one stop on purpose ──')
+
+  const two = [
+    stop({ id: 'a', eventName: 'Alex Lagowitz Memorial' }),
+    stop({ id: 'b', eventName: 'Macdonald Cup' }),
+  ]
+  ok('an exact stop id resolves', resolveReparseTarget(two, 'b').stopId === 'b')
+  ok('part of an event name resolves',
+    resolveReparseTarget(two, 'lagowitz').stopId === 'a')
+  ok('matching is case-insensitive',
+    resolveReparseTarget(two, 'MACDONALD').stopId === 'b')
+  ok('a name matching nothing is refused',
+    Boolean(resolveReparseTarget(two, 'Augusta').error))
+  const colliding = [
+    stop({ id: 'x', eventName: 'Ivy League Championships' }),
+    stop({ id: 'y', eventName: 'Ivy League Preview' }),
+  ]
+  ok('a name matching two stops is refused rather than guessed',
+    Boolean(resolveReparseTarget(colliding, 'Ivy League').error))
+  ok('the refusal names the stops it could not choose between',
+    resolveReparseTarget(colliding, 'Ivy League').error?.includes('Preview') === true)
+  // An id is unambiguous by definition, so it outranks a name that is not.
+  ok('an exact id still wins over an ambiguous name',
+    resolveReparseTarget(colliding, 'x').stopId === 'x')
+  ok('an empty target is refused', Boolean(resolveReparseTarget(two, '   ').error))
+
+  const reDerived = await planResultSync(
+    [stop({ resultText: '5th' })], [item({})], html, '2026-09-07',
+    { reparse: 'Lagowitz' })
+  ok('a named stop is re-read even though it already has a result',
+    reDerived.plan[0].status === 'matched', reDerived.plan[0].resultText)
+  ok('the plan says what it would replace', reDerived.plan[0].replaces === '5th')
+  ok('the candidate carries the replacement too',
+    reDerived.candidates[0]?.replaces === '5th')
+
+  const untouched = await planResultSync(
+    two.map(s => ({ ...s, resultText: '5th' })), [item({})], html, '2026-09-07',
+    { reparse: 'Lagowitz' })
+  ok('a re-derive leaves every other stop alone',
+    untouched.plan.find(p => p.eventName === 'Macdonald Cup')?.status === 'already-set')
+
+  const refused = await planResultSync(
+    [stop({ resultText: '5th' })], [item({})], html, '2026-09-07',
+    { reparse: 'Augusta' })
+  ok('a refused target changes nothing', refused.plan[0].status === 'already-set')
+  ok('and the refusal is reported back', Boolean(refused.reparse?.error))
+
+  const noReparse = await planResultSync(
+    [stop({ resultText: '5th' })], [item({})], html, '2026-09-07')
+  ok('without a reparse the hand-typed guard still holds',
+    noReparse.plan[0].status === 'already-set')
 
   console.log(`\n${pass.length} passed, ${fail.length} failed`)
   if (fail.length) {

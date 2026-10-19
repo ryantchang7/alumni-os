@@ -8,7 +8,10 @@
  *
  * Rules it will not break:
  *  - A result typed in by hand is never overwritten. The founder outranks
- *    the parser, always.
+ *    the parser, always. The single exception is a re-derive asked for by
+ *    name: that is the founder overruling a stale result, not the parser
+ *    overruling the founder. It takes one named stop at a time, never a
+ *    sweep, so it cannot quietly rewrite the board.
  *  - An event still scheduled into the future is never touched. One whose
  *    last day is today can be closed, but only by a final-result headline
  *    published on that day or later, so a mid-tournament recap cannot end it.
@@ -70,6 +73,8 @@ export interface ResultCandidate {
   articleUrl: string
   resultText: string
   confidence: number
+  /** Set only on a re-derive: the result this would replace. */
+  replaces?: string
 }
 
 export interface SyncPlanEntry {
@@ -78,6 +83,47 @@ export interface SyncPlanEntry {
   resultText?: string
   articleTitle?: string
   articleUrl?: string
+  /** Set only on a re-derive: the result this would replace. */
+  replaces?: string
+}
+
+/** What a `reparse` request resolved to, reported back either way. */
+export interface ReparseOutcome {
+  requested: string
+  stopId?: string
+  eventName?: string
+  error?: string
+}
+
+/**
+ * Resolve the one stop a re-derive names.
+ *
+ * Deliberately strict. This is the only path that can overwrite a published
+ * result, so it refuses anything it cannot pin to exactly one event: an
+ * empty string, a name that matches nothing, or a name loose enough to
+ * match two. Accepts a stop id outright, otherwise a case-insensitive
+ * substring of the event name.
+ */
+export function resolveReparseTarget(
+  stops: TeamTravelStop[],
+  requested: string,
+): ReparseOutcome {
+  const q = requested.trim()
+  if (!q) return { requested, error: 'Empty reparse target' }
+
+  const byId = stops.find(s => s.id === q)
+  if (byId) return { requested, stopId: byId.id, eventName: byId.eventName }
+
+  const needle = q.toLowerCase()
+  const hits = stops.filter(s => s.eventName.toLowerCase().includes(needle))
+  if (hits.length === 0) return { requested, error: `No stop matches "${q}"` }
+  if (hits.length > 1) {
+    return {
+      requested,
+      error: `"${q}" matches ${hits.length} stops: ${hits.map(h => h.eventName).join(', ')}`,
+    }
+  }
+  return { requested, stopId: hits[0].id, eventName: hits[0].eventName }
 }
 
 /**
@@ -89,12 +135,22 @@ export async function planResultSync(
   news: TeamNewsItem[],
   fetchArticle: (url: string) => Promise<string | null>,
   today = usEasternToday(),
-): Promise<{ plan: SyncPlanEntry[]; candidates: ResultCandidate[] }> {
+  { reparse }: { reparse?: string } = {},
+): Promise<{
+  plan: SyncPlanEntry[]
+  candidates: ResultCandidate[]
+  reparse?: ReparseOutcome
+}> {
   const plan: SyncPlanEntry[] = []
   const candidates: ResultCandidate[] = []
 
+  const target = reparse ? resolveReparseTarget(stops, reparse) : undefined
+  const reparseId = target?.stopId ?? null
+
   for (const stop of stops) {
-    if (stop.resultText?.trim()) {
+    const reDeriving = reparseId !== null && stop.id === reparseId
+    const previous = stop.resultText?.trim() || undefined
+    if (previous && !reDeriving) {
       plan.push({ eventName: stop.eventName, status: 'already-set' })
       continue
     }
@@ -153,6 +209,7 @@ export async function planResultSync(
         articleUrl: n.sourceUrl,
         resultText: parsed.resultText,
         confidence: overlap,
+        replaces: reDeriving ? previous : undefined,
       })
       plan.push({
         eventName: stop.eventName,
@@ -160,6 +217,7 @@ export async function planResultSync(
         resultText: parsed.resultText,
         articleTitle: n.title,
         articleUrl: n.sourceUrl,
+        replaces: reDeriving ? previous : undefined,
       })
       done = true
       break
@@ -167,7 +225,7 @@ export async function planResultSync(
     if (!done) plan.push({ eventName: stop.eventName, status: 'unparseable' })
   }
 
-  return { plan, candidates }
+  return { plan, candidates, reparse: target }
 }
 
 /** Fetch a Penn Athletics recap. Returns null rather than throwing. */

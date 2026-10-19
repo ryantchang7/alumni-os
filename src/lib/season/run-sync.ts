@@ -11,18 +11,23 @@
  * was already public, not news to push at people.
  */
 
-import { planResultSync, fetchArticleHtml, type SyncPlanEntry } from '@/lib/season/sync-results'
+import {
+  planResultSync,
+  fetchArticleHtml,
+  type SyncPlanEntry,
+  type ReparseOutcome,
+} from '@/lib/season/sync-results'
 import { resolveStopLinks } from '@/lib/clippd/penn-tournaments'
 
 export interface SeasonSyncReport {
   news: { fetched: number; added: number; total: number }
-  results: { plan: SyncPlanEntry[]; written: string[] }
+  results: { plan: SyncPlanEntry[]; written: string[]; reparse?: ReparseOutcome }
   clippdLinks: { missing: number; linked: string[] }
 }
 
 export async function runSeasonSync(
   teamId: string,
-  { dryRun = false }: { dryRun?: boolean } = {},
+  { dryRun = false, reparse }: { dryRun?: boolean; reparse?: string } = {},
 ): Promise<SeasonSyncReport> {
   const {
     upsertTeamNewsItems,
@@ -46,15 +51,22 @@ export async function runSeasonSync(
   // 2. Results, read out of the recaps.
   const news = await getRecentTeamNewsItems(teamId, 30)
   const stops = await getTravelStops(teamId)
-  const { plan, candidates } = await planResultSync(stops, news, fetchArticleHtml)
+  const {
+    plan,
+    candidates,
+    reparse: reparseOutcome,
+  } = await planResultSync(stops, news, fetchArticleHtml, undefined, { reparse })
 
   const written: string[] = []
   if (!dryRun) {
     for (const c of candidates) {
       const stop = stops.find(s => s.id === c.stopId)
+      if (!stop) continue
       // Re-check the hand-typed guard here as well as in the planner: the
-      // founder may have filled it in while this pass was running.
-      if (!stop || stop.resultText?.trim()) continue
+      // founder may have filled it in while this pass was running. A
+      // candidate carrying `replaces` is the one stop a re-derive named, so
+      // it is allowed past — that is the whole point of asking.
+      if (stop.resultText?.trim() && c.replaces === undefined) continue
       await updateTravelStop(stop.id, {
         eventName: stop.eventName,
         locationText: stop.locationText,
@@ -66,7 +78,9 @@ export async function runSeasonSync(
         imageUrl: stop.imageUrl,
         resultText: c.resultText,
       })
-      written.push(`${c.eventName}: ${c.resultText}`)
+      written.push(
+        `${c.eventName}: ${c.replaces ? `${c.replaces} → ` : ''}${c.resultText}`,
+      )
     }
   }
 
@@ -119,7 +133,7 @@ export async function runSeasonSync(
 
   return {
     news: { fetched: fetched.length, added, total },
-    results: { plan, written },
+    results: { plan, written, reparse: reparseOutcome },
     clippdLinks: { missing: needLinks.length, linked },
   }
 }

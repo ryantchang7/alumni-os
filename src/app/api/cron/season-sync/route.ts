@@ -6,6 +6,15 @@
  *
  * Auth: Authorization: Bearer <CRON_SECRET>, or a founder session so it can
  * be run by hand. `?dryRun=1` reports what it would do and writes nothing.
+ *
+ * `?reparse=<stop id or part of an event name>` re-reads one finished
+ * event's recap and overwrites the result already on it. Normal passes never
+ * touch a result that is already set, which is right nearly always and wrong
+ * in one case: the parser itself wrote a bad value and has since been fixed.
+ * That happened — a match-play margin, "finished 5 down", was stored as 5th
+ * for St Andrews, where Penn actually finished 4th. This is the way to
+ * correct it from the source rather than by retyping. One stop at a time,
+ * and it refuses a name that matches none or several.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -25,13 +34,14 @@ async function runJob(req: NextRequest) {
     if (!gate.ok) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   const dryRun = req.nextUrl.searchParams.get('dryRun') === '1'
+  const reparse = req.nextUrl.searchParams.get('reparse')?.trim() || undefined
 
   const { getTeamBySlug } = await import('@/lib/store/local-store')
   const teamSlug = req.nextUrl.searchParams.get('teamSlug') ?? TEAM_SLUG
   const team = await getTeamBySlug(teamSlug)
   if (!team) return NextResponse.json({ error: 'Team not found' }, { status: 404 })
 
-  const report = await runSeasonSync(team.id, { dryRun })
+  const report = await runSeasonSync(team.id, { dryRun, reparse })
   return NextResponse.json({ ok: true, dryRun, ...report })
 }
 
