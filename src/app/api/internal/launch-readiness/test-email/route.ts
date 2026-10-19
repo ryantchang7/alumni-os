@@ -36,7 +36,7 @@ export async function POST() {
   if (result.skipped) {
     return NextResponse.json({
       ok: false,
-      error: 'Resend not configured (RESEND_API_KEY or EMAIL_FROM missing). Email would have been logged to the server console.',
+      error: 'Resend not configured (RESEND_API_KEY missing). Email would have been logged to the server console.',
     }, { status: 503 })
   }
 

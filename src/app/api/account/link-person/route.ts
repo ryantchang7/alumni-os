@@ -254,7 +254,7 @@ async function handleClaim(request: Request) {
     const { renderClaimNotification } = await import('@/lib/email/templates')
     const { getCaptainEmails } = await import('@/lib/captains')
     const captains = getCaptainEmails(TEAM_SLUG)
-    console.log(`[claim-notify] captains=${captains.length} resendKeySet=${!!process.env.RESEND_API_KEY} emailFromSet=${!!process.env.EMAIL_FROM}`)
+    console.log(`[claim-notify] captains=${captains.length} resendKeySet=${!!process.env.RESEND_API_KEY}`)
     if (captains.length > 0) {
       const baseUrl =
         process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'

@@ -131,7 +131,7 @@ export async function POST(request: Request) {
   }
 
   // Email each recipient individually — personalized, and one-per-send so the
-  // recipient list stays private. No-ops if RESEND_API_KEY / EMAIL_FROM unset.
+  // recipient list stays private. No-ops if RESEND_API_KEY is unset.
   try {
     const withEmail = recipientAccounts.filter(a => a.email)
     if (withEmail.length > 0) {

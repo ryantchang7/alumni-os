@@ -58,7 +58,7 @@ export async function POST(
     console.warn('[team-questions] answer notify failed (non-fatal):', err)
   }
 
-  // Email the asker their answer (no-op if RESEND_API_KEY / EMAIL_FROM unset).
+  // Email the asker their answer (no-op if RESEND_API_KEY is unset).
   try {
     const asker = await getAccountById(updated.askerAccountId)
     if (asker?.email) {

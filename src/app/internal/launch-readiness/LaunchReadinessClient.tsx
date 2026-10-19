@@ -191,15 +191,15 @@ export default function LaunchReadinessClient({
       title: 'Email',
       rows: [
         envRow('RESEND_API_KEY'),
-        envRow('EMAIL_FROM'),
         {
-          status: emailFrom.configured ? (emailFrom.looksValid ? 'ready' : 'warning') : 'missing',
-          label: 'EMAIL_FROM shape',
-          detail: emailFrom.configured
-            ? emailFrom.looksValid
-              ? 'Looks like a valid sender address.'
-              : 'EMAIL_FROM does not look like an email. Should be "Name <addr@domain>" or "addr@domain".'
-            : 'EMAIL_FROM is not set.',
+          // The sender used to come from EMAIL_FROM. It now lives in
+          // src/lib/email/identity.ts, so this reports what is actually in
+          // force rather than warning about an environment variable nothing
+          // reads any more.
+          status: 'ready',
+          label: 'Sender and reply-to',
+          detail:
+            'From "Penn Golf Clubhouse <noreply@penngolfclubhouse.com>", replies go to rtchang@upenn.edu. Set in code, not in env.',
         },
         {
           status: 'manual',
