@@ -1,10 +1,12 @@
 /**
- * Thin Resend wrapper. Reads RESEND_API_KEY + EMAIL_FROM from env. If
- * either is unset, logs the would-be send and returns { ok: true,
- * skipped: true } so local dev and Vercel previews don't fail.
+ * Thin Resend wrapper. Reads RESEND_API_KEY from env; the sender and
+ * reply-to come from @/lib/email/identity, which is the only place they
+ * are decided. Without an API key it logs the would-be send and returns
+ * { ok: true, skipped: true } so local dev and Vercel previews don't fail.
  */
 
 import { Resend } from 'resend'
+import { CLUBHOUSE_FROM, CLUBHOUSE_REPLY_TO } from '@/lib/email/identity'
 
 interface EmailAttachment {
   /** File name as it should appear in the recipient's inbox. */
@@ -21,7 +23,8 @@ interface SendArgs {
   html: string
   /** Optional plaintext fallback. If omitted, Resend will derive from HTML. */
   text?: string
-  /** Optional reply-to header (e.g. captain's email). */
+  /** Overrides the default reply-to. Almost nothing should: the default
+   * reaches a person, and that is the point. */
   replyTo?: string
   /** Optional file attachments (e.g. an .ics calendar invite). */
   attachments?: EmailAttachment[]
@@ -47,13 +50,13 @@ function getClient(): Resend | null {
 }
 
 export async function sendEmail(args: SendArgs): Promise<SendResult> {
-  const from = process.env.EMAIL_FROM
+  const from = CLUBHOUSE_FROM
   const client = getClient()
   const recipients = Array.isArray(args.to) ? args.to : [args.to]
 
-  if (!client || !from) {
+  if (!client) {
     console.log(
-      `[email] would send to ${recipients.join(', ')}: "${args.subject}" (RESEND_API_KEY or EMAIL_FROM unset)`,
+      `[email] would send to ${recipients.join(', ')}: "${args.subject}" (RESEND_API_KEY unset)`,
     )
     return { ok: true, skipped: true }
   }
@@ -65,7 +68,10 @@ export async function sendEmail(args: SendArgs): Promise<SendResult> {
       subject: args.subject,
       html: args.html,
       text: args.text,
-      replyTo: args.replyTo,
+      // Every Clubhouse email replies to a person unless a caller has a
+      // specific reason not to. This was plumbed through but never set, so
+      // every automated message replied to an unmonitored mailbox.
+      replyTo: args.replyTo ?? CLUBHOUSE_REPLY_TO,
       attachments: args.attachments?.map(a => ({
         filename: a.filename,
         content: a.content,

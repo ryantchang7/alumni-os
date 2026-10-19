@@ -8,6 +8,8 @@
  * restrained — like a letter from the captain.
  */
 
+import { CLUBHOUSE_REPLY_ADDRESS } from '@/lib/email/identity'
+
 const NAVY = '#0a1628'
 const CREAM = '#faf7f2'
 const GOLD = '#c8a84b'
@@ -28,9 +30,9 @@ function shell(inner: string, footerCtaUrl?: string, unsubscribeUrl?: string): s
           ${
             footerCtaUrl
               ? `<p style="margin:32px 0 0 0;font-size:11px;color:${MUTED};">
-                  This address isn&rsquo;t monitored, but Ryan reads
-                  <a href="mailto:rtchang@upenn.edu" style="color:${NAVY};text-decoration:underline;">rtchang@upenn.edu</a>.
-                  The Clubhouse is at
+                  This inbox isn&rsquo;t monitored. Questions or feedback? Email Ryan at
+                  <a href="mailto:${CLUBHOUSE_REPLY_ADDRESS}" style="color:${NAVY};text-decoration:underline;">${CLUBHOUSE_REPLY_ADDRESS}</a>,
+                  or just hit reply. The Clubhouse is at
                   <a href="${footerCtaUrl}" style="color:${NAVY};text-decoration:underline;">${footerCtaUrl.replace(/^https?:\/\//, '')}</a>.
                 </p>`
               : ''

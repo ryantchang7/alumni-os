@@ -42,6 +42,7 @@
     "test:gathering-dates": "tsx scripts/test-gathering-dates.ts",
     "test:season-results": "tsx scripts/test-season-results.ts",
     "test:season-sheet": "tsx scripts/test-season-sheet.ts",
+    "test:email-identity": "tsx scripts/test-email-identity.ts",
     "test:weekly-digest": "tsx scripts/test-weekly-digest.ts"
   },
   "dependencies": {
