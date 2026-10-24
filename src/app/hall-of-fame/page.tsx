@@ -5,7 +5,12 @@
 
 import Link from 'next/link'
 import { Trophy, Award } from 'lucide-react'
-import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
+import {
+  PENN_GOLF_TRADITION,
+  PENN_GOLF_HISTORICAL_NOTES,
+  NCAA_CHAMPIONSHIP_YEARS,
+  IVY_CHAMPIONSHIP_YEARS,
+} from '@/lib/program-history/penn-mens-golf'
 import { memberBookEntries } from '@/lib/member-book/data'
 import { isPublicMember, getMemberStartYear, getMemberEndYear } from '@/lib/member-book/helpers'
 
@@ -16,8 +21,6 @@ export const metadata: Metadata = {
   description: 'Penn Golf program honors and history.',
 }
 
-const IVY_YEARS = [1998, 2007, 2012, 2015]
-const NCAA_TEAM_YEARS = [1947, 1958, 1965, 1973, 1974]
 
 function membersForYear(year: number) {
   return memberBookEntries
@@ -35,8 +38,8 @@ function membersForYear(year: number) {
 }
 
 export default function HallOfFamePage() {
-  const ivyRosters = IVY_YEARS.map((year) => ({ year, members: membersForYear(year) }))
-  const ncaaRosters = NCAA_TEAM_YEARS.map((year) => ({ year, members: membersForYear(year) }))
+  const ivyRosters = IVY_CHAMPIONSHIP_YEARS.map((year) => ({ year, members: membersForYear(year) }))
+  const ncaaRosters = NCAA_CHAMPIONSHIP_YEARS.map((year) => ({ year, members: membersForYear(year) }))
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
@@ -183,13 +186,13 @@ export default function HallOfFamePage() {
               NCAA Championships
             </h2>
             <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000]">
-              5 appearances
+              {NCAA_CHAMPIONSHIP_YEARS.length} appearances
             </span>
           </div>
           <p className="text-sm text-ink-muted mb-6">
             Penn teams that reached the NCAA Championships stage.
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {ncaaRosters.map(({ year, members }) => (
               <div
                 key={year}
@@ -212,6 +215,27 @@ export default function HallOfFamePage() {
               </div>
             ))}
           </div>
+
+          {PENN_GOLF_HISTORICAL_NOTES.length > 0 && (
+            <div className="mt-4 space-y-2">
+              {PENN_GOLF_HISTORICAL_NOTES.map((note) => (
+                <div
+                  key={note.year}
+                  className="bg-white border-l-2 border-[#c8a84b] border-y border-r border-y-[rgba(180,168,150,0.4)] border-r-[rgba(180,168,150,0.4)] rounded-r-xl px-5 py-4"
+                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+                >
+                  <p className="text-[13px] text-[#0a1628] font-heading">
+                    <span className="text-[#990000] font-medium">{note.year}</span>
+                    <span className="text-ink-muted"> &middot; </span>
+                    {note.title}
+                  </p>
+                  <p className="text-[12.5px] text-ink-muted leading-relaxed mt-1">
+                    {note.detail}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Footer link to Member Book */}
