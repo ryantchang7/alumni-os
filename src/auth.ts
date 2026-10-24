@@ -16,8 +16,7 @@ import {
   getAccountById,
 } from '@/lib/store/local-store'
 import { consumeEmailLinkToken } from '@/lib/auth/email-link'
-
-const DEFAULT_TEAM_SLUG = 'penn-mens-golf'
+import { DEFAULT_TEAM_SLUG } from '@/lib/teams/programs'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [

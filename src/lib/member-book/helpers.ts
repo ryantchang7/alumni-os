@@ -4,9 +4,11 @@ import type {
   EraFilter,
   RoleFilter,
   LetterFilter,
+  ProgramFilter,
   SortMode,
 } from './types'
 import { hometownToStateCode } from '@/lib/map/state-lookup'
+import { DEFAULT_PROGRAM_ID, type ProgramId } from '@/lib/teams/programs'
 
 // Letter years are ENDING years. 2004 means the 2003-04 season.
 export const LETTER_YEAR_NOTE =
@@ -110,6 +112,23 @@ export function memberMatchesSearch(m: MemberBookEntry, query: string): boolean 
     .join(' ')
     .toLowerCase()
   return hay.includes(q)
+}
+
+/**
+ * The program a member belongs to. Entries carry no program until a
+ * women's import adds one, and every one of those is men's golf, so the
+ * default is not a guess — it is what the dataset is.
+ */
+export function getMemberProgram(m: MemberBookEntry): ProgramId {
+  return m.program ?? DEFAULT_PROGRAM_ID
+}
+
+export function memberMatchesProgram(
+  m: MemberBookEntry,
+  program: ProgramFilter | undefined,
+): boolean {
+  if (!program || program === 'all') return true
+  return getMemberProgram(m) === program
 }
 
 export function memberMatchesRole(m: MemberBookEntry, role: RoleFilter): boolean {

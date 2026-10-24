@@ -1,7 +1,9 @@
-// Penn Men's Golf Member Book — canonical types.
+// Penn Golf Member Book — canonical types.
 //
 // Domain note: letterWinner.years are ENDING years.
 // Example: a letter year of 2004 means the 2003-04 season.
+
+import type { ProgramId } from '@/lib/teams/programs'
 
 export type MemberRole = 'player' | 'manager' | 'coach'
 
@@ -63,6 +65,13 @@ export interface MemberSources {
 
 export interface MemberBookEntry {
   id: string
+  /**
+   * Which Penn Golf program this member belongs to. Optional because every
+   * entry in the current dataset predates the field and is men's golf;
+   * read it through getMemberProgram() rather than directly, which supplies
+   * that default. A women's import sets it explicitly.
+   */
+  program?: ProgramId
   displayName: string
   sortName: string
   role: MemberRole
@@ -117,6 +126,8 @@ export interface MemberBadge {
   tone: 'navy' | 'red' | 'green' | 'tan' | 'neutral'
 }
 
+/** 'all' keeps both programs together, which is the Clubhouse default. */
+export type ProgramFilter = 'all' | ProgramId
 export type RoleFilter = 'all' | 'player' | 'manager'
 export type LetterFilter = 'all' | 'letter_winner' | 'roster_only'
 export type EraFilter =
@@ -135,6 +146,8 @@ export type SortMode = 'alphabetical' | 'first_letter_year' | 'last_letter_year'
 
 export interface MemberBookFilters {
   search: string
+  /** Omitted means every program, so existing callers are unaffected. */
+  program?: ProgramFilter
   role: RoleFilter
   letter: LetterFilter
   era: EraFilter

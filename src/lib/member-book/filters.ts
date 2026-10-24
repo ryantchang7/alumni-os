@@ -1,6 +1,13 @@
-import type { MemberBookEntry, MemberBookFilters, EraFilter, SortMode } from './types'
+import type {
+  MemberBookEntry,
+  MemberBookFilters,
+  EraFilter,
+  ProgramFilter,
+  SortMode,
+} from './types'
 import {
   memberMatchesSearch,
+  memberMatchesProgram,
   memberMatchesRole,
   memberMatchesLetter,
   memberMatchesEra,
@@ -16,6 +23,7 @@ export function filterMembers(
   const filtered = members.filter(
     (m) =>
       m.includeInMemberBook &&
+      memberMatchesProgram(m, filters.program) &&
       memberMatchesSearch(m, filters.search) &&
       memberMatchesRole(m, filters.role) &&
       memberMatchesLetter(m, filters.letter) &&
@@ -38,6 +46,8 @@ export const DEFAULT_FILTERS: MemberBookFilters = {
 
 export interface PublicMemberFilters {
   search: string
+  /** Omitted means every program, which is the default the Clubhouse wants. */
+  program?: ProgramFilter
   era: EraFilter
   sort: SortMode
 }
@@ -55,6 +65,7 @@ export function filterPublicMembers(
   const filtered = members.filter(
     (m) =>
       isPublicMember(m) &&
+      memberMatchesProgram(m, filters.program) &&
       memberMatchesSearch(m, filters.search) &&
       memberMatchesEra(m, filters.era),
   )
