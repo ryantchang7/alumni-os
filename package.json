@@ -44,7 +44,8 @@
     "test:season-sheet": "tsx scripts/test-season-sheet.ts",
     "test:email-identity": "tsx scripts/test-email-identity.ts",
     "test:weekly-digest": "tsx scripts/test-weekly-digest.ts",
-    "test:program-architecture": "tsx scripts/test-program-architecture.ts"
+    "test:program-architecture": "tsx scripts/test-program-architecture.ts",
+    "test:season-schedule": "tsx scripts/test-season-schedule.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
