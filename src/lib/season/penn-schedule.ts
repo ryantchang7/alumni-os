@@ -42,6 +42,20 @@ export interface PennScheduleEvent {
   locationText: string
   /** The course, when Penn names one separately from the town. */
   note?: string
+  /** A map link for the venue. Alumni near a stop use it to turn up. */
+  courseUrl?: string
+}
+
+/**
+ * A maps link for a named venue. The stop's courseUrl is "the course
+ * website, or a Google Maps link when the club has no site", and a search
+ * link is the honest version of that: it resolves whether or not the club
+ * has a web presence, and never 404s the way a guessed domain would.
+ */
+export function venueMapUrl(locationText: string, course?: string): string | undefined {
+  const query = [course, locationText].filter(Boolean).join(' ').trim()
+  if (!query) return undefined
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
 }
 
 /** Words that identify no event, because half the schedule shares them. */
@@ -154,11 +168,13 @@ export function parsePennSchedule(html: string): PennScheduleEvent[] {
     seen.add(key)
     const venueName =
       (obj.location as { name?: string } | undefined)?.name?.trim() ?? ''
+    const venue = splitVenue(venueName)
     out.push({
       eventName,
       startDate: start,
       endDate: end >= start ? end : start,
-      ...splitVenue(venueName),
+      ...venue,
+      courseUrl: venueMapUrl(venue.locationText, venue.note),
     })
   }
   return out.sort((a, b) => a.startDate.localeCompare(b.startDate))

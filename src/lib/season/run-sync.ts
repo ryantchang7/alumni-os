@@ -23,11 +23,17 @@ import { resolveStopLinks } from '@/lib/clippd/penn-tournaments'
 import {
   fetchPennSchedule,
   planScheduleSync,
+  venueMapUrl,
   type SchedulePlanEntry,
 } from '@/lib/season/penn-schedule'
 
 export interface SeasonSyncReport {
-  schedule: { published: number; added: string[]; plan: SchedulePlanEntry[] }
+  schedule: {
+    published: number
+    added: string[]
+    mapped: string[]
+    plan: SchedulePlanEntry[]
+  }
   news: { fetched: number; added: number; total: number }
   results: { plan: SyncPlanEntry[]; written: string[]; reparse?: ReparseOutcome }
   clippdLinks: { missing: number; linked: string[] }
@@ -63,6 +69,7 @@ export async function runSeasonSync(
         startDate: e.startDate,
         endDate: e.endDate,
         note: e.note,
+        courseUrl: e.courseUrl,
       })
       scheduleAdded.push(`${e.eventName} (${e.startDate})`)
     }
@@ -111,6 +118,30 @@ export async function runSeasonSync(
       written.push(
         `${c.eventName}: ${c.replaces ? `${c.replaces} → ` : ''}${c.resultText}`,
       )
+    }
+  }
+
+  // 2b. A map link for any stop that names a course but has no link yet.
+  //     Same contract as the Clippd step below: fill a blank, never
+  //     overwrite something a person put there.
+  const mapped: string[] = []
+  if (!dryRun) {
+    for (const stop of await getTravelStops(teamId)) {
+      if (stop.courseUrl || !stop.note) continue
+      const url = venueMapUrl(stop.locationText, stop.note)
+      if (!url) continue
+      await updateTravelStop(stop.id, {
+        eventName: stop.eventName,
+        locationText: stop.locationText,
+        startDate: stop.startDate,
+        endDate: stop.endDate,
+        note: stop.note,
+        linkUrl: stop.linkUrl,
+        courseUrl: url,
+        imageUrl: stop.imageUrl,
+        resultText: stop.resultText,
+      })
+      mapped.push(stop.eventName)
     }
   }
 
@@ -163,7 +194,12 @@ export async function runSeasonSync(
   }
 
   return {
-    schedule: { published: published.length, added: scheduleAdded, plan: schedulePlan },
+    schedule: {
+      published: published.length,
+      added: scheduleAdded,
+      mapped,
+      plan: schedulePlan,
+    },
     news: { fetched: fetched.length, added, total },
     results: { plan, written, reparse: reparseOutcome },
     clippdLinks: { missing: needLinks.length, linked },

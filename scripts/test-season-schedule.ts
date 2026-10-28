@@ -17,6 +17,7 @@ import {
   sameEvent,
   splitVenue,
   eventTokens,
+  venueMapUrl,
   MAX_ADDS_PER_RUN,
 } from '../src/lib/season/penn-schedule'
 import type { TeamTravelStop } from '../src/lib/store/types'
@@ -76,6 +77,15 @@ ok('Puerto Rico is left alone',
 ok('the course becomes the note',
   splitVenue('Elverson, Pa. / Stonewall Links - Old Course').note === 'Stonewall Links · Old Course')
 ok('no course means no note', splitVenue('Elverson, Pa.').note === undefined)
+
+ok('a parsed event carries a map link',
+  (big5?.courseUrl ?? '').startsWith('https://www.google.com/maps/search/'))
+ok('the map link names the course and the town',
+  decodeURIComponent(big5?.courseUrl ?? '').includes('Stonewall Links') &&
+  decodeURIComponent(big5?.courseUrl ?? '').includes('Elverson, PA'))
+ok('a venue with no name gets no link', venueMapUrl('', undefined) === undefined)
+ok('the query is encoded, not raw',
+  !(big5?.courseUrl ?? '').includes(' '))
 
 console.log('\n── Telling a new event from one already on the board ──')
 ok('Penn\'s spelling still matches the board\'s',
