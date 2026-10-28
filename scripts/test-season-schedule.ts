@@ -18,6 +18,7 @@ import {
   splitVenue,
   eventTokens,
   venueMapUrl,
+  venueParts,
   MAX_ADDS_PER_RUN,
 } from '../src/lib/season/penn-schedule'
 import type { TeamTravelStop } from '../src/lib/store/types'
@@ -88,6 +89,21 @@ ok('the query is encoded, not raw',
   !(big5?.courseUrl ?? '').includes(' '))
 ok('the "·" separator is not carried into the search query',
   !decodeURIComponent(big5?.courseUrl ?? '').includes('·'))
+
+// A note is written for a reader. Feeding all of it to a map search put
+// "54 holes Alumni Scotland Tour follows Oct 14-17" in a query for
+// St Andrews, which finds nothing.
+ok('hole counts are not part of a venue',
+  venueParts('Seven Oaks GC · 36 holes') === 'Seven Oaks GC')
+ok('an event note is not part of a venue',
+  venueParts('54 holes · Alumni Scotland Tour follows Oct 14–17') === '')
+ok('a real course survives intact',
+  venueParts('Stonewall Links · Old Course') === 'Stonewall Links Old Course')
+ok('a venue with a comma survives',
+  venueParts('Palmas Del Mar, Flamboyan Course · 54 holes') === 'Palmas Del Mar, Flamboyan Course')
+ok('a note with nothing usable falls back to the town alone',
+  decodeURIComponent(venueMapUrl('St Andrews, Scotland', '54 holes · Tour follows Oct 14–17') ?? '')
+    .endsWith('St Andrews, Scotland'))
 
 console.log('\n── Telling a new event from one already on the board ──')
 ok('Penn\'s spelling still matches the board\'s',

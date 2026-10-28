@@ -54,13 +54,37 @@ export interface PennScheduleEvent {
  */
 export const MAPS_PREFIX = 'https://www.google.com/maps/search/?api=1&query='
 
+/**
+ * The parts of a note that name a place.
+ *
+ * A note is written for a reader, not for a map. The sync writes the course
+ * into it, but hand-entered stops use it for whatever is worth saying —
+ * "54 holes", "Alumni Scotland Tour follows Oct 14-17" — and feeding that
+ * to a map search produces nonsense. Anything that is plainly about the
+ * event rather than the place is dropped, and if nothing is left the town
+ * alone is a perfectly good search.
+ */
+export function venueParts(note?: string): string {
+  if (!note) return ''
+  return note
+    .split(/[·|]/)
+    .map(p => p.trim())
+    .filter(
+      p =>
+        p.length > 0 &&
+        !/^\d+\s*holes?$/i.test(p) &&
+        !/\b(tour|follows|tba|tbd|practice|qualifier)\b/i.test(p) &&
+        !/\d{1,2}\s*[–—-]\s*\d{1,2}/.test(p),
+    )
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 export function venueMapUrl(locationText: string, course?: string): string | undefined {
-  const query = [course, locationText]
+  const query = [venueParts(course), locationText.trim()]
     .filter(Boolean)
     .join(' ')
-    // The note uses "·" to separate club from course, which is punctuation
-    // for a reader and noise in a search query.
-    .replace(/[·|]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
   if (!query) return undefined
