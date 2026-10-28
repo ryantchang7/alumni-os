@@ -24,6 +24,7 @@ import {
   fetchPennSchedule,
   planScheduleSync,
   venueMapUrl,
+  MAPS_PREFIX,
   type SchedulePlanEntry,
 } from '@/lib/season/penn-schedule'
 
@@ -127,9 +128,13 @@ export async function runSeasonSync(
   const mapped: string[] = []
   if (!dryRun) {
     for (const stop of await getTravelStops(teamId)) {
-      if (stop.courseUrl || !stop.note) continue
+      if (!stop.note) continue
+      // Fill a blank, or improve a link this sync wrote itself. A URL that
+      // is neither is a person's, and is left alone.
+      const ours = !stop.courseUrl || stop.courseUrl.startsWith(MAPS_PREFIX)
+      if (!ours) continue
       const url = venueMapUrl(stop.locationText, stop.note)
-      if (!url) continue
+      if (!url || url === stop.courseUrl) continue
       await updateTravelStop(stop.id, {
         eventName: stop.eventName,
         locationText: stop.locationText,

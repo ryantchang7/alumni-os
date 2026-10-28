@@ -86,6 +86,8 @@ ok('the map link names the course and the town',
 ok('a venue with no name gets no link', venueMapUrl('', undefined) === undefined)
 ok('the query is encoded, not raw',
   !(big5?.courseUrl ?? '').includes(' '))
+ok('the "·" separator is not carried into the search query',
+  !decodeURIComponent(big5?.courseUrl ?? '').includes('·'))
 
 console.log('\n── Telling a new event from one already on the board ──')
 ok('Penn\'s spelling still matches the board\'s',

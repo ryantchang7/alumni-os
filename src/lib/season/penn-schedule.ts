@@ -52,10 +52,19 @@ export interface PennScheduleEvent {
  * link is the honest version of that: it resolves whether or not the club
  * has a web presence, and never 404s the way a guessed domain would.
  */
+export const MAPS_PREFIX = 'https://www.google.com/maps/search/?api=1&query='
+
 export function venueMapUrl(locationText: string, course?: string): string | undefined {
-  const query = [course, locationText].filter(Boolean).join(' ').trim()
+  const query = [course, locationText]
+    .filter(Boolean)
+    .join(' ')
+    // The note uses "·" to separate club from course, which is punctuation
+    // for a reader and noise in a search query.
+    .replace(/[·|]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
   if (!query) return undefined
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
+  return `${MAPS_PREFIX}${encodeURIComponent(query)}`
 }
 
 /** Words that identify no event, because half the schedule shares them. */
