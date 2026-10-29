@@ -102,7 +102,7 @@ function NewMomentForm() {
             <span>{lockerMode ? 'Back to the Locker Room' : 'Back to Moments'}</span>
           </Link>
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85">
-            {lockerMode ? 'Penn Men’s Golf · Locker Room' : 'Penn Men’s Golf · Post'}
+            {lockerMode ? 'Penn Golf · Locker Room' : 'Penn Golf · Post'}
           </p>
         </div>
       </div>

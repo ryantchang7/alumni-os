@@ -26,7 +26,7 @@ export default async function SuggestPage() {
         {/* Header */}
         <div className="mb-10">
           <p className="text-xs font-semibold tracking-[0.22em] uppercase text-ink-muted mb-4">
-            Penn Men&rsquo;s Golf
+            Penn Golf
           </p>
           <h1
             className="text-4xl sm:text-5xl font-medium text-[#0a1628] leading-tight mb-5"

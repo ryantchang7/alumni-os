@@ -96,7 +96,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
             <HeroCrest src={crestImage} alt="Moments crest" />
             <div className="min-w-0 flex-1">
               <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
-                Penn Men&rsquo;s Golf · The Wall
+                Penn Golf · The Wall
               </p>
               <h1
                 className="text-white text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight font-heading"
@@ -165,7 +165,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
       <SectionEmblemHeader
-        eyebrow="Penn Men's Golf · The Wall"
+        eyebrow="Penn Golf · The Wall"
         title="Moments"
         subtitle={subtitle}
         emblemSrc={isLockerView ? '/emblems/locker-room.png' : '/emblems/moments.png'}

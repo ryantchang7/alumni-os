@@ -18,7 +18,7 @@ export default async function ChatIndexPage() {
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
           <div className="max-w-[820px] mx-auto">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-3">
-              Penn Men&rsquo;s Golf · Clubhouse
+              Penn Golf · Clubhouse
             </p>
             <h1
               className="text-white text-4xl sm:text-5xl font-medium tracking-tight font-heading"
@@ -42,7 +42,7 @@ export default async function ChatIndexPage() {
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-10 pb-12">
         <div className="max-w-[820px] mx-auto">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-3">
-            Penn Men&rsquo;s Golf · Clubhouse
+            Penn Golf · Clubhouse
           </p>
           <h1
             className="text-white text-3xl sm:text-4xl font-medium tracking-tight font-heading"

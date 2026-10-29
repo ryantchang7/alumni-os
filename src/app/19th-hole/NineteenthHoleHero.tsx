@@ -15,7 +15,7 @@ export default function NineteenthHoleHero() {
 
   return (
     <SectionEmblemHeader
-      eyebrow="Penn Men's Golf · After the Round"
+      eyebrow="Penn Golf · After the Round"
       title="The 19th Hole"
       subtitle={heroBlurb}
       emblemSrc="/emblems/19th-hole.png"

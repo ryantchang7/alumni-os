@@ -33,7 +33,7 @@ export default function LockerRoomHero({ crestImage, showPostCta }: Props) {
             transition={{ duration: 0.35, ease: 'easeOut' }}
             className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4"
           >
-            Penn Men&rsquo;s Golf · Locker Room
+            Penn Golf · Locker Room
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 8 }}

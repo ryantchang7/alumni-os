@@ -61,7 +61,7 @@ export default async function SpotlightPage() {
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-16">
         <div className="max-w-[1320px] mx-auto">
           <p className="eyebrow text-gold mb-4">
-            Penn Men&rsquo;s Golf
+            Penn Golf
           </p>
           <h1
             className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight font-heading"

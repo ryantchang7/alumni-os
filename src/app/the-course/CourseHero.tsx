@@ -22,7 +22,7 @@ export default function CourseHero() {
 
   return (
     <SectionEmblemHeader
-      eyebrow="Penn Men's Golf · The Tee Sheet"
+      eyebrow="Penn Golf · The Tee Sheet"
       title="The Course"
       subtitle={heroBlurb}
       emblemSrc="/emblems/course.png"

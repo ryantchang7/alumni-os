@@ -158,7 +158,7 @@ export default function NewOpenRequestPage() {
             <span>Back</span>
           </Link>
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85">
-            Penn Men&rsquo;s Golf · Open Request
+            Penn Golf · Open Request
           </p>
         </div>
       </div>

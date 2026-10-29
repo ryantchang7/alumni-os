@@ -15,7 +15,7 @@ export default function CareerRoomHero() {
 
   return (
     <SectionEmblemHeader
-      eyebrow="Penn Men's Golf · Advice & Introductions"
+      eyebrow="Penn Golf · Advice & Introductions"
       title="Career Room"
       subtitle={heroBlurb}
       emblemSrc="/emblems/career-room.png"

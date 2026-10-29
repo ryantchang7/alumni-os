@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: '%s · Penn Golf Clubhouse',
   },
   description:
-    "The private alumni network for Penn Men's Golf.",
+    "The private alumni network for Penn Golf.",
   applicationName: 'Penn Golf Clubhouse',
   // Lets an installed iOS home-screen launch open full-screen (no Safari chrome).
   appleWebApp: {
@@ -61,13 +61,13 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Penn Golf Clubhouse',
     title: 'Penn Golf Clubhouse',
-    description: "The private alumni network for Penn Men's Golf. Ask. Meet. Play. Gather.",
+    description: "The private alumni network for Penn Golf. Ask. Meet. Play. Gather.",
     url: 'https://www.penngolfclubhouse.com',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Penn Golf Clubhouse',
-    description: "The private alumni network for Penn Men's Golf. Ask. Meet. Play. Gather.",
+    description: "The private alumni network for Penn Golf. Ask. Meet. Play. Gather.",
   },
 }
 

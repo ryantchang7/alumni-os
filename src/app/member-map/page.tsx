@@ -280,7 +280,7 @@ export default async function MemberMapPage() {
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
       <SectionEmblemHeader
-        eyebrow="Penn Men's Golf"
+        eyebrow="Penn Golf"
         title="The Member Map"
         subtitle="Where Penn Golf players and alumni come from, and where they are now."
         emblemSrc="/emblems/member-map.png"
