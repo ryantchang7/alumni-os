@@ -24,6 +24,15 @@ import { parseResult } from '@/lib/season/parse-result'
 import { usEasternToday } from '@/lib/us-date'
 import type { TeamNewsItem, TeamTravelStop } from '@/lib/store/types'
 
+/**
+ * Numerals as Penn also writes them. Only the handful that turn up in event
+ * names; anything larger is written as a figure in practice.
+ */
+const NUMBER_WORDS: Record<string, string> = {
+  '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five',
+  '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten',
+}
+
 /** Words too common in Penn golf headlines to identify an event. */
 const STOP_WORDS = new Set([
   'the', 'and', 'at', 'of', 'in', 'for', 'on', 'a', 'an',
@@ -61,7 +70,15 @@ export function nameOverlap(eventName: string, headline: string): number {
   // only the word "big", and "Penn Golf Has a Big Day in the Rain" matched
   // it outright — the shape of mistake that puts a wrong result on the
   // site, which is the one thing this file exists to prevent.
-  for (const w of a) if (/^\d+$/.test(w) && !b.has(w)) return 0
+  //
+  // Spelled out counts. Penn's own headlines move between "Big 5" and
+  // "Big Five" freely, and requiring the digit would have thrown away the
+  // one recap that matters for that event.
+  for (const w of a) {
+    if (!/^\d+$/.test(w)) continue
+    const word = NUMBER_WORDS[w]
+    if (!b.has(w) && !(word && b.has(word))) return 0
+  }
   let hits = 0
   for (const w of a) if (b.has(w)) hits++
   return hits / a.size

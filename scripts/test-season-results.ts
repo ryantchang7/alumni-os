@@ -182,6 +182,10 @@ ok('Big 5 matches a headline that drops the word Championship',
   nameOverlap('Big 5 Championship', "Men's Golf Wins Big 5 Title") >= 0.5)
 ok('an unrelated headline containing "big" does NOT match Big 5',
   nameOverlap('Big 5 Championship', 'Penn Golf Has a Big Day in the Rain') === 0)
+ok('a headline spelling the number out still matches',
+  nameOverlap('Big 5 Championship', 'Quakers Finish Third at Big Five Championship') >= 0.5)
+ok('spelling it out does not let an unrelated headline through',
+  nameOverlap('Big 5 Championship', 'Penn Golf Has a Big Day in the Rain') === 0)
 ok('a name without numerals is unaffected',
   nameOverlap('Alex Lagowitz Memorial', 'Penn Finishes Sixth at Alex Lagowitz Memorial') === 1)
 
