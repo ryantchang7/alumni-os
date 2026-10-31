@@ -323,13 +323,18 @@ export default function ScotlandPage() {
         {/* -------------------------------------------------- kingsbarns --- */}
         <section className={`${WRAP} pt-18 pb-16 sm:pt-26 sm:pb-20`}>
           <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-16">
-            <Plate
-              id="links-and-the-sea"
-              sizes="(min-width: 1024px) 420px, (min-width: 640px) 60vw, 92vw"
-              className="order-2 lg:order-1"
-              crop="1/1"
-              objectPosition="center bottom"
-            />
+            <div className="order-2 space-y-7 lg:order-1">
+              <Plate
+                id="links-and-the-sea"
+                sizes="(min-width: 1024px) 420px, (min-width: 640px) 60vw, 92vw"
+                crop="1/1"
+                objectPosition="center bottom"
+              />
+              <Plate
+                id="foursome-clubhouse"
+                sizes="(min-width: 1024px) 420px, (min-width: 640px) 60vw, 92vw"
+              />
+            </div>
             <div className="order-1 lg:order-2 lg:pt-4">
               <Eyebrow>Thursday, October 15 · 03</Eyebrow>
               <h2 className="font-heading max-w-[14ch] text-[2rem] leading-[1.05] font-medium text-[#0a1628] sm:text-[2.9rem]">
@@ -380,12 +385,6 @@ export default function ScotlandPage() {
                   farewell dinner in the Carnoustie clubhouse, which is about
                   as good a last night as a golf trip gets.
                 </p>
-              </div>
-              <div className="mt-9 max-w-[560px]">
-                <Plate
-                  id="foursome-clubhouse"
-                  sizes="(min-width: 1024px) 560px, (min-width: 640px) 70vw, 92vw"
-                />
               </div>
             </div>
             <Plate

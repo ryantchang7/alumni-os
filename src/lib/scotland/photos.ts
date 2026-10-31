@@ -7,13 +7,15 @@
  * portrait), EXIF rotation baked into the pixels so the width/height below
  * match what next/image actually serves, and stripped of metadata.
  *
- * `placeConfirmed` is the honest bit. Four of these frames show somewhere
+ * `placeConfirmed` records whether someone who was there has confirmed
+ * where a frame was taken. All nine are confirmed. Five were always
  * unmistakable: the Swilcan Bridge, the 18th at the Old Course, the R&A.
- * The other four show a links course by the sea, which in Fife narrows
- * things down to about forty candidates. Rather than guess a course name
- * onto a photograph, those captions describe what is in the frame and
- * nothing else. If you were there and you know, the captions are right
- * here and they are one line each.
+ * The other four showed a links course by the sea, which in Fife narrows
+ * things to about forty candidates, so they ran with captions that named
+ * no course until Ryan confirmed Kingsbarns and Carnoustie on 2026-10-30.
+ *
+ * The flag stays in the type because the next batch will arrive the same
+ * way. A caption never guesses a course name onto a photograph.
  */
 
 export interface ScotlandPhoto {
@@ -95,10 +97,10 @@ export const SCOTLAND_PHOTOS: ScotlandPhoto[] = [
     width: 1800,
     height: 2400,
     alt:
-      'A links fairway running along a rocky shoreline under heavy grey cloud, marram grass in the foreground and players in the distance.',
-    caption: 'Links golf, marram grass, and the North Sea doing the weather.',
-    label: 'Scotland',
-    placeConfirmed: false,
+      'A fairway at Kingsbarns running along a rocky shoreline under heavy grey cloud, marram grass in the foreground and players in the distance.',
+    caption: 'Kingsbarns, with the North Sea doing the weather.',
+    label: 'Kingsbarns',
+    placeConfirmed: true,
     blurDataURL:
       'data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAVABADASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAQCAwb/xAAgEAACAQMEAwAAAAAAAAAAAAABAgADBBESITFBYWJx/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECBP/EABcRAQEBAQAAAAAAAAAAAAAAAAABAhH/2gAMAwEAAhEDEQA/AHLe5UABiM+3cfo3VDkkDokHqZgXYbZFUnzK2unp7tSRvuYrrI5SZqNnmTFV9OSYQmdT/9k=',
   },
@@ -108,10 +110,10 @@ export const SCOTLAND_PHOTOS: ScotlandPhoto[] = [
     width: 1080,
     height: 499,
     alt:
-      'About twenty players, alumni and family members standing together on a fairway with the sea behind them.',
-    caption: 'Team and alumni, out in the same groups.',
-    label: 'Scotland',
-    placeConfirmed: false,
+      'About twenty players, alumni and family members standing together on a fairway at Kingsbarns with the sea behind them.',
+    caption: 'Team and alumni at Kingsbarns, out in the same groups.',
+    label: 'Kingsbarns',
+    placeConfirmed: true,
     blurDataURL:
       'data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAHABADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAL/xAAeEAACAQQDAQAAAAAAAAAAAAABAwACBBESITFRsf/EABUBAQEAAAAAAAAAAAAAAAAAAAEE/8QAGREAAgMBAAAAAAAAAAAAAAAAABEBAgNB/9oADAMBAAIRAxEAPwCGX12dSpxAHYJPMipzbhmrmVFZHpzn37ESGNbJD0//2Q==',
   },
@@ -121,10 +123,10 @@ export const SCOTLAND_PHOTOS: ScotlandPhoto[] = [
     width: 1080,
     height: 499,
     alt:
-      'Four golfers standing with putters on the grass in front of a stone clubhouse and a small starter’s shelter.',
-    caption: 'A fourball, outside the clubhouse.',
-    label: 'Scotland',
-    placeConfirmed: false,
+      'Four golfers standing with putters on the grass in front of the stone clubhouse at Kingsbarns, the starter’s shelter beside it and the sea beyond.',
+    caption: 'A fourball outside the clubhouse at Kingsbarns.',
+    label: 'Kingsbarns',
+    placeConfirmed: true,
     blurDataURL:
       'data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAHABADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAL/xAAcEAACAgMBAQAAAAAAAAAAAAABAwACBCExEVH/xAAVAQEBAAAAAAAAAAAAAAAAAAABBP/EABkRAQACAwAAAAAAAAAAAAAAAAEAAgMRMf/aAAwDAQACEQMRAD8Al+TlhZrV9gwHg4d7l47GrB9fbvzRERJHJfXYgT//2Q==',
   },
@@ -134,10 +136,10 @@ export const SCOTLAND_PHOTOS: ScotlandPhoto[] = [
     width: 1800,
     height: 2400,
     alt:
-      'A links green with the flag in and a revetted bunker short of the putting surface, under a bright blue sky.',
-    caption: 'A links green, and one of the good days.',
-    label: 'Scotland',
-    placeConfirmed: false,
+      'A green at Carnoustie with the flag in and a revetted bunker short of the putting surface, under a bright blue sky.',
+    caption: 'Carnoustie, on one of the good days.',
+    label: 'Carnoustie',
+    placeConfirmed: true,
     blurDataURL:
       'data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAVABADASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAQX/xAAeEAACAQQDAQAAAAAAAAAAAAABAgADBBESFCFxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAQF/8QAGBEBAQADAAAAAAAAAAAAAAAAAAMSFFH/2gAMAwEAAhEDEQA/AINmU5C9x6JqvU7cIPuJVy7bfPGcj2OL20z1asPHEVtQ6JhRyi5zN3IhCQzX/9k=',
   },
