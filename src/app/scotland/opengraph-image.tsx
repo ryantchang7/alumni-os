@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 
 // Link-preview card for /scotland. Typographic only (no remote fetches)
 // so it can never break the build — matches the root card's style.
-export const alt = 'Penn Golf is going to Scotland. October 2026'
+export const alt = 'Penn Golf at the Home of Golf. St Andrews, October 2026'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -31,7 +31,7 @@ export default function OpengraphImage() {
             marginBottom: 28,
           }}
         >
-          Penn Men&apos;s Golf · October 2026
+          Penn Men&apos;s Golf · St Andrews · October 2026
         </div>
         <div
           style={{
@@ -44,11 +44,11 @@ export default function OpengraphImage() {
             maxWidth: 950,
           }}
         >
-          Penn Golf is going to Scotland.
+          Penn Golf at the Home of Golf.
         </div>
         <div style={{ display: 'flex', fontSize: 30, color: 'rgba(255,255,255,0.75)', maxWidth: 900 }}>
-          The St Andrews Links Collegiate, then the family tour: the Castle
-          Course, Kingsbarns, and Carnoustie.
+          The St Andrews Links Collegiate on the Jubilee and the Old Course,
+          then Kingsbarns, Carnoustie and the R&amp;A.
         </div>
         <div
           style={{

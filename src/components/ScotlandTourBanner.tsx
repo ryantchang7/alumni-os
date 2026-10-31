@@ -2,6 +2,10 @@
  * ScotlandTourBanner — cross-site pointer to /scotland.
  * `featured` = full navy card (Clubhouse home, Team Room);
  * `slim` = single-row bar (19th Hole). No hooks — safe in server pages.
+ *
+ * Past tense since 18 October 2026. /scotland is a recap now, and a banner
+ * on three pages promising a trip that already happened was the loudest
+ * thing on the site saying nobody is minding it.
  */
 
 import Link from 'next/link'
@@ -15,10 +19,10 @@ export default function ScotlandTourBanner({ variant }: { variant: 'featured' | 
       >
         <p className="text-[13px] leading-snug">
           <span className="font-semibold text-[#c8a84b]">Scotland, October 2026</span>
-          <span className="text-white/80">, the team plays St Andrews, and the Penn Golf family goes too.</span>
+          <span className="text-white/80">, the team played St Andrews, and the Penn Golf family went too.</span>
         </p>
         <span className="text-[#c8a84b] text-[13px] font-semibold whitespace-nowrap group-hover:translate-x-0.5 transition-transform">
-          See the trip →
+          Read the recap →
         </span>
       </Link>
     )
@@ -34,15 +38,15 @@ export default function ScotlandTourBanner({ variant }: { variant: 'featured' | 
         October 2026 · St Andrews, Scotland
       </p>
       <p className="text-white text-xl sm:text-2xl font-medium font-heading mb-1.5">
-        Penn Golf is going to Scotland.
+        Penn Golf at the Home of Golf.
       </p>
       <p className="text-white/75 text-[13.5px] sm:text-[14px] leading-relaxed max-w-2xl">
-        The team competes in the St Andrews Links Collegiate, then alumni and
-        family join for three days at the Old Course Hotel, Kingsbarns, and
-        Carnoustie.
+        The team played the St Andrews Links Collegiate on the Jubilee and the
+        Old Course, then alumni joined them for Kingsbarns, Carnoustie and the
+        R&amp;A. Nine photographs and every card from the week.
       </p>
       <span className="inline-block mt-3 text-[13px] font-semibold text-[#c8a84b] group-hover:translate-x-0.5 transition-transform">
-        See the trip →
+        Read the recap →
       </span>
     </Link>
   )

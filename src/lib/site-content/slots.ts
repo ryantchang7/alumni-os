@@ -442,13 +442,6 @@ Penn Men's Golf '28, Brookline, MA`,
     kind: 'text',
     default: 'Family or affiliate? Join here →',
   },
-  {
-    id: 'scotland.hero-image',
-    label: '/scotland, hero image',
-    hint: 'Course photo behind the Scotland Tour hero. Empty = text-led hero.',
-    kind: 'image',
-    default: '',
-  },
 ]
 
 export function getSlotById(id: string): ContentSlot | undefined {
