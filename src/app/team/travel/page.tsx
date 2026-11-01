@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { auth } from '@/auth'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import type { TravelHostOffer } from '@/lib/store/types'
+import { isMultiProgram, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
 import AddTravelStop, { DeleteTravelStop } from '@/components/AddTravelStop'
 import TravelHostOfferButton from '@/components/TravelHostOfferButton'
 
@@ -35,17 +36,27 @@ function formatOfferTime(iso: string): string {
   }
 }
 
-export default async function TeamTravelPage() {
+export default async function TeamTravelPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ program?: string }>
+}) {
   const { getTeamBySlug, getTravelStops, getHostOffersForStop } = await import(
     '@/lib/store/local-store'
   )
+  const { program: rawProgram } = await searchParams
+  // Each program has its own board, synced from its own Penn schedule page.
+  // Without the parameter this is the men's board, which every existing link
+  // to this page expects.
+  const program: ProgramId =
+    rawProgram === 'womens' && PROGRAMS.womens.live ? 'womens' : 'mens'
 
   const session = await auth()
   const email = (session?.user?.email ?? '').toLowerCase().trim()
   const signedIn = !!session?.user?.email
   const isFounder = FOUNDER_EMAILS.has(email)
 
-  const team = await getTeamBySlug('penn-mens-golf')
+  const team = await getTeamBySlug(PROGRAMS[program].slug)
   const stops = (team ? await getTravelStops(team.id) : []).sort((a, b) =>
     a.startDate.localeCompare(b.startDate),
   )
@@ -65,9 +76,7 @@ export default async function TeamTravelPage() {
       {/* Hero */}
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
-          <p className="eyebrow text-gold mb-4">
-            Penn Men&rsquo;s Golf
-          </p>
+          <p className="eyebrow text-gold mb-4">{PROGRAMS[program].label}</p>
           <h1
             className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight font-heading"
           >
@@ -76,6 +85,27 @@ export default async function TeamTravelPage() {
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
             The season, stop by stop, and offer to host the team when they&rsquo;re near you.
           </p>
+          {isMultiProgram() && (
+            <div className="mt-7 flex flex-wrap gap-2">
+              {(['mens', 'womens'] as const).map((id) => {
+                const active = id === program
+                return (
+                  <Link
+                    key={id}
+                    href={id === 'mens' ? '/team/travel' : '/team/travel?program=womens'}
+                    aria-current={active ? 'page' : undefined}
+                    className={`px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] rounded-full border transition-colors ${
+                      active
+                        ? 'bg-[#c8a84b] text-[#0a1628] border-[#c8a84b]'
+                        : 'text-white/75 border-white/25 hover:border-[#c8a84b]/70 hover:text-white'
+                    }`}
+                  >
+                    {PROGRAMS[id].shortLabel}
+                  </Link>
+                )
+              })}
+            </div>
+          )}
         </div>
       </div>
 
