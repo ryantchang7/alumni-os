@@ -7,6 +7,15 @@ import { motion, animate } from 'framer-motion'
 import { settle, revealViewport } from '@/lib/motion'
 import { MessageSquare, Users, Flag, CalendarDays, MapPin, Calendar, BookOpen } from 'lucide-react'
 import { PENN_GOLF_TRADITION } from '@/lib/program-history/penn-mens-golf'
+import { PENN_WOMENS_GOLF_TRADITION } from '@/lib/program-history/penn-womens-golf'
+import {
+  PROGRAMS,
+  isMultiProgram,
+  programsInScope,
+  scopeFromParam,
+  type ProgramId,
+  type ProgramScope,
+} from '@/lib/teams/programs'
 import { memberBookEntries } from '@/lib/member-book/data'
 import { getPublicMembers } from '@/lib/member-book/helpers'
 import ClubhouseActivityFeed from '@/components/ClubhouseActivityFeed'
@@ -171,6 +180,9 @@ interface PlayerProfile {
   helpTopics?: string[]
   contactPreference?: string
   badges?: import('@/lib/badges').BadgeId[]
+  /** Set when profiles from both programs are merged, so each card links to
+   * the team the member actually belongs to. */
+  teamSlug?: string
 }
 
 function SpotlightCard({ spotlight }: { spotlight: AlumniSpotlight }) {
@@ -270,7 +282,14 @@ function CountUpValue({ value, className }: { value: string; className?: string 
   )
 }
 
-function TraditionSection() {
+const TRADITIONS = {
+  mens: PENN_GOLF_TRADITION,
+  womens: PENN_WOMENS_GOLF_TRADITION,
+} as const
+
+function TraditionSection({ program }: { program: ProgramId }) {
+  const tradition = TRADITIONS[program]
+  const prog = PROGRAMS[program]
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -278,7 +297,7 @@ function TraditionSection() {
       viewport={revealViewport}
       transition={settle}
       className="mb-8"
-      data-testid="tradition-section"
+      data-testid={`tradition-section-${program}`}
     >
       <div
         className="rounded-2xl overflow-hidden border border-[rgba(180,168,150,0.28)]"
@@ -288,20 +307,20 @@ function TraditionSection() {
         <div className="bg-[#0a1628] px-6 sm:px-8 pt-6 pb-5 relative overflow-hidden">
           <div className="absolute inset-0 opacity-[0.035] pointer-events-none texture-engraved" />
           <div className="relative">
-            <p className="eyebrow text-gold mb-2.5">Penn Men&apos;s Golf</p>
+            <p className="eyebrow text-gold mb-2.5">{prog.label}</p>
             <h2
               className="text-xl sm:text-2xl font-medium text-white leading-tight mb-2 font-heading"
             >
-              {PENN_GOLF_TRADITION.title}
+              {tradition.title}
             </h2>
-            <p className="text-[11px] text-white/70 max-w-lg leading-relaxed">{PENN_GOLF_TRADITION.subtitle}</p>
+            <p className="text-[11px] text-white/70 max-w-lg leading-relaxed">{tradition.subtitle}</p>
           </div>
         </div>
         {/* Penn red ribbon */}
         <div className="h-[3px] bg-gradient-to-r from-[#990000] via-[#bb0000] to-[#990000]" />
         {/* Plaque grid on parchment. NUMBER FIRST */}
         <div className="bg-[#fdfcf9] grid grid-cols-2 sm:grid-cols-3 divide-x divide-y divide-[rgba(180,168,150,0.3)]">
-          {PENN_GOLF_TRADITION.achievements.map((a) => (
+          {tradition.achievements.map((a) => (
             <div key={a.label} className="px-5 sm:px-6 py-6 sm:py-7 hover:-translate-y-px hover:bg-white transition-all duration-150 cursor-default">
               <CountUpValue
                 value={a.value}
@@ -315,7 +334,7 @@ function TraditionSection() {
         </div>
         <div className="bg-[#fdfcf9] px-5 sm:px-6 py-3 border-t border-[rgba(180,168,150,0.3)] flex items-center justify-end">
           <Link
-            href="/hall-of-fame"
+            href={program === 'mens' ? '/hall-of-fame' : `/hall-of-fame?program=${program}`}
             className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline"
           >
             Visit the Hall of Fame &rarr;
@@ -323,6 +342,63 @@ function TraditionSection() {
         </div>
       </div>
     </motion.div>
+  )
+}
+
+/**
+ * Which program(s) the home page is showing.
+ *
+ * The choice lives in the URL rather than in localStorage: it is a view of
+ * the page, so it should be shareable and should survive a refresh without
+ * a hydration dance. Every other parameter is preserved, so landing here
+ * from a welcome link and then switching programs does not drop the
+ * greeting.
+ */
+function ProgramPicker({ scope }: { scope: ProgramScope }) {
+  const searchParams = useSearchParams()
+  const hrefFor = (next: ProgramScope) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (next === 'both') params.delete('program')
+    else params.set('program', next)
+    const q = params.toString()
+    return q ? `/player?${q}` : '/player'
+  }
+  const options: Array<{ id: ProgramScope; label: string }> = [
+    { id: 'both', label: 'Both' },
+    ...programsInScope('both').map(p => ({ id: p.id as ProgramScope, label: p.shortLabel })),
+  ]
+
+  return (
+    <div
+      className="flex items-center gap-2 flex-wrap"
+      data-testid="program-picker"
+      role="group"
+      aria-label="Which program to follow"
+    >
+      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
+        Following
+      </span>
+      <div className="flex gap-1.5 flex-wrap">
+        {options.map(o => {
+          const active = o.id === scope
+          return (
+            <Link
+              key={o.id}
+              href={hrefFor(o.id)}
+              scroll={false}
+              aria-current={active ? 'true' : undefined}
+              className={`px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] rounded-full border transition-colors ${
+                active
+                  ? 'bg-[#0a1628] text-white border-[#0a1628]'
+                  : 'bg-white text-[#3d4a5c] border-[rgba(180,168,150,0.55)] hover:border-[#0a1628]/45 hover:text-[#0a1628]'
+              }`}
+            >
+              {o.label}
+            </Link>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
@@ -425,7 +501,16 @@ interface OnboardingStatus {
 
 function ClubhouseInner() {
   const searchParams = useSearchParams()
-  const teamSlug = searchParams.get('teamSlug') ?? 'penn-mens-golf'
+  // `both` by default: this is the front door of the Clubhouse, and showing
+  // one program's season and record there while the other exists is the
+  // thing Ryan asked to fix. `?teamSlug=` still wins where a caller passes
+  // it, because older links into this page do.
+  const scope = scopeFromParam(searchParams.get('program'))
+  const programs = programsInScope(scope)
+  const programKey = programs.map(p => p.id).join(',')
+  const teamSlug =
+    searchParams.get('teamSlug') ??
+    (scope === 'both' ? PROGRAMS.mens.slug : PROGRAMS[scope].slug)
   const welcomeName = searchParams.get('welcome')
 
   const welcomeLine = useSiteContent(
@@ -435,7 +520,7 @@ function ClubhouseInner() {
 
   const [profiles, setProfiles] = useState<PlayerProfile[]>([])
   const [loading, setLoading] = useState(true)
-  const [newsItems, setNewsItems] = useState<TeamNewsItem[]>([])
+  const [newsByProgram, setNewsByProgram] = useState<Partial<Record<ProgramId, TeamNewsItem[]>>>({})
   const [teamUpdates, setTeamUpdates] = useState<SeasonUpdate[]>([])
   const [onboarding, setOnboarding] = useState<OnboardingStatus | null>(null)
   const [billingStatus, setBillingStatus] = useState<{
@@ -456,16 +541,32 @@ function ClubhouseInner() {
    * actually disappears instead of lingering.
    */
   const loadTeamFeed = useCallback(() => {
-    fetch(`/api/team/news?teamSlug=${teamSlug}&limit=4`, { cache: 'no-store' })
-      .then(r => (r.ok ? r.json() : { items: [] }))
-      .then(data => setNewsItems(data.items ?? []))
+    // One request per program in scope, keyed by program rather than
+    // concatenated: each strip is headed with its own team's name, so the
+    // two feeds must not be allowed to blend into one list.
+    const ids = programKey ? (programKey.split(',') as ProgramId[]) : []
+    Promise.all(
+      ids.map(id =>
+        fetch(`/api/team/news?teamSlug=${PROGRAMS[id].slug}&limit=4`, { cache: 'no-store' })
+          .then(r => (r.ok ? r.json() : { items: [] }))
+          .then(data => [id, (data.items ?? []) as TeamNewsItem[]] as const)
+          .catch(() => [id, [] as TeamNewsItem[]] as const),
+      ),
+    )
+      .then(pairs => setNewsByProgram(Object.fromEntries(pairs)))
       .catch(() => {})
 
-    fetch(`/api/team/updates?teamSlug=${teamSlug}&limit=3`, { cache: 'no-store' })
-      .then(r => (r.ok ? r.json() : { updates: [] }))
-      .then(data => setTeamUpdates(data.updates ?? []))
+    Promise.all(
+      ids.map(id =>
+        fetch(`/api/team/updates?teamSlug=${PROGRAMS[id].slug}&limit=3`, { cache: 'no-store' })
+          .then(r => (r.ok ? r.json() : { updates: [] }))
+          .then(data => (data.updates ?? []) as SeasonUpdate[])
+          .catch(() => [] as SeasonUpdate[]),
+      ),
+    )
+      .then(lists => setTeamUpdates(lists.flat().slice(0, 3)))
       .catch(() => {})
-  }, [teamSlug])
+  }, [programKey])
 
   // A tab left open all afternoon showed whatever was true when it loaded.
   // Coming back to it is the moment someone expects to see what is new, so
@@ -483,10 +584,24 @@ function ClubhouseInner() {
   }, [loadTeamFeed])
 
   useEffect(() => {
-    fetch(`/api/player/profiles?teamSlug=${teamSlug}`, { cache: 'no-store' })
-      .then(r => (r.ok ? r.json() : { profiles: [] }))
-      .then(data => {
-        setProfiles(data.profiles ?? [])
+    // Explicit ?teamSlug= means one team was asked for by name; otherwise
+    // the preview covers every program on show, each profile tagged with
+    // the team it came from so its card still links to the right roster.
+    const slugs = searchParams.get('teamSlug')
+      ? [teamSlug]
+      : programs.map(p => p.slug)
+    Promise.all(
+      slugs.map(slug =>
+        fetch(`/api/player/profiles?teamSlug=${slug}`, { cache: 'no-store' })
+          .then(r => (r.ok ? r.json() : { profiles: [] }))
+          .then(data =>
+            ((data.profiles ?? []) as PlayerProfile[]).map(pr => ({ ...pr, teamSlug: slug })),
+          )
+          .catch(() => [] as PlayerProfile[]),
+      ),
+    )
+      .then(lists => {
+        setProfiles(lists.flat())
         setLoading(false)
       })
       .catch(() => setLoading(false))
@@ -523,7 +638,10 @@ function ClubhouseInner() {
         }
       })
       .catch(() => {})
-  }, [teamSlug, loadTeamFeed])
+    // `programKey` rather than `programs`: the array is rebuilt every render,
+    // which would refetch everything on every keystroke elsewhere on the page.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [teamSlug, programKey, loadTeamFeed])
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
@@ -819,28 +937,42 @@ function ClubhouseInner() {
           </div>
         )}
 
-        {/* Scotland Tour, October 2026 */}
+        {/* Who you're following, then the next tournament for each team on
+            show, then Scotland. The picker sits here because everything
+            below it to the end of the news block is what it governs. */}
         <div className="mb-10 space-y-3">
-          <NextEventChip />
+          {isMultiProgram() && (
+            <div className="pb-1">
+              <ProgramPicker scope={scope} />
+            </div>
+          )}
+          {programs.map(p => (
+            <NextEventChip key={p.id} program={p.id} />
+          ))}
           <ScotlandTourBanner variant="featured" />
         </div>
 
         {/* From the box. Penn Athletics news, then the staff introduction,
             which is not a headline and would age off the feed in a week. */}
-        <div className="mb-10 space-y-4">
-          {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
+        <div className="mb-10 space-y-6">
+          {programs.map(p => {
+            const items = newsByProgram[p.id] ?? []
+            return items.length > 0 ? (
+              <TeamNewsStrip key={p.id} items={items} program={p.id} />
+            ) : null
+          })}
           {/* The coach card and the team's own updates share one row under the
               Penn Athletics strip. The tiles run a size down from the news
               tiles above so the block reads as four headlines plus a
               follow-on, rather than as eight equal headlines. */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <CoachIntroCard />
+            {programs.some(p => p.id === 'mens') && <CoachIntroCard />}
             <SeasonUpdateTiles updates={teamUpdates} />
           </div>
         </div>
 
         {/* 4 primary rooms */}
-        <div className={`${welcomeName || onboarding?.linked || newsItems.length > 0 ? 'mt-2' : '-mt-5'} relative z-10 mb-12`}>
+        <div className={`${welcomeName || onboarding?.linked || Object.values(newsByProgram).some(v => v && v.length > 0) ? 'mt-2' : '-mt-5'} relative z-10 mb-12`}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {rooms.map((room, i) => {
               const Icon = room.icon
@@ -937,7 +1069,7 @@ function ClubhouseInner() {
                     <div className="relative">
                       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                         {currentPlayers.map(p => (
-                          <MiniMemberCard key={p.personId} profile={p} teamSlug={teamSlug} />
+                          <MiniMemberCard key={p.personId} profile={p} teamSlug={p.teamSlug ?? teamSlug} />
                         ))}
                       </div>
                       {/* Right-edge fade hints more cards scroll into view. */}
@@ -955,7 +1087,7 @@ function ClubhouseInner() {
                     <div className="relative">
                       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                         {alumni.slice(0, 12).map(p => (
-                          <MiniMemberCard key={p.personId} profile={p} teamSlug={teamSlug} />
+                          <MiniMemberCard key={p.personId} profile={p} teamSlug={p.teamSlug ?? teamSlug} />
                         ))}
                         {alumni.length > 12 && (
                           <Link
@@ -978,8 +1110,11 @@ function ClubhouseInner() {
         })()}
 
         {/* Penn Golf Tradition, moved to bottom; it's "always there"
-            content (history), not timely. */}
-        <TraditionSection />
+            content (history), not timely. One cabinet per program on show,
+            always men's first so the order never shuffles between renders. */}
+        {programs.map(p => (
+          <TraditionSection key={p.id} program={p.id} />
+        ))}
 
         {/* Your Requests, members only; anonymous visitors have none to see */}
         <div className="pb-10" hidden={!onboarding?.linked}>

@@ -11,14 +11,17 @@
  *
  * GET  — dry run. Reports what it would set, writes nothing.
  * POST — writes. `?force=1` also overwrites links that are already set.
+ * `?program=` defaults to mens. Each program is a separate Clippd school,
+ * so the women's board resolves against the women's tournaments or not at
+ * all; matching the wrong school would silently link the men's leaderboard
+ * under a women's event.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { checkCronAuth } from '@/lib/cron-auth'
 import { requireFounder } from '@/lib/auth/guards'
 import { resolveStopLinks } from '@/lib/clippd/penn-tournaments'
-
-const TEAM_SLUG = 'penn-mens-golf'
+import { PROGRAMS, programFromParam } from '@/lib/teams/programs'
 
 async function run(req: NextRequest, write: boolean) {
   if (!checkCronAuth(req)) {
@@ -27,14 +30,15 @@ async function run(req: NextRequest, write: boolean) {
   }
 
   const force = req.nextUrl.searchParams.get('force') === '1'
+  const program = programFromParam(req.nextUrl.searchParams.get('program'))
   const { getTeamBySlug, getTravelStops, updateTravelStop } = await import('@/lib/store/local-store')
 
-  const team = await getTeamBySlug(TEAM_SLUG)
+  const team = await getTeamBySlug(PROGRAMS[program].slug)
   if (!team) return NextResponse.json({ error: 'Team not found' }, { status: 404 })
 
   const stops = await getTravelStops(team.id)
   const targets = stops.filter(s => force || !s.linkUrl)
-  const resolved = await resolveStopLinks(targets)
+  const resolved = await resolveStopLinks(targets, program)
 
   const changes: Array<Record<string, unknown>> = []
   for (const stop of targets) {
@@ -71,6 +75,7 @@ async function run(req: NextRequest, write: boolean) {
     ok: true,
     dryRun: !write,
     force,
+    program,
     stopsTotal: stops.length,
     considered: targets.length,
     matched: changes.filter(c => c.matched).length,

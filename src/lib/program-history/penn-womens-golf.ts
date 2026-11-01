@@ -11,9 +11,12 @@
  * - **No all-time letter-winner record.** None has been located for the
  *   women's program. That is why no woman in the Member Book is marked a
  *   letter winner, and why there is no letter-years figure here.
- * - **No individual honours tally.** The men's book carries one because the
- *   underlying list exists. No equivalent list has been found for the women,
- *   and a number nobody can source is worse than no number.
+ * - **No single individual-honours tally.** The men's book carries one
+ *   because the underlying list exists. Penn has never published a complete
+ *   one for the women, so instead of inventing a total,
+ *   `PENN_WOMENS_GOLF_HONORS` below lists the seasons that *are* documented
+ *   and the record says the rest are missing. The headline figure is given
+ *   as a floor ("14+"), never as a total.
  * - **Anderson's win-loss record is not shown.** Penn's own pages have
  *   carried three different figures for it. The titles below do not conflict
  *   between sources; that record does.
@@ -24,6 +27,7 @@
 import type {
   ProgramTradition,
   ProgramHistoryNote,
+  ProgramHonorSeason,
 } from './types'
 
 /**
@@ -72,6 +76,13 @@ export const PENN_WOMENS_GOLF_TRADITION: ProgramTradition = {
         'Nineteen of the twenty came under Mark Anderson, head coach since August 2008.',
     },
     {
+      label: 'All-Ivy Selections',
+      value: '14+',
+      detail: 'Documented 2000-2026',
+      description:
+        'Fourteen selections Penn has published, from the first four in the 2000s to Mi Li in 2026. Several seasons were never itemised, so the real figure is higher.',
+    },
+    {
       label: 'Varsity Seasons',
       value: '27',
       detail: `${WOMENS_VARSITY_SEASON} to 2026-27`,
@@ -80,6 +91,85 @@ export const PENN_WOMENS_GOLF_TRADITION: ProgramTradition = {
     },
   ],
 }
+
+/**
+ * The individual honours Penn Athletics has actually published, season by
+ * season. Sources, all checked 2026-11-01:
+ *
+ *   2006, 2010  Penn's 26 April 2010 All-Ivy release, which also gives the
+ *               "only four since 2000" figure the 14+ floor is built on.
+ *   2015        Penn's 2023 Ivy championship release ("best finish by a Penn
+ *               player since Sophia Chen was third in 2015").
+ *   2023        Penn's 23 April 2023 Ivy championship release.
+ *   2024        Penn's 17 April 2025 championship preview.
+ *   2026        Penn's 29 April 2026 All-Ivy release and the Ivy League's
+ *               own award announcement of the same date.
+ *
+ * Seasons absent from this list are absent because no source for them has
+ * been found, not because nobody was honoured. Saying so is the point.
+ */
+export const PENN_WOMENS_GOLF_HONORS: ProgramHonorSeason[] = [
+  {
+    year: 2026,
+    title: 'Mi Li, a unanimous first-team pick',
+    entries: [
+      {
+        name: 'Mi Li',
+        honor: 'First-Team All-Ivy, unanimous',
+        detail: 'Team-low 73.9 average over 22 rounds, nine of them at or under par',
+      },
+      {
+        name: 'Mi Li',
+        honor: 'Ivy All-Championship Team',
+        detail: 'Tied for fourth of 36, her 225 tied for the fifth-best by a Penn player at the Championship',
+      },
+      { name: 'Bridget O’Keefe', honor: 'Academic All-Ivy' },
+    ],
+    note: 'Li was low Penn player in three of the four spring events and shared medalist honours at the Rutgers Invitational.',
+  },
+  {
+    year: 2024,
+    title: 'Maggie Ni earns second team',
+    entries: [{ name: 'Maggie Ni', honor: 'Second-Team All-Ivy', detail: 'Tied for seventh' }],
+  },
+  {
+    year: 2023,
+    title: 'All five Quakers earn All-Ivy, a program first',
+    entries: [
+      { name: 'Bridget O’Keefe', honor: 'First-Team All-Ivy', detail: 'Third, 224, one shot off the program record for an Ivy Championship total' },
+      { name: 'Natalie Cao', honor: 'Second-Team All-Ivy', detail: 'Sixth, 229' },
+      { name: 'Selina Li', honor: 'Second-Team All-Ivy', detail: 'Tied for 10th, 232' },
+      { name: 'Julie Shin', honor: 'Second-Team All-Ivy', detail: 'Tied for 10th, 232, with a Championship-best eight birdies' },
+      { name: 'Susan Xiao', honor: 'Second-Team All-Ivy', detail: 'Tied for 10th, 232' },
+    ],
+    note: 'The first time in school history that five Penn women were honoured in the same year.',
+  },
+  {
+    year: 2015,
+    title: 'Sophia Chen third at the Ivy Championship',
+    entries: [{ name: 'Sophia Chen', honor: 'Third at the Ivy Championship' }],
+    note: 'The best finish by a Penn player at the Championship until Bridget O’Keefe matched it with third in 2023.',
+  },
+  {
+    year: 2010,
+    title: 'Three in one year for the first time',
+    entries: [
+      { name: 'Isabel Han', honor: 'First-Team All-Ivy', detail: 'As a freshman' },
+      { name: 'Tiffany Cheung', honor: 'First-Team All-Ivy', detail: 'As a sophomore' },
+      { name: 'Lisette Vitter', honor: 'Second-Team All-Ivy', detail: 'As a senior' },
+    ],
+    note: 'The first time three Penn women earned All-Ivy in the same season, in the same year the program won its first Ivy title.',
+  },
+  {
+    year: 2006,
+    title: 'Meg Bender and Kim Thompson',
+    entries: [
+      { name: 'Meg Bender', honor: 'All-Ivy' },
+      { name: 'Kim Thompson', honor: 'All-Ivy' },
+    ],
+    note: 'Two of only four Penn women to earn All-Ivy between 2000, when the program first played the Ivy Championship, and 2010. The other two are not named in any source found so far.',
+  },
+]
 
 export const PENN_WOMENS_GOLF_HISTORICAL_NOTES: ProgramHistoryNote[] = [
   {
@@ -101,6 +191,13 @@ export const PENN_WOMENS_GOLF_HISTORICAL_NOTES: ProgramHistoryNote[] = [
     detail:
       'Anderson reached 1,000 career coaching victories at the Lady Blue Hen Invitational in Rehoboth Beach, Delaware, in October 2026. ' +
       'Juliet Oh tied for second there at one under, and Penn finished fourth in an eleven-team field.',
+  },
+  {
+    year: 2010,
+    title: 'The first Ivy League championship',
+    detail:
+      'Penn won the program\u2019s first Ivy League title in 2010, by 22 strokes, and reached an NCAA Regional for the first time. ' +
+      'Isabel Han and Tiffany Cheung were first-team All-Ivy that season and Lisette Vitter second team, the first time three Penn women were honoured in one year.',
   },
   {
     year: 2023,

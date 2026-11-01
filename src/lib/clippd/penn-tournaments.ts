@@ -1,3 +1,5 @@
+import { DEFAULT_PROGRAM_ID, type ProgramId } from '@/lib/teams/programs'
+
 /**
  * Resolve our own schedule entries to exact Clippd scoreboard links.
  *
@@ -17,9 +19,28 @@
  * never overlap in time, which makes the date the reliable key.
  */
 
-/** Penn men's golf on Clippd. Stable, and it appears in other events'
- * `competingSchools` arrays, so it is safe to hardcode. Penn women's is 2674. */
-export const PENN_MENS_SCHOOL_ID = '4048'
+/**
+ * Penn on Clippd, per program. Stable ids: they appear in other events'
+ * `competingSchools` arrays, so they are safe to hardcode.
+ *
+ * Clippd keeps the two programs in separate school rows AND tags every
+ * tournament with a `gender`, so both have to agree. Querying the women's
+ * school id alone still returns the odd co-ed field, which is why
+ * `matchTournament` filters on gender as well.
+ */
+export const PENN_SCHOOL_IDS: Record<ProgramId, string> = {
+  mens: '4048',
+  womens: '2674',
+}
+
+/** Clippd's `gender` value for each program. */
+const CLIPPD_GENDER: Record<ProgramId, string> = {
+  mens: 'Men',
+  womens: 'Women',
+}
+
+/** @deprecated Read `PENN_SCHOOL_IDS.mens`. Kept so older imports compile. */
+export const PENN_MENS_SCHOOL_ID = PENN_SCHOOL_IDS.mens
 
 const CLIPPD_ORIGIN = 'https://scoreboard.clippd.com'
 
@@ -58,10 +79,13 @@ export function clippdSearchUrl(eventName: string): string {
   return `${CLIPPD_ORIGIN}/results/upcoming?keywords=${encodeURIComponent(eventName)}`
 }
 
-/** One season of Penn men's tournaments. Returns [] on any failure — a dead
- * Clippd must never take the schedule down with it. */
-export async function fetchPennTournaments(season: number): Promise<ClippdTournament[]> {
-  const url = `${CLIPPD_ORIGIN}/api/tournaments?schoolId=${PENN_MENS_SCHOOL_ID}&season=${season}&limit=40`
+/** One season of one program's Penn tournaments. Returns [] on any failure —
+ * a dead Clippd must never take the schedule down with it. */
+export async function fetchPennTournaments(
+  season: number,
+  program: ProgramId = DEFAULT_PROGRAM_ID,
+): Promise<ClippdTournament[]> {
+  const url = `${CLIPPD_ORIGIN}/api/tournaments?schoolId=${PENN_SCHOOL_IDS[program]}&season=${season}&limit=40`
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PennGolfClubhouse/1.0)' },
@@ -87,7 +111,11 @@ function nameAffinity(a: string, b: string): number {
         .toLowerCase()
         .replace(/[^a-z0-9\s]/g, ' ')
         .split(/\s+/)
-        .filter(w => w.length > 2 && !['the', 'and', 'men', 'mens', 'golf'].includes(w)),
+        .filter(
+          w =>
+            w.length > 2 &&
+            !['the', 'and', 'men', 'mens', 'women', 'womens', 'golf'].includes(w),
+        ),
     )
   const x = norm(a)
   const y = norm(b)
@@ -106,11 +134,12 @@ function nameAffinity(a: string, b: string): number {
 export function matchTournament(
   stop: { eventName: string; startDate: string; endDate?: string },
   tournaments: ClippdTournament[],
+  program: ProgramId = DEFAULT_PROGRAM_ID,
 ): ClippdTournament | null {
   const sStart = stop.startDate
   const sEnd = stop.endDate ?? stop.startDate
   const candidates = tournaments.filter(t => {
-    if (t.gender && t.gender !== 'Men') return false
+    if (t.gender && t.gender !== CLIPPD_GENDER[program]) return false
     return overlaps(sStart, sEnd, t.startDate, t.endDate ?? t.startDate)
   })
   if (candidates.length === 0) return null
@@ -126,18 +155,19 @@ export function matchTournament(
  */
 export async function resolveStopLinks(
   stops: Array<{ id: string; eventName: string; startDate: string; endDate?: string }>,
+  program: ProgramId = DEFAULT_PROGRAM_ID,
 ): Promise<Map<string, { tournamentId: string; tournamentName: string; url: string }>> {
   const seasons = [...new Set(stops.map(s => clippdSeasonFor(s.startDate)))]
   const bySeason = new Map<number, ClippdTournament[]>()
   await Promise.all(
     seasons.map(async season => {
-      bySeason.set(season, await fetchPennTournaments(season))
+      bySeason.set(season, await fetchPennTournaments(season, program))
     }),
   )
   const out = new Map<string, { tournamentId: string; tournamentName: string; url: string }>()
   for (const stop of stops) {
     const pool = bySeason.get(clippdSeasonFor(stop.startDate)) ?? []
-    const hit = matchTournament(stop, pool)
+    const hit = matchTournament(stop, pool, program)
     if (hit) {
       out.set(stop.id, {
         tournamentId: hit.tournamentId,

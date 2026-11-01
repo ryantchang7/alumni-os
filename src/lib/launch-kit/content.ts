@@ -27,9 +27,9 @@ export const CLOSING_LINE = 'Come into the Clubhouse.'
 
 /* ── Founder note (used on /launch) ──────────────────────────────── */
 
-export const FOUNDER_NOTE = `Hey Penn Men's Golf family.
+export const FOUNDER_NOTE = `Hey Penn Golf family.
 
-This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many other Penn Golf guys were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family. Generations standing on the same range, pulling for the same program.
+This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many others from Penn Golf were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family. Generations standing on the same range, pulling for the same program.
 
 That's the feeling I wanted to bottle.
 
@@ -136,7 +136,7 @@ export interface ScriptVersion {
   text: string
 }
 
-const SCRIPT_60 = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior from Brookline, Massachusetts.
+const SCRIPT_60 = `Hey Penn Golf family. I'm Ryan Chang, a rising junior from Brookline, Massachusetts.
 
 This spring at Ivy Champs at Baltusrol, hosted by Patrick Cooper, I saw Derek Rodgers, Carter Thompson, KJ, and so many of you out there. And it hit me. Penn Golf is a real family.
 
@@ -150,9 +150,9 @@ Every claim is reviewed by hand.
 
 Come claim your member card at penngolfclubhouse.com/launch.`
 
-const SCRIPT_90 = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
+const SCRIPT_90 = `Hey Penn Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
 
-This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many other guys were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family.
+This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many others were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family.
 
 Golf has given me so much, and a lot of that traces back to the people who came before us. But Penn Golf has had different coaches, classes, and generations, and our family hasn't always been as connected as it could be.
 
@@ -170,9 +170,9 @@ For the Penn Golf family. A place to stay close, help the next group, keep playi
 
 Come claim your member card at penngolfclubhouse.com/launch.`
 
-const SCRIPT_120 = `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
+const SCRIPT_120 = `Hey Penn Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
 
-This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many other Penn Golf guys were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family. Generations standing on the same range, pulling for the same program.
+This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many others from Penn Golf were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family. Generations standing on the same range, pulling for the same program.
 
 That's the feeling I wanted to bottle.
 

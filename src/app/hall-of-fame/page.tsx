@@ -16,11 +16,13 @@ import {
 import {
   PENN_WOMENS_GOLF_TRADITION,
   PENN_WOMENS_GOLF_HISTORICAL_NOTES,
+  PENN_WOMENS_GOLF_HONORS,
   WOMENS_IVY_CHAMPIONSHIP_YEARS,
   WOMENS_NCAA_REGIONAL_YEARS,
   WOMENS_UNPUBLISHED_SEASONS,
 } from '@/lib/program-history/penn-womens-golf'
-import { isMultiProgram, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
+import type { ProgramHonorSeason } from '@/lib/program-history/types'
+import { isMultiProgram, PROGRAMS, type ProgramId, programFromParam } from '@/lib/teams/programs'
 import { memberBookEntries } from '@/lib/member-book/data'
 import {
   getMemberEndYear,
@@ -45,6 +47,10 @@ const BOOKS = {
   mens: {
     tradition: PENN_GOLF_TRADITION,
     notes: PENN_GOLF_HISTORICAL_NOTES,
+    // The men's individual honours are carried as a count on the plaque
+    // above, because the underlying list exists and is complete. Until it
+    // is transcribed season by season there is nothing to put here.
+    honors: [] as readonly ProgramHonorSeason[],
     ivyYears: IVY_CHAMPIONSHIP_YEARS as readonly number[],
     postseasonYears: NCAA_CHAMPIONSHIP_YEARS as readonly number[],
     postseasonTitle: 'NCAA Championships',
@@ -56,6 +62,7 @@ const BOOKS = {
   womens: {
     tradition: PENN_WOMENS_GOLF_TRADITION,
     notes: PENN_WOMENS_GOLF_HISTORICAL_NOTES,
+    honors: PENN_WOMENS_GOLF_HONORS as readonly ProgramHonorSeason[],
     ivyYears: WOMENS_IVY_CHAMPIONSHIP_YEARS as readonly number[],
     postseasonYears: WOMENS_NCAA_REGIONAL_YEARS as readonly number[],
     postseasonTitle: 'NCAA Regionals',
@@ -90,7 +97,7 @@ export default async function HallOfFamePage({
   searchParams: Promise<{ program?: string }>
 }) {
   const { program: raw } = await searchParams
-  const program: ProgramId = raw === 'womens' && PROGRAMS.womens.live ? 'womens' : 'mens'
+  const program: ProgramId = programFromParam(raw)
   const book = BOOKS[program]
   const ivyRosters = book.ivyYears.map((year) => ({ year, members: membersForYear(year, program) }))
   const ncaaRosters = book.postseasonYears.map((year) => ({ year, members: membersForYear(year, program) }))
@@ -311,6 +318,67 @@ export default async function HallOfFamePage({
             </div>
           )}
         </section>
+
+        {/* Individual honours, season by season. Rendered only where a
+            program has a list; the men's is a count on the plaque above. */}
+        {book.honors.length > 0 && (
+          <section data-testid="individual-honors">
+            <div className="flex items-baseline justify-between mb-1">
+              <h2 className="text-2xl text-[#0a1628] font-medium font-heading">
+                Individual Honors
+              </h2>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8a84b]">
+                {book.honors.length} seasons on record
+              </span>
+            </div>
+            <p className="text-sm text-ink-muted mb-6 max-w-[70ch]">
+              Every selection Penn Athletics has published for this program, newest first.
+              Seasons missing from this list are missing because no published source for
+              them has been found, not because nobody was honored.
+            </p>
+            <div className="space-y-4">
+              {book.honors.map((season) => (
+                <div
+                  key={season.year}
+                  className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-6 py-5"
+                  style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+                >
+                  <div className="flex items-baseline gap-3 flex-wrap mb-3">
+                    <p className="text-2xl text-[#990000] font-medium leading-none font-heading">
+                      {season.year}
+                    </p>
+                    <p className="text-[13.5px] text-[#0a1628] font-medium font-heading">
+                      {season.title}
+                    </p>
+                  </div>
+                  <ul className="space-y-1.5">
+                    {season.entries.map((e, i) => (
+                      <li
+                        key={`${e.name}-${e.honor}-${i}`}
+                        className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2"
+                      >
+                        <span className="text-[13px] font-semibold text-[#0a1628] whitespace-nowrap">
+                          {e.name}
+                        </span>
+                        <span className="text-[12.5px] text-[#3d4a5c]">
+                          {e.honor}
+                          {e.detail && (
+                            <span className="text-ink-muted"> &middot; {e.detail}</span>
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  {season.note && (
+                    <p className="text-[12px] text-ink-muted leading-relaxed mt-3 pt-3 border-t border-[rgba(180,168,150,0.3)]">
+                      {season.note}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* The gap in the women's record, stated rather than hidden. */}
         {program === 'womens' && (

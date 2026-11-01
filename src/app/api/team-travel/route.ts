@@ -5,15 +5,18 @@
  * DELETE — founder removes a stop (?id=).
  *
  * POST body: { eventName, locationText, startDate, endDate?, note?, linkUrl? (leaderboard/results), courseUrl? (course site or maps), imageUrl? (crest) }.
- * GET    — public list (the schedule is public on the Team Room).
+ * GET    — public list (the schedule is public on the Team Room). `?program=`
+ *          picks the board; without it this is the men's, which every
+ *          existing caller expects.
  * PATCH  — founder edits a stop in place (full editable set each call).
  */
 
 import { NextResponse } from 'next/server'
 import { requireFounder } from '@/lib/auth/guards'
 import { createTravelStop, deleteTravelStop, updateTravelStop, getTeamBySlug, getTravelStops } from '@/lib/store/local-store'
+import { DEFAULT_TEAM_SLUG, PROGRAMS, programFromParam } from '@/lib/teams/programs'
 
-const TEAM_SLUG = 'penn-mens-golf'
+const TEAM_SLUG = DEFAULT_TEAM_SLUG
 
 function cleanHttpUrl(v: unknown): string | undefined {
   if (typeof v !== 'string') return undefined
@@ -28,10 +31,11 @@ function cleanHttpUrl(v: unknown): string | undefined {
   }
 }
 
-export async function GET() {
-  const team = await getTeamBySlug(TEAM_SLUG)
+export async function GET(request: Request) {
+  const program = programFromParam(new URL(request.url).searchParams.get('program'))
+  const team = await getTeamBySlug(PROGRAMS[program].slug)
   if (!team) return NextResponse.json({ stops: [] })
-  return NextResponse.json({ stops: await getTravelStops(team.id) })
+  return NextResponse.json({ program, stops: await getTravelStops(team.id) })
 }
 
 export async function POST(request: Request) {

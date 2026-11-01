@@ -5,7 +5,7 @@ import { badgesForPerson } from '@/lib/badges'
 import AskTheTeam, { type AskTarget } from '@/components/AskTheTeam'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import Link from 'next/link'
-import { isMultiProgram, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
+import { isMultiProgram, PROGRAMS, type ProgramId, programFromParam } from '@/lib/teams/programs'
 
 import type { Metadata } from 'next'
 import { deriveClassLabel, classSortOrder } from '@/lib/class-year'
@@ -26,8 +26,7 @@ export default async function MeetTheTeamPage({
   searchParams: Promise<{ program?: string }>
 }) {
   const { program: rawProgram } = await searchParams
-  const program: ProgramId =
-    rawProgram === 'womens' && PROGRAMS.womens.live ? 'womens' : 'mens'
+  const program: ProgramId = programFromParam(rawProgram)
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const { auth } = await import('@/auth')
   const store = await readStore()

@@ -6,6 +6,11 @@
  * "Next up" = first stop that hasn't ended yet; past stops dim. The
  * St Andrews / Scotland stop gets the navy treatment + a link to the
  * alumni Scotland Tour page. Renders nothing while the list is empty.
+ *
+ * `program` is required rather than defaulted. Both Team Rooms render this
+ * component, and every link in the footer is program-specific: defaulting
+ * would have sent the women's room to the men's schedule and the men's
+ * calendar feed, which is exactly the bug the Ivana audit turned up.
  */
 
 import Link from 'next/link'
@@ -13,6 +18,7 @@ import type { TeamTravelStop } from '@/lib/store/types'
 import { currentSeasonLabel } from '@/lib/class-year'
 import { usEasternToday } from '@/lib/us-date'
 import { clippdSearchUrl } from '@/lib/clippd/penn-tournaments'
+import { PROGRAMS, type ProgramId } from '@/lib/teams/programs'
 
 const SCOTLAND_RE = /scotland|st andrews/i
 
@@ -35,8 +41,17 @@ function formatRange(startDate: string, endDate?: string): string {
     : `${startStr} – ${end.toLocaleDateString('en-US', opts)}`
 }
 
-export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[] }) {
+export default function TeamScheduleSection({
+  stops,
+  program,
+}: {
+  stops: TeamTravelStop[]
+  program: ProgramId
+}) {
   if (stops.length === 0) return null
+
+  const prog = PROGRAMS[program]
+  const q = program === 'mens' ? '' : `?program=${program}`
 
   const sorted = [...stops].sort((a, b) => a.startDate.localeCompare(b.startDate))
   // US Eastern, not UTC. Stops are US calendar dates, so a UTC "today" rolled
@@ -242,17 +257,17 @@ export default function TeamScheduleSection({ stops }: { stops: TeamTravelStop[]
 
       <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1.5 text-xs font-semibold">
         <a
-          href="https://pennathletics.com/sports/mens-golf/schedule"
+          href={prog.scheduleUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="text-[#990000] hover:underline"
         >
           Full schedule &amp; results on pennathletics.com →
         </a>
-        <a href="/api/season-calendar" className="text-[#0a1628] hover:underline">
+        <a href={`/api/season-calendar${q}`} className="text-[#0a1628] hover:underline">
           Add the season to your calendar →
         </a>
-        <Link href="/team/travel" className="text-[#0a1628] hover:underline">
+        <Link href={`/team/travel${q}`} className="text-[#0a1628] hover:underline">
           Near a stop? Offer to host the team →
         </Link>
       </div>

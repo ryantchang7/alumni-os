@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Person, TeamMembership, TeamNewsItem, SeasonUpdate } from '@/lib/store/types'
-import { isMultiProgram, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
+import { isMultiProgram, PROGRAMS, type ProgramId, programFromParam } from '@/lib/teams/programs'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import CoachIntroCard from '@/components/CoachIntroCard'
 import CompactSeasonUpdates from '@/components/CompactSeasonUpdates'
@@ -69,8 +69,7 @@ export default async function TeamRoomPage({
   const { program: rawProgram } = await searchParams
   // Each program has its own Team Room, reading its own team row. Without
   // the parameter this is the men's room, which every existing link expects.
-  const program: ProgramId =
-    rawProgram === 'womens' && PROGRAMS.womens.live ? 'womens' : 'mens'
+  const program: ProgramId = programFromParam(rawProgram)
   const programLabel = PROGRAMS[program].label
   const y = new Date().getFullYear()
   const rosterLabel = `${y}–${String(y + 1).slice(2)} Roster`
@@ -312,7 +311,7 @@ export default async function TeamRoomPage({
             <FollowTeamButton initialFollowing={initialFollowing} signedIn={viewerSignedIn} />
           </div>
 
-          <TeamScheduleSection stops={travelStops} />
+          <TeamScheduleSection stops={travelStops} program={program} />
 
           <h3 id="season-updates" className="text-sm font-semibold text-[#0a1628] mt-8 mb-4 uppercase tracking-[0.1em] scroll-mt-24">Latest updates</h3>
           <SeasonUpdatesTimeline updates={seasonUpdates} />

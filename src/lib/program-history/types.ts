@@ -34,3 +34,28 @@ export interface ProgramHistoryNote {
   title: string
   detail: string
 }
+
+/**
+ * One season's individual honours, as a program published them.
+ *
+ * This is a list rather than a count because for the women's programme no
+ * complete tally exists: Penn Athletics has published the selections for
+ * some seasons and not others. Listing the seasons that are documented,
+ * and saying plainly that the rest are not, is honest in a way a single
+ * invented number would not be — and it tells the Board exactly which
+ * seasons someone needs to go and find.
+ */
+export interface ProgramHonorSeason {
+  year: number
+  /** Short headline for the row, e.g. "Five All-Ivy, a program first". */
+  title: string
+  /** Named honourees, most significant first. */
+  entries: Array<{
+    name: string
+    honor: string
+    /** Finish, score or stroke average, where the source gives one. */
+    detail?: string
+  }>
+  /** Context the row needs, where a source supports it. */
+  note?: string
+}

@@ -113,9 +113,9 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   {
     id: 'team-room.crest-image.womens',
     label: "Team Room crest / badge image (women's)",
-    hint: "Badge beside the women's Team Room heading. Defaults to the same Quaker mascot until a women's badge is uploaded.",
+    hint: "Badge beside the women's Team Room heading. Defaults to the women's Quaker mascot; upload a Team Room badge to replace it.",
     kind: 'image',
-    default: '/quaker-golfer.png',
+    default: '/quaker-golfer-womens.png',
   },
   {
     id: 'locker-room.crest-image',

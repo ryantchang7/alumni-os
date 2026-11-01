@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { auth } from '@/auth'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import type { TravelHostOffer } from '@/lib/store/types'
-import { isMultiProgram, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
+import { isMultiProgram, PROGRAMS, type ProgramId, programFromParam } from '@/lib/teams/programs'
 import AddTravelStop, { DeleteTravelStop } from '@/components/AddTravelStop'
 import TravelHostOfferButton from '@/components/TravelHostOfferButton'
 
@@ -48,8 +48,7 @@ export default async function TeamTravelPage({
   // Each program has its own board, synced from its own Penn schedule page.
   // Without the parameter this is the men's board, which every existing link
   // to this page expects.
-  const program: ProgramId =
-    rawProgram === 'womens' && PROGRAMS.womens.live ? 'womens' : 'mens'
+  const program: ProgramId = programFromParam(rawProgram)
 
   const session = await auth()
   const email = (session?.user?.email ?? '').toLowerCase().trim()

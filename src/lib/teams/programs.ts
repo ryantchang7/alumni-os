@@ -127,3 +127,39 @@ export function programForTeam(team: { slug?: string; gender?: string }): Progra
   if (g === 'women' || g === 'w' || g === 'female') return PROGRAMS.womens
   return DEFAULT_PROGRAM
 }
+
+/**
+ * Resolve a `?program=` value to a program id.
+ *
+ * Four pages had their own copy of `raw === 'womens' && PROGRAMS.womens.live`.
+ * That is the kind of duplicated guard that goes stale in one place: the
+ * `live` check is what stops a hand-typed URL from opening a half-built
+ * section, so it has to be the same check everywhere.
+ */
+export function programFromParam(raw: string | null | undefined): ProgramId {
+  if (raw === 'womens' && PROGRAMS.womens.live) return 'womens'
+  return DEFAULT_PROGRAM_ID
+}
+
+/**
+ * What the Clubhouse home is showing. `both` is its own thing rather than
+ * an absent filter: it is the default, and it is the whole point of the
+ * picker, so it has to survive a round trip through the URL.
+ */
+export type ProgramScope = ProgramId | 'both'
+
+/** Scope from `?program=`. Falls back to `both` while two programs are live,
+ * and to the one live program otherwise, so a single-program site never
+ * offers a choice that does not exist. */
+export function scopeFromParam(raw: string | null | undefined): ProgramScope {
+  if (!isMultiProgram()) return DEFAULT_PROGRAM_ID
+  if (raw === 'mens' || raw === 'womens') return programFromParam(raw)
+  return 'both'
+}
+
+/** The programs a scope covers, always in registry order so the men's
+ * record never jumps below the women's between renders. */
+export function programsInScope(scope: ProgramScope): Program[] {
+  const live = livePrograms()
+  return scope === 'both' ? live : live.filter(p => p.id === scope)
+}
