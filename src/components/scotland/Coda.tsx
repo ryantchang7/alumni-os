@@ -32,8 +32,8 @@ export function FounderNote() {
           </p>
           <p>
             And somehow the week got even better after the tournament. We
-            played Kingsbarns and Carnoustie, got to visit the R&amp;A, and
-            spent time with Penn Golf alumni Carter Thompson and Amay Poria.
+            played Kingsbarns and Carnoustie, and spent time with Penn Golf
+            alumni Carter Thompson and Amay Poria.
             Some of my favorite memories came from just being out on the course
             together and getting to know guys who played for Penn before us.
           </p>

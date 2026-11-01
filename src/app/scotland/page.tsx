@@ -157,11 +157,10 @@ export default function ScotlandPage() {
               </h2>
               <div className={`${MEASURE} mt-7 space-y-5 text-[15.5px] leading-[1.75] text-[#3d4a5c]`}>
                 <p>
-                  The format was simple and unusually good. Thirty-six holes of
-                  stroke play on the Jubilee to seed the field, then medal match
-                  play on the Old Course to settle it. Four schools, two of
-                  them from the other side of the Atlantic, one of them the
-                  university the town is named for.
+                  Four schools played it. Thirty-six holes of stroke play on
+                  the Jubilee to seed the field, then medal match play on the
+                  Old Course. Penn, Texas and Washington flew over. St Andrews
+                  was at home.
                 </p>
                 <p>
                   Monday gave the field a fair look at the Jubilee. Arjun
@@ -169,20 +168,16 @@ export default function ScotlandPage() {
                   Uribe was a shot back at 71. Penn posted 360.
                 </p>
                 <p>
-                  Tuesday did not. The wind got up, the rain came with it, and
-                  scoring went backwards across the whole field. Penn&rsquo;s
-                  second round was 406. This is the part of links golf that
-                  does not travel: the course does not change, the weather
-                  does, and two rounds on the same eighteen holes can be two
-                  completely different golf courses.
+                  Tuesday was worse. The wind got up, the rain came with it,
+                  and scores went backwards across the field. Penn shot 406.
+                  Same course, same six players, forty-six shots.
                 </p>
                 <p>
-                  Arjun&rsquo;s 70-77 held up for ninth, the best individual
-                  finish Penn had all week and the only top ten in the field
-                  from the Penn side. Fourth place in stroke play sent the
-                  Quakers into the consolation match, which is how six Penn
-                  golfers ended up with a tee time on the Old Course with
-                  something riding on it.
+                  Arjun&rsquo;s 70-77 held up for ninth, Penn&rsquo;s only top
+                  ten of the week. Fourth place in stroke play sent the Quakers
+                  into the consolation match against Washington, which is how
+                  six Penn golfers got a tee time on the Old Course with a
+                  result riding on it.
                 </p>
               </div>
             </div>
@@ -206,9 +201,11 @@ export default function ScotlandPage() {
               Penn on the Jubilee · 36 holes
             </p>
             <JubileeTable />
-            <p className="mt-5 max-w-[60ch] text-[12.5px] leading-relaxed text-ink-muted">
-              Wesley Hu competed as an individual during the stroke-play
-              portion. Scores as published by Penn Athletics.
+            <p className="mt-5 max-w-[62ch] text-[12.5px] leading-relaxed text-ink-muted">
+              Six played, the best five counted each round. Monday&rsquo;s five
+              were 70, 70, 71, 74 and 75, which is Penn&rsquo;s 360. Tuesday
+              dropped one of the three 84s to make 406. Scores as published by
+              Penn Athletics.
             </p>
             <a
               href={STROKE_PLAY_RECAP}
@@ -249,17 +246,14 @@ export default function ScotlandPage() {
               </div>
               <div className="space-y-5 text-[15.5px] leading-[1.75] text-white/72 lg:pt-2">
                 <p>
-                  Fourth seed meant Washington in the consolation match, and it
-                  meant the match was on the Old Course. Not a bounce game
-                  after the tournament. Not a tee time somebody pulled strings
-                  for. A college golf match, with a result attached, on the
-                  first golf course there was.
+                  Most people who play the Old Course are playing it for the
+                  sake of having played it. Penn played it for a result,
+                  against Washington, on the last day of the tournament.
                 </p>
                 <p>
-                  Washington won it 5-1, and there is no softening that. What
-                  the scoreboard does not carry is the golf. Six Penn cards
-                  came in, and every one of them was between even par and five
-                  over.
+                  Washington won 5-1. The scorecards say something the
+                  scoreboard does not: all six Penn rounds came in between even
+                  par and five over.
                 </p>
                 <p>
                   Kayden Wang took Penn&rsquo;s point with an even-par 72, the
@@ -304,6 +298,38 @@ export default function ScotlandPage() {
                 through six. He signed for 73.
               </p>
             </aside>
+          </div>
+        </section>
+
+        {/* -------------------------------------------- the r&a and town --- */}
+        <section className="border-t border-[rgba(180,168,150,0.45)] bg-[#f5f1ea]">
+          <div className={`${WRAP} py-18 sm:py-26`}>
+            <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-16">
+              <div>
+                <Eyebrow>During the tournament</Eyebrow>
+                <h2 className="font-heading max-w-[15ch] text-[2rem] leading-[1.05] font-medium text-[#0a1628] sm:text-[2.9rem]">
+                  A little closer to the history.
+                </h2>
+                <div className={`${MEASURE} mt-7 space-y-5 text-[15.5px] leading-[1.75] text-[#3d4a5c]`}>
+                  <p>
+                    The R&amp;A visit happened during the tournament, in the
+                    middle of a competitive week rather than after it. The
+                    clubhouse sits behind the first tee of the Old Course and
+                    holds most of the written history of the game.
+                  </p>
+                  <p>
+                    St Andrews is small enough to walk end to end in twenty
+                    minutes. The rest of the week the group walked past places
+                    from Open highlight reels on the way to get coffee. None of
+                    it shows up on a scorecard.
+                  </p>
+                </div>
+              </div>
+              <Plate
+                id="the-randa-library"
+                sizes="(min-width: 1024px) 400px, (min-width: 640px) 55vw, 92vw"
+              />
+            </div>
           </div>
         </section>
 
@@ -405,39 +431,6 @@ export default function ScotlandPage() {
           </div>
         </section>
 
-        {/* -------------------------------------------- the r&a and town --- */}
-        <section className="border-t border-[rgba(180,168,150,0.45)] bg-[#f5f1ea]">
-          <div className={`${WRAP} py-18 sm:py-26`}>
-            <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-16">
-              <div>
-                <Eyebrow>St Andrews</Eyebrow>
-                <h2 className="font-heading max-w-[15ch] text-[2rem] leading-[1.05] font-medium text-[#0a1628] sm:text-[2.9rem]">
-                  A little closer to the history.
-                </h2>
-                <div className={`${MEASURE} mt-7 space-y-5 text-[15.5px] leading-[1.75] text-[#3d4a5c]`}>
-                  <p>
-                    In between the golf there was the town. St Andrews is small
-                    enough to walk end to end in about twenty minutes, and it
-                    carries the entire history of the game without making any
-                    fuss about it. The group spent time at the R&amp;A, and
-                    spent the rest of the week walking past the places that
-                    turn up in every Open highlight reel on the way to get
-                    coffee.
-                  </p>
-                  <p>
-                    For a college team, that is the part that never shows up on
-                    a scorecard and is most of what they will remember.
-                  </p>
-                </div>
-              </div>
-              <Plate
-                id="the-randa-library"
-                sizes="(min-width: 1024px) 400px, (min-width: 640px) 55vw, 92vw"
-              />
-            </div>
-          </div>
-        </section>
-
         {/* ------------------------------------------------ the alumni --- */}
         <section className={`${WRAP} pt-18 pb-16 sm:pt-26 sm:pb-20`}>
           <Eyebrow>Carter Thompson and Amay Poria</Eyebrow>
@@ -447,29 +440,43 @@ export default function ScotlandPage() {
           <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:gap-16">
             <div className="space-y-5 text-[15.5px] leading-[1.75] text-[#3d4a5c]">
               <p>
-                Two Penn Golf alumni travelled with the group: Carter Thompson
-                and Amay Poria. They played, they ate dinner with the team, and
-                by about the second day the distinction between current player
-                and alum had mostly stopped meaning anything.
+                Two Penn Golf alumni travelled with the group:{' '}
+                <Link
+                  href="/member-book/carter-thompson"
+                  className="font-medium text-[#0a1628] underline decoration-[#990000]/40 underline-offset-[3px] transition-colors hover:text-[#990000] hover:decoration-[#990000]"
+                >
+                  Carter Thompson
+                </Link>{' '}
+                and{' '}
+                <Link
+                  href="/member-book/amay-poria"
+                  className="font-medium text-[#0a1628] underline decoration-[#990000]/40 underline-offset-[3px] transition-colors hover:text-[#990000] hover:decoration-[#990000]"
+                >
+                  Amay Poria
+                </Link>
+                . Carter captained the team in 2018 and graduated in 2019.
+                Amay finished in 2018. They overlapped for three seasons and
+                both lettered all four years, and their cards are in the
+                Member Book with everyone else&rsquo;s.
               </p>
               <p>
-                That is harder to arrange than it sounds. Penn Golf alumni
-                played under different coaches, in different decades, in
-                different versions of the program, and for most of that history
-                there was no straightforward way for any of them to find each
-                other.
+                They played, they ate with the team, and after a day or two
+                nobody was keeping track of who was current and who was an
+                alum. Penn Golf alumni played under different coaches in
+                different decades, and for most of that history there was no
+                easy way for any of them to find each other.
               </p>
             </div>
             <div className="space-y-5 text-[15.5px] leading-[1.75] text-[#3d4a5c] lg:border-l lg:border-[rgba(180,168,150,0.5)] lg:pl-16">
               <p>
-                That gap is the reason this Clubhouse exists. Rebuilding the
-                rosters took months, and the result is a Member Book that goes
-                back to 1930. But a list of names is a list of names.
+                That gap is why this Clubhouse exists. Rebuilding the rosters
+                took months, and the result is a Member Book that goes back to
+                1930. A list of names is only worth something if it gets people
+                into the same group.
               </p>
               <p>
-                Four days of golf in Scotland with people who wore the same
-                thing on their chest thirty years earlier is the thing the list
-                is supposed to lead to.
+                A week in Scotland with alumni who played for Penn years
+                before any of them arrived is what the list is for.
               </p>
               <Link
                 href="/member-book"

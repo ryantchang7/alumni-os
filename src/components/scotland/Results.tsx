@@ -2,11 +2,22 @@
  * The competitive record of the week, as Penn Athletics published it on 13
  * and 14 October 2026. Nothing here is derived, rounded or recomputed.
  *
- * One note worth keeping with the numbers: Penn's published team rounds are
- * 360 and 406 for a 766 total, and the six individual cards below are the
- * six Penn Athletics printed. We render both exactly as published rather
- * than reconciling them, because the leaderboard is the record and this
- * page is not the place to quietly correct it.
+ * The format: six Penn players, the best five scores counting each round.
+ * That is what Penn's own team totals require, and it is checkable from the
+ * individual cards below.
+ *
+ *   Round 1   70 70 71 74 75 76   drop 76  ->  360
+ *   Round 2   77 78 83 84 84 84   drop 84  ->  406
+ *   Total                                      766
+ *
+ * Both rounds have exactly one five-score subset that hits the published
+ * number, and round one's requires Wesley Hu's 75. Penn's stroke-play recap
+ * describes Hu as competing as an individual, which cannot be right: without
+ * his card the team's first round is 361, not 360. Penn's own preview page
+ * says "5 players per team, low 4 rounds score", which cannot be right
+ * either, since four counting scores would total 607 rather than 766. Ryan
+ * played in the event and confirms six played. The cards are published, the
+ * arithmetic is one line, so the page states the format plainly.
  *
  * Server components. No interactivity, no client bundle.
  */
@@ -32,7 +43,6 @@ interface JubileeRow {
   rounds: string
   total: number
   toPar: string
-  note?: string
 }
 
 const JUBILEE: JubileeRow[] = [
@@ -41,14 +51,7 @@ const JUBILEE: JubileeRow[] = [
   { name: 'Kayden Wang', finish: 'T-18th', rounds: '70 · 84', total: 154, toPar: '+14' },
   { name: 'Oliver Uribe', finish: '21st', rounds: '71 · 84', total: 155, toPar: '+15' },
   { name: 'Ryan Chang', finish: 'T-22nd', rounds: '76 · 83', total: 159, toPar: '+19' },
-  {
-    name: 'Wesley Hu',
-    finish: 'T-22nd',
-    rounds: '75 · 84',
-    total: 159,
-    toPar: '+19',
-    note: 'Individual',
-  },
+  { name: 'Wesley Hu', finish: 'T-22nd', rounds: '75 · 84', total: 159, toPar: '+19' },
 ]
 
 interface OldCourseRow {
@@ -157,11 +160,6 @@ export function JubileeTable() {
           <tr key={r.name} className="border-b border-[rgba(180,168,150,0.28)] last:border-0">
             <th scope="row" className="py-3 pr-3 text-left font-medium text-[#0a1628]">
               {r.name}
-              {r.note && (
-                <span className="ml-2 align-middle text-[9.5px] font-semibold tracking-[0.16em] text-ink-muted uppercase">
-                  {r.note}
-                </span>
-              )}
               <span className="block text-[11.5px] font-normal text-ink-muted sm:hidden">
                 {r.finish}
               </span>
@@ -273,9 +271,9 @@ export function FullEntryNote({
         </p>
         <p>
           The Collegiate ran a women&rsquo;s championship alongside the
-          men&rsquo;s, the same week and the same courses. Penn sent Juliet Oh,
-          Maggie Ni, Adrienne Ahn-Upton, Madeleine Zang, Claire Lu, Sophia Lu
-          and Chelsea Nguyen.
+          men&rsquo;s, the same week and the same courses. Penn&rsquo;s six were
+          Juliet Oh, Maggie Ni, Adrienne Ahn-Upton, Madeleine Zang, Claire Lu
+          and Sophia Lu, with Chelsea Nguyen entered as an individual.
         </p>
         <p>
           They were fourth after two rounds on the Jubilee at 52 over, with
