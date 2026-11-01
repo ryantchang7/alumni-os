@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Person, TeamMembership, TeamNewsItem, SeasonUpdate } from '@/lib/store/types'
+import { isMultiProgram, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import CoachIntroCard from '@/components/CoachIntroCard'
 import CompactSeasonUpdates from '@/components/CompactSeasonUpdates'
@@ -60,12 +61,22 @@ const SUPPORT_CARDS = [
   },
 ]
 
-export default async function TeamRoomPage() {
+export default async function TeamRoomPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ program?: string }>
+}) {
+  const { program: rawProgram } = await searchParams
+  // Each program has its own Team Room, reading its own team row. Without
+  // the parameter this is the men's room, which every existing link expects.
+  const program: ProgramId =
+    rawProgram === 'womens' && PROGRAMS.womens.live ? 'womens' : 'mens'
+  const programLabel = PROGRAMS[program].label
   const y = new Date().getFullYear()
   const rosterLabel = `${y}–${String(y + 1).slice(2)} Roster`
   const { readStore, getTeamBySlug, getRecentTeamNewsItems, getSeasonUpdatesForTeam, getTravelStops, getAccountById } = await import('@/lib/store/local-store')
   const store = await readStore()
-  const team = await getTeamBySlug('penn-mens-golf')
+  const team = await getTeamBySlug(PROGRAMS[program].slug)
 
   let currentPlayers: PlayerEntry[] = []
   let coaches: PlayerEntry[] = []
@@ -80,8 +91,12 @@ export default async function TeamRoomPage() {
   let seasonUpdates: SeasonUpdate[] = []
   let founders: FounderEntry[] = []
   let familySupporters: FamilySupporterEntry[] = []
-  const captainNote = await getSiteContentOrDefault('team-room.captain-note')
-  const crestImage = await getSiteContentOrDefault('team-room.crest-image')
+  const captainNote = await getSiteContentOrDefault(
+    program === 'womens' ? 'team-room.captain-note.womens' : 'team-room.captain-note',
+  )
+  const crestImage = await getSiteContentOrDefault(
+    program === 'womens' ? 'team-room.crest-image.womens' : 'team-room.crest-image',
+  )
 
   if (team) {
     founders = computeFoundersForTeam(store, team.id)
@@ -164,14 +179,33 @@ export default async function TeamRoomPage() {
         <div className="max-w-[1320px] mx-auto flex items-center gap-5 sm:gap-7">
           <HeroCrest src={crestImage} alt="Team Room crest" />
           <div className="min-w-0 flex-1">
-            <p className="eyebrow text-gold mb-4">
-              Penn Men&rsquo;s Golf
-            </p>
+            <p className="eyebrow text-gold mb-4">{programLabel}</p>
             <h1
               className="text-white text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight font-heading"
             >
               Team Room
             </h1>
+            {isMultiProgram() && (
+              <div className="mt-6 flex flex-wrap gap-2">
+                {(['mens', 'womens'] as const).map((id) => {
+                  const active = id === program
+                  return (
+                    <Link
+                      key={id}
+                      href={id === 'mens' ? '/team-room' : '/team-room?program=womens'}
+                      aria-current={active ? 'page' : undefined}
+                      className={`px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] rounded-full border transition-colors ${
+                        active
+                          ? 'bg-[#c8a84b] text-[#0a1628] border-[#c8a84b]'
+                          : 'text-white/75 border-white/25 hover:border-[#c8a84b]/70 hover:text-white'
+                      }`}
+                    >
+                      {PROGRAMS[id].shortLabel}
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
             <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
               The current roster, the season as it unfolds, and the people behind the program.
             </p>
@@ -204,7 +238,9 @@ export default async function TeamRoomPage() {
         {/* Current season roster */}
         <section>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">{rosterLabel}</h2>
-          <p className="text-sm text-ink-muted mb-6">Current players on the Penn Men&apos;s Golf team.</p>
+          <p className="text-sm text-ink-muted mb-6">
+            Current players on the {programLabel} team.
+          </p>
           {currentPlayers.length === 0 ? (
             <p className="text-sm text-ink-muted">Roster will appear here once players are added to the Clubhouse.</p>
           ) : (
@@ -387,7 +423,7 @@ export default async function TeamRoomPage() {
         <section>
           <h2 className="text-base font-semibold text-[#0a1628] mb-1">Support the Program</h2>
           <p className="text-sm text-ink-muted mb-6">
-            Three ways alumni keep Penn Men&rsquo;s Golf moving forward.
+            Three ways alumni keep {programLabel} moving forward.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {SUPPORT_CARDS.map(card => (
@@ -466,7 +502,7 @@ export default async function TeamRoomPage() {
         >
           <div>
             <p className="font-semibold text-[#0a1628] text-sm">Browse the Member Book</p>
-            <p className="text-xs text-ink-muted mt-0.5">Every Penn Men&rsquo;s Golf member, across generations.</p>
+            <p className="text-xs text-ink-muted mt-0.5">Every Penn Golf member, across generations.</p>
           </div>
           <Link
             href="/member-book"

@@ -204,7 +204,12 @@ const EMPTY_STORE: Store = {
   travelHostOffers: [],
 }
 
-function normalizeName(name: string): string {
+/**
+ * The canonical form of `Person.normalizedName`. Exported so that anything
+ * creating people writes the same shape; a second implementation that drifts
+ * from this one silently creates duplicate people.
+ */
+export function normalizeName(name: string): string {
   return name
     .trim()
     .toLowerCase()

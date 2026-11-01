@@ -105,8 +105,15 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   },
   {
     id: 'team-room.crest-image',
-    label: 'Team Room crest / badge image',
+    label: "Team Room crest / badge image (men's)",
     hint: 'Badge shown next to the Team Room heading. Defaults to the Quaker mascot; upload a Team Room badge to replace it.',
+    kind: 'image',
+    default: '/quaker-golfer.png',
+  },
+  {
+    id: 'team-room.crest-image.womens',
+    label: "Team Room crest / badge image (women's)",
+    hint: "Badge beside the women's Team Room heading. Defaults to the same Quaker mascot until a women's badge is uploaded.",
     kind: 'image',
     default: '/quaker-golfer.png',
   },
@@ -128,8 +135,15 @@ export const CONTENT_SLOTS: ContentSlot[] = [
   // ── Team Room (`/team-room`) ─────────────────────────────────────────────
   {
     id: 'team-room.captain-note',
-    label: "Captain's Note (Team Room)",
+    label: "Captain's Note (Team Room, men's)",
     hint: 'Note from the current captain that appears in the Team Room. Leave blank to show the default placeholder.',
+    kind: 'longtext',
+    default: '',
+  },
+  {
+    id: 'team-room.captain-note.womens',
+    label: "Captain's Note (Team Room, women's)",
+    hint: "Note from the women's captain, shown in the women's Team Room. Leave blank to show the default placeholder.",
     kind: 'longtext',
     default: '',
   },
