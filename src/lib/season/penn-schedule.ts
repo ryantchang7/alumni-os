@@ -170,6 +170,85 @@ export function splitVenue(raw: string): { locationText: string; note?: string }
   return { locationText, note: course || undefined }
 }
 
+/**
+ * Walk forward from `start` to the matching close brace.
+ *
+ * String-aware on purpose: these objects carry URL-encoded ids and free-text
+ * game notes, so a value containing a brace would desynchronise a naive
+ * depth counter and swallow the rest of the page.
+ */
+function matchBraces(html: string, start: number, cap = 20000): string | null {
+  let depth = 0
+  let inStr = false
+  let escaped = false
+  const end = Math.min(html.length, start + cap)
+  for (let i = start; i < end; i++) {
+    const c = html[i]
+    if (inStr) {
+      if (escaped) escaped = false
+      else if (c === '\\') escaped = true
+      else if (c === '"') inStr = false
+      continue
+    }
+    if (c === '"') inStr = true
+    else if (c === '{') depth++
+    else if (c === '}') {
+      depth--
+      if (depth === 0) return html.slice(start, i + 1)
+    }
+  }
+  return null
+}
+
+/**
+ * Penn's own schedule objects, the ones its row renderer is driven by.
+ *
+ * A fallback, never the primary source: the ld+json above is a stable,
+ * documented shape and this is Penn's internal one. It exists because the
+ * ld+json is not complete. The 2026-27 women's schedule publishes eight
+ * events on the page and only seven as SportsEvent objects, and the missing
+ * one, The Intercollegiate at Prospect Bay, is invisible to the HTML row
+ * parser too, because those rows are keyed on an opponent logo and this
+ * event has none. Without this the board never learns the event exists.
+ *
+ * Anchored on `game_pregame_story_id` because a bare `{"id":` occurs over a
+ * thousand times on that page while this key occurs only on schedule rows.
+ * These objects also carry a real `end_date`, which the ld+json collapses.
+ */
+export function parseSidearmScheduleEvents(html: string): PennScheduleEvent[] {
+  const out: PennScheduleEvent[] = []
+  const seen = new Set<string>()
+  const re = /\{"id":\d+,"game_pregame_story_id":/g
+  for (let m = re.exec(html); m; m = re.exec(html)) {
+    const chunk = matchBraces(html, m.index)
+    if (!chunk) continue
+    let obj: Record<string, unknown>
+    try {
+      obj = JSON.parse(chunk)
+    } catch {
+      continue
+    }
+    const rawName = (obj.opponent as { name?: string } | undefined)?.name?.trim()
+    const start = String(obj.date ?? '').slice(0, 10)
+    if (!rawName || !/^\d{4}-\d{2}-\d{2}$/.test(start)) continue
+    const eventName = rawName.replace(/\s*\(\d+\s*holes?\)\s*$/i, '').trim()
+    if (!eventName) continue
+    const key = `${eventName}|${start}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    const end = String(obj.end_date ?? '').slice(0, 10) || start
+    const venue = splitVenue(String(obj.location ?? '').trim())
+    out.push({
+      eventName,
+      startDate: start,
+      endDate: end >= start ? end : start,
+      ...venue,
+      courseUrl: venueMapUrl(venue.locationText, venue.note),
+    })
+  }
+  return out
+}
+
 /** Pull Penn's SportsEvent objects out of the schedule page. */
 export function parsePennSchedule(html: string): PennScheduleEvent[] {
   const out: PennScheduleEvent[] = []
@@ -208,6 +287,15 @@ export function parsePennSchedule(html: string): PennScheduleEvent[] {
       ...venue,
       courseUrl: venueMapUrl(venue.locationText, venue.note),
     })
+  }
+  // Anything Penn renders but leaves out of its structured data. Added, never
+  // substituted: an event present in both keeps the ld+json version, so this
+  // can only ever widen the result.
+  for (const extra of parseSidearmScheduleEvents(html)) {
+    const key = `${extra.eventName}|${extra.startDate}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.push(extra)
   }
   return out.sort((a, b) => a.startDate.localeCompare(b.startDate))
 }
