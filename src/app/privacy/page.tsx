@@ -20,7 +20,7 @@ export default function PrivacyPage() {
 
         <section className="space-y-5 text-[14.5px] text-[#0a1628] leading-relaxed">
           <p>
-            The Penn Golf Clubhouse is a private, approval-gated community for the Penn Men&rsquo;s Golf family. This policy explains what we collect, how we use it, where it&rsquo;s stored, and your choices.
+            The Penn Golf Clubhouse is a private, approval-gated community for the Penn Golf family. This policy explains what we collect, how we use it, where it&rsquo;s stored, and your choices.
           </p>
           <p>
             You stay in control of your information: you can edit or delete it any time by contacting us, we never sell it, and we don&rsquo;t run ads or trackers.
@@ -185,7 +185,7 @@ export default function PrivacyPage() {
             Contact
           </h2>
           <p>
-            Email <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a> with questions, data requests, or anything that seems off. The Clubhouse is operated by Ryan Chang, Penn Men&rsquo;s Golf, Class of 2028.
+            Email <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a> with questions, data requests, or anything that seems off. The Clubhouse is operated by Ryan Chang, Penn Golf, Class of 2028.
           </p>
         </section>
 

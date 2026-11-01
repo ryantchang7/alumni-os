@@ -5,6 +5,7 @@ import { badgesForPerson } from '@/lib/badges'
 import AskTheTeam, { type AskTarget } from '@/components/AskTheTeam'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import Link from 'next/link'
+import { isMultiProgram, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
 
 import type { Metadata } from 'next'
 import { deriveClassLabel, classSortOrder } from '@/lib/class-year'
@@ -19,11 +20,18 @@ interface PlayerEntry {
   membership: TeamMembership
 }
 
-export default async function MeetTheTeamPage() {
+export default async function MeetTheTeamPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ program?: string }>
+}) {
+  const { program: rawProgram } = await searchParams
+  const program: ProgramId =
+    rawProgram === 'womens' && PROGRAMS.womens.live ? 'womens' : 'mens'
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const { auth } = await import('@/auth')
   const store = await readStore()
-  const team = await getTeamBySlug('penn-mens-golf')
+  const team = await getTeamBySlug(PROGRAMS[program].slug)
   // Member-entered bios are approved-members-only (privacy policy); public
   // visitors see roster facts (hometown, high school) only.
   const session = await auth()
@@ -97,10 +105,31 @@ export default async function MeetTheTeamPage() {
             Ask the Team
           </h1>
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-            Meet this year&rsquo;s squad below. Ask the whole team, or tap
-            a guy to ask him directly. You&rsquo;ll get a real answer from one of
-            the guys on the team.
+            Meet this year&rsquo;s squad below. Ask the whole team, or tap one
+            player to ask them directly. You&rsquo;ll get a real answer from
+            someone on the team.
           </p>
+          {isMultiProgram() && (
+            <div className="mt-7 flex flex-wrap gap-2">
+              {(['mens', 'womens'] as const).map((id) => {
+                const active = id === program
+                return (
+                  <Link
+                    key={id}
+                    href={id === 'mens' ? '/meet-the-team' : '/meet-the-team?program=womens'}
+                    aria-current={active ? 'page' : undefined}
+                    className={`px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] rounded-full border transition-colors ${
+                      active
+                        ? 'bg-[#c8a84b] text-[#0a1628] border-[#c8a84b]'
+                        : 'text-white/75 border-white/25 hover:border-[#c8a84b]/70 hover:text-white'
+                    }`}
+                  >
+                    {PROGRAMS[id].shortLabel}
+                  </Link>
+                )
+              })}
+            </div>
+          )}
           <div className="mt-8">
             <AskTheTeam players={askTargets} variant="primary" />
           </div>

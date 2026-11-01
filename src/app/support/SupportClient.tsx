@@ -233,7 +233,7 @@ export default function SupportClient({ status }: Props) {
           <h1
             className="text-white text-4xl sm:text-5xl font-medium leading-tight tracking-tight font-heading"
           >
-            Support Penn Men&rsquo;s Golf.
+            Support Penn Golf.
           </h1>
           <p className="text-white/75 text-base sm:text-lg leading-relaxed max-w-[640px] whitespace-pre-line mt-6">
             {heroBlurb}
@@ -593,7 +593,7 @@ export default function SupportClient({ status }: Props) {
         {/* Footer note */}
         <div className="text-center pt-2">
           <p className="text-[11.5px] text-ink-muted max-w-md mx-auto leading-relaxed">
-            Payments processed by Stripe. Penn Men&rsquo;s Golf is not a registered
+            Payments processed by Stripe. Penn Golf is not a registered
             501(c)(3), so contributions are not tax-deductible. The 70% transfer to
             the program is reconciled quarterly by the Clubhouse.{' '}
             <Link href="/player" className="text-[#0a1628] hover:underline">

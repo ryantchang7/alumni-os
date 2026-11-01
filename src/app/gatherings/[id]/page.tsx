@@ -112,7 +112,7 @@ export default async function GatheringDetailPage({ params }: Props) {
             <ArrowLeft className="w-3.5 h-3.5" /> Back to {backLabel}
           </Link>
           <p className="eyebrow text-gold mb-2">
-            Penn Men&rsquo;s Golf · Gathering
+            Penn Golf · Gathering
           </p>
           <h1 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">
             {gathering.title}

@@ -33,6 +33,8 @@ export interface Program {
   /** Two or three characters, for a filter chip. */
   shortLabel: string
   websiteUrl: string
+  /** Penn Athletics landing page for the sport. */
+  athleticsUrl: string
   /** Penn Athletics schedule page, the source the season board syncs from. */
   scheduleUrl: string
   /** Sidearm RSS path for this program's news, the source results parse from. */
@@ -54,6 +56,7 @@ export const PROGRAMS: Record<ProgramId, Program> = {
     label: "Penn Men's Golf",
     shortLabel: "Men's",
     websiteUrl: 'https://pennathletics.com/sports/mens-golf/roster',
+    athleticsUrl: 'https://pennathletics.com/sports/mens-golf',
     scheduleUrl: 'https://pennathletics.com/sports/mens-golf/schedule',
     newsFeedUrl: 'https://pennathletics.com/rss?path=mgolf',
     live: true,
@@ -66,6 +69,7 @@ export const PROGRAMS: Record<ProgramId, Program> = {
     label: "Penn Women's Golf",
     shortLabel: "Women's",
     websiteUrl: 'https://pennathletics.com/sports/womens-golf/roster',
+    athleticsUrl: 'https://pennathletics.com/sports/womens-golf',
     scheduleUrl: 'https://pennathletics.com/sports/womens-golf/schedule',
     newsFeedUrl: 'https://pennathletics.com/rss?path=wgolf',
     // Live since 2026-10-31. 64 members, built from the 23 season rosters

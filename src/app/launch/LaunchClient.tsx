@@ -58,7 +58,7 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
   }, [])
 
   // All copy is editable from /internal/studio — defaults match content.ts.
-  const heroEyebrow = useSiteContent('launch.hero-eyebrow', "Penn Men's Golf · Clubhouse")
+  const heroEyebrow = useSiteContent('launch.hero-eyebrow', 'Penn Golf · Clubhouse')
   const heroSubtitle = useSiteContent('launch.hero-subtitle', HERO_SUBTITLE)
   const heroBody = useSiteContent('launch.hero-body', HERO_BODY)
   const tagline = useSiteContent('launch.tagline', TAGLINE)

@@ -46,10 +46,10 @@ export default function SubscriptionTermsPage() {
             How funds are used
           </h2>
           <p>
-            Seventy percent (70%) of every membership payment and one-time contribution is directed to Penn Men&rsquo;s Golf. The remaining thirty percent (30%) covers Clubhouse platform and operating costs (hosting, storage, email delivery, payment processing, and related services). The 70% transfer is reconciled quarterly by the Clubhouse.
+            Seventy percent (70%) of every membership payment and one-time contribution is directed to Penn Golf. The remaining thirty percent (30%) covers Clubhouse platform and operating costs (hosting, storage, email delivery, payment processing, and related services). The 70% transfer is reconciled quarterly by the Clubhouse.
           </p>
           <p>
-            Penn Men&rsquo;s Golf is not a registered 501(c)(3), so contributions are not tax-deductible.
+            Penn Golf is not a registered 501(c)(3), so contributions are not tax-deductible.
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">
@@ -113,7 +113,7 @@ export default function SubscriptionTermsPage() {
             <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">
               rtchang@upenn.edu
             </a>
-            . The Clubhouse is operated by Ryan Chang, Penn Men&rsquo;s Golf, Class of 2028.
+            . The Clubhouse is operated by Ryan Chang, Penn Golf, Class of 2028.
           </p>
         </section>
 

@@ -11,7 +11,7 @@ export default function ClaimPendingPage() {
       >
         <Clock className="w-7 h-7 text-[#c8a84b] mx-auto mb-4" />
         <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-2">
-          Penn Men&rsquo;s Golf
+          Penn Golf
         </p>
         <h1
           className="text-[#0a1628] text-2xl font-medium mb-3 font-heading"

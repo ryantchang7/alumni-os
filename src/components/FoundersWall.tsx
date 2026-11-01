@@ -152,7 +152,7 @@ export default function FoundersWall({
       {effectiveTab === 'founders' && hasFounders && (
         <>
           <p className="text-[13px] text-white/75 leading-relaxed mb-5 max-w-md">
-            Members who stood up early to support Penn Men&rsquo;s Golf and the
+            Members who stood up early to support Penn Golf and the
             Clubhouse. Founding Members and the program Founder.
           </p>
           <ul className="space-y-2.5">

@@ -20,7 +20,7 @@ export default function CommunityGuidelinesPage() {
 
         <section className="space-y-5 text-[14.5px] text-[#0a1628] leading-relaxed">
           <p>
-            The Penn Golf Clubhouse is the private network for the Penn Men&rsquo;s Golf family, players, alumni, coaches, family, and longtime affiliates. This is a community built on shared experience and mutual respect. Treat it that way.
+            The Penn Golf Clubhouse is the private network for the Penn Golf family, players, alumni, coaches, family, and longtime affiliates. This is a community built on shared experience and mutual respect. Treat it that way.
           </p>
           
           <h2 className="text-xl font-medium pt-2 font-heading">
@@ -58,7 +58,7 @@ export default function CommunityGuidelinesPage() {
             Keep it relevant
           </h2>
           <p>
-            The Clubhouse exists for the Penn Men&rsquo;s Golf community. Keep your use consistent with that purpose:
+            The Clubhouse exists for the Penn Golf community. Keep your use consistent with that purpose:
           </p>
           <ul className="list-disc pl-6 space-y-2">
             <li>No spam, mass solicitation, or unsolicited sales pitches.</li>
@@ -112,7 +112,7 @@ export default function CommunityGuidelinesPage() {
             <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">
               rtchang@upenn.edu
             </a>
-            . The Clubhouse is operated by Ryan Chang, Penn Men&rsquo;s Golf, Class of 2028.
+            . The Clubhouse is operated by Ryan Chang, Penn Golf, Class of 2028.
           </p>
         </section>
 

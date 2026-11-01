@@ -55,7 +55,7 @@ const SUPPORT_CARDS = [
   {
     title: 'Contribute',
     description:
-      'Become a Supporting Member ($10/mo) or a Founding Member ($20/mo). 70% goes to Penn Men’s Golf.',
+      'Become a Supporting Member ($10/mo) or a Founding Member ($20/mo). 70% goes to Penn Golf.',
     cta: 'Support the program',
     href: '/support',
   },
@@ -218,13 +218,16 @@ export default async function TeamRoomPage({
         {/* Latest from Penn Athletics, sits at the top of the Team Room
             since it's the most "current team" thing here */}
         <div className="space-y-4">
-          {newsItems.length > 0 && <TeamNewsStrip items={newsItems} />}
+          {newsItems.length > 0 && <TeamNewsStrip items={newsItems} program={program} />}
           {/* The staff introduction and the team's own updates sit under the
               Penn Athletics feed, so "From the box" is everything current
               about the team rather than only what Penn chose to publish. */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <CoachIntroCard />
-            <div className="lg:col-span-2">
+            {/* Ivana Shah is a volunteer assistant on the men's staff only,
+                so her introduction belongs to the men's room. The women's
+                staff introduction goes here when there is one to write. */}
+            {program === 'mens' && <CoachIntroCard />}
+            <div className={program === 'mens' ? 'lg:col-span-2' : 'lg:col-span-3'}>
               <CompactSeasonUpdates updates={seasonUpdates} />
             </div>
           </div>

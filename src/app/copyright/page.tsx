@@ -104,7 +104,7 @@ export default function CopyrightPage() {
             <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">
               rtchang@upenn.edu
             </a>
-            . The Clubhouse is operated by Ryan Chang, Penn Men&rsquo;s Golf, Class of 2028.
+            . The Clubhouse is operated by Ryan Chang, Penn Golf, Class of 2028.
           </p>
         </section>
 

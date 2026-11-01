@@ -227,6 +227,62 @@ export async function fetchPennSchedule(
   }
 }
 
+/**
+ * A rendered schedule row: the parts Penn shows in HTML but leaves out of
+ * its schema.org objects, namely the event logo and the finished result.
+ *
+ * Parsed per row rather than by zipping two lists, because a positional
+ * join would silently attach one event's result to another the first time
+ * Penn renders a row without a logo.
+ */
+export interface PennScheduleRow {
+  eventName: string
+  /** Absolute URL of the opponent/event logo. */
+  logoUrl?: string
+  /** Penn's own result string, e.g. "3rd/4". */
+  resultText?: string
+  /** Penn's recap for the event, when one is linked. */
+  recapUrl?: string
+}
+
+const ROW_SPLIT = /sidearm-schedule-game-opponent-logo/
+
+export function parsePennScheduleRows(html: string): PennScheduleRow[] {
+  const out: PennScheduleRow[] = []
+  const chunks = html.split(ROW_SPLIT).slice(1)
+  for (const chunk of chunks) {
+    // The split already ends each chunk at the next row's logo, which is the
+    // only bound that matters. An extra character cap looks safer and is not:
+    // Penn renders the result about 4,100 characters in, so a 4,000-character
+    // window silently dropped every result on the page.
+    const name = chunk.match(
+      /sidearm-schedule-game-opponent-name"[\s\S]{0,200}?<a[^>]*>([^<]{2,120})<\/a>/,
+    )
+    if (!name) continue
+    const logo = chunk.match(/(?:data-src|src)="(\/images\/[^"]+?)(?:\?[^"]*)?"/)
+    const result = chunk.match(
+      /sidearm-schedule-game-result[^>]*>\s*<span>\s*([^<]{1,40}?)\s*<\/span>/,
+    )
+    const recap = chunk.match(/sidearm-schedule-game-links-recap"><a href="([^"]+)"/)
+    out.push({
+      eventName: decodeEntities(name[1]).trim(),
+      logoUrl: logo ? `https://pennathletics.com${logo[1]}` : undefined,
+      resultText: result ? decodeEntities(result[1]).trim() : undefined,
+      recapUrl: recap ? `https://pennathletics.com${recap[1]}` : undefined,
+    })
+  }
+  return out
+}
+
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&#39;|&rsquo;|&apos;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+}
+
 export interface SchedulePlanEntry {
   eventName: string
   startDate: string

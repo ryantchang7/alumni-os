@@ -26,7 +26,7 @@ export default function TermsPage() {
             Eligibility &amp; age
           </h2>
           <p>
-            The Clubhouse is intended for adults who are 18 years of age or older (or the age of majority in your jurisdiction, if higher), and specifically for current players, alumni, coaches, and family &amp; friends of Penn Men&rsquo;s Golf. By using the Clubhouse you represent that you meet this age requirement. Membership is approval-based; a captain or the Operator reviews and approves profile claims and may decline or revoke access at any time.
+            The Clubhouse is intended for adults who are 18 years of age or older (or the age of majority in your jurisdiction, if higher), and specifically for current players, alumni, coaches, and family &amp; friends of Penn Golf. By using the Clubhouse you represent that you meet this age requirement. Membership is approval-based; a captain or the Operator reviews and approves profile claims and may decline or revoke access at any time.
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">
@@ -75,7 +75,7 @@ export default function TermsPage() {
             No paywall, optional support
           </h2>
           <p>
-            Access to the Clubhouse is free and approval-based. Membership and access are never gated by payment. Optional support contributions (processed securely by Stripe) are entirely voluntary. Seventy percent (70%) of every dollar is directed to Penn Men&rsquo;s Golf and thirty percent (30%) covers Clubhouse operating costs. Support does not affect your access or standing beyond an optional supporter badge, and can be canceled at any time from the Support page.
+            Access to the Clubhouse is free and approval-based. Membership and access are never gated by payment. Optional support contributions (processed securely by Stripe) are entirely voluntary. Seventy percent (70%) of every dollar is directed to Penn Golf and thirty percent (30%) covers Clubhouse operating costs. Support does not affect your access or standing beyond an optional supporter badge, and can be canceled at any time from the Support page.
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">
@@ -148,7 +148,7 @@ export default function TermsPage() {
             Contact
           </h2>
           <p>
-            Questions about these Terms: email <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a>. The Clubhouse is operated by Ryan Chang, Penn Men&rsquo;s Golf, Class of 2028.
+            Questions about these Terms: email <a href="mailto:rtchang@upenn.edu" className="text-[#990000] hover:underline">rtchang@upenn.edu</a>. The Clubhouse is operated by Ryan Chang, Penn Golf, Class of 2028.
           </p>
         </section>
 

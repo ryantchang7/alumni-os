@@ -96,7 +96,7 @@ export default function TravelHostOfferButton({ stopId, eventName, signedIn }: P
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4">
                 <div>
                   <p className="eyebrow text-gold mb-1">
-                    Penn Men&rsquo;s Golf
+                    Penn Golf
                   </p>
                   <h2
                     className="text-white text-xl font-medium leading-snug font-heading"

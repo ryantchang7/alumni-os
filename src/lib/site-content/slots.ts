@@ -256,7 +256,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     hint: 'Paragraph under the headline on /support.',
     kind: 'longtext',
     default:
-      'The Penn Golf Clubhouse is the private network for the program. 70% of every membership and contribution goes directly to Penn Men’s Golf; the remaining 30% maintains the platform. Cancel anytime.',
+      'The Penn Golf Clubhouse is the private network for the program. 70% of every membership and contribution goes directly to Penn Golf; the remaining 30% maintains the platform. Cancel anytime.',
   },
 
   // ── Public launch page (`/launch`) — all the marketing copy ─────────────
@@ -310,7 +310,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     label: '/launch, founder note (long)',
     hint: 'The full personal note from Ryan that lives in the parchment card. Paragraphs separated by a blank line. The line that starts with, is treated as the signature.',
     kind: 'longtext',
-    default: `Hey Penn Men's Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
+    default: `Hey Penn Golf family. I'm Ryan Chang, a rising junior on the team from Brookline, Massachusetts.
 
 This spring at Ivy Champs at Baltusrol, I felt something I think a lot of you have felt. Patrick Cooper hosted us. Derek Rodgers, Carter Thompson, KJ, and so many other Penn Golf guys were out there. It wasn't a couple alumni showing up. It felt like a real Penn Golf family. Generations standing on the same range, pulling for the same program.
 
@@ -325,7 +325,7 @@ I compiled our Member Book through online research and Penn historical data, eve
 For the Penn Golf family. A place to stay close, help the next group, keep playing together, and hopefully help us keep taking down Princeton and Harvard.
 
 Ryan Chang
-Penn Men's Golf '28, Brookline, MA`,
+Penn Golf '28, Brookline, MA`,
   },
   {
     id: 'launch.ask-blurb',

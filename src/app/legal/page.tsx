@@ -48,7 +48,7 @@ export default function LegalPage() {
             <Link href="/community-guidelines" className="hover:text-[#990000] hover:underline transition-colors">Community Guidelines</Link>
           </h2>
           <p>
-            The code of conduct for the Penn Men&rsquo;s Golf family: be real, be respectful, respect privacy, keep it relevant, and how we handle violations.
+            The code of conduct for the Penn Golf family: be real, be respectful, respect privacy, keep it relevant, and how we handle violations.
           </p>
 
           <h2 className="text-xl font-medium pt-2 font-heading">

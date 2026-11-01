@@ -293,7 +293,7 @@ export default function TeamQuestionsPage() {
       <div className="bg-[#0a1628] px-6 sm:px-8 pt-12 pb-14">
         <div className="max-w-[1320px] mx-auto">
           <p className="eyebrow text-gold mb-4">
-            Penn Men&rsquo;s Golf
+            Penn Golf
           </p>
           <h1
             className="text-white text-3xl sm:text-4xl font-medium tracking-tight font-heading"

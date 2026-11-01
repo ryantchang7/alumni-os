@@ -49,7 +49,7 @@ function LinkInner() {
         style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.06)' }}
       >
         <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-muted mb-3">
-          Penn Men&rsquo;s Golf
+          Penn Golf
         </p>
         {state === 'working' ? (
           <>

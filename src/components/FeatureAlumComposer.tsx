@@ -111,7 +111,7 @@ export default function FeatureAlumComposer({ members }: Props) {
               <div className="bg-[#0a1628] px-6 pt-5 pb-4 flex items-start justify-between gap-4">
                 <div>
                   <p className="eyebrow text-gold mb-1">
-                    Penn Men&rsquo;s Golf, Captains only
+                    Penn Golf, Captains only
                   </p>
                   <h2
                     className="text-white text-xl font-medium leading-snug font-heading"

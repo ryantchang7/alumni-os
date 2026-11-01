@@ -33,7 +33,7 @@ export default function OpengraphImage() {
             marginBottom: 30,
           }}
         >
-          {"Penn Men's Golf"}
+          {'Penn Golf'}
         </div>
         <div
           style={{

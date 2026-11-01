@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import type { TeamNewsItem } from '@/lib/store/types'
+import { DEFAULT_PROGRAM_ID, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
 
 interface Props {
   items: TeamNewsItem[]
@@ -62,7 +63,11 @@ function NewsThumb({ src, alt }: { src: string; alt: string }) {
  * back to a styled placeholder if the source image fails (hot-link
  * blocking on Sidearm Sports' CDN).
  */
-export default function TeamNewsStrip({ items }: Props) {
+export default function TeamNewsStrip({
+  items,
+  program = DEFAULT_PROGRAM_ID,
+}: Props & { program?: ProgramId }) {
+  const prog = PROGRAMS[program]
   if (items.length === 0) return null
 
   return (
@@ -75,11 +80,11 @@ export default function TeamNewsStrip({ items }: Props) {
           <h2
             className="text-[#0a1628] text-base font-medium font-heading"
           >
-            Penn Men&rsquo;s Golf, Latest
+            {prog.label}, Latest
           </h2>
         </div>
         <a
-          href="https://pennathletics.com/sports/mens-golf"
+          href={prog.athleticsUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0a1628] hover:text-[#990000] transition-colors"

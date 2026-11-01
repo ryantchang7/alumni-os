@@ -694,7 +694,7 @@ function ClubhouseInner() {
                 <p
                   className="text-white text-base sm:text-lg font-medium leading-snug font-heading"
                 >
-                  Membership keeps the Clubhouse running and 70% goes to Penn Men&rsquo;s Golf.
+                  Membership keeps the Clubhouse running and 70% goes to Penn Golf.
                 </p>
                 <p className="text-[12.5px] text-white/75 mt-1">
                   Founding Members get a place on the Founders Wall.
