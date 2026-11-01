@@ -25,7 +25,7 @@ import { photo } from '@/lib/scotland/photos'
 export const metadata: Metadata = {
   title: 'Penn Golf at the Home of Golf',
   description:
-    'Penn Men’s Golf at the St Andrews Links Collegiate, October 2026. Two rounds on the Jubilee, medal match play on the Old Course, then Kingsbarns, Carnoustie and the R&A with the Penn Golf family.',
+    'Penn Golf at the St Andrews Links Collegiate, October 2026. Two rounds on the Jubilee, medal match play on the Old Course, then Kingsbarns, Carnoustie and the R&A with the Penn Golf family.',
 }
 
 /** The spine of the week. Echoed by the section eyebrows further down. */
@@ -76,7 +76,7 @@ export default function ScotlandPage() {
           />
           <div className={`${WRAP} relative pt-28 pb-12 sm:pb-16`}>
             <p className="eyebrow mb-6 text-[#c8a84b]">
-              <span className="block sm:inline">Penn Men&rsquo;s Golf</span>
+              <span className="block sm:inline">Penn Golf</span>
               <span aria-hidden className="mx-2.5 hidden text-white/35 sm:inline">
                 /
               </span>

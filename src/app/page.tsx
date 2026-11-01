@@ -150,12 +150,23 @@ export default function LandingPage() {
           transition={{ delay: 1.75, duration: 0.65, ease }}
         >
           <ProofStrip variant="line" />
-          <Link
-            href="/launch"
-            className="inline-block py-2.5 text-[12.5px] text-white/85 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
-          >
-            Watch the 5-minute film →
-          </Link>
+          <div className="flex flex-col items-center gap-x-4 sm:flex-row">
+            <Link
+              href="/launch"
+              className="inline-block py-2.5 text-[12.5px] text-white/85 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
+            >
+              Watch the 5-minute film →
+            </Link>
+            <span aria-hidden className="hidden text-white/30 sm:inline">
+              ·
+            </span>
+            <Link
+              href="/scotland"
+              className="inline-block py-2.5 text-[12.5px] text-white/85 hover:text-white underline underline-offset-4 decoration-white/40 hover:decoration-white transition-colors"
+            >
+              Scotland, October 2026 →
+            </Link>
+          </div>
         </motion.div>
 
         {scopeNote && (
