@@ -42,6 +42,15 @@ const TRIP_PREVIEW =
   'https://pennathletics.com/news/2026/10/9/mens-golf-mens-womens-golf-gear-up-for-trip-overseas-to-compete-in-st-andrews-links-collegiate.aspx'
 const MATCH_PLAY_RECAP =
   'https://pennathletics.com/news/2026/10/14/mens-golf-penn-finishes-st-andrews-week-with-fourth-place-finish.aspx'
+/**
+ * The women's stroke-play rounds. Its headline reads "Takes Fourth" because
+ * it was published on the Tuesday, after the Jubilee and before match play.
+ * The final placing was third, which is what Penn's own schedule page and
+ * the Inquirer both record, so the link is labelled for what it reports
+ * rather than for the result.
+ */
+const WOMENS_STROKE_PLAY =
+  'https://pennathletics.com/news/2026/10/13/womens-golf-takes-fourth-at-st-andrews.aspx'
 
 export default function ScotlandPage() {
   const hero = photo('old-course-evening')
@@ -211,7 +220,7 @@ export default function ScotlandPage() {
             </a>
           </div>
 
-          <FullEntryNote previewUrl={TRIP_PREVIEW} />
+          <FullEntryNote previewUrl={TRIP_PREVIEW} womensRecapUrl={WOMENS_STROKE_PLAY} />
         </section>
 
         {/* ------------------------------------------------- the old course */}

@@ -60,9 +60,11 @@ export const PROGRAMS: Record<ProgramId, Program> = {
     label: "Penn Women's Golf",
     shortLabel: "Women's",
     websiteUrl: 'https://pennathletics.com/sports/womens-golf/roster',
-    // Not live. No roster, no seasons, no Member Book entries yet. See the
-    // docblock above before changing this.
-    live: false,
+    // Live since 2026-10-31. 64 members, built from the 23 season rosters
+    // Penn Athletics publishes (2004-05 through 2026-27). The program went
+    // varsity in 1999 and the first five seasons are not published anywhere,
+    // so the Member Book says so rather than implying the book is complete.
+    live: true,
   },
 }
 

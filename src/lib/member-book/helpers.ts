@@ -45,8 +45,13 @@ export function hasRosterSeasons(m: MemberBookEntry): boolean {
   return m.career.verifiedRosterSeasonCount > 0
 }
 
+/**
+ * Active means "on a current roster". The season suffix differs per book
+ * (the men's import is active_2025_26, the women's active_2026_27), so this
+ * matches the prefix rather than one hardcoded season.
+ */
 export function isActiveMember(m: MemberBookEntry): boolean {
-  return m.membershipStatus === 'active_2025_26'
+  return m.membershipStatus.startsWith('active_')
 }
 
 export function getMemberDisplaySeasons(m: MemberBookEntry): readonly string[] {

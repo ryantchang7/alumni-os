@@ -255,7 +255,13 @@ export function OldCourseCard() {
  *
  * Names only. No results are published for any of them, so none are given.
  */
-export function FullEntryNote({ previewUrl }: { previewUrl: string }) {
+export function FullEntryNote({
+  previewUrl,
+  womensRecapUrl,
+}: {
+  previewUrl: string
+  womensRecapUrl: string
+}) {
   return (
     <aside className="mt-14 max-w-[820px] border-t border-[rgba(180,168,150,0.5)] pt-8 sm:mt-16">
       <p className="eyebrow mb-4 text-ink-muted">The rest of the Penn entry</p>
@@ -266,22 +272,42 @@ export function FullEntryNote({ previewUrl }: { previewUrl: string }) {
           men&rsquo;s lineup.
         </p>
         <p>
-          And the Collegiate ran a women&rsquo;s championship alongside the
-          men&rsquo;s. Penn sent a lineup to that too: Juliet Oh, Maggie Ni,
-          Adrienne Ahn-Upton, Madeleine Zang, Claire Lu, Sophia Lu and Chelsea
-          Nguyen. The results on this page are the men&rsquo;s, and the
-          women&rsquo;s week is a story of its own that is not ours to tell
-          secondhand.
+          The Collegiate ran a women&rsquo;s championship alongside the
+          men&rsquo;s, the same week and the same courses. Penn sent Juliet Oh,
+          Maggie Ni, Adrienne Ahn-Upton, Madeleine Zang, Claire Lu, Sophia Lu
+          and Chelsea Nguyen.
+        </p>
+        <p>
+          They were fourth after two rounds on the Jubilee at 52 over, with
+          Sophia Lu Penn&rsquo;s low scorer at eight over and Juliet Oh opening
+          with a 70. Then they played Washington in match play on the Old
+          Course, the same Wednesday the men did.
+        </p>
+        <p className="text-[#0a1628]">
+          <strong className="font-semibold">
+            Penn&rsquo;s women finished third. The men finished fourth.
+          </strong>{' '}
+          Texas won both championships.
         </p>
       </div>
-      <a
-        href={previewUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#990000] hover:underline"
-      >
-        Both Penn lineups, as published &#8599;
-      </a>
+      <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+        <a
+          href={previewUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#990000] hover:underline"
+        >
+          Both Penn lineups, as published &#8599;
+        </a>
+        <a
+          href={womensRecapUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#990000] hover:underline"
+        >
+          The women&rsquo;s stroke play rounds &#8599;
+        </a>
+      </div>
     </aside>
   )
 }

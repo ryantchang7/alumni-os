@@ -1,8 +1,12 @@
 /**
- * Verifies Penn Men's Golf Member Book data integrity.
+ * Verifies Penn Golf Member Book data integrity, across both books.
+ *
+ * The men's figures below are the archive and must never move. The merged
+ * figures are asserted as men + women so that adding the women's book can
+ * never silently disturb the men's import, which carries a checksum.
  *
  * Required counts (from the cleaned import package):
- *   - 346 total members
+ *   - 346 total men's members
  *   - 330 all-time letter-winner entries
  *   - 631 total letter-year rows
  *   - 6  managers
@@ -14,6 +18,8 @@
 import {
   memberBookEntries,
   memberBookCounts,
+  memberBookMens,
+  memberBookWomens,
   verifyMemberBook,
 } from '../src/lib/member-book/data'
 import { getPublicMembers } from '../src/lib/member-book/helpers'
@@ -28,9 +34,14 @@ const EXPECTED = {
   managersIncluded: 6,
   playersIncluded: 339,
   rosterOnlyNoLetterInPdf: 15,
+  // Penn Women's Golf, imported 2026-10-31 from the 23 season rosters Penn
+  // Athletics publishes. Every one is roster-only: no women's letter-winner
+  // record has been located, so none of these may count as a letter winner.
+  womensMembers: 64,
   // Public listing is not the same set as `playersIncluded`, and checking it
   // against that number conflated two things that were never equal.
   publicMembers: 340,
+  publicMembersAllPrograms: 404,
   letterYearRows: 631,
 }
 
@@ -43,7 +54,18 @@ function check(name: string, expected: number, actual: number) {
 
 console.log('Penn Men’s Golf Member Book — data verification\n')
 
-check('Total members', EXPECTED.membersTotal, memberBookEntries.length)
+check("Men's book total (must never move)", EXPECTED.membersTotal, memberBookMens.members.length)
+check("Women's book total", EXPECTED.womensMembers, memberBookWomens.members.length)
+check(
+  'Merged total equals men + women',
+  EXPECTED.membersTotal + EXPECTED.womensMembers,
+  memberBookEntries.length,
+)
+check(
+  "Women's entries claiming a letter year (must be 0)",
+  0,
+  memberBookWomens.members.filter((m) => m.letterWinner.years.length > 0).length,
+)
 check(
   'Letter-winner entries',
   EXPECTED.allTimeLetterWinnerEntriesIncluded,
@@ -56,12 +78,12 @@ check(
 )
 check(
   'Players (role === player)',
-  EXPECTED.playersIncluded,
+  EXPECTED.playersIncluded + EXPECTED.womensMembers,
   memberBookEntries.filter((m) => m.role === 'player').length,
 )
 check(
   'Roster-only records',
-  EXPECTED.rosterOnlyNoLetterInPdf,
+  EXPECTED.rosterOnlyNoLetterInPdf + EXPECTED.womensMembers,
   memberBookEntries.filter(
     (m) => m.sourceRecordType === 'verified_roster_only_no_letter_in_pdf',
   ).length,
@@ -106,10 +128,15 @@ console.log(
   `${publicManagers === 0 ? '✓' : '✗'} Managers hidden from public Member Book by default: ${publicManagers === 0 ? 'yes' : `${publicManagers} leaked`}`,
 )
 if (publicManagers > 0) failures++
-console.log(
-  `${publicMembers.length === EXPECTED.publicMembers ? '✓' : '✗'} Public member count: expected ${EXPECTED.publicMembers}, got ${publicMembers.length}`,
+const publicMens = publicMembers.filter((m) => m.program === undefined).length
+const publicWomens = publicMembers.filter((m) => m.program === 'womens').length
+check('Public members, men (must never move)', EXPECTED.publicMembers, publicMens)
+check('Public members, women', EXPECTED.womensMembers, publicWomens)
+check(
+  'Public member count, all programs',
+  EXPECTED.publicMembersAllPrograms,
+  publicMembers.length,
 )
-if (publicMembers.length !== EXPECTED.publicMembers) failures++
 
 const report = verifyMemberBook()
 if (!report.ok) {

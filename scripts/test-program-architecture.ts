@@ -80,12 +80,12 @@ ok('Hall of Fame no longer redeclares the Ivy years', !hof.includes('IVY_YEARS =
 ok('Hall of Fame no longer hardcodes "5 appearances"', !hof.includes('5 appearances'))
 ok('Hall of Fame renders the historical notes', hof.includes('PENN_GOLF_HISTORICAL_NOTES'))
 
-console.log('\n── Women\'s golf is wired but invisible ──')
+console.log('\n── Both programs are live ──')
 ok('both programs are registered', Object.keys(PROGRAMS).length === 2)
 ok("men's golf is live", PROGRAMS.mens.live)
-ok("women's golf is NOT live yet", !PROGRAMS.womens.live)
-ok('exactly one program is live today', livePrograms().length === 1)
-ok('isMultiProgram() is false, so no program UI appears', !isMultiProgram())
+ok("women's golf went live 2026-10-31", PROGRAMS.womens.live)
+ok('two programs are live', livePrograms().length === 2)
+ok('isMultiProgram() is true, so the program filter appears', isMultiProgram())
 ok('the default slug is unchanged', DEFAULT_TEAM_SLUG === 'penn-mens-golf')
 ok('the slug still resolves', programBySlug('penn-mens-golf')?.id === 'mens')
 ok('an unknown slug resolves to nothing', programBySlug('penn-squash') === null)
@@ -97,12 +97,22 @@ ok('it resolves to the mens program', programForTeam(seeded).id === 'mens')
 ok('a row with only gender set still resolves', programForTeam({ gender: 'Women' }).id === 'womens')
 ok('an empty row falls back to mens', programForTeam({}).id === 'mens')
 
-console.log('\n── Existing member data is untouched ──')
+console.log('\n── The men\'s book is untouched, the women\'s book sits beside it ──')
 ok('the Member Book still has members', memberBookEntries.length > 0, `${memberBookEntries.length}`)
-ok('every existing member reads as mens',
-  memberBookEntries.every(m => getMemberProgram(m) === 'mens'))
-ok('no entry carries an explicit program yet',
-  memberBookEntries.every(m => m.program === undefined))
+// The men's import predates the `program` field and must stay that way: it
+// carries a checksum over its members array.
+const mensEntries = memberBookEntries.filter(m => m.program === undefined)
+const womensEntries = memberBookEntries.filter(m => m.program === 'womens')
+ok('every unmarked entry still reads as mens',
+  mensEntries.every(m => getMemberProgram(m) === 'mens'))
+ok('the men\'s book is unchanged at 346', mensEntries.length === 346, `${mensEntries.length}`)
+ok('the women\'s book carries an explicit program', womensEntries.length > 0, `${womensEntries.length}`)
+ok('every women\'s entry reads as womens',
+  womensEntries.every(m => getMemberProgram(m) === 'womens'))
+ok('no women\'s entry claims a letter year',
+  womensEntries.every(m => m.letterWinner.years.length === 0))
+ok('every women\'s entry is roster-sourced',
+  womensEntries.every(m => m.career.verifiedRosterSeasonCount > 0))
 
 const baseline = filterPublicMembers(memberBookEntries, DEFAULT_PUBLIC_FILTERS)
 const withAll = filterPublicMembers(memberBookEntries, { ...DEFAULT_PUBLIC_FILTERS, program: 'all' })
@@ -110,8 +120,11 @@ const withMens = filterPublicMembers(memberBookEntries, { ...DEFAULT_PUBLIC_FILT
 const withWomens = filterPublicMembers(memberBookEntries, { ...DEFAULT_PUBLIC_FILTERS, program: 'womens' })
 ok('the default filter is unchanged by the new field', baseline.length > 0, `${baseline.length} public members`)
 ok("program 'all' returns the same set", withAll.length === baseline.length)
-ok("program 'mens' returns the same set", withMens.length === baseline.length)
-ok("program 'womens' returns nothing today", withWomens.length === 0)
+ok("program 'mens' and 'womens' partition the book",
+  withMens.length + withWomens.length === baseline.length,
+  `${withMens.length} + ${withWomens.length} = ${baseline.length}`)
+ok("program 'womens' now returns the women's book", withWomens.length === 64, `${withWomens.length}`)
+ok("program 'mens' still returns 340 public men", withMens.length === 340, `${withMens.length}`)
 
 console.log(`\n${pass.length} passed, ${fail.length} failed`)
 if (fail.length) {

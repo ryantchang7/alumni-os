@@ -1,12 +1,37 @@
-import rawData from '../../../data/member-book/penn-mgolf-member-book.json'
+import rawMens from '../../../data/member-book/penn-mgolf-member-book.json'
+import rawWomens from '../../../data/member-book/penn-wgolf-member-book.json'
 import type { MemberBookData, MemberBookEntry } from './types'
 
-const data = rawData as unknown as MemberBookData
+/**
+ * Two books, one registry.
+ *
+ * The men's book came from an all-time letter-winner PDF and carries a
+ * checksum over its members array, so it is never edited in place. The
+ * women's book was built separately from the season rosters Penn Athletics
+ * publishes, which begin in 2004-05 — five seasons after the program went
+ * varsity in 1999. Each file therefore verifies against its own counts, and
+ * `memberBookEntries` is the merged view every page reads.
+ *
+ * Women's entries carry `program: 'womens'`. Men's entries predate the field
+ * and are read through getMemberProgram(), which defaults to 'mens'.
+ */
+const mens = rawMens as unknown as MemberBookData
+const womens = rawWomens as unknown as MemberBookData
 
-export const memberBook: MemberBookData = data
-export const memberBookEntries: readonly MemberBookEntry[] = data.members
-export const memberBookCounts = data.counts
-export const memberBookVersion = data.version
+export const memberBookMens: MemberBookData = mens
+export const memberBookWomens: MemberBookData = womens
+
+/** Back-compat: the men's book, which is still the one with the checksum. */
+export const memberBook: MemberBookData = mens
+
+export const memberBookEntries: readonly MemberBookEntry[] = [
+  ...mens.members,
+  ...womens.members,
+]
+
+export const memberBookCounts = mens.counts
+export const memberBookWomensCounts = womens.counts
+export const memberBookVersion = mens.version
 
 export function getMemberById(id: string): MemberBookEntry | null {
   return memberBookEntries.find((m) => m.id === id) ?? null
@@ -27,9 +52,11 @@ export interface MemberBookVerification {
   }
 }
 
-export function verifyMemberBook(): MemberBookVerification {
-  const members = memberBookEntries
-  const counts = memberBookCounts
+export function verifyMemberBook(
+  book: MemberBookData = mens,
+): MemberBookVerification {
+  const members = book.members
+  const counts = book.counts
 
   const letterWinnerCount = members.filter((m) => m.letterWinner.isLetterWinner).length
   const managerCount = members.filter((m) => m.role === 'manager').length

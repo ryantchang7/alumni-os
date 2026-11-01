@@ -1,0 +1,4571 @@
+{
+ "dataset": "penn_womens_golf_member_book_published_rosters",
+ "version": "2026-10-31.published-roster-import.v1",
+ "purpose": "Penn Women's Golf member book, built only from rosters Penn Athletics publishes.",
+ "sourceSummary": {
+  "primarySource": "pennathletics.com published women's golf season rosters",
+  "seasonsCovered": "2004-05 through 2026-27",
+  "seasonsCoveredCount": 23,
+  "coverageNote": "Penn women's golf began varsity competition in 1999-2000, but Penn Athletics publishes season rosters only from 2004-05 onward. The first five varsity seasons are therefore absent from this file. Nothing here is inferred: every member appears on a roster Penn published.",
+  "knownMissing": [
+   {
+    "name": "Stacy Kress",
+    "detail": "The program's first recruit, 1999-2000 through 2002-03. First-team All-Ivy as a freshman. Documented in Daily Pennsylvanian archives, absent from Penn's published roster archive."
+   },
+   {
+    "name": "Melissa Aylor",
+    "detail": "Captain in 2003 and 2005. Only her 2004-05 senior season is published; her first three seasons are not."
+   }
+  ],
+  "noLetterWinnerSource": "No all-time letter-winner record for Penn women's golf has been located. Every letterWinner block reads false for that reason alone. Do not render these members as 'not a letter winner'."
+ },
+ "counts": {
+  "membersTotal": 64,
+  "allTimeLetterWinnerEntriesIncluded": 0,
+  "playersIncluded": 64,
+  "managersIncluded": 0,
+  "coachesIncluded": 0,
+  "verifiedRosterArchiveRecords": 64,
+  "letterWinnerPdfOnlyRosterUnverified": 0,
+  "rosterOnlyNoLetterInPdf": 64,
+  "letterYearRows": 0
+ },
+ "members": [
+  {
+   "id": "w-adrienne-ahn-upton",
+   "program": "womens",
+   "displayName": "Adrienne Ahn-Upton",
+   "sortName": "Ahn-Upton, Adrienne",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "active_2026_27",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2025-26",
+    "endSeason": "2026-27",
+    "startYear": 2025,
+    "finishYear": 2027,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2025-26",
+     "2026-27"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2025-26",
+     "2026-27"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2029",
+    "latestRosterClass": "So.",
+    "hometown": "Dallas, Texas",
+    "highSchool": "Laurel Springs School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2025-26",
+     "https://pennathletics.com/sports/womens-golf/roster/2026-27"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-melissa-aylor",
+   "program": "womens",
+   "displayName": "Melissa Aylor",
+   "sortName": "Aylor, Melissa",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2004-05",
+    "endSeason": "2004-05",
+    "startYear": 2004,
+    "finishYear": 2005,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2004-05"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2004-05"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2005",
+    "latestRosterClass": "Sr.",
+    "hometown": "Tampa, Fla.",
+    "highSchool": "Berkeley Prep",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": true,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": "Listed as Sr. in 2004-05, the earliest season Penn publishes, so earlier seasons exist but are not online."
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2004-05"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-meg-bender",
+   "program": "womens",
+   "displayName": "Meg Bender",
+   "sortName": "Bender, Meg",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2004-05",
+    "endSeason": "2007-08",
+    "startYear": 2004,
+    "finishYear": 2008,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2004-05",
+     "2005-06",
+     "2006-07",
+     "2007-08"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2004-05",
+     "2005-06",
+     "2006-07",
+     "2007-08"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2008",
+    "latestRosterClass": "Sr.",
+    "hometown": "Pensacola, Fla.",
+    "highSchool": "Lawrenceville School (NJ)",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": true,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": "Listed as Sr. in 2004-05, the earliest season Penn publishes, so earlier seasons exist but are not online."
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2004-05",
+     "https://pennathletics.com/sports/womens-golf/roster/2005-06",
+     "https://pennathletics.com/sports/womens-golf/roster/2006-07",
+     "https://pennathletics.com/sports/womens-golf/roster/2007-08"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-megan-brady",
+   "program": "womens",
+   "displayName": "Megan Brady",
+   "sortName": "Brady, Megan",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2004-05",
+    "endSeason": "2005-06",
+    "startYear": 2004,
+    "finishYear": 2006,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2004-05",
+     "2005-06"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2004-05",
+     "2005-06"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2006",
+    "latestRosterClass": "Sr.",
+    "hometown": "Coudersport, Pa.",
+    "highSchool": "Coudersport",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": true,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": "Listed as Sr. in 2004-05, the earliest season Penn publishes, so earlier seasons exist but are not online."
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2004-05",
+     "https://pennathletics.com/sports/womens-golf/roster/2005-06"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-natalie-cao",
+   "program": "womens",
+   "displayName": "Natalie Cao",
+   "sortName": "Cao, Natalie",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2022-23",
+    "endSeason": "2024-25",
+    "startYear": 2022,
+    "finishYear": 2025,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2022-23",
+     "2023-24",
+     "2024-25"
+    ],
+    "verifiedRosterSeasonCount": 3,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2022-23",
+     "2023-24",
+     "2024-25"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2025",
+    "latestRosterClass": "Sr.",
+    "hometown": "Sugar Land, Texas",
+    "highSchool": "Clements",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2022-23",
+     "https://pennathletics.com/sports/womens-golf/roster/2023-24",
+     "https://pennathletics.com/sports/womens-golf/roster/2024-25"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-olivia-chang",
+   "program": "womens",
+   "displayName": "Olivia Chang",
+   "sortName": "Chang, Olivia",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2010-11",
+    "endSeason": "2013-14",
+    "startYear": 2010,
+    "finishYear": 2014,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2010-11",
+     "2011-12",
+     "2012-13",
+     "2013-14"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2010-11",
+     "2011-12",
+     "2012-13",
+     "2013-14"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2014",
+    "latestRosterClass": "Sr.",
+    "hometown": "Jersey City, N.J.",
+    "highSchool": "Arroyo (CA)",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2010-11",
+     "https://pennathletics.com/sports/womens-golf/roster/2011-12",
+     "https://pennathletics.com/sports/womens-golf/roster/2012-13",
+     "https://pennathletics.com/sports/womens-golf/roster/2013-14"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-debby-chang",
+   "program": "womens",
+   "displayName": "Debby Chang",
+   "sortName": "Chang, Debby",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2020-21",
+    "endSeason": "2024-25",
+    "startYear": 2020,
+    "finishYear": 2025,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2020-21",
+     "2021-22",
+     "2022-23",
+     "2024-25"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2020-21",
+     "2021-22",
+     "2022-23",
+     "2024-25"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2025",
+    "latestRosterClass": "Sr.",
+    "hometown": "Busan, South Korea",
+    "highSchool": "IMG Academy",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21",
+     "https://pennathletics.com/sports/womens-golf/roster/2021-22",
+     "https://pennathletics.com/sports/womens-golf/roster/2022-23",
+     "https://pennathletics.com/sports/womens-golf/roster/2024-25"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-sophia-chen",
+   "program": "womens",
+   "displayName": "Sophia Chen",
+   "sortName": "Chen, Sophia",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2013-14",
+    "endSeason": "2016-17",
+    "startYear": 2013,
+    "finishYear": 2017,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2013-14",
+     "2014-15",
+     "2015-16",
+     "2016-17"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2013-14",
+     "2014-15",
+     "2015-16",
+     "2016-17"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2017",
+    "latestRosterClass": "Sr.",
+    "hometown": "Thousand Oaks, Calif.",
+    "highSchool": "Thousand Oaks",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2013-14",
+     "https://pennathletics.com/sports/womens-golf/roster/2014-15",
+     "https://pennathletics.com/sports/womens-golf/roster/2015-16",
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-tiffany-cheung",
+   "program": "womens",
+   "displayName": "Tiffany Cheung",
+   "sortName": "Cheung, Tiffany",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2008-09",
+    "endSeason": "2011-12",
+    "startYear": 2008,
+    "finishYear": 2012,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2008-09",
+     "2009-10",
+     "2010-11",
+     "2011-12"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2008-09",
+     "2009-10",
+     "2010-11",
+     "2011-12"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2012",
+    "latestRosterClass": "Sr.",
+    "hometown": "Palos Verdes Estates, Calif.",
+    "highSchool": "Pendleton School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2008-09",
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10",
+     "https://pennathletics.com/sports/womens-golf/roster/2010-11",
+     "https://pennathletics.com/sports/womens-golf/roster/2011-12"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-amanda-chin",
+   "program": "womens",
+   "displayName": "Amanda Chin",
+   "sortName": "Chin, Amanda",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2011-12",
+    "endSeason": "2014-15",
+    "startYear": 2011,
+    "finishYear": 2015,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2011-12",
+     "2012-13",
+     "2013-14",
+     "2014-15"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2011-12",
+     "2012-13",
+     "2013-14",
+     "2014-15"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2015",
+    "latestRosterClass": "Sr.",
+    "hometown": "Kuching, Sarawak",
+    "highSchool": "Hurlstone Agricultural (Australia)",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2011-12",
+     "https://pennathletics.com/sports/womens-golf/roster/2012-13",
+     "https://pennathletics.com/sports/womens-golf/roster/2013-14",
+     "https://pennathletics.com/sports/womens-golf/roster/2014-15"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-jessica-chung",
+   "program": "womens",
+   "displayName": "Jessica Chung",
+   "sortName": "Chung, Jessica",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2009-10",
+    "endSeason": "2009-10",
+    "startYear": 2009,
+    "finishYear": 2010,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2009-10"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2009-10"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2013",
+    "latestRosterClass": "Fr.",
+    "hometown": "Fayetteville, N.C.",
+    "highSchool": "N.C. School of Math & Sciences",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-rachel-dai",
+   "program": "womens",
+   "displayName": "Rachel Dai",
+   "sortName": "Dai, Rachel",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2015-16",
+    "endSeason": "2016-17",
+    "startYear": 2015,
+    "finishYear": 2017,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2015-16",
+     "2016-17"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2015-16",
+     "2016-17"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2019",
+    "latestRosterClass": "So.",
+    "hometown": "Milton, Ga.",
+    "highSchool": "Cambridge",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2015-16",
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-leila-dizon",
+   "program": "womens",
+   "displayName": "Leila Dizon",
+   "sortName": "Dizon, Leila",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2018-19",
+    "endSeason": "2021-22",
+    "startYear": 2018,
+    "finishYear": 2022,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2018-19",
+     "2019-20",
+     "2020-21",
+     "2021-22"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2018-19",
+     "2019-20",
+     "2020-21",
+     "2021-22"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2022",
+    "latestRosterClass": "Sr.",
+    "hometown": "Los Angeles, Calif.",
+    "highSchool": "Marlborough School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2018-19",
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20",
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21",
+     "https://pennathletics.com/sports/womens-golf/roster/2021-22"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-catherine-elliott",
+   "program": "womens",
+   "displayName": "Catherine Elliott",
+   "sortName": "Elliott, Catherine",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2006-07",
+    "endSeason": "2009-10",
+    "startYear": 2006,
+    "finishYear": 2010,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2006-07",
+     "2007-08",
+     "2008-09",
+     "2009-10"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2006-07",
+     "2007-08",
+     "2008-09",
+     "2009-10"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2010",
+    "latestRosterClass": "Sr.",
+    "hometown": "Malvern, Pa.",
+    "highSchool": "Academy of Notre Dame",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2006-07",
+     "https://pennathletics.com/sports/womens-golf/roster/2007-08",
+     "https://pennathletics.com/sports/womens-golf/roster/2008-09",
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-lauren-eveland",
+   "program": "womens",
+   "displayName": "Lauren Eveland",
+   "sortName": "Eveland, Lauren",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2004-05",
+    "endSeason": "2004-05",
+    "startYear": 2004,
+    "finishYear": 2005,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2004-05"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2004-05"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2005",
+    "latestRosterClass": "Sr.",
+    "hometown": "Radnor, Pa.",
+    "highSchool": "Radnor",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": true,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": "Listed as Sr. in 2004-05, the earliest season Penn publishes, so earlier seasons exist but are not online."
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2004-05"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-alyson-golditch",
+   "program": "womens",
+   "displayName": "Alyson Golditch",
+   "sortName": "Golditch, Alyson",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2005-06",
+    "endSeason": "2005-06",
+    "startYear": 2005,
+    "finishYear": 2006,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2005-06"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2005-06"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2009",
+    "latestRosterClass": "Fr.",
+    "hometown": "Northridge, Calif.",
+    "highSchool": "Granada Hills",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2005-06"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-isabel-han",
+   "program": "womens",
+   "displayName": "Isabel Han",
+   "sortName": "Han, Isabel",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2009-10",
+    "endSeason": "2012-13",
+    "startYear": 2009,
+    "finishYear": 2013,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2009-10",
+     "2010-11",
+     "2011-12",
+     "2012-13"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2009-10",
+     "2010-11",
+     "2011-12",
+     "2012-13"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2013",
+    "latestRosterClass": "Sr.",
+    "hometown": "Harrington Park, N.J.",
+    "highSchool": "Lake Mary Prep (FL)",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10",
+     "https://pennathletics.com/sports/womens-golf/roster/2010-11",
+     "https://pennathletics.com/sports/womens-golf/roster/2011-12",
+     "https://pennathletics.com/sports/womens-golf/roster/2012-13"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-libby-hooton",
+   "program": "womens",
+   "displayName": "Libby Hooton",
+   "sortName": "Hooton, Libby",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2009-10",
+    "endSeason": "2011-12",
+    "startYear": 2009,
+    "finishYear": 2012,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2009-10",
+     "2010-11",
+     "2011-12"
+    ],
+    "verifiedRosterSeasonCount": 3,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2009-10",
+     "2010-11",
+     "2011-12"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2013",
+    "latestRosterClass": "Jr.",
+    "hometown": "La Jolla, Calif.",
+    "highSchool": "Bishop's School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10",
+     "https://pennathletics.com/sports/womens-golf/roster/2010-11",
+     "https://pennathletics.com/sports/womens-golf/roster/2011-12"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-yubin-huh",
+   "program": "womens",
+   "displayName": "Yubin Huh",
+   "sortName": "Huh, Yubin",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2016-17",
+    "endSeason": "2019-20",
+    "startYear": 2016,
+    "finishYear": 2020,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2016-17",
+     "2017-18",
+     "2018-19",
+     "2019-20"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2016-17",
+     "2017-18",
+     "2018-19",
+     "2019-20"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2020",
+    "latestRosterClass": "Sr.",
+    "hometown": "San Diego, Calif.",
+    "highSchool": "Canyon Crest Academy",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17",
+     "https://pennathletics.com/sports/womens-golf/roster/2017-18",
+     "https://pennathletics.com/sports/womens-golf/roster/2018-19",
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-rina-jung",
+   "program": "womens",
+   "displayName": "Rina Jung",
+   "sortName": "Jung, Rina",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2017-18",
+    "endSeason": "2020-21",
+    "startYear": 2017,
+    "finishYear": 2021,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2017-18",
+     "2018-19",
+     "2019-20",
+     "2020-21"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2017-18",
+     "2018-19",
+     "2019-20",
+     "2020-21"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2021",
+    "latestRosterClass": "Sr.",
+    "hometown": "Briarcliff Manor, N.Y.",
+    "highSchool": "Hackley School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2017-18",
+     "https://pennathletics.com/sports/womens-golf/roster/2018-19",
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20",
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-marissa-kay",
+   "program": "womens",
+   "displayName": "Marissa Kay",
+   "sortName": "Kay, Marissa",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2013-14",
+    "endSeason": "2014-15",
+    "startYear": 2013,
+    "finishYear": 2015,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2013-14",
+     "2014-15"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2013-14",
+     "2014-15"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2017",
+    "latestRosterClass": "So.",
+    "hometown": "Delray Beach, Fla.",
+    "highSchool": "Saint Andrew's",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2013-14",
+     "https://pennathletics.com/sports/womens-golf/roster/2014-15"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-meredith-kotowski",
+   "program": "womens",
+   "displayName": "Meredith Kotowski",
+   "sortName": "Kotowski, Meredith",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2006-07",
+    "endSeason": "2009-10",
+    "startYear": 2006,
+    "finishYear": 2010,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2006-07",
+     "2007-08",
+     "2008-09",
+     "2009-10"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2006-07",
+     "2007-08",
+     "2008-09",
+     "2009-10"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2010",
+    "latestRosterClass": "Sr.",
+    "hometown": "Marion, Mass.",
+    "highSchool": "Deerfield Academy",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2006-07",
+     "https://pennathletics.com/sports/womens-golf/roster/2007-08",
+     "https://pennathletics.com/sports/womens-golf/roster/2008-09",
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-nicole-kouch",
+   "program": "womens",
+   "displayName": "Nicole Kouch",
+   "sortName": "Kouch, Nicole",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2005-06",
+    "endSeason": "2006-07",
+    "startYear": 2005,
+    "finishYear": 2007,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2005-06",
+     "2006-07"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2005-06",
+     "2006-07"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2009",
+    "latestRosterClass": "So.",
+    "hometown": "Philadelphia, Pa.",
+    "highSchool": "Mount St. Joseph Academy",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2005-06",
+     "https://pennathletics.com/sports/womens-golf/roster/2006-07"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-elizabeth-kresock",
+   "program": "womens",
+   "displayName": "Elizabeth Kresock",
+   "sortName": "Kresock, Elizabeth",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2009-10",
+    "endSeason": "2012-13",
+    "startYear": 2009,
+    "finishYear": 2013,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2009-10",
+     "2010-11",
+     "2011-12",
+     "2012-13"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2009-10",
+     "2010-11",
+     "2011-12",
+     "2012-13"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2013",
+    "latestRosterClass": "Sr.",
+    "hometown": "Denver, Colo.",
+    "highSchool": "Colorado Academy",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10",
+     "https://pennathletics.com/sports/womens-golf/roster/2010-11",
+     "https://pennathletics.com/sports/womens-golf/roster/2011-12",
+     "https://pennathletics.com/sports/womens-golf/roster/2012-13"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-michelle-lee",
+   "program": "womens",
+   "displayName": "Michelle Lee",
+   "sortName": "Lee, Michelle",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2010-11",
+    "endSeason": "2013-14",
+    "startYear": 2010,
+    "finishYear": 2014,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2010-11",
+     "2011-12",
+     "2012-13",
+     "2013-14"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2010-11",
+     "2011-12",
+     "2012-13",
+     "2013-14"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2014",
+    "latestRosterClass": "Sr.",
+    "hometown": "Mississauga, Ontario",
+    "highSchool": "The Woodlands School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2010-11",
+     "https://pennathletics.com/sports/womens-golf/roster/2011-12",
+     "https://pennathletics.com/sports/womens-golf/roster/2012-13",
+     "https://pennathletics.com/sports/womens-golf/roster/2013-14"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-rui-li",
+   "program": "womens",
+   "displayName": "Rui Li",
+   "sortName": "Li, Rui",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2010-11",
+    "endSeason": "2010-11",
+    "startYear": 2010,
+    "finishYear": 2011,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2010-11"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2010-11"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2014",
+    "latestRosterClass": "Fr.",
+    "hometown": null,
+    "highSchool": "Washington State HS",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2010-11"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-selina-li",
+   "program": "womens",
+   "displayName": "Selina Li",
+   "sortName": "Li, Selina",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2019-20",
+    "endSeason": "2022-23",
+    "startYear": 2019,
+    "finishYear": 2023,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2019-20",
+     "2020-21",
+     "2021-22",
+     "2022-23"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2019-20",
+     "2020-21",
+     "2021-22",
+     "2022-23"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2023",
+    "latestRosterClass": "Sr.",
+    "hometown": "Sai Kung, Hong Kong",
+    "highSchool": "Hong Kong International School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20",
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21",
+     "https://pennathletics.com/sports/womens-golf/roster/2021-22",
+     "https://pennathletics.com/sports/womens-golf/roster/2022-23"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-mi-li",
+   "program": "womens",
+   "displayName": "Mi Li",
+   "sortName": "Li, Mi",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "active_2026_27",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2025-26",
+    "endSeason": "2026-27",
+    "startYear": 2025,
+    "finishYear": 2027,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2025-26",
+     "2026-27"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2025-26",
+     "2026-27"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2029",
+    "latestRosterClass": "So.",
+    "hometown": "Orlando, Fla.",
+    "highSchool": "The First Academy",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2025-26",
+     "https://pennathletics.com/sports/womens-golf/roster/2026-27"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-chelsea-liu",
+   "program": "womens",
+   "displayName": "Chelsea Liu",
+   "sortName": "Liu, Chelsea",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2017-18",
+    "endSeason": "2017-18",
+    "startYear": 2017,
+    "finishYear": 2018,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2017-18"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2017-18"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2021",
+    "latestRosterClass": "Fr.",
+    "hometown": "Shanghai, China",
+    "highSchool": "Phillips Andover",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2017-18"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-erin-lo",
+   "program": "womens",
+   "displayName": "Erin Lo",
+   "sortName": "Lo, Erin",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2013-14",
+    "endSeason": "2016-17",
+    "startYear": 2013,
+    "finishYear": 2017,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2013-14",
+     "2014-15",
+     "2015-16",
+     "2016-17"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2013-14",
+     "2014-15",
+     "2015-16",
+     "2016-17"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2017",
+    "latestRosterClass": "Sr.",
+    "hometown": "Philadelphia, Pa.",
+    "highSchool": "Penn Charter",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2013-14",
+     "https://pennathletics.com/sports/womens-golf/roster/2014-15",
+     "https://pennathletics.com/sports/womens-golf/roster/2015-16",
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-claire-lu",
+   "program": "womens",
+   "displayName": "Claire Lu",
+   "sortName": "Lu, Claire",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "active_2026_27",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2024-25",
+    "endSeason": "2026-27",
+    "startYear": 2024,
+    "finishYear": 2027,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2024-25",
+     "2025-26",
+     "2026-27"
+    ],
+    "verifiedRosterSeasonCount": 3,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2024-25",
+     "2025-26",
+     "2026-27"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2028",
+    "latestRosterClass": "Jr.",
+    "hometown": "Edison, N.J.",
+    "highSchool": "The Wardlaw + Hartridge School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2024-25",
+     "https://pennathletics.com/sports/womens-golf/roster/2025-26",
+     "https://pennathletics.com/sports/womens-golf/roster/2026-27"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-sophia-lu",
+   "program": "womens",
+   "displayName": "Sophia Lu",
+   "sortName": "Lu, Sophia",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "active_2026_27",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2026-27",
+    "endSeason": "2026-27",
+    "startYear": 2026,
+    "finishYear": 2027,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2026-27"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2026-27"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2030",
+    "latestRosterClass": "Fr.",
+    "hometown": "Rancho Palos Verdes, Calif.",
+    "highSchool": "Palos Verdes Peninsula",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2026-27"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-elle-nachmann",
+   "program": "womens",
+   "displayName": "Elle Nachmann",
+   "sortName": "Nachmann, Elle",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2020-21",
+    "endSeason": "2021-22",
+    "startYear": 2020,
+    "finishYear": 2022,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2020-21",
+     "2021-22"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2020-21",
+     "2021-22"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2024",
+    "latestRosterClass": "So.",
+    "hometown": "Boca Raton, Fla.",
+    "highSchool": "SCORE Academy",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21",
+     "https://pennathletics.com/sports/womens-golf/roster/2021-22"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-chelsea-nguyen",
+   "program": "womens",
+   "displayName": "Chelsea Nguyen",
+   "sortName": "Nguyen, Chelsea",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "active_2026_27",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2023-24",
+    "endSeason": "2026-27",
+    "startYear": 2023,
+    "finishYear": 2027,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2023-24",
+     "2024-25",
+     "2025-26",
+     "2026-27"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2023-24",
+     "2024-25",
+     "2025-26",
+     "2026-27"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2027",
+    "latestRosterClass": "Sr.",
+    "hometown": "Oviedo, Fla.",
+    "highSchool": "Hagerty",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2023-24",
+     "https://pennathletics.com/sports/womens-golf/roster/2024-25",
+     "https://pennathletics.com/sports/womens-golf/roster/2025-26",
+     "https://pennathletics.com/sports/womens-golf/roster/2026-27"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-maggie-ni",
+   "program": "womens",
+   "displayName": "Maggie Ni",
+   "sortName": "Ni, Maggie",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "active_2026_27",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2023-24",
+    "endSeason": "2026-27",
+    "startYear": 2023,
+    "finishYear": 2027,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2023-24",
+     "2024-25",
+     "2025-26",
+     "2026-27"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2023-24",
+     "2024-25",
+     "2025-26",
+     "2026-27"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2027",
+    "latestRosterClass": "Sr.",
+    "hometown": "Cypress, Texas",
+    "highSchool": "Cy-Fair",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2023-24",
+     "https://pennathletics.com/sports/womens-golf/roster/2024-25",
+     "https://pennathletics.com/sports/womens-golf/roster/2025-26",
+     "https://pennathletics.com/sports/womens-golf/roster/2026-27"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-bridget-o-keefe",
+   "program": "womens",
+   "displayName": "Bridget O'Keefe",
+   "sortName": "O'Keefe, Bridget",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2022-23",
+    "endSeason": "2025-26",
+    "startYear": 2022,
+    "finishYear": 2026,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2022-23",
+     "2023-24",
+     "2024-25",
+     "2025-26"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2022-23",
+     "2023-24",
+     "2024-25",
+     "2025-26"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2026",
+    "latestRosterClass": "Sr.",
+    "hometown": "Palo Alto, Calif.",
+    "highSchool": "Palo Alto",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2022-23",
+     "https://pennathletics.com/sports/womens-golf/roster/2023-24",
+     "https://pennathletics.com/sports/womens-golf/roster/2024-25",
+     "https://pennathletics.com/sports/womens-golf/roster/2025-26"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-allison-oakes",
+   "program": "womens",
+   "displayName": "Allison Oakes",
+   "sortName": "Oakes, Allison",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2012-13",
+    "endSeason": "2012-13",
+    "startYear": 2012,
+    "finishYear": 2013,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2012-13"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2012-13"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2013",
+    "latestRosterClass": "Sr.",
+    "hometown": "Stamford, Conn.",
+    "highSchool": "Westhill (Columbia)",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2012-13"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-juliet-oh",
+   "program": "womens",
+   "displayName": "Juliet Oh",
+   "sortName": "Oh, Juliet",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "active_2026_27",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2026-27",
+    "endSeason": "2026-27",
+    "startYear": 2026,
+    "finishYear": 2027,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2026-27"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2026-27"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2030",
+    "latestRosterClass": "Fr.",
+    "hometown": "Diamond Bar, Calif.",
+    "highSchool": "Diamond Bar",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2026-27"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-christina-park",
+   "program": "womens",
+   "displayName": "Christina Park",
+   "sortName": "Park, Christina",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2016-17",
+    "endSeason": "2019-20",
+    "startYear": 2016,
+    "finishYear": 2020,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2016-17",
+     "2017-18",
+     "2018-19",
+     "2019-20"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2016-17",
+     "2017-18",
+     "2018-19",
+     "2019-20"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2020",
+    "latestRosterClass": "Sr.",
+    "hometown": "San Diego, Calif.",
+    "highSchool": "Torrey Pines",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17",
+     "https://pennathletics.com/sports/womens-golf/roster/2017-18",
+     "https://pennathletics.com/sports/womens-golf/roster/2018-19",
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-liz-pettie",
+   "program": "womens",
+   "displayName": "Liz Pettie",
+   "sortName": "Pettie, Liz",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2008-09",
+    "endSeason": "2009-10",
+    "startYear": 2008,
+    "finishYear": 2010,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2008-09",
+     "2009-10"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2008-09",
+     "2009-10"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2012",
+    "latestRosterClass": "So.",
+    "hometown": "Calgary, Alberta",
+    "highSchool": "Strathcona-Tweedsmuir",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2008-09",
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-caroline-prebul",
+   "program": "womens",
+   "displayName": "Caroline Prebul",
+   "sortName": "Prebul, Caroline",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2009-10",
+    "endSeason": "2009-10",
+    "startYear": 2009,
+    "finishYear": 2010,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2009-10"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2009-10"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2013",
+    "latestRosterClass": "Fr.",
+    "hometown": "Signal Mountain, Tenn.",
+    "highSchool": "Baylor School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-isabella-rahm",
+   "program": "womens",
+   "displayName": "Isabella Rahm",
+   "sortName": "Rahm, Isabella",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2013-14",
+    "endSeason": "2016-17",
+    "startYear": 2013,
+    "finishYear": 2017,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2013-14",
+     "2014-15",
+     "2015-16",
+     "2016-17"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2013-14",
+     "2014-15",
+     "2015-16",
+     "2016-17"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2017",
+    "latestRosterClass": "Sr.",
+    "hometown": "Kungsbacka, Sweden",
+    "highSchool": "American Embassy School (India)",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2013-14",
+     "https://pennathletics.com/sports/womens-golf/roster/2014-15",
+     "https://pennathletics.com/sports/womens-golf/roster/2015-16",
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-mary-shin",
+   "program": "womens",
+   "displayName": "Mary Shin",
+   "sortName": "Shin, Mary",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2018-19",
+    "endSeason": "2021-22",
+    "startYear": 2018,
+    "finishYear": 2022,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2018-19",
+     "2019-20",
+     "2020-21",
+     "2021-22"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2018-19",
+     "2019-20",
+     "2020-21",
+     "2021-22"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2022",
+    "latestRosterClass": "Sr.",
+    "hometown": "Irvine, Calif.",
+    "highSchool": "Sage Hill School",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2018-19",
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20",
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21",
+     "https://pennathletics.com/sports/womens-golf/roster/2021-22"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-julie-shin",
+   "program": "womens",
+   "displayName": "Julie Shin",
+   "sortName": "Shin, Julie",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2022-23",
+    "endSeason": "2025-26",
+    "startYear": 2022,
+    "finishYear": 2026,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2022-23",
+     "2023-24",
+     "2024-25",
+     "2025-26"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2022-23",
+     "2023-24",
+     "2024-25",
+     "2025-26"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2026",
+    "latestRosterClass": "Sr.",
+    "hometown": "Brambleton, Va.",
+    "highSchool": "Independence",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2022-23",
+     "https://pennathletics.com/sports/womens-golf/roster/2023-24",
+     "https://pennathletics.com/sports/womens-golf/roster/2024-25",
+     "https://pennathletics.com/sports/womens-golf/roster/2025-26"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-jenna-skorupa",
+   "program": "womens",
+   "displayName": "Jenna Skorupa",
+   "sortName": "Skorupa, Jenna",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2004-05",
+    "endSeason": "2005-06",
+    "startYear": 2004,
+    "finishYear": 2006,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2004-05",
+     "2005-06"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2004-05",
+     "2005-06"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2006",
+    "latestRosterClass": "Sr.",
+    "hometown": "Carbondale, Pa.",
+    "highSchool": "Scranton Prep",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": true,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": "Listed as Sr. in 2004-05, the earliest season Penn publishes, so earlier seasons exist but are not online."
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2004-05",
+     "https://pennathletics.com/sports/womens-golf/roster/2005-06"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-stephanie-stamas",
+   "program": "womens",
+   "displayName": "Stephanie Stamas",
+   "sortName": "Stamas, Stephanie",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2004-05",
+    "endSeason": "2006-07",
+    "startYear": 2004,
+    "finishYear": 2007,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2004-05",
+     "2005-06",
+     "2006-07"
+    ],
+    "verifiedRosterSeasonCount": 3,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2004-05",
+     "2005-06",
+     "2006-07"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2007",
+    "latestRosterClass": "Sr.",
+    "hometown": "Baltimore, Md.",
+    "highSchool": "Bryn Mawr",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": true,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": "Listed as Sr. in 2004-05, the earliest season Penn publishes, so earlier seasons exist but are not online."
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2004-05",
+     "https://pennathletics.com/sports/womens-golf/roster/2005-06",
+     "https://pennathletics.com/sports/womens-golf/roster/2006-07"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-kim-thompson",
+   "program": "womens",
+   "displayName": "Kim Thompson",
+   "sortName": "Thompson, Kim",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2004-05",
+    "endSeason": "2005-06",
+    "startYear": 2004,
+    "finishYear": 2006,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2004-05",
+     "2005-06"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2004-05",
+     "2005-06"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2006",
+    "latestRosterClass": "Sr.",
+    "hometown": "Indianapolis, Ind.",
+    "highSchool": "Park Tudor",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": true,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": "Listed as Sr. in 2004-05, the earliest season Penn publishes, so earlier seasons exist but are not online."
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2004-05",
+     "https://pennathletics.com/sports/womens-golf/roster/2005-06"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-franchesca-de-la-torre",
+   "program": "womens",
+   "displayName": "Franchesca de la Torre",
+   "sortName": "Torre, Franchesca de la",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2013-14",
+    "endSeason": "2015-16",
+    "startYear": 2013,
+    "finishYear": 2016,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2013-14",
+     "2014-15",
+     "2015-16"
+    ],
+    "verifiedRosterSeasonCount": 3,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2013-14",
+     "2014-15",
+     "2015-16"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2017",
+    "latestRosterClass": "Jr.",
+    "hometown": "Miami, Fla.",
+    "highSchool": "Terra Environmental Research Institute",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2013-14",
+     "https://pennathletics.com/sports/womens-golf/roster/2014-15",
+     "https://pennathletics.com/sports/womens-golf/roster/2015-16"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-olivia-traynor",
+   "program": "womens",
+   "displayName": "Olivia Traynor",
+   "sortName": "Traynor, Olivia",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2018-19",
+    "endSeason": "2021-22",
+    "startYear": 2018,
+    "finishYear": 2022,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2018-19",
+     "2019-20",
+     "2020-21",
+     "2021-22"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2018-19",
+     "2019-20",
+     "2020-21",
+     "2021-22"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2022",
+    "latestRosterClass": "Sr.",
+    "hometown": "Villanova, Pa.",
+    "highSchool": "Notre Dame de Namur",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2018-19",
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20",
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21",
+     "https://pennathletics.com/sports/womens-golf/roster/2021-22"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-shara-venezia-walerstein",
+   "program": "womens",
+   "displayName": "Shara Venezia-Walerstein",
+   "sortName": "Venezia-Walerstein, Shara",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2004-05",
+    "endSeason": "2007-08",
+    "startYear": 2004,
+    "finishYear": 2008,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2004-05",
+     "2005-06",
+     "2006-07",
+     "2007-08"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2004-05",
+     "2005-06",
+     "2006-07",
+     "2007-08"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2008",
+    "latestRosterClass": "Sr.",
+    "hometown": "Dix Hills, N.Y.",
+    "highSchool": "Half Hollow Hills East",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": true,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": "Listed as Sr. in 2004-05, the earliest season Penn publishes, so earlier seasons exist but are not online."
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2004-05",
+     "https://pennathletics.com/sports/womens-golf/roster/2005-06",
+     "https://pennathletics.com/sports/womens-golf/roster/2006-07",
+     "https://pennathletics.com/sports/womens-golf/roster/2007-08"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-lisette-vitter",
+   "program": "womens",
+   "displayName": "Lisette Vitter",
+   "sortName": "Vitter, Lisette",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2006-07",
+    "endSeason": "2009-10",
+    "startYear": 2006,
+    "finishYear": 2010,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2006-07",
+     "2007-08",
+     "2008-09",
+     "2009-10"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2006-07",
+     "2007-08",
+     "2008-09",
+     "2009-10"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2010",
+    "latestRosterClass": "Sr.",
+    "hometown": "New Orleans, La.",
+    "highSchool": "Metairie Park CD (Westminster)",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2006-07",
+     "https://pennathletics.com/sports/womens-golf/roster/2007-08",
+     "https://pennathletics.com/sports/womens-golf/roster/2008-09",
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-kelsey-williams",
+   "program": "womens",
+   "displayName": "Kelsey Williams",
+   "sortName": "Williams, Kelsey",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2011-12",
+    "endSeason": "2011-12",
+    "startYear": 2011,
+    "finishYear": 2012,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2011-12"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2011-12"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2015",
+    "latestRosterClass": "Fr.",
+    "hometown": "Orinda, Calif.",
+    "highSchool": "Miramonte",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2011-12"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-michelle-winters",
+   "program": "womens",
+   "displayName": "Michelle Winters",
+   "sortName": "Winters, Michelle",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2008-09",
+    "endSeason": "2009-10",
+    "startYear": 2008,
+    "finishYear": 2010,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2008-09",
+     "2009-10"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2008-09",
+     "2009-10"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2011",
+    "latestRosterClass": "Jr.",
+    "hometown": "Irvine, Calf.",
+    "highSchool": "University High",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2008-09",
+     "https://pennathletics.com/sports/womens-golf/roster/2009-10"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-abigail-wiranatha",
+   "program": "womens",
+   "displayName": "Abigail Wiranatha",
+   "sortName": "Wiranatha, Abigail",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2019-20",
+    "endSeason": "2022-23",
+    "startYear": 2019,
+    "finishYear": 2023,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2019-20",
+     "2020-21",
+     "2021-22",
+     "2022-23"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2019-20",
+     "2020-21",
+     "2021-22",
+     "2022-23"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2023",
+    "latestRosterClass": "Sr.",
+    "hometown": "West Covina, Calif.",
+    "highSchool": "Walnut",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20",
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21",
+     "https://pennathletics.com/sports/womens-golf/roster/2021-22",
+     "https://pennathletics.com/sports/womens-golf/roster/2022-23"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-allison-wong",
+   "program": "womens",
+   "displayName": "Allison Wong",
+   "sortName": "Wong, Allison",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2014-15",
+    "endSeason": "2016-17",
+    "startYear": 2014,
+    "finishYear": 2017,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2014-15",
+     "2015-16",
+     "2016-17"
+    ],
+    "verifiedRosterSeasonCount": 3,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2014-15",
+     "2015-16",
+     "2016-17"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2018",
+    "latestRosterClass": "Jr.",
+    "hometown": null,
+    "highSchool": null,
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2014-15",
+     "https://pennathletics.com/sports/womens-golf/roster/2015-16",
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-lexie-wukich",
+   "program": "womens",
+   "displayName": "Lexie Wukich",
+   "sortName": "Wukich, Lexie",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2004-05",
+    "endSeason": "2005-06",
+    "startYear": 2004,
+    "finishYear": 2006,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2004-05",
+     "2005-06"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2004-05",
+     "2005-06"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2006",
+    "latestRosterClass": "Sr.",
+    "hometown": "Bethlehem, Pa.",
+    "highSchool": "Saucon Valley",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": true,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": "Listed as Sr. in 2004-05, the earliest season Penn publishes, so earlier seasons exist but are not online."
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2004-05",
+     "https://pennathletics.com/sports/womens-golf/roster/2005-06"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-susan-xiao",
+   "program": "womens",
+   "displayName": "Susan Xiao",
+   "sortName": "Xiao, Susan",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2019-20",
+    "endSeason": "2022-23",
+    "startYear": 2019,
+    "finishYear": 2023,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2019-20",
+     "2020-21",
+     "2021-22",
+     "2022-23"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2019-20",
+     "2020-21",
+     "2021-22",
+     "2022-23"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2023",
+    "latestRosterClass": "Sr.",
+    "hometown": "Surrey, B.C.",
+    "highSchool": "Montverde Academy",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20",
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21",
+     "https://pennathletics.com/sports/womens-golf/roster/2021-22",
+     "https://pennathletics.com/sports/womens-golf/roster/2022-23"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-lindsay-yao",
+   "program": "womens",
+   "displayName": "Lindsay Yao",
+   "sortName": "Yao, Lindsay",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2024-25",
+    "endSeason": "2025-26",
+    "startYear": 2024,
+    "finishYear": 2026,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2024-25",
+     "2025-26"
+    ],
+    "verifiedRosterSeasonCount": 2,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2024-25",
+     "2025-26"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2028",
+    "latestRosterClass": "So.",
+    "hometown": "Whittier, Calif.",
+    "highSchool": "Fairmont Prep",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2024-25",
+     "https://pennathletics.com/sports/womens-golf/roster/2025-26"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-tiffany-yau",
+   "program": "womens",
+   "displayName": "Tiffany Yau",
+   "sortName": "Yau, Tiffany",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2014-15",
+    "endSeason": "2017-18",
+    "startYear": 2014,
+    "finishYear": 2018,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2014-15",
+     "2015-16",
+     "2016-17",
+     "2017-18"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2014-15",
+     "2015-16",
+     "2016-17",
+     "2017-18"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2018",
+    "latestRosterClass": "Sr.",
+    "hometown": "Porter Ranch, Calif.",
+    "highSchool": "Van Nuys",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2014-15",
+     "https://pennathletics.com/sports/womens-golf/roster/2015-16",
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17",
+     "https://pennathletics.com/sports/womens-golf/roster/2017-18"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-jesse-yeager",
+   "program": "womens",
+   "displayName": "Jesse Yeager",
+   "sortName": "Yeager, Jesse",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2008-09",
+    "endSeason": "2008-09",
+    "startYear": 2008,
+    "finishYear": 2009,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2008-09"
+    ],
+    "verifiedRosterSeasonCount": 1,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2008-09"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2010",
+    "latestRosterClass": "Jr.",
+    "hometown": "Oak Park, Calif.",
+    "highSchool": "Oak Park",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2008-09"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-michelle-yom",
+   "program": "womens",
+   "displayName": "Michelle Yom",
+   "sortName": "Yom, Michelle",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2014-15",
+    "endSeason": "2017-18",
+    "startYear": 2014,
+    "finishYear": 2018,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2014-15",
+     "2015-16",
+     "2016-17",
+     "2017-18"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2014-15",
+     "2015-16",
+     "2016-17",
+     "2017-18"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2018",
+    "latestRosterClass": "Sr.",
+    "hometown": "Torrance, Calif.",
+    "highSchool": "South",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2014-15",
+     "https://pennathletics.com/sports/womens-golf/roster/2015-16",
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17",
+     "https://pennathletics.com/sports/womens-golf/roster/2017-18"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-madeleine-zang",
+   "program": "womens",
+   "displayName": "Madeleine Zang",
+   "sortName": "Zang, Madeleine",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "active_2026_27",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2023-24",
+    "endSeason": "2026-27",
+    "startYear": 2023,
+    "finishYear": 2027,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2023-24",
+     "2024-25",
+     "2025-26",
+     "2026-27"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2023-24",
+     "2024-25",
+     "2025-26",
+     "2026-27"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2027",
+    "latestRosterClass": "Sr.",
+    "hometown": "Princeton, N.J.",
+    "highSchool": "Princeton HS",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2023-24",
+     "https://pennathletics.com/sports/womens-golf/roster/2024-25",
+     "https://pennathletics.com/sports/womens-golf/roster/2025-26",
+     "https://pennathletics.com/sports/womens-golf/roster/2026-27"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-selina-zeng",
+   "program": "womens",
+   "displayName": "Selina Zeng",
+   "sortName": "Zeng, Selina",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2017-18",
+    "endSeason": "2020-21",
+    "startYear": 2017,
+    "finishYear": 2021,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2017-18",
+     "2018-19",
+     "2019-20",
+     "2020-21"
+    ],
+    "verifiedRosterSeasonCount": 4,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2017-18",
+     "2018-19",
+     "2019-20",
+     "2020-21"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2021",
+    "latestRosterClass": "Sr.",
+    "hometown": "Oak Brook, Ill.",
+    "highSchool": "Hinsdale Central",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2017-18",
+     "https://pennathletics.com/sports/womens-golf/roster/2018-19",
+     "https://pennathletics.com/sports/womens-golf/roster/2019-20",
+     "https://pennathletics.com/sports/womens-golf/roster/2020-21"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  },
+  {
+   "id": "w-janet-zhang",
+   "program": "womens",
+   "displayName": "Janet Zhang",
+   "sortName": "Zhang, Janet",
+   "role": "player",
+   "isManager": false,
+   "includeInMemberBook": true,
+   "membershipStatus": "alumna",
+   "sourceRecordType": "verified_roster_only_no_letter_in_pdf",
+   "career": {
+    "startSeason": "2015-16",
+    "endSeason": "2017-18",
+    "startYear": 2015,
+    "finishYear": 2018,
+    "yearSource": "verified_roster_archive",
+    "verifiedRosterSeasons": [
+     "2015-16",
+     "2016-17",
+     "2017-18"
+    ],
+    "verifiedRosterSeasonCount": 3,
+    "inferredLetterSeasons": [],
+    "displaySeasons": [
+     "2015-16",
+     "2016-17",
+     "2017-18"
+    ]
+   },
+   "letterWinner": {
+    "isLetterWinner": false,
+    "years": [],
+    "seasons": [],
+    "firstYear": null,
+    "lastYear": null,
+    "count": 0,
+    "rawPdfName": null
+   },
+   "profile": {
+    "classYearEstimate": "2019",
+    "latestRosterClass": "Jr.",
+    "hometown": "Richmond, B.C.",
+    "highSchool": "A.R. MacNeill Secondary",
+    "currentRole": null,
+    "currentCompany": null,
+    "city": null,
+    "helpTopics": null,
+    "contactPreference": null
+   },
+   "review": {
+    "needsRosterCheck": false,
+    "hasVerifiedRosterArchiveRecord": true,
+    "hasAllTimeLetterWinnerRecord": false,
+    "oldCaptainReviewStatus": "Not reviewed",
+    "legacySourceStatus": "source_backed",
+    "nameMatchMethod": "penn_published_roster",
+    "notes": null
+   },
+   "sources": {
+    "primary": "Penn Athletics published season rosters",
+    "sourceUrls": [
+     "https://pennathletics.com/sports/womens-golf/roster/2015-16",
+     "https://pennathletics.com/sports/womens-golf/roster/2016-17",
+     "https://pennathletics.com/sports/womens-golf/roster/2017-18"
+    ],
+    "tags": [
+     "roster_archive",
+     "penn_athletics_published"
+    ]
+   }
+  }
+ ],
+ "verification": {
+  "expectedLetterYearRows": 0,
+  "actualLetterYearRows": 0,
+  "missingParsedLetterEntriesAfterMerge": [],
+  "checksumSha256OfMembersArray": "1165f30551512f596a522e1e0fc39721c06efed2756f31439aecb8b8016b9e81",
+  "rosterRowsIngested": 187
+ }
+}

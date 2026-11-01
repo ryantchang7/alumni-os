@@ -12,7 +12,12 @@ import {
   IVY_CHAMPIONSHIP_YEARS,
 } from '@/lib/program-history/penn-mens-golf'
 import { memberBookEntries } from '@/lib/member-book/data'
-import { isPublicMember, getMemberStartYear, getMemberEndYear } from '@/lib/member-book/helpers'
+import {
+  getMemberEndYear,
+  getMemberProgram,
+  getMemberStartYear,
+  isPublicMember,
+} from '@/lib/member-book/helpers'
 
 import type { Metadata } from 'next'
 
@@ -26,6 +31,11 @@ function membersForYear(year: number) {
   return memberBookEntries
     .filter((m) => {
       if (!isPublicMember(m)) return false
+      // NCAA_CHAMPIONSHIP_YEARS and IVY_CHAMPIONSHIP_YEARS on this page are
+      // the men's record book, so a women's member must never be listed
+      // under one of them. Women's honours get their own page when the
+      // women's record book is sourced.
+      if (getMemberProgram(m) !== 'mens') return false
       const s = getMemberStartYear(m)
       const e = getMemberEndYear(m)
       // letter winner whose career spans this academic year

@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Search, X } from 'lucide-react'
 import { slugToIndustry, memberHasIndustry } from '@/lib/industries'
 import { memberBookEntries } from '@/lib/member-book/data'
+import { isMultiProgram, livePrograms } from '@/lib/teams/programs'
 import MemberBadges from '@/components/MemberBadges'
 import FoundersWall from '@/components/FoundersWall'
 import type { FounderEntry, FamilySupporterEntry } from '@/lib/founders'
@@ -200,17 +201,21 @@ function BookHeader({
 }) {
   const subtitle = useSiteContent(
     'member-book.subtitle',
-    'A registry of Penn Men’s Golf members, across generations.',
+    isMultiProgram()
+      ? 'A registry of Penn Golf members, men’s and women’s, across generations.'
+      : 'A registry of Penn Men’s Golf members, across generations.',
   )
   const scopeNote = useSiteContent(
     'member-book.scope-note',
-    "Penn Women's Golf coming as we bring the data in.",
+    isMultiProgram()
+      ? "Women's golf from 2004-05, the earliest season Penn Athletics publishes. The program went varsity in 1999, so its first five years are still missing."
+      : "Penn Women's Golf coming as we bring the data in.",
   )
   const rangeLabel =
     earliestYear && latestYear ? `${earliestYear}, ${latestYear}` : null
   return (
     <SectionEmblemHeader
-      eyebrow="Penn Men's Golf"
+      eyebrow={isMultiProgram() ? 'Penn Golf' : "Penn Men's Golf"}
       title="The Member Book"
       subtitle={subtitle}
       emblemSrc="/emblems/member-book.png"
@@ -370,7 +375,9 @@ function MemberBookPageInner() {
 
   const clearAll = () => setFilters(DEFAULT_PUBLIC_FILTERS)
   const hasActiveFilters =
-    filters.search !== '' || filters.era !== 'all'
+    filters.search !== '' ||
+    filters.era !== 'all' ||
+    (filters.program != null && filters.program !== 'all')
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
@@ -511,6 +518,33 @@ function MemberBookPageInner() {
                 the Family & Affiliate tab. */}
             {view === 'all' && (
               <div className="px-5 py-3.5 flex items-center gap-2 flex-wrap">
+                {isMultiProgram() && (
+                  <div
+                    className="flex flex-wrap items-center gap-1.5 mr-1 pr-3 border-r border-[rgba(180,168,150,0.45)]"
+                    data-testid="program-filter"
+                  >
+                    {[{ value: 'all' as const, label: 'All' },
+                      ...livePrograms().map((p) => ({ value: p.id, label: p.shortLabel })),
+                    ].map((o) => {
+                      const active = (filters.program ?? 'all') === o.value
+                      return (
+                        <button
+                          key={o.value}
+                          type="button"
+                          onClick={() => update('program', o.value)}
+                          aria-pressed={active}
+                          className={`px-3 py-1 text-[11px] font-semibold rounded-full border transition-colors ${
+                            active
+                              ? 'bg-[#990000] text-white border-[#990000]'
+                              : 'bg-[#fdfcf9] text-[#3d4a5c] border-[rgba(180,168,150,0.45)] hover:border-[#990000]/50'
+                          }`}
+                        >
+                          {o.label}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
                 <div className="flex flex-wrap gap-1.5" data-testid="era-filter">
                   {ERA_OPTIONS.map((o) => {
                     const active = o.value === filters.era

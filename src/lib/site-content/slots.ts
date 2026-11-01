@@ -378,14 +378,15 @@ Penn Men's Golf '28, Brookline, MA`,
     label: 'Member Book, subtitle',
     hint: 'The line right under "The Member Book" headline.',
     kind: 'longtext',
-    default: 'A registry of Penn Men’s Golf members, across generations.',
+    default: 'A registry of Penn Golf members, men’s and women’s, across generations.',
   },
   {
     id: 'member-book.scope-note',
     label: 'Member Book, scope note (italic)',
-    hint: 'Italic line below the subtitle. Use to communicate scope (e.g., women\'s coming).',
+    hint: 'Italic line below the subtitle. Use it to say what the book does not yet cover.',
     kind: 'text',
-    default: "Penn Women's Golf coming as we bring the data in.",
+    default:
+      "Women's golf from 2004-05, the earliest season Penn publishes. The program went varsity in 1999, so the first five years are still missing.",
   },
 
   // ── Login + parent signup ──────────────────────────────────────────────
