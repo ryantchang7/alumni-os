@@ -41,7 +41,7 @@ const TIERS: TierConfig[] = [
     name: 'Supporting Member',
     price: 10,
     tagline:
-      'Membership in the Clubhouse. 70% goes to Penn Men’s Golf, 30% keeps the platform running.',
+      'Membership in the Clubhouse. 70% goes to Penn Golf, 30% keeps the platform running.',
     features: [
       'Direct support for the program',
       'Supporting Member status on your profile',
@@ -59,7 +59,7 @@ const TIERS: TierConfig[] = [
       'Recognized as a Founding Member of the Clubhouse. Twice the support for the program.',
     features: [
       'Everything in Supporting Member',
-      '2x the contribution to Penn Men’s Golf',
+      '2x the contribution to Penn Golf',
       'Founding Member badge on your profile',
       'Listed on the Clubhouse founders wall',
       'First look at new features',
@@ -115,7 +115,7 @@ const MERCH: { name: string; svg: React.ReactNode }[] = [
 export default function SupportClient({ status }: Props) {
   const heroBlurb = useSiteContent(
     'support.hero-blurb',
-    'The Penn Golf Clubhouse is the private network for the program. 70% of every membership and contribution goes directly to Penn Men’s Golf; the remaining 30% maintains the platform. Cancel anytime.',
+    'The Penn Golf Clubhouse is the private network for the program. 70% of every membership and contribution goes directly to Penn Golf; the remaining 30% maintains the platform. Cancel anytime.',
   )
   const [configured, setConfigured] = useState<boolean | null>(null)
   const [foundingConfigured, setFoundingConfigured] = useState(false)
