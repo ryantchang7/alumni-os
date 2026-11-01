@@ -1,31 +1,17 @@
-export interface TraditionAchievement {
-  label: string
-  value: string       // the big number shown first
-  detail: string      // years or subcategory line
-  description: string
-  featured?: boolean  // first/primary card. Penn red number accent
-}
-
-export interface ProgramTradition {
-  title: string
-  subtitle: string
-  achievements: TraditionAchievement[]
-}
-
 /**
- * A distinction that is not a counted appearance.
+ * Penn Men's Golf, the record book.
  *
- * Kept separate from `achievements` on purpose. Everything in that list is a
- * tally the program can stand behind; this is for the things that belong in
- * the record book without being a number — hosting a championship, say. The
- * separation is what stops an unverified claim being quietly absorbed into a
- * count, which is the one mistake a record book cannot make.
+ * The shared shapes moved to ./types when the women's record book was added;
+ * they are re-exported here so existing imports keep working.
  */
-export interface ProgramHistoryNote {
-  year: number
-  title: string
-  detail: string
-}
+
+import type {
+  TraditionAchievement,
+  ProgramTradition,
+  ProgramHistoryNote,
+} from './types'
+
+export type { TraditionAchievement, ProgramTradition, ProgramHistoryNote }
 
 /**
  * Years Penn teams reached the NCAA Championships. The single source of

@@ -1,7 +1,9 @@
-// The Penn Men's Golf Hall of Fame.
+// The Penn Golf Hall of Fame, for either program.
 //
 // Render the canonical program achievements + cross-link to the Member Book
-// players whose careers overlap each championship year.
+// players whose careers overlap each championship year. `?program=womens`
+// switches books; without it this is the men's record, which is what every
+// existing link to this page expects.
 
 import Link from 'next/link'
 import { Trophy, Award } from 'lucide-react'
@@ -11,6 +13,14 @@ import {
   NCAA_CHAMPIONSHIP_YEARS,
   IVY_CHAMPIONSHIP_YEARS,
 } from '@/lib/program-history/penn-mens-golf'
+import {
+  PENN_WOMENS_GOLF_TRADITION,
+  PENN_WOMENS_GOLF_HISTORICAL_NOTES,
+  WOMENS_IVY_CHAMPIONSHIP_YEARS,
+  WOMENS_NCAA_REGIONAL_YEARS,
+  WOMENS_UNPUBLISHED_SEASONS,
+} from '@/lib/program-history/penn-womens-golf'
+import { isMultiProgram, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
 import { memberBookEntries } from '@/lib/member-book/data'
 import {
   getMemberEndYear,
@@ -27,15 +37,42 @@ export const metadata: Metadata = {
 }
 
 
-function membersForYear(year: number) {
+/**
+ * Each program's record book, so that no year grid can ever pull a name
+ * from the other program's members.
+ */
+const BOOKS = {
+  mens: {
+    tradition: PENN_GOLF_TRADITION,
+    notes: PENN_GOLF_HISTORICAL_NOTES,
+    ivyYears: IVY_CHAMPIONSHIP_YEARS as readonly number[],
+    postseasonYears: NCAA_CHAMPIONSHIP_YEARS as readonly number[],
+    postseasonTitle: 'NCAA Championships',
+    postseasonBlurb: 'Penn teams that reached the NCAA Championships stage.',
+    postseasonChip: 'NCAA',
+    blurb:
+      'Championships, postseason appearances, and individual honors from the Penn Golf record book, from the first NCAA appearance in 1947 to today.',
+  },
+  womens: {
+    tradition: PENN_WOMENS_GOLF_TRADITION,
+    notes: PENN_WOMENS_GOLF_HISTORICAL_NOTES,
+    ivyYears: WOMENS_IVY_CHAMPIONSHIP_YEARS as readonly number[],
+    postseasonYears: WOMENS_NCAA_REGIONAL_YEARS as readonly number[],
+    postseasonTitle: 'NCAA Regionals',
+    postseasonBlurb: 'Both of Penn’s postseason trips, each earned by winning the Ivy League.',
+    postseasonChip: 'Regional',
+    blurb:
+      'Championships and postseason appearances from the Penn Women’s Golf record book. The program went varsity in 1999, a century after the men.',
+  },
+} as const
+
+function membersForYear(year: number, program: ProgramId) {
   return memberBookEntries
     .filter((m) => {
       if (!isPublicMember(m)) return false
-      // NCAA_CHAMPIONSHIP_YEARS and IVY_CHAMPIONSHIP_YEARS on this page are
-      // the men's record book, so a women's member must never be listed
-      // under one of them. Women's honours get their own page when the
-      // women's record book is sourced.
-      if (getMemberProgram(m) !== 'mens') return false
+      // A year grid belongs to one program's record book, so a member of the
+      // other program must never be listed under it.
+      if (getMemberProgram(m) !== program) return false
       const s = getMemberStartYear(m)
       const e = getMemberEndYear(m)
       // letter winner whose career spans this academic year
@@ -47,9 +84,16 @@ function membersForYear(year: number) {
     .slice(0, 10)
 }
 
-export default function HallOfFamePage() {
-  const ivyRosters = IVY_CHAMPIONSHIP_YEARS.map((year) => ({ year, members: membersForYear(year) }))
-  const ncaaRosters = NCAA_CHAMPIONSHIP_YEARS.map((year) => ({ year, members: membersForYear(year) }))
+export default async function HallOfFamePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ program?: string }>
+}) {
+  const { program: raw } = await searchParams
+  const program: ProgramId = raw === 'womens' && PROGRAMS.womens.live ? 'womens' : 'mens'
+  const book = BOOKS[program]
+  const ivyRosters = book.ivyYears.map((year) => ({ year, members: membersForYear(year, program) }))
+  const ncaaRosters = book.postseasonYears.map((year) => ({ year, members: membersForYear(year, program) }))
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
@@ -70,7 +114,7 @@ export default function HallOfFamePage() {
         />
         <div className="max-w-[1320px] mx-auto relative">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8a84b]/85 mb-4">
-            Penn Men&rsquo;s Golf · The Record Book
+            {PROGRAMS[program].label} · The Record Book
           </p>
           <h1
             className="text-white text-4xl sm:text-6xl font-medium tracking-tight leading-[1.05] font-heading"
@@ -79,16 +123,36 @@ export default function HallOfFamePage() {
           </h1>
           <span className="block w-12 h-[2px] bg-[#c8a84b] mt-5 mb-5" />
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed">
-            Championships, postseason appearances, and individual honors from the
-            Penn Golf record book, from the first NCAA appearance in 1947 to today.
+            {book.blurb}
           </p>
+          {isMultiProgram() && (
+            <div className="mt-7 flex flex-wrap gap-2">
+              {(['mens', 'womens'] as const).map((id) => {
+                const active = id === program
+                return (
+                  <Link
+                    key={id}
+                    href={id === 'mens' ? '/hall-of-fame' : '/hall-of-fame?program=womens'}
+                    aria-current={active ? 'page' : undefined}
+                    className={`px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] rounded-full border transition-colors ${
+                      active
+                        ? 'bg-[#c8a84b] text-[#0a1628] border-[#c8a84b]'
+                        : 'text-white/75 border-white/25 hover:border-[#c8a84b]/70 hover:text-white'
+                    }`}
+                  >
+                    {PROGRAMS[id].shortLabel}
+                  </Link>
+                )
+              })}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Top-level achievement plaques */}
       <div className="max-w-[1320px] mx-auto px-6 sm:px-8 -mt-8 relative z-10 pb-4">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-          {PENN_GOLF_TRADITION.achievements.map((a) => {
+          {book.tradition.achievements.map((a) => {
             const featured = a.featured
             return (
               <div
@@ -143,11 +207,13 @@ export default function HallOfFamePage() {
               Ivy League Champions
             </h2>
             <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8a84b]">
-              4 crowns
+              {book.ivyYears.length} {book.ivyYears.length === 1 ? 'crown' : 'crowns'}
             </span>
           </div>
           <p className="text-sm text-ink-muted mb-6">
-            The four seasons Penn took the Ivy. Letter winners from each championship team.
+            {program === 'mens'
+              ? 'The seasons Penn took the Ivy. Letter winners from each championship team.'
+              : 'The seasons Penn took the Ivy. Members whose careers span each championship team.'}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {ivyRosters.map(({ year, members }) => (
@@ -193,15 +259,13 @@ export default function HallOfFamePage() {
             <h2
               className="text-2xl text-[#0a1628] font-medium font-heading"
             >
-              NCAA Championships
+              {book.postseasonTitle}
             </h2>
             <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000]">
-              {NCAA_CHAMPIONSHIP_YEARS.length} appearances
+              {book.postseasonYears.length} appearances
             </span>
           </div>
-          <p className="text-sm text-ink-muted mb-6">
-            Penn teams that reached the NCAA Championships stage.
-          </p>
+          <p className="text-sm text-ink-muted mb-6">{book.postseasonBlurb}</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {ncaaRosters.map(({ year, members }) => (
               <div
@@ -215,7 +279,7 @@ export default function HallOfFamePage() {
                   {year}
                 </p>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-                  NCAA
+                  {book.postseasonChip}
                 </p>
                 {members.length > 0 && (
                   <p className="text-[11px] text-ink-muted mt-2">
@@ -226,9 +290,9 @@ export default function HallOfFamePage() {
             ))}
           </div>
 
-          {PENN_GOLF_HISTORICAL_NOTES.length > 0 && (
+          {book.notes.length > 0 && (
             <div className="mt-4 space-y-2">
-              {PENN_GOLF_HISTORICAL_NOTES.map((note) => (
+              {book.notes.map((note) => (
                 <div
                   key={note.year}
                   className="bg-white border-l-2 border-[#c8a84b] border-y border-r border-y-[rgba(180,168,150,0.4)] border-r-[rgba(180,168,150,0.4)] rounded-r-xl px-5 py-4"
@@ -247,6 +311,26 @@ export default function HallOfFamePage() {
             </div>
           )}
         </section>
+
+        {/* The gap in the women's record, stated rather than hidden. */}
+        {program === 'womens' && (
+          <section
+            className="bg-white border-l-2 border-[#990000] border-y border-r border-y-[rgba(180,168,150,0.4)] border-r-[rgba(180,168,150,0.4)] rounded-r-xl px-6 py-5"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05)' }}
+          >
+            <h2 className="text-[#0a1628] text-base font-medium font-heading">
+              Five seasons are missing
+            </h2>
+            <p className="text-[13px] text-ink-muted leading-relaxed mt-2 max-w-[70ch]">
+              Penn Athletics publishes women&rsquo;s golf rosters from 2004-05 onward.
+              The program&rsquo;s first five varsity seasons &mdash;{' '}
+              {WOMENS_UNPUBLISHED_SEASONS.join(', ')} &mdash; are not online anywhere,
+              so the players on them are absent from the Member Book. Stacy Kress, the
+              program&rsquo;s first recruit, is one of them. If you played in those
+              years, or you kept a program or a clipping, that is what closes the gap.
+            </p>
+          </section>
+        )}
 
         {/* Footer link to Member Book */}
         <div

@@ -51,6 +51,9 @@ const MATCH_PLAY_RECAP =
  */
 const WOMENS_STROKE_PLAY =
   'https://pennathletics.com/news/2026/10/13/womens-golf-takes-fourth-at-st-andrews.aspx'
+/** The women's match play, the same Wednesday and the same opponent. */
+const WOMENS_MATCH_PLAY =
+  'https://pennathletics.com/news/2026/10/14/womens-golf-women-defeat-washington-in-match-play-at-st-andrews.aspx'
 
 export default function ScotlandPage() {
   const hero = photo('old-course-evening')
@@ -217,7 +220,11 @@ export default function ScotlandPage() {
             </a>
           </div>
 
-          <FullEntryNote previewUrl={TRIP_PREVIEW} womensRecapUrl={WOMENS_STROKE_PLAY} />
+          <FullEntryNote
+            previewUrl={TRIP_PREVIEW}
+            womensRecapUrl={WOMENS_STROKE_PLAY}
+            womensMatchUrl={WOMENS_MATCH_PLAY}
+          />
         </section>
 
         {/* ------------------------------------------------- the old course */}

@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Penn Golf Clubhouse',
     short_name: 'Penn Golf',
-    description: "The private alumni network for Penn Men's Golf.",
+    description: 'The private alumni network for Penn Golf, men’s and women’s.',
     id: '/',
     start_url: '/',
     scope: '/',

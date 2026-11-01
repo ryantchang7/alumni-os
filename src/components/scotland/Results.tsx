@@ -256,9 +256,11 @@ export function OldCourseCard() {
 export function FullEntryNote({
   previewUrl,
   womensRecapUrl,
+  womensMatchUrl,
 }: {
   previewUrl: string
   womensRecapUrl: string
+  womensMatchUrl: string
 }) {
   return (
     <aside className="mt-14 max-w-[820px] border-t border-[rgba(180,168,150,0.5)] pt-8 sm:mt-16">
@@ -278,14 +280,16 @@ export function FullEntryNote({
         <p>
           They were fourth after two rounds on the Jubilee at 52 over, with
           Sophia Lu Penn&rsquo;s low scorer at eight over and Juliet Oh opening
-          with a 70. Then they played Washington in match play on the Old
-          Course, the same Wednesday the men did.
+          with a 70. That put them into the same consolation match the men were
+          in: Washington, on the Old Course, the same Wednesday.
         </p>
         <p className="text-[#0a1628]">
           <strong className="font-semibold">
-            Penn&rsquo;s women finished third. The men finished fourth.
+            The women beat Washington 4-2. The men lost to them 5-1.
           </strong>{' '}
-          Texas won both championships.
+          Sophia Lu, Juliet Oh, Adrienne Ahn-Upton and Madeleine Zang all won
+          their matches. Penn&rsquo;s women finished third in the tournament and
+          the men finished fourth. Texas won both championships.
         </p>
       </div>
       <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
@@ -304,6 +308,14 @@ export function FullEntryNote({
           className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#990000] hover:underline"
         >
           The women&rsquo;s stroke play rounds &#8599;
+        </a>
+        <a
+          href={womensMatchUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#990000] hover:underline"
+        >
+          The women&rsquo;s match play win &#8599;
         </a>
       </div>
     </aside>

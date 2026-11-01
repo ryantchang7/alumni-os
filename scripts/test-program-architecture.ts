@@ -26,6 +26,15 @@ import {
   IVY_CHAMPIONSHIP_YEARS,
 } from '../src/lib/program-history/penn-mens-golf'
 import {
+  PENN_WOMENS_GOLF_TRADITION,
+  PENN_WOMENS_GOLF_HISTORICAL_NOTES,
+  WOMENS_IVY_CHAMPIONSHIP_YEARS,
+  WOMENS_NCAA_REGIONAL_YEARS,
+  WOMENS_UNPUBLISHED_SEASONS,
+  WOMENS_FOUNDED_YEAR,
+} from '../src/lib/program-history/penn-womens-golf'
+import { getCaptainEmails, isCaptain } from '../src/lib/captains'
+import {
   PROGRAMS,
   DEFAULT_TEAM_SLUG,
   livePrograms,
@@ -125,6 +134,42 @@ ok("program 'mens' and 'womens' partition the book",
   `${withMens.length} + ${withWomens.length} = ${baseline.length}`)
 ok("program 'womens' now returns the women's book", withWomens.length === 64, `${withWomens.length}`)
 ok("program 'mens' still returns 340 public men", withMens.length === 340, `${withMens.length}`)
+
+console.log('\n── Each program syncs from its own Penn Athletics sources ──')
+ok('men and women have different schedule pages',
+  PROGRAMS.mens.scheduleUrl !== PROGRAMS.womens.scheduleUrl)
+ok('men and women have different news feeds',
+  PROGRAMS.mens.newsFeedUrl !== PROGRAMS.womens.newsFeedUrl)
+ok("the women's schedule points at womens-golf",
+  PROGRAMS.womens.scheduleUrl.includes('womens-golf'))
+ok("the women's feed points at wgolf",
+  PROGRAMS.womens.newsFeedUrl.endsWith('wgolf'))
+ok("the men's sources are unchanged",
+  PROGRAMS.mens.scheduleUrl.includes('mens-golf') && PROGRAMS.mens.newsFeedUrl.endsWith('mgolf'))
+
+console.log('\n── The women\'s record book stands on its own ──')
+ok('women have two Ivy titles', WOMENS_IVY_CHAMPIONSHIP_YEARS.length === 2,
+  WOMENS_IVY_CHAMPIONSHIP_YEARS.join(' · '))
+ok('women have two NCAA Regional appearances', WOMENS_NCAA_REGIONAL_YEARS.length === 2)
+ok('no women\'s year is borrowed from the men\'s book',
+  WOMENS_IVY_CHAMPIONSHIP_YEARS.every(y => !IVY_CHAMPIONSHIP_YEARS.includes(y as never)))
+ok('the men\'s book is untouched: 4 Ivy, 6 NCAA',
+  IVY_CHAMPIONSHIP_YEARS.length === 4 && NCAA_CHAMPIONSHIP_YEARS.length === 6)
+ok('every women\'s achievement carries a year line',
+  PENN_WOMENS_GOLF_TRADITION.achievements.every(a => a.detail.trim().length > 0))
+ok('exactly one women\'s achievement is featured',
+  PENN_WOMENS_GOLF_TRADITION.achievements.filter(a => a.featured).length === 1)
+ok('the women\'s notes are dated', PENN_WOMENS_GOLF_HISTORICAL_NOTES.every(n => n.year > 1900))
+ok('women went varsity in 1999, a century after the men', WOMENS_FOUNDED_YEAR === 1999)
+ok('the five unpublished seasons are named', WOMENS_UNPUBLISHED_SEASONS.length === 5,
+  WOMENS_UNPUBLISHED_SEASONS.join(', '))
+
+console.log('\n── A women\'s captain can be granted access without touching the men\'s ──')
+ok('the women\'s team has a captain list', Array.isArray(getCaptainEmails('penn-womens-golf')))
+ok('nobody runs the women\'s side yet', getCaptainEmails('penn-womens-golf').length === 0)
+ok('the men\'s captain is still set', getCaptainEmails('penn-mens-golf').length > 0)
+ok('the men\'s captain is NOT a women\'s captain',
+  !isCaptain(getCaptainEmails('penn-mens-golf')[0], 'penn-womens-golf'))
 
 console.log(`\n${pass.length} passed, ${fail.length} failed`)
 if (fail.length) {

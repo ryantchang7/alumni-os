@@ -31,7 +31,7 @@ export default function OpengraphImage() {
             marginBottom: 28,
           }}
         >
-          Penn Men&apos;s Golf · St Andrews · October 2026
+          Penn Golf · St Andrews · October 2026
         </div>
         <div
           style={{

@@ -653,7 +653,7 @@ function MemberBookPageInner() {
                       <p
                         className="text-[#0a1628] text-2xl font-heading"
                       >
-                        Family and longtime supporters of Penn Men&rsquo;s Golf.
+                        Family and longtime supporters of Penn Golf.
                       </p>
                     </div>
                     <Link
@@ -686,7 +686,7 @@ function MemberBookPageInner() {
                   </p>
                   <p className="text-[13px] text-ink-muted max-w-md mx-auto mb-6">
                     {parents.length === 0
-                      ? 'Parents, family, and longtime supporters of Penn Men’s Golf can join the Clubhouse too.'
+                      ? 'Parents, family, and longtime supporters of Penn Golf can join the Clubhouse too.'
                       : 'Try a different name.'}
                   </p>
                   <Link

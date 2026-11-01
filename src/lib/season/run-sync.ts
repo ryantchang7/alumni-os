@@ -20,6 +20,7 @@ import {
   type ReparseOutcome,
 } from '@/lib/season/sync-results'
 import { resolveStopLinks } from '@/lib/clippd/penn-tournaments'
+import { DEFAULT_PROGRAM_ID, type ProgramId } from '@/lib/teams/programs'
 import {
   fetchPennSchedule,
   planScheduleSync,
@@ -42,7 +43,11 @@ export interface SeasonSyncReport {
 
 export async function runSeasonSync(
   teamId: string,
-  { dryRun = false, reparse }: { dryRun?: boolean; reparse?: string } = {},
+  {
+    dryRun = false,
+    reparse,
+    program = DEFAULT_PROGRAM_ID,
+  }: { dryRun?: boolean; reparse?: string; program?: ProgramId } = {},
 ): Promise<SeasonSyncReport> {
   const {
     upsertTeamNewsItems,
@@ -57,7 +62,7 @@ export async function runSeasonSync(
   // 0. Schedule. Only ever adds, and only an event that matches nothing
   //    already on the board. Runs before results so an event added here can
   //    pick up its result in the same pass.
-  const published = await fetchPennSchedule()
+  const published = await fetchPennSchedule(program)
   const scheduleAdded: string[] = []
   const existingStops = await getTravelStops(teamId)
   const { add, plan: schedulePlan } = planScheduleSync(existingStops, published)
@@ -77,7 +82,7 @@ export async function runSeasonSync(
   }
 
   // 1. News.
-  const fetched = await fetchPennGolfNews()
+  const fetched = await fetchPennGolfNews(program)
   let added = 0
   let total = 0
   if (fetched.length > 0 && !dryRun) {

@@ -27,8 +27,7 @@
 
 import { usEasternToday } from '@/lib/us-date'
 import type { TeamTravelStop } from '@/lib/store/types'
-
-const SCHEDULE_URL = 'https://pennathletics.com/sports/mens-golf/schedule'
+import { DEFAULT_PROGRAM_ID, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
 
 /** A pass that wants to add more than this has misread something. */
 export const MAX_ADDS_PER_RUN = 5
@@ -213,9 +212,11 @@ export function parsePennSchedule(html: string): PennScheduleEvent[] {
   return out.sort((a, b) => a.startDate.localeCompare(b.startDate))
 }
 
-export async function fetchPennSchedule(): Promise<PennScheduleEvent[]> {
+export async function fetchPennSchedule(
+  program: ProgramId = DEFAULT_PROGRAM_ID,
+): Promise<PennScheduleEvent[]> {
   try {
-    const res = await fetch(SCHEDULE_URL, {
+    const res = await fetch(PROGRAMS[program].scheduleUrl, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PennGolfClubhouse/1.0)' },
       cache: 'no-store',
     })

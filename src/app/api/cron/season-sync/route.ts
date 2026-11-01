@@ -22,12 +22,23 @@ import { checkCronAuth } from '@/lib/cron-auth'
 import { requireFounder } from '@/lib/auth/guards'
 import { alertFounders } from '@/lib/ops/alert'
 import { runSeasonSync } from '@/lib/season/run-sync'
+import { livePrograms } from '@/lib/teams/programs'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const TEAM_SLUG = 'penn-mens-golf'
-
+/**
+ * One pass per live program. Each program syncs from its own Penn Athletics
+ * schedule page and RSS feed, so the women's board never picks up a men's
+ * result and vice versa.
+ *
+ * A program whose team row does not exist yet is skipped and reported, not
+ * treated as a failure: the women's row is created separately, and until it
+ * is there is simply nothing to sync.
+ *
+ * `?teamSlug=` still runs exactly one program, which is what `?reparse=`
+ * needs, since a reparse targets one stop on one board.
+ */
 async function runJob(req: NextRequest) {
   if (!checkCronAuth(req)) {
     const gate = await requireFounder()
@@ -35,14 +46,41 @@ async function runJob(req: NextRequest) {
   }
   const dryRun = req.nextUrl.searchParams.get('dryRun') === '1'
   const reparse = req.nextUrl.searchParams.get('reparse')?.trim() || undefined
+  const onlySlug = req.nextUrl.searchParams.get('teamSlug')?.trim() || undefined
 
   const { getTeamBySlug } = await import('@/lib/store/local-store')
-  const teamSlug = req.nextUrl.searchParams.get('teamSlug') ?? TEAM_SLUG
-  const team = await getTeamBySlug(teamSlug)
-  if (!team) return NextResponse.json({ error: 'Team not found' }, { status: 404 })
 
-  const report = await runSeasonSync(team.id, { dryRun, reparse })
-  return NextResponse.json({ ok: true, dryRun, ...report })
+  const targets = onlySlug
+    ? livePrograms().filter((p) => p.slug === onlySlug)
+    : livePrograms()
+  if (onlySlug && targets.length === 0) {
+    return NextResponse.json({ error: 'Unknown team slug' }, { status: 404 })
+  }
+  if (reparse && targets.length > 1) {
+    return NextResponse.json(
+      { error: 'reparse needs one program; pass teamSlug=' },
+      { status: 400 },
+    )
+  }
+
+  const programs: Record<string, unknown> = {}
+  const skipped: string[] = []
+  for (const prog of targets) {
+    const team = await getTeamBySlug(prog.slug)
+    if (!team) {
+      skipped.push(prog.slug)
+      continue
+    }
+    programs[prog.id] = await runSeasonSync(team.id, { dryRun, reparse, program: prog.id })
+  }
+
+  if (Object.keys(programs).length === 0) {
+    return NextResponse.json(
+      { ok: false, error: 'No live program has a team row yet', skipped },
+      { status: 404 },
+    )
+  }
+  return NextResponse.json({ ok: true, dryRun, skipped, programs })
 }
 
 export async function GET(req: NextRequest) {

@@ -36,7 +36,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     label: 'Landing headline',
     hint: 'The big text on the splash page.',
     kind: 'text',
-    default: 'Penn Men’s Golf',
+    default: 'Penn Golf',
   },
   {
     id: 'landing.subtitle',
@@ -251,7 +251,7 @@ export const CONTENT_SLOTS: ContentSlot[] = [
     label: '/launch, hero eyebrow',
     hint: 'Small ALL CAPS line above the title on /launch.',
     kind: 'text',
-    default: "Penn Men's Golf · Clubhouse",
+    default: 'Penn Golf · Clubhouse',
   },
   {
     id: 'launch.hero-subtitle',
@@ -404,7 +404,7 @@ Penn Men's Golf '28, Brookline, MA`,
     hint: 'The opening paragraph on /parent-signup.',
     kind: 'longtext',
     default:
-      'Parents, family, and longtime affiliates of Penn Men’s Golf can claim a card and stay close to the program.',
+      'Parents, family, and longtime affiliates of Penn Golf, men’s and women’s, can claim a card and stay close to the program.',
   },
 
   // ── Landing splash extras ──────────────────────────────────────────────

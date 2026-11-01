@@ -1,7 +1,7 @@
 /**
- * Fetcher for Penn Athletics men's golf news. Primary source is the
- * Sidearm Sports RSS feed at:
- *   https://pennathletics.com/rss?path=mgolf
+ * Fetcher for Penn Athletics golf news, for either program. The source is the
+ * Sidearm Sports RSS feed, whose path comes from the program registry
+ * (mgolf for the men, wgolf for the women).
  *
  * The feed exposes title, link, pubDate, description (with embedded image),
  * and media:thumbnail / media:content / enclosure for the image URL.
@@ -11,7 +11,7 @@
  * we return [] rather than throwing so the cron run still 200s.
  */
 
-const FEED_URL = 'https://pennathletics.com/rss?path=mgolf'
+import { DEFAULT_PROGRAM_ID, PROGRAMS, type ProgramId } from '@/lib/teams/programs'
 
 export interface FetchedNewsItem {
   sourceUrl: string
@@ -21,7 +21,10 @@ export interface FetchedNewsItem {
   publishedAt?: string
 }
 
-export async function fetchPennGolfNews(): Promise<FetchedNewsItem[]> {
+export async function fetchPennGolfNews(
+  program: ProgramId = DEFAULT_PROGRAM_ID,
+): Promise<FetchedNewsItem[]> {
+  const FEED_URL = PROGRAMS[program].newsFeedUrl
   let xml: string
   try {
     const res = await fetch(FEED_URL, {

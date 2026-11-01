@@ -7,8 +7,10 @@ import {
   isPublicMember,
   getMemberPennGolfYears,
   getMemberHometownLabel,
+  getMemberProgram,
   isActiveMember,
 } from '@/lib/member-book/helpers'
+import { PROGRAMS } from '@/lib/teams/programs'
 import { findTeamStorePersonForBookEntry } from '@/lib/member-book/bridge'
 import { readStore, getTeamBySlug } from '@/lib/store/local-store'
 import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
@@ -177,7 +179,7 @@ export default async function MemberDetailPage({
             <span>Back to the Member Book</span>
           </Link>
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/70">
-            Penn Men&rsquo;s Golf
+            {PROGRAMS[getMemberProgram(member)].label}
           </p>
         </div>
       </div>
@@ -285,7 +287,7 @@ export default async function MemberDetailPage({
           {member.role === 'coach' ? (
             <Section title="Penn Golf">
               <p className="text-[14px] text-[#3d4a5c] leading-relaxed">
-                Currently leading Penn Men&rsquo;s Golf.
+                Currently leading {PROGRAMS[getMemberProgram(member)].label}.
               </p>
             </Section>
           ) : (
