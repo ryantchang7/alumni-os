@@ -125,7 +125,7 @@ export const PENN_WOMENS_GOLF_HONORS: ProgramHonorSeason[] = [
       },
       { name: 'Bridget O’Keefe', honor: 'Academic All-Ivy' },
     ],
-    note: 'Li was low Penn player in three of the four spring events and shared medalist honours at the Rutgers Invitational.',
+    note: 'Li was low Penn player in three of the four spring events and shared medalist honors at the Rutgers Invitational.',
   },
   {
     year: 2024,
@@ -142,7 +142,7 @@ export const PENN_WOMENS_GOLF_HONORS: ProgramHonorSeason[] = [
       { name: 'Julie Shin', honor: 'Second-Team All-Ivy', detail: 'Tied for 10th, 232, with a Championship-best eight birdies' },
       { name: 'Susan Xiao', honor: 'Second-Team All-Ivy', detail: 'Tied for 10th, 232' },
     ],
-    note: 'The first time in school history that five Penn women were honoured in the same year.',
+    note: 'The first time in school history that five Penn women were honored in the same year.',
   },
   {
     year: 2015,
@@ -197,7 +197,7 @@ export const PENN_WOMENS_GOLF_HISTORICAL_NOTES: ProgramHistoryNote[] = [
     title: 'The first Ivy League championship',
     detail:
       'Penn won the program\u2019s first Ivy League title in 2010, by 22 strokes, and reached an NCAA Regional for the first time. ' +
-      'Isabel Han and Tiffany Cheung were first-team All-Ivy that season and Lisette Vitter second team, the first time three Penn women were honoured in one year.',
+      'Isabel Han and Tiffany Cheung were first-team All-Ivy that season and Lisette Vitter second team, the first time three Penn women were honored in one year.',
   },
   {
     year: 2023,
