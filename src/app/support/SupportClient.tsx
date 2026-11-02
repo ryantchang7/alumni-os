@@ -77,7 +77,7 @@ const TIERS: TierConfig[] = [
     features: [
       'Family & Affiliate badge on your Member Book card',
       'Full access to follow rounds, events, and Moments',
-      'Direct support for Penn Men’s Golf',
+      'Direct support for Penn Golf',
       'Cancel anytime',
     ],
     cta: 'Support the program',
