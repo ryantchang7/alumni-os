@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation'
 import { Mail, Phone, ExternalLink, Lock } from 'lucide-react'
 import { auth } from '@/auth'
 import MemberAvatar from '@/components/MemberAvatar'
+import { livePrograms } from '@/lib/teams/programs'
+import type { Person, Team, TeamMembership } from '@/lib/store/types'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -21,16 +23,29 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
     getAllLinkedAccountsForTeam,
   } = await import('@/lib/store/local-store')
 
-  const team = await getTeamBySlug('penn-mens-golf')
-  if (!team) notFound()
-
-  const people = await getPeopleForTeam(team.id)
-  const person = people.find(p => p.id === id)
-  if (!person) notFound()
-
-  const memberships = await getTeamMembershipsForTeam(team.id)
-  const membership = memberships.find(m => m.personId === person.id)
-  if (!membership) notFound()
+  // Find the member in their OWN program, rather than assuming the men's.
+  // This page was hardcoded to `penn-mens-golf`, so every one of the eight
+  // women's cards on the women's Team Room and /meet-the-team linked to a
+  // 404. Registry order decides it for anyone who appears in both, which is
+  // deterministic and matches how the rest of the app breaks that tie.
+  let team: Team | null = null
+  let person: Person | undefined
+  let membership: TeamMembership | undefined
+  for (const program of livePrograms()) {
+    const candidate = await getTeamBySlug(program.slug)
+    if (!candidate) continue
+    const found = (await getPeopleForTeam(candidate.id)).find(p => p.id === id)
+    if (!found) continue
+    const m = (await getTeamMembershipsForTeam(candidate.id)).find(
+      x => x.personId === found.id,
+    )
+    if (!m) continue
+    team = candidate
+    person = found
+    membership = m
+    break
+  }
+  if (!team || !person || !membership) notFound()
 
   if (!membership.publishedToNetwork) notFound()
 

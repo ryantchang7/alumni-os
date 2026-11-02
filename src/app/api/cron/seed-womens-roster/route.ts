@@ -15,8 +15,11 @@
  *   exists, using the store's own `normalizeName`, so it cannot duplicate
  *   anyone who is already there under either program.
  * - It creates a TeamMembership only when that person has none on the
- *   women's team. It never edits a membership that already exists, so it
- *   cannot overwrite anything a captain has since corrected.
+ *   women's team. The one field it will set on an existing membership is
+ *   `publishedToNetwork`, and only from unset/false to true: the first run
+ *   left it unset, which made every woman's profile page 404 even though
+ *   her card was on the Team Room. It never clears the flag and never edits
+ *   anything else, so it cannot overwrite a captain's correction.
  * - It touches only the women's team row.
  *
  * Auth: Authorization: Bearer <CRON_SECRET>, or a founder session.
@@ -63,6 +66,7 @@ async function runJob(req: NextRequest) {
   const now = new Date().toISOString()
   const addedPeople: string[] = []
   const addedMemberships: string[] = []
+  const published: string[] = []
   const alreadyThere: string[] = []
 
   for (const entry of roster) {
@@ -87,7 +91,16 @@ async function runJob(req: NextRequest) {
       (m) => m.personId === person!.id && m.teamId === team.id,
     )
     if (existing) {
-      alreadyThere.push(entry.displayName)
+      // The flag the profile page gates on. Their roster facts are already
+      // public on the Team Room, /meet-the-team and the Member Book, so this
+      // reveals nothing new; it only makes the detail page reachable, as it
+      // is for every man on the roster.
+      if (existing.publishedToNetwork !== true) {
+        if (!dryRun) existing.publishedToNetwork = true
+        published.push(entry.displayName)
+      } else {
+        alreadyThere.push(entry.displayName)
+      }
       continue
     }
 
@@ -97,6 +110,7 @@ async function runJob(req: NextRequest) {
       teamId: team.id,
       memberRole: 'current_player',
       memberStatus: 'imported',
+      publishedToNetwork: true,
       classYearEstimate: entry.profile.classYearEstimate ?? undefined,
       classLabel: entry.profile.latestRosterClass ?? undefined,
       hometown: entry.profile.hometown ?? undefined,
@@ -113,7 +127,10 @@ async function runJob(req: NextRequest) {
     addedMemberships.push(entry.displayName)
   }
 
-  if (!dryRun && (addedPeople.length > 0 || addedMemberships.length > 0)) {
+  if (
+    !dryRun &&
+    (addedPeople.length > 0 || addedMemberships.length > 0 || published.length > 0)
+  ) {
     await writeStore(store)
   }
 
@@ -123,6 +140,7 @@ async function runJob(req: NextRequest) {
     rosterSize: roster.length,
     addedPeople,
     addedMemberships,
+    published,
     alreadyThere,
   })
 }
