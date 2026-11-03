@@ -39,6 +39,12 @@ import { requireFounder } from '@/lib/auth/guards'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import { PROGRAMS } from '@/lib/teams/programs'
 import type { AlumniSpotlight, ClubhouseGathering } from '@/lib/store/types'
+import {
+  isExampleGathering,
+  isHiddenGathering,
+  isExpiredExampleGathering,
+} from '@/lib/seed-data/example-gatherings'
+import { isPastGathering } from '@/lib/gatherings/date'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -186,11 +192,41 @@ async function runJob(req: NextRequest) {
       })
     : await mutateStore(apply)
 
+  /**
+   * What an approved member actually sees on each board.
+   *
+   * `/api/gatherings` answers `{gatherings: []}` to anyone not approved, so
+   * querying it signed out reports an empty board whether or not one is
+   * empty. That is how "upcoming gatherings is zero" got into the board
+   * briefing. These counts come from the store, through the same predicates
+   * the API applies, so they are the real numbers.
+   */
+  const boards: Record<string, unknown> = {}
+  for (const prog of [PROGRAMS.mens, PROGRAMS.womens]) {
+    const t = await getTeamBySlug(prog.slug)
+    if (!t) {
+      boards[prog.id] = { error: 'no team row' }
+      continue
+    }
+    const visible = snapshot.clubhouseGatherings
+      .filter(g => g.teamId === t.id && g.status !== 'closed' && !isHiddenGathering(g.id))
+      .map(g => ({ ...g, isExample: isExampleGathering(g.id, g.isExample) }))
+      .filter(g => !isExpiredExampleGathering(g))
+    const upcoming = visible.filter(g => !isPastGathering(g))
+    boards[prog.id] = {
+      visible: visible.length,
+      upcoming: upcoming.length,
+      upcomingReal: upcoming.filter(g => !g.isExample).length,
+      titles: upcoming.map(g => `${g.isExample ? '[example] ' : ''}${g.title} · ${g.dateText}`),
+    }
+  }
+
   return NextResponse.json({
     ok: true,
     dryRun,
     gatheringsInStore: snapshot.clubhouseGatherings.length,
     mensTeamId: team.id,
+    boards,
     ...result,
   })
 
