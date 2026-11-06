@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/team/travel',
     '/meet-the-team',
     '/hall-of-fame',
+    '/club-years',
     '/the-course',
     '/19th-hole',
     '/career-room',

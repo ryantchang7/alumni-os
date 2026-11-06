@@ -228,6 +228,16 @@ function BookHeader({
           {scopeNote}
         </p>
       )}
+      {/* The book runs 1930 onward with a decade missing from the middle of
+          it. Saying so here is the only place anyone looking at the roster
+          would think to ask, and the people who can fix it are not members
+          yet, because they are not in the book to claim. */}
+      <Link
+        href="/club-years"
+        className="mt-2 inline-flex items-center gap-2 text-[12px] sm:text-[12.5px] text-[#c8a84b] hover:text-white transition-colors underline underline-offset-4 decoration-[#c8a84b]/40 hover:decoration-white"
+      >
+        1983 to 1992 is missing, the club years &rarr;
+      </Link>
       <div className="mt-4" data-testid="member-book-stats">
         <HeroPlaque value={members} label="Members" />
         {rangeLabel && (
