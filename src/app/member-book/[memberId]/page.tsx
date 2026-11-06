@@ -161,10 +161,15 @@ export default async function MemberDetailPage({
   // Carry the card through sign-in so they don't have to find themselves
   // twice. /account/setup redirects anon to login itself, but passing next=
   // keeps the bookId across the OAuth round-trip.
-  const claimHref = storeMatch
-    ? `/alumni/profile/${storeMatch.personId}?teamSlug=${TEAM_SLUG}`
-    : `/login?next=${encodeURIComponent(`/account/setup?bookId=${member.id}`)}`
-  const claimLabel = storeMatch ? 'Update Profile' : 'Claim your card'
+  // This pair is only ever rendered in the branch where the viewer is neither
+  // the owner nor a signed-in member, so it always routes through sign-in.
+  // It used to read `storeMatch ? 'Update Profile'`, which offered a stranger
+  // the edit screen for somebody else's card.
+  const claimHref = `/login?next=${encodeURIComponent(`/account/setup?bookId=${member.id}`)}`
+  const claimLabel = 'Claim your card'
+  // A card with an account behind it has an owner. Asking a visitor whether
+  // it is them reads as a site that does not know its own members.
+  const claimedBySomeoneElse = !!storeMatch?.accountId && !isOwner
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
@@ -516,6 +521,26 @@ export default async function MemberDetailPage({
                   Track your requests &rarr;
                 </Link>
               </div>
+            </div>
+          ) : claimedBySomeoneElse ? (
+            <div className="px-7 sm:px-10 py-8 bg-[#fdfcf9] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p className="text-[#0a1628] text-base font-medium font-heading inline-flex items-center gap-2">
+                  <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]" />
+                  {member.displayName.split(' ')[0]} is in the Clubhouse
+                </p>
+                <p className="text-[12.5px] text-ink-muted mt-1 max-w-md">
+                  Claim your own card and you can send {member.displayName.split(' ')[0]} a
+                  request directly.
+                </p>
+              </div>
+              <Link
+                href={claimHref}
+                data-testid="member-detail-claim-cta"
+                className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
+              >
+                Find your card &rarr;
+              </Link>
             </div>
           ) : (
             <div className="px-7 sm:px-10 py-8 bg-[#fdfcf9] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

@@ -62,5 +62,12 @@ export async function GET() {
     hasCity,
     hasAvailability,
     hasFirstPost,
+    // What makes a card worth landing on for another member. Separate from
+    // the three above, which are about getting started: four of eighteen
+    // members have filled in any of these at all, which is why the Member
+    // Book now nudges its own readers about their own card.
+    hasPhoto: !!enrichment?.photoUrl?.trim(),
+    hasRole: !!(enrichment?.currentRole?.trim() || enrichment?.currentCompany?.trim()),
+    hasBio: !!enrichment?.alumniBio?.trim(),
   })
 }

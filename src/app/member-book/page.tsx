@@ -10,6 +10,8 @@ import { memberBookEntries } from '@/lib/member-book/data'
 import { isMultiProgram, livePrograms } from '@/lib/teams/programs'
 import MemberBadges from '@/components/MemberBadges'
 import FoundersWall from '@/components/FoundersWall'
+import RecentlyJoined from '@/components/RecentlyJoined'
+import ProfileNudge from '@/components/ProfileNudge'
 import type { FounderEntry, FamilySupporterEntry } from '@/lib/founders'
 import type { BadgeId } from '@/lib/badges'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
@@ -75,11 +77,15 @@ function RegistryEntry({
   index,
   badges,
   photoUrl,
+  claimed,
 }: {
   member: MemberBookEntry
   index: number
   badges?: BadgeId[]
   photoUrl?: string | null
+  /** Someone has this card. Asking them "Is this you?" reads as a site that
+   * does not know who its own members are. */
+  claimed?: boolean
 }) {
   const years = getMemberPennGolfYears(member)
   const hometown = getMemberHometownLabel(member)
@@ -134,9 +140,16 @@ function RegistryEntry({
             </span>
           ) : null}
         </div>
-        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-70 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-          Is this you? &rarr;
-        </p>
+        {claimed ? (
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#2d6a4f] mt-4 inline-flex items-center gap-1.5">
+            <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]" />
+            In the Clubhouse
+          </p>
+        ) : (
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-70 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+            Is this you? &rarr;
+          </p>
+        )}
       </Link>
     </motion.div>
   )
@@ -276,6 +289,9 @@ function MemberBookPageInner() {
   const [photosByBookId, setPhotosByBookId] = useState<Record<string, string>>({})
   const [industryByPersonId, setIndustryByPersonId] = useState<Record<string, string>>({})
   const [bookIdToPersonId, setBookIdToPersonId] = useState<Record<string, string>>({})
+  // Public, ids only. /api/player/profiles is approved-members-only, so it
+  // cannot tell a signed-out visitor which cards are already taken.
+  const [claimedBookIds, setClaimedBookIds] = useState<Set<string>>(new Set())
   const [parents, setParents] = useState<ParentEntry[]>([])
   const [founders, setFounders] = useState<FounderEntry[]>([])
   const [familySupporters, setFamilySupporters] = useState<FamilySupporterEntry[]>([])
@@ -327,6 +343,13 @@ function MemberBookPageInner() {
         setIndustryByPersonId(nextIndustry)
         setBookIdToPersonId(nextBookIdToPerson)
         setParents(nextParents)
+      })
+      .catch(() => {})
+
+    fetch('/api/member-book/claimed', { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (Array.isArray(d?.bookIds)) setClaimedBookIds(new Set(d.bookIds as string[]))
       })
       .catch(() => {})
 
@@ -604,6 +627,16 @@ function MemberBookPageInner() {
             )}
           </div>
 
+          {/* Who has arrived lately, and the viewer's own unfinished card.
+              Both only on the default view: once someone is searching, they
+              are looking for a person, not for news. */}
+          {view === 'all' && !hasActiveFilters && (
+            <>
+              <ProfileNudge />
+              <RecentlyJoined photosByBookId={photosByBookId} />
+            </>
+          )}
+
           {/* Founders Wall, only on the All Members view. */}
           {view === 'all' && founders.length > 0 && (
             <div className="mb-7">
@@ -644,6 +677,7 @@ function MemberBookPageInner() {
                         index={i}
                         badges={badgesByBookId[m.id]}
                         photoUrl={photosByBookId[m.id]}
+                        claimed={claimedBookIds.has(m.id)}
                       />
                     ))}
                   </div>

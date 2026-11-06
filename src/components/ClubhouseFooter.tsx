@@ -28,7 +28,7 @@ export default function ClubhouseFooter() {
         <p className="text-[10.5px] text-ink-muted tracking-[0.06em]">
           Built by{' '}
           <a
-            href="https://www.linkedin.com/in/ryantchang/"
+            href="https://ryantchang.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#0a1628] hover:text-[#990000] hover:underline transition-colors"
