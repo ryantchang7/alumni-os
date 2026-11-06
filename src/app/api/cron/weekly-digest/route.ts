@@ -176,7 +176,7 @@ async function runJob(req: NextRequest) {
 
   const clubhouseUrl =
     process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
-  const { subject, html } = renderWeeklyDigest({
+  const baseDigest = {
     teamName: team.teamName,
     weekOf: formatWeekOf(now),
     result,
@@ -188,7 +188,27 @@ async function runJob(req: NextRequest) {
     moments,
     newsItems,
     clubhouseUrl: `${clubhouseUrl}/player`,
-  })
+  }
+  // The shared copy. Used for the hasContent gate and the dry-run preview;
+  // each recipient is rendered again below with their own card's gaps.
+  const { subject, html } = renderWeeklyDigest(baseDigest)
+
+  /**
+   * What this member's own card is still missing. Empty once it is done, so
+   * the nudge stops on its own rather than nagging a finished profile.
+   */
+  const profileGapsFor = (personId?: string): string[] => {
+    if (!personId) return []
+    const e = store.personEnrichments.find(
+      x => x.teamId === team.id && x.personId === personId,
+    )
+    const gaps: string[] = []
+    if (!e?.photoUrl?.trim()) gaps.push('a photo')
+    if (!(e?.currentRole?.trim() || e?.currentCompany?.trim())) gaps.push('what you do now')
+    if (!e?.city?.trim()) gaps.push('your city')
+    if (!e?.alumniBio?.trim()) gaps.push('a line about yourself')
+    return gaps
+  }
 
   // Clubhouse activity is what justifies the email. News alone doesn't —
   // counting it meant a dead week still sent "A quiet week at the Clubhouse"
@@ -241,7 +261,23 @@ async function runJob(req: NextRequest) {
       skipped.push(account.email)
       continue
     }
-    const res = await sendEmail({ to: account.email, subject, html })
+    // Rendered per recipient so the "Your card" section names their own
+    // gaps. Everything else in the email is identical.
+    const gaps = profileGapsFor(account.linkedPersonId)
+    const personal = gaps.length
+      ? renderWeeklyDigest({
+          ...baseDigest,
+          profileGaps: gaps,
+          profileUrl: account.linkedPersonId
+            ? `${clubhouseUrl}/alumni/profile/${account.linkedPersonId}?teamSlug=${teamSlug}`
+            : `${clubhouseUrl}/account/profile`,
+        })
+      : { subject, html }
+    const res = await sendEmail({
+      to: account.email,
+      subject: personal.subject,
+      html: personal.html,
+    })
     if (res.ok) {
       sentTo.push(account.email)
       if (!res.skipped) await stampDigestSent(account.id)

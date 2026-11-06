@@ -426,6 +426,16 @@ export function renderWeeklyDigest(input: {
   moments: DigestMoment[]
   newsItems: DigestNewsItem[]
   clubhouseUrl: string
+  /**
+   * What this particular reader's own card is still missing, in plain words
+   * ("a photo", "your city"). Empty for a finished card, and for anyone the
+   * caller chooses not to nudge. Six of twenty-nine members have filled in
+   * anything at all, and the on-site prompt only reaches the ones who come
+   * back, so the nudge has to travel with the email.
+   */
+  profileGaps?: string[]
+  /** Deep link into this reader's own profile editor. */
+  profileUrl?: string
 }): { subject: string; html: string } {
   const CAP = 3
 
@@ -595,6 +605,24 @@ export function renderWeeklyDigest(input: {
       sec(
         input.newMembers.length === 1 ? 'New in the book' : 'New in the book',
         li(names) + more(input.newMembers.length - 6, 'claimed a card'),
+      ),
+    )
+  }
+
+  // The reader's own card, straight after everyone else's arrival.
+  if (input.profileGaps && input.profileGaps.length > 0) {
+    const g = input.profileGaps.map(escapeHtml)
+    const list =
+      g.length === 1 ? g[0] : `${g.slice(0, -1).join(', ')} and ${g[g.length - 1]}`
+    sections.push(
+      sec(
+        'Your card',
+        li(
+          `Yours is still missing ${list}. It is what another member sees before they decide whether to reach out.`,
+        ) +
+          `<p style="margin:10px 0 0 0;"><a href="${escapeHtml(
+            input.profileUrl ?? input.clubhouseUrl,
+          )}" style="font-size:13px;font-weight:600;color:#990000;text-decoration:none;">Finish your card &rarr;</a></p>`,
       ),
     )
   }
