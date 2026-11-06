@@ -52,7 +52,7 @@ async function runJob(req: NextRequest) {
   const claimedPersonIds = new Set(claimed.map(a => a.linkedPersonId!))
 
   /** Did this account do anything beyond claiming a card? */
-  const didSomething = (accountId: string, personId: string) => {
+  const didSomething = (accountId: string, personId: string, accountEmail: string) => {
     const enrichment = store.personEnrichments.find(e => e.personId === personId)
     return {
       profile: !!(
@@ -66,7 +66,12 @@ async function runJob(req: NextRequest) {
       commented: store.momentComments.some(c => c.fromAccountId === accountId),
       rsvped: store.clubhouseGatheringRequests.some(r => r.fromAccountId === accountId),
       hosted: store.clubhouseGatherings.some(g => g.hostPersonId === personId),
-      asked: store.openRequests.some(r => r.fromAccountId === accountId),
+      // The real Ask feature writes playerAlumniRequests. openRequests is the
+      // separate "I'm travelling, who can host" board, so counting only that
+      // would report Ask as unused while it was being used.
+      asked: store.playerAlumniRequests.some(
+        r => r.alumniPersonId === personId || r.fromEmail === accountEmail,
+      ),
       messaged: store.chatMessages.some(m => m.fromAccountId === accountId),
       questioned: store.teamQuestions.some(q => q.askerAccountId === accountId),
     }
@@ -76,7 +81,7 @@ async function runJob(req: NextRequest) {
   const erasArrived: Record<string, number> = {}
 
   for (const a of claimed) {
-    const d = didSomething(a.id, a.linkedPersonId!)
+    const d = didSomething(a.id, a.linkedPersonId!, (a.email ?? '').toLowerCase())
     if (d.profile) funnel.profile++
     if (d.posted || d.commented) funnel.posted++
     if (d.rsvped || d.hosted) funnel.rsvped++
@@ -141,7 +146,8 @@ async function runJob(req: NextRequest) {
     content: {
       moments: store.moments.length,
       gatherings: store.clubhouseGatherings.length,
-      openRequests: store.openRequests.length,
+      asksSent: store.playerAlumniRequests.length,
+      travelOpenRequests: store.openRequests.length,
       teamQuestions: store.teamQuestions.length,
       chatMessages: store.chatMessages.length,
       spotlights: store.alumniSpotlights.length,
