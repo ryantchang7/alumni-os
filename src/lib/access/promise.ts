@@ -6,17 +6,17 @@
  * nothing at all in the email and on /login and /account/setup). A skeptical
  * alum reads several of these surfaces in one sitting, so they have to agree.
  *
- * The approver phrasing is deliberately person-neutral: the product used to
- * say "the captain" while the launch email said "I approve every member
- * myself". Ryan reviews the claims and isn't the captain, so neither was
- * right everywhere.
+ * It used to say "the captain", which was wrong, and then "by hand", which
+ * was true but anonymous. It names Ryan now, at his request: a stranger
+ * deciding whether to hand over their name trusts a person more than a
+ * process, and he is in fact the person doing it.
  */
 
 /** What happens after you claim, in one sentence fragment. */
-export const APPROVAL_PROMISE = 'Reviewed by hand, usually within a day.'
+export const APPROVAL_PROMISE = 'Reviewed by Ryan Chang, usually within a day.'
 
-/** Sentence-fragment form for inline use ("...approved by hand, usually within a day"). */
-export const APPROVER_PHRASE = 'Every claim is reviewed by hand'
+/** Sentence-fragment form for inline use ("...reviewed by Ryan Chang"). */
+export const APPROVER_PHRASE = 'Every claim is reviewed by Ryan Chang'
 
 /** The address on product surfaces. Matches the inbox that receives claim mail. */
 export const SUPPORT_EMAIL = 'rtchang@sas.upenn.edu'

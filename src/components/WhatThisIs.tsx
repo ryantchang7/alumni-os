@@ -9,10 +9,16 @@
  * never said what the thing was, what claiming meant, or why they would
  * bother. The invite loop leaked at the last step.
  *
- * Four steps, in the order they happen, in plain words. The animation is
- * there to make the order legible, one step at a time, rather than to
- * decorate: the gold rail draws down as the steps arrive, and the whole
- * thing holds still for anyone who asked their system not to animate.
+ * Four steps, in the order they happen, in the shortest words that still
+ * say the thing. An earlier draft explained at length that this "is the part
+ * a group chat and an alumni directory both fail at" and claimed most people
+ * find three or four teammates they had lost track of, which nobody had
+ * measured. Both are gone. An alum deciding whether to bother reads two
+ * lines, not an essay.
+ *
+ * The animation is there to make the order legible one step at a time rather
+ * than to decorate: the gold rail draws down as the steps arrive, and the
+ * whole thing holds still for anyone who asked their system not to animate.
  */
 
 import Link from 'next/link'
@@ -21,20 +27,20 @@ import { PlayCircle } from 'lucide-react'
 
 const STEPS: { title: string; body: string }[] = [
   {
-    title: 'Your card already exists',
-    body: 'Every Penn golfer is in here, built from Penn’s own records going back to 1930. You are not filling in a profile from scratch. Yours is already written, it just has nobody standing behind it.',
+    title: 'Your card is already here',
+    body: 'We built it from Penn\u2019s own records, going back to 1930. Nothing to fill out. You just say it\u2019s you.',
   },
   {
-    title: 'Claiming it takes about a minute',
-    body: 'Sign in, confirm which card is yours. A person checks it by hand, usually the same day, which is the only reason the room stays genuinely Penn Golf.',
+    title: 'Claiming takes a minute',
+    body: 'Sign in, pick your card. Ryan Chang reviews it by hand, usually the same day.',
   },
   {
-    title: 'Then you can see who you played with',
-    body: 'The Clubhouse works out whose roster years overlapped yours and shows you which of them are already here. Most people find three or four they had lost track of.',
+    title: 'See who you played with',
+    body: 'We match your roster years against everyone else\u2019s, so you get the list of your teammates who are already in.',
   },
   {
-    title: 'And ask them for something real',
-    body: 'A warm intro, advice on a move you are weighing, a round when you are passing through their city. That is the part a group chat and an alumni directory both fail at.',
+    title: 'Ask them for something',
+    body: 'An intro. Advice on a job. A round when you\u2019re in their city.',
   },
 ]
 
@@ -57,11 +63,10 @@ export default function WhatThisIs({
     >
       <p className="eyebrow text-[#c8a84b] mb-3">What this is</p>
       <h2 className="text-white text-2xl sm:text-[28px] font-medium font-heading leading-tight max-w-[24ch]">
-        Every Penn golfer, in one place.
+        Every Penn golfer, one place.
       </h2>
       <p className="text-white/60 text-[13.5px] leading-relaxed mt-3 max-w-[58ch]">
-        Not a directory and not a mailing list. A room with the people you
-        actually played with in it.
+        Not a directory. The people you actually played with.
       </p>
 
       <div className="relative mt-8 pl-7">

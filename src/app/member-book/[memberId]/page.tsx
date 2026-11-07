@@ -18,6 +18,7 @@ import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
 import MessageMemberButton from '@/components/MessageMemberButton'
 import WhatThisIs from '@/components/WhatThisIs'
+import InviteMemberButton from '@/components/InviteMemberButton'
 
 // Detail pages render on demand so we don't ship 337 prebuilt HTML payloads
 // in the deploy artifact (caused vercel CLI Upload aborted at ~29 MB).
@@ -125,6 +126,11 @@ export default async function MemberDetailPage({
   // promises "member content is restricted to approved members"); logged-out
   // visitors see only the pre-claim book record.
   const isApprovedViewer = isOwner || !!session?.linkedPersonId
+  // The reader's own name, so an invite they send from here says who it is
+  // from. The session's Google display name rather than the canonical roster
+  // name: this page does not otherwise read the store, and it is not worth a
+  // whole store read to prefer "Robert" over "Rob".
+  const viewerName = session?.linkedPersonId ? (session.user?.name ?? null) : null
   const enr = isApprovedViewer ? storeMatch?.enrichment : undefined
   const detailsGated = !isApprovedViewer && !!storeMatch?.enrichment
   const role = enr?.currentRole ?? member.profile.currentRole ?? null
@@ -542,6 +548,28 @@ export default async function MemberDetailPage({
               >
                 Find your card &rarr;
               </Link>
+            </div>
+          ) : isApprovedViewer ? (
+            /* A member on somebody else's unclaimed card. They know who they
+               are, and they are the only person here who can get this card
+               filled, so the ask is to pull them in rather than "is this
+               you?". 370 of 404 cards are unclaimed. */
+            <div className="px-7 sm:px-10 py-8 bg-[#fdfcf9] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+              <div>
+                <p className="text-[#0a1628] text-base font-medium font-heading">
+                  {member.displayName.split(' ')[0]} is not in yet.
+                </p>
+                <p className="text-[12.5px] text-ink-muted mt-1 max-w-md">
+                  If you know {member.displayName.split(' ')[0]}, a note from you
+                  is the thing that works. We have no email for this card.
+                </p>
+              </div>
+              <InviteMemberButton
+                name={member.displayName}
+                bookId={member.id}
+                viewerName={viewerName}
+                variant="block"
+              />
             </div>
           ) : (
             <div className="px-7 sm:px-10 py-8 bg-[#fdfcf9] border-t border-[rgba(180,168,150,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

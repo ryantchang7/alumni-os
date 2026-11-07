@@ -37,6 +37,7 @@ import type {
 import { BOOK_PROOF } from '@/lib/proof'
 import { APPROVAL_PROMISE } from '@/lib/access/promise'
 import { useSession } from 'next-auth/react'
+import InviteMemberButton from '@/components/InviteMemberButton'
 
 const ERA_OPTIONS: { value: EraFilter; label: string }[] = [
   { value: 'all', label: 'All Eras' },
@@ -78,6 +79,8 @@ function RegistryEntry({
   badges,
   photoUrl,
   claimed,
+  viewerIsMember,
+  viewerName,
 }: {
   member: MemberBookEntry
   index: number
@@ -86,6 +89,9 @@ function RegistryEntry({
   /** Someone has this card. Asking them "Is this you?" reads as a site that
    * does not know who its own members are. */
   claimed?: boolean
+  /** The reader is already in. "Is this you?" is the wrong question for them. */
+  viewerIsMember?: boolean
+  viewerName?: string | null
 }) {
   const years = getMemberPennGolfYears(member)
   const hometown = getMemberHometownLabel(member)
@@ -145,6 +151,12 @@ function RegistryEntry({
             <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]" />
             In the Clubhouse
           </p>
+        ) : viewerIsMember ? (
+          <InviteMemberButton
+            name={member.displayName}
+            bookId={member.id}
+            viewerName={viewerName}
+          />
         ) : (
           <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#990000] mt-4 opacity-70 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
             Is this you? &rarr;
@@ -292,6 +304,11 @@ function MemberBookPageInner() {
   // Public, ids only. /api/player/profiles is approved-members-only, so it
   // cannot tell a signed-out visitor which cards are already taken.
   const [claimedBookIds, setClaimedBookIds] = useState<Set<string>>(new Set())
+  // Whether the reader is already a member, and their name. A member looking
+  // at an unclaimed card is the one person who can do something about it, so
+  // they get "Invite them" where a visitor gets "Is this you?".
+  const [viewerIsMember, setViewerIsMember] = useState(false)
+  const [viewerName, setViewerName] = useState<string | null>(null)
   const [parents, setParents] = useState<ParentEntry[]>([])
   const [founders, setFounders] = useState<FounderEntry[]>([])
   const [familySupporters, setFamilySupporters] = useState<FamilySupporterEntry[]>([])
@@ -350,6 +367,14 @@ function MemberBookPageInner() {
       .then(r => (r.ok ? r.json() : null))
       .then(d => {
         if (Array.isArray(d?.bookIds)) setClaimedBookIds(new Set(d.bookIds as string[]))
+      })
+      .catch(() => {})
+
+    fetch('/api/account/onboarding-status', { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        setViewerIsMember(!!d?.linked)
+        setViewerName(typeof d?.viewerName === 'string' ? d.viewerName : null)
       })
       .catch(() => {})
 
@@ -678,6 +703,8 @@ function MemberBookPageInner() {
                         badges={badgesByBookId[m.id]}
                         photoUrl={photosByBookId[m.id]}
                         claimed={claimedBookIds.has(m.id)}
+                        viewerIsMember={viewerIsMember}
+                        viewerName={viewerName}
                       />
                     ))}
                   </div>

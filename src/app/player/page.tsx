@@ -750,7 +750,7 @@ function ClubhouseInner() {
                     Claim pending
                   </p>
                   <p className="text-sm text-white/80 mt-1">
-                    Every claim is reviewed by hand, usually within a day.
+                    Every claim is reviewed by Ryan Chang, usually within a day.
                     You&rsquo;ll get an email the moment you&rsquo;re in.
                   </p>
                 </div>

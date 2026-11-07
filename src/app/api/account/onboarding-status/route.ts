@@ -32,6 +32,10 @@ export async function GET() {
   if (!team) return NextResponse.json({ linked: false })
 
   const enrichment = await getPersonEnrichment(session.linkedPersonId, team.id)
+  // The viewer's own name, so an invite they send from the Member Book can
+  // say who it came from.
+  const viewerStore = await readStore()
+  const viewerPerson = viewerStore.people.find(p => p.id === session.linkedPersonId)
   const hasCity = !!enrichment?.city?.trim()
   const hasAvailability = !!(
     enrichment?.openToCoffee ||
@@ -59,6 +63,8 @@ export async function GET() {
     // So the checklist can link straight to the editor instead of bouncing
     // members through the /account/profile dashboard.
     personId: session.linkedPersonId,
+    viewerName: viewerPerson?.canonicalName ?? session.user?.name ?? null,
+    teamSlug,
     hasCity,
     hasAvailability,
     hasFirstPost,
@@ -66,7 +72,10 @@ export async function GET() {
     // the three above, which are about getting started: four of eighteen
     // members have filled in any of these at all, which is why the Member
     // Book now nudges its own readers about their own card.
-    hasPhoto: !!enrichment?.photoUrl?.trim(),
+    // Counts the Google avatar, which is what the site already renders when
+    // no photoUrl is set. Keyed on photoUrl alone, this told members to add a
+    // photo while their picture was on screen above the message.
+    hasPhoto: !!(enrichment?.photoUrl?.trim() || session.user?.image?.trim()),
     hasRole: !!(enrichment?.currentRole?.trim() || enrichment?.currentCompany?.trim()),
     hasBio: !!enrichment?.alumniBio?.trim(),
   })

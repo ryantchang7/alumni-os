@@ -10,19 +10,23 @@
  * are looking at everyone else's.
  *
  * Deliberately not another checklist. It names the specific missing pieces,
- * links straight into the editor, disappears the moment the card is complete,
- * and can be dismissed for good.
+ * disappears the moment the card is complete, and can be dismissed for good.
+ *
+ * It used to link into the editor, which is a thousand-line form on another
+ * page, and almost nobody came back from it. The three fields it is asking
+ * for now open in place.
  */
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { X } from 'lucide-react'
+import QuickProfileForm from './QuickProfileForm'
 
 const DISMISS_KEY = 'pgProfileNudgeDismissed'
 
 interface Status {
   linked?: boolean
   personId?: string | null
+  teamSlug?: string | null
   hasPhoto?: boolean
   hasRole?: boolean
   hasCity?: boolean
@@ -32,6 +36,8 @@ interface Status {
 export default function ProfileNudge() {
   const [status, setStatus] = useState<Status | null>(null)
   const [dismissed, setDismissed] = useState(true)
+  const [open, setOpen] = useState(false)
+  const [done, setDone] = useState(false)
 
   useEffect(() => {
     try {
@@ -45,7 +51,7 @@ export default function ProfileNudge() {
       .catch(() => {})
   }, [])
 
-  if (dismissed || !status?.linked) return null
+  if (dismissed || !status?.linked || done) return null
 
   const missing = [
     { done: status.hasPhoto, label: 'a photo' },
@@ -61,10 +67,6 @@ export default function ProfileNudge() {
     labels.length === 1
       ? labels[0]
       : `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1]}`
-
-  const href = status.personId
-    ? `/alumni/profile/${status.personId}?teamSlug=penn-mens-golf`
-    : '/account/profile'
 
   const close = () => {
     setDismissed(true)
@@ -95,16 +97,28 @@ export default function ProfileNudge() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pr-6">
         <p className="text-[14px] text-[#3d4a5c] leading-relaxed max-w-[62ch]">
           You are in the book, but your card is still missing {list}. It is what
-          another member sees before they decide whether to reach out, and it
-          takes about a minute.
+          another member sees before they decide whether to reach out.
         </p>
-        <Link
-          href={href}
-          className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap"
-        >
-          Finish your card &rarr;
-        </Link>
+        {!open && (
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#990000] hover:underline whitespace-nowrap text-left"
+          >
+            Fill it in here &rarr;
+          </button>
+        )}
       </div>
+
+      {open && status.personId && (
+        <div className="mt-5 pt-5 border-t border-[#c8a84b]/25">
+          <QuickProfileForm
+            personId={status.personId}
+            teamSlug={status.teamSlug ?? 'penn-mens-golf'}
+            onDone={() => setTimeout(() => setDone(true), 1800)}
+          />
+        </div>
+      )}
     </section>
   )
 }

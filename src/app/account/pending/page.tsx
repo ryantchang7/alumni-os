@@ -19,7 +19,7 @@ export default function ClaimPendingPage() {
           Your claim is in.
         </h1>
         <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-2">
-          Every claim is reviewed by hand so the Penn Golf family stays
+          Every claim is reviewed by Ryan Chang so the Penn Golf family stays
           close, no bots, no bulk approvals.
         </p>
         <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-8">
