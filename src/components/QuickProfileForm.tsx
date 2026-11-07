@@ -65,19 +65,28 @@ export default function QuickProfileForm({ personId, teamSlug, initial, onDone }
     setSaving(true)
     setError(null)
     try {
+      // Only what they actually typed. The API treats a present field as an
+      // instruction and writes '' straight over whatever was there, and this
+      // form opens with empty boxes rather than the member's current values,
+      // so sending the whole set would quietly wipe a city somebody had
+      // already filled in from the long editor. Clearing a field is that
+      // editor's job; this one only ever adds.
+      const payload: Record<string, string> = { personId }
+      const put = (k: string, v: string) => {
+        if (v.trim()) payload[k] = v.trim()
+      }
+      put('currentRole', role)
+      put('currentCompany', company)
+      put('city', city)
+      put('state', state)
+      put('alumniBio', bio)
+
       const res = await fetch(
         `/api/alumni/self-profile?teamSlug=${encodeURIComponent(teamSlug)}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            personId,
-            currentRole: role,
-            currentCompany: company,
-            city,
-            state,
-            alumniBio: bio,
-          }),
+          body: JSON.stringify(payload),
         },
       )
       if (!res.ok) {
