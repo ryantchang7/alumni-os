@@ -1,10 +1,11 @@
 /**
  * Open Requests strip — compact cards for member-posted
- * "I'm in town and want to play / grab coffee" notes.
+ * "I'm in town and want to play / grab coffee" notes, and for the one
+ * request that is not about a place at all: an intro.
  *
  * Renders on:
  *   /the-course   → intent='round'
- *   /19th-hole    → intent in ('drinks','coffee','dinner')
+ *   /19th-hole    → every other intent, including 'intro'
  *
  * Server pages pass the filtered list. The strip is presentational; it
  * does not fetch. The viewer's own requests ARE included (pinned first,
@@ -13,7 +14,7 @@
  */
 
 import Link from 'next/link'
-import { Beer, Coffee, Flag, MapPin, Plane, Utensils, Plus } from 'lucide-react'
+import { Beer, Coffee, Flag, Handshake, MapPin, Plane, Utensils, Plus } from 'lucide-react'
 import type { OpenRequest, OpenRequestIntent } from '@/lib/store/types'
 import RespondButton from './RespondButton'
 import CloseOpenRequestButton from './CloseOpenRequestButton'
@@ -23,6 +24,7 @@ const INTENT_ICON: Record<OpenRequestIntent, typeof Flag> = {
   drinks: Beer,
   coffee: Coffee,
   dinner: Utensils,
+  intro: Handshake,
 }
 
 const INTENT_LABEL: Record<OpenRequestIntent, string> = {
@@ -30,6 +32,7 @@ const INTENT_LABEL: Record<OpenRequestIntent, string> = {
   drinks: 'Drinks',
   coffee: 'Coffee',
   dinner: 'Dinner',
+  intro: 'Intro',
 }
 
 function formatDateWindow(start?: string, end?: string): string | null {

@@ -1,13 +1,26 @@
 /**
- * Your Era — the teammates whose roster years overlapped the viewer's.
+ * Your Era — the teammates whose roster years overlapped the viewer's — and
+ * Your People, for everyone that cannot serve.
  *
  * GET /api/player/your-era
- * → { eraLabel, hereCount, teammates } for the signed-in approved member.
+ * → { eraLabel, hereCount, teammates, neighbours } for the signed-in
+ *   approved member.
  *
- * "Played together" = roster-year intervals intersect. Members with no
- * roster years on file (family, affiliates) get an empty list, not an
- * error. Unclaimed members appear only when publishedToNetwork — the same
- * visibility rule as the Member Book.
+ * "Played together" = roster-year intervals intersect. That is the whole
+ * matching logic the Clubhouse had, and it is empty for a Penn alum who
+ * plays golf but never played for Penn: no roster years, so no era, so no
+ * teammates, so nothing personal on the page they land on. Since that door
+ * opened on 2026-11-07 they are the fastest-growing kind of member here.
+ *
+ * `neighbours` matches on the things those members do share: the course
+ * they play, the city they live in, the work they do. It is computed for
+ * everyone, because a 1994 alum with two teammates in the book also
+ * benefits, but it is the only list a non-roster member gets.
+ *
+ * Unclaimed members appear in `teammates` when publishedToNetwork — the
+ * same visibility rule as the Member Book. They never appear in
+ * `neighbours`, which is built entirely from enrichment fields that only a
+ * claimed member has filled in.
  */
 
 import { NextResponse } from 'next/server'
@@ -23,6 +36,19 @@ import {
   getMemberEndYear,
   getMemberProgram,
 } from '@/lib/member-book/helpers'
+
+/** Someone matched on where they play, live or work rather than on years. */
+interface Neighbour {
+  personId: string
+  name: string
+  photoUrl: string | null
+  /** Why they are here: "Plays out of Merion" / "In Chicago" / "In finance" */
+  reason: string
+  /** Higher is a closer match; the list is sorted by it. */
+  score: number
+  accountId: string | null
+  bookId: string | null
+}
 
 interface EraTeammate {
   personId: string
@@ -64,15 +90,6 @@ export async function GET() {
   const viewerBookEntry = viewer.bookEntry
   const myStart = viewer.startYear
   const myEnd = viewer.endYear
-  if (!myStart || !myEnd) {
-    return NextResponse.json({
-      eraLabel: null,
-      hereCount: 0,
-      viewerName: viewer.canonicalName,
-      teamSlug: viewer.program.slug,
-      teammates: [],
-    })
-  }
 
   const accountByPerson = new Map(
     store.accounts
@@ -82,6 +99,74 @@ export async function GET() {
   const enrichByPerson = new Map(
     store.personEnrichments.filter(e => e.teamId === team.id).map(e => [e.personId, e]),
   )
+
+  // ── Your People ──────────────────────────────────────────────────────
+  // Built before the era check, because the member who needs it most is the
+  // one the era check is about to send away empty-handed.
+  const norm = (v?: string) => v?.trim().toLowerCase() ?? ''
+  const me = viewerPersonId ? enrichByPerson.get(viewerPersonId) : undefined
+  const myCourse = norm(me?.homeCourse)
+  const myCity = norm(me?.city)
+  const myState = norm(me?.state)
+  const myIndustry = norm(me?.industry)
+
+  const neighbours: Neighbour[] = []
+  for (const [personId, account] of accountByPerson) {
+    if (personId === viewerPersonId) continue
+    const e = enrichByPerson.get(personId)
+    if (!e || e.visibleToPlayers === false) continue
+    const person = store.people.find(p => p.id === personId)
+    if (!person) continue
+
+    // Course first: two Penn people out of the same club is the most useful
+    // thing this product can tell either of them. Then city, then state,
+    // then work. One reason is shown, the strongest.
+    let score = 0
+    let reason = ''
+    if (myCourse && norm(e.homeCourse) === myCourse) {
+      score = 4
+      reason = `Plays out of ${e.homeCourse}`
+    } else if (myCity && norm(e.city) === myCity) {
+      score = 3
+      reason = `In ${e.city}`
+    } else if (myIndustry && norm(e.industry) === myIndustry) {
+      score = 2
+      reason = `In ${e.industry}`
+    } else if (myState && norm(e.state) === myState) {
+      score = 1
+      reason = `In ${e.state}`
+    }
+    if (score === 0) continue
+
+    const bookEntry = findBookEntryForTeamStorePerson(person.canonicalName)
+    neighbours.push({
+      personId,
+      name: person.canonicalName,
+      photoUrl: e.photoUrl ?? account.image ?? null,
+      reason,
+      score,
+      accountId: account.id,
+      bookId: bookEntry?.id ?? null,
+    })
+  }
+  neighbours.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
+
+  // A member with nothing on their own card matches nobody, which is the
+  // honest answer and is what the "finish your card" nudge is for.
+  const viewerHasMatchableCard = !!(myCourse || myCity || myIndustry || myState)
+
+  if (!myStart || !myEnd) {
+    return NextResponse.json({
+      eraLabel: null,
+      hereCount: 0,
+      viewerName: viewer.canonicalName,
+      teamSlug: viewer.program.slug,
+      teammates: [],
+      neighbours,
+      viewerHasMatchableCard,
+    })
+  }
+
 
   const teammates: EraTeammate[] = []
   const seenPersonIds = new Set<string>()
@@ -177,5 +262,7 @@ export async function GET() {
     // named alum writing to people who knew him.
     viewerName: viewer.canonicalName,
     teammates,
+    neighbours,
+    viewerHasMatchableCard,
   })
 }

@@ -13,6 +13,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { openGaps, gapReason, type ProfileGap } from '@/lib/profile/gaps'
 import { checkCronAuth } from '@/lib/cron-auth'
 import { requireFounder } from '@/lib/auth/guards'
 import { deriveClassLabel } from '@/lib/class-year'
@@ -226,17 +227,20 @@ async function runJob(req: NextRequest) {
    * What this member's own card is still missing. Empty once it is done, so
    * the nudge stops on its own rather than nagging a finished profile.
    */
-  const profileGapsFor = (personId?: string): string[] => {
+  // Ordered by what it costs to leave blank, so the email can name the top
+  // one's consequence rather than listing four chores. Shared with the
+  // Member Book nudge so the two never say different things.
+  const profileGapsFor = (personId?: string): ProfileGap[] => {
     if (!personId) return []
     const e = store.personEnrichments.find(
       x => x.teamId === team.id && x.personId === personId,
     )
-    const gaps: string[] = []
-    if (!e?.photoUrl?.trim()) gaps.push('a photo')
-    if (!(e?.currentRole?.trim() || e?.currentCompany?.trim())) gaps.push('what you do now')
-    if (!e?.city?.trim()) gaps.push('your city')
-    if (!e?.alumniBio?.trim()) gaps.push('a line about yourself')
-    return gaps
+    return openGaps({
+      photo: !!e?.photoUrl?.trim(),
+      role: !!(e?.currentRole?.trim() || e?.currentCompany?.trim()),
+      city: !!e?.city?.trim(),
+      bio: !!e?.alumniBio?.trim(),
+    })
   }
 
   // Clubhouse activity is what justifies the email. News alone doesn't —
@@ -302,7 +306,8 @@ async function runJob(req: NextRequest) {
             ...baseDigest,
             viewerIsNew,
             viewerPersonId: account.linkedPersonId,
-            profileGaps: gaps,
+            profileGaps: gaps.map(g => g.label),
+            profileGapReason: gapReason(gaps),
             profileUrl: account.linkedPersonId
               ? `${clubhouseUrl}/alumni/profile/${account.linkedPersonId}?teamSlug=${teamSlug}`
               : `${clubhouseUrl}/account/profile`,

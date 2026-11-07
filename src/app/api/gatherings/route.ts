@@ -191,7 +191,10 @@ async function notifyNearbyMembers(
     const { selectNearbyRecipients, placeLabel, TYPE_LABEL } = await import('@/lib/gatherings/nearby')
 
     const store = await readStore()
-    let recipients
+    let recipients: typeof store.accounts
+    // 'nearby' may widen to the whole club while the club is small; the email
+    // says something different when it does, so the mode travels with it.
+    let reach: 'nearby' | 'everyone' = 'nearby'
     if (mode === 'invite') {
       // Named guests only. Book ids are not store person ids, so resolve them
       // by name the same way the tee-sheet picker does.
@@ -209,16 +212,18 @@ async function notifyNearbyMembers(
         a => a.linkedPersonId && wanted.has(a.linkedPersonId) && a.id !== hostAccountId,
       )
     } else {
-      recipients = selectNearbyRecipients({
+      const picked = selectNearbyRecipients({
         accounts: store.accounts,
         enrichments: store.personEnrichments,
         memberships: store.teamMemberships,
         gathering,
         hostAccountId,
       })
+      recipients = picked.recipients
+      reach = picked.reach
     }
     console.log(
-      `[gatherings] "${gathering.title}" (${mode}) in ${gathering.city ?? ''} ${gathering.state ?? ''}: notifying ${recipients.length}`,
+      `[gatherings] "${gathering.title}" (${mode}/${reach}) in ${gathering.city ?? ''} ${gathering.state ?? ''}: notifying ${recipients.length}`,
     )
     if (recipients.length === 0) return
 
@@ -255,6 +260,7 @@ async function notifyNearbyMembers(
           dateText: gathering.dateText,
           timeText: gathering.timeText ?? null,
           description: gathering.description ?? null,
+          clubWide: mode === 'nearby' && reach === 'everyone',
           url,
         })
         return { to: a.email, subject, html }

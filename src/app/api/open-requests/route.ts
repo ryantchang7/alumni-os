@@ -28,6 +28,7 @@ import {
   ABBREV_TO_CODE,
 } from '@/lib/map/state-lookup'
 import type { OpenRequestIntent } from '@/lib/store/types'
+import { widenReach, dropCommunityMuted } from '@/lib/gatherings/nearby'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -36,6 +37,7 @@ const INTENT_LABEL: Record<OpenRequestIntent, string> = {
   drinks: 'drinks',
   coffee: 'coffee',
   dinner: 'dinner',
+  intro: 'an intro',
 }
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 /** yyyy-mm-dd → "Aug 3" (no Date() so no timezone drift). */
@@ -45,7 +47,7 @@ function fmtDate(iso: string): string {
   return mi >= 0 && mi < 12 ? `${MONTHS[mi]} ${Number(d)}` : iso
 }
 
-const VALID_INTENTS: OpenRequestIntent[] = ['round', 'drinks', 'coffee', 'dinner']
+const VALID_INTENTS: OpenRequestIntent[] = ['round', 'drinks', 'coffee', 'dinner', 'intro']
 function parseIntents(raw: string | null): OpenRequestIntent[] | undefined {
   if (!raw) return undefined
   const parts = raw
@@ -94,7 +96,10 @@ export async function POST(request: Request) {
 
   const intent = typeof body.intent === 'string' ? body.intent : ''
   if (!(VALID_INTENTS as string[]).includes(intent)) {
-    return NextResponse.json({ error: 'intent must be round/drinks/coffee/dinner' }, { status: 400 })
+    return NextResponse.json(
+      { error: 'intent must be round/drinks/coffee/dinner/intro' },
+      { status: 400 },
+    )
   }
 
   const note = typeof body.note === 'string' ? body.note.trim() : ''
@@ -153,7 +158,11 @@ export async function POST(request: Request) {
 
   // The active loop: ping Penn Golf alumni in the same area so a post actually
   // reaches someone. Matches on home state (reliable) or, failing that, city
-  // text. In-app bell + web push + email (email no-ops until Resend is set).
+  // text, and widens to the whole club when that match is too small to count
+  // (see widenReach). Before widening, a post from anyone whose neighbours had
+  // not filled in a location reached nobody at all. An intro request is not
+  // geographic in the first place, so it always goes club-wide.
+  // In-app bell + web push + email (email no-ops until Resend is set).
   try {
     const store = await readStore()
     const enrichByPerson = new Map(
@@ -163,14 +172,26 @@ export async function POST(request: Request) {
       (account.linkedPersonId && enrichByPerson.get(account.linkedPersonId)?.homeCourse) || null
     const reqCityLc = city?.toLowerCase()
 
-    const recipientAccounts = store.accounts.filter(a => {
-      if (!a.linkedPersonId || a.id === account.id) return false
-      const e = enrichByPerson.get(a.linkedPersonId)
-      if (!e) return false
-      if (state) return enrichmentStateToCode(e.state) === state
-      if (reqCityLc) return (e.city ?? '').toLowerCase().trim() === reqCityLc
-      return false
-    })
+    const eligible = store.accounts.filter(
+      a => a.linkedPersonId && a.id !== account.id,
+    )
+    const near =
+      intent === 'intro'
+        ? []
+        : eligible.filter(a => {
+            const e = enrichByPerson.get(a.linkedPersonId as string)
+            if (!e) return false
+            if (state) return enrichmentStateToCode(e.state) === state
+            if (reqCityLc) return (e.city ?? '').toLowerCase().trim() === reqCityLc
+            return false
+          })
+    const picked = widenReach(near, eligible)
+    const reach = picked.reach
+    // A club-wide send is a broadcast, so it respects the community mute.
+    const recipientAccounts = dropCommunityMuted(picked.recipients, reach)
+    console.log(
+      `[open-requests] ${intent} from ${req.fromName}: near=${near.length} reach=${reach} notifying=${recipientAccounts.length}`,
+    )
 
     if (recipientAccounts.length > 0) {
       const intentLabel = INTENT_LABEL[intent as OpenRequestIntent]
@@ -212,6 +233,8 @@ export async function POST(request: Request) {
               note,
               fromHomeCourse: posterHomeCourse,
               guestFeesOffered,
+              clubWide: reach === 'everyone',
+              isIntro: intent === 'intro',
               url,
             })
             return { to: a.email, subject, html }

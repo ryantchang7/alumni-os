@@ -12,7 +12,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
-import { ArrowLeft, Flag, Beer, Coffee, Utensils } from 'lucide-react'
+import { ArrowLeft, Flag, Beer, Coffee, Handshake, Utensils } from 'lucide-react'
 import CityStateInput from '@/components/CityStateInput'
 
 const INTENT_OPTIONS = [
@@ -20,6 +20,9 @@ const INTENT_OPTIONS = [
   { value: 'drinks', label: 'Drinks', icon: Beer, accent: '#b8860b' },
   { value: 'coffee', label: 'Coffee', icon: Coffee, accent: '#0a1628' },
   { value: 'dinner', label: 'Dinner', icon: Utensils, accent: '#990000' },
+  // Not a place. An intro goes to the whole club and anyone who knows
+  // someone can answer, which is the point of a small network.
+  { value: 'intro', label: 'Intro', icon: Handshake, accent: '#c8a84b' },
 ] as const
 
 type Intent = (typeof INTENT_OPTIONS)[number]['value']
@@ -29,6 +32,13 @@ const PLACEHOLDER_BY_INTENT: Record<Intent, string> = {
   drinks: 'In Chicago next weekend, would love to meet some Penn Golf alums for a beer.',
   coffee: "Visiting Boston for the week. Open to coffee with anyone in town.",
   dinner: 'In SF Sept 2–4, would love to grab dinner with the Penn Golf crew.',
+  intro: 'Looking to move into private credit. Anyone know someone I could talk to for 20 minutes?',
+}
+
+/** An intro is a favour, not a trip. Hiding the trip fields keeps the form
+ *  honest and short, and the city would only narrow who hears about it. */
+function isPlaceBased(intent: Intent): boolean {
+  return intent !== 'intro'
 }
 
 export default function NewOpenRequestPage() {
@@ -116,7 +126,9 @@ export default function NewOpenRequestPage() {
             Request is up.
           </h1>
           <p className="text-[13px] text-[#3d4a5c] mb-7">
-            Penn Golf members in {city || 'your area'} will see it.
+            {intent === 'intro'
+              ? 'Every member gets it. Anyone who knows someone can answer.'
+              : `Penn Golf members${city ? ` in ${city}` : ''} will see it.`}{' '}
             Responses come through chat, and you can close the
             request anytime from {intent === 'round' ? 'The Course' : 'the 19th Hole'}.
           </p>
@@ -176,9 +188,9 @@ export default function NewOpenRequestPage() {
               Post an open request
             </h1>
             <p className="text-[13px] text-[#3d4a5c]/80 mt-3 max-w-lg">
-              Visiting somewhere and want to play, grab coffee, or pull a
-              dinner together? Drop a note. Penn Golf alumni near that
-              city get a heads-up (bell + email), so someone can play or host you.
+              Passing through somewhere and want a game, or after an intro to
+              someone in your field? Drop a note. Members get it by bell and
+              email, so someone can actually answer.
             </p>
           </div>
 
@@ -227,7 +239,8 @@ export default function NewOpenRequestPage() {
               </div>
             </div>
 
-            {/* Where */}
+            {/* Where — an intro has no where. */}
+            {isPlaceBased(intent) && (
             <div>
               <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 Where
@@ -241,8 +254,10 @@ export default function NewOpenRequestPage() {
                 }}
               />
             </div>
+            )}
 
             {/* When */}
+            {isPlaceBased(intent) && (
             <div>
               <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
                 When <span className="text-ink-muted normal-case tracking-normal">(optional)</span>
@@ -262,11 +277,12 @@ export default function NewOpenRequestPage() {
                 />
               </div>
             </div>
+            )}
 
             {/* Note */}
             <div>
               <label className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2">
-                Note
+                {intent === 'intro' ? 'What you need' : 'Note'}
               </label>
               <textarea
                 value={note}

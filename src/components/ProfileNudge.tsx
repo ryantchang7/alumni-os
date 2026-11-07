@@ -15,11 +15,17 @@
  * It used to link into the editor, which is a thousand-line form on another
  * page, and almost nobody came back from it. The three fields it is asking
  * for now open in place.
+ *
+ * It also used to end on "it is what another member sees before they decide
+ * whether to reach out", which is true, describes a feeling, and moved 9 of
+ * 36 members in a month. The copy now names what the top missing field does
+ * (see @/lib/profile/gaps), and the digest says the same thing.
  */
 
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import QuickProfileForm from './QuickProfileForm'
+import { openGaps, gapList, gapReason } from '@/lib/profile/gaps'
 
 const DISMISS_KEY = 'pgProfileNudgeDismissed'
 
@@ -53,20 +59,17 @@ export default function ProfileNudge() {
 
   if (dismissed || !status?.linked || done) return null
 
-  const missing = [
-    { done: status.hasPhoto, label: 'a photo' },
-    { done: status.hasRole, label: 'what you do now' },
-    { done: status.hasCity, label: 'your city' },
-    { done: status.hasBio, label: 'a line about yourself' },
-  ].filter(x => !x.done)
+  const missing = openGaps({
+    photo: status.hasPhoto,
+    role: status.hasRole,
+    city: status.hasCity,
+    bio: status.hasBio,
+  })
 
   if (missing.length === 0) return null
 
-  const labels = missing.map(m => m.label)
-  const list =
-    labels.length === 1
-      ? labels[0]
-      : `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1]}`
+  const list = gapList(missing)
+  const reason = gapReason(missing)
 
   const close = () => {
     setDismissed(true)
@@ -96,8 +99,7 @@ export default function ProfileNudge() {
       </p>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pr-6">
         <p className="text-[14px] text-[#3d4a5c] leading-relaxed max-w-[62ch]">
-          You are in the book, but your card is still missing {list}. It is what
-          another member sees before they decide whether to reach out.
+          You are in the book, but your card is still missing {list}. {reason}
         </p>
         {!open && (
           <button

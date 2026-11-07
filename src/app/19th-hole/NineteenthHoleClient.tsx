@@ -190,8 +190,8 @@ export default function NineteenthHoleClient({
         <OpenRequestStrip
           requests={openRequests}
           eyebrow="Open Requests"
-          title="In town and want company."
-          subtitle="Penn Golf members visiting somewhere, drop a note if you can host them."
+          title="Asking the room."
+          subtitle="Members passing through who want company, and members who need an intro. If you can help with one, say so."
           accent="#b8860b"
           limit={6}
           viewerAccountId={viewerAccountId}

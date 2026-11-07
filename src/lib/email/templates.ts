@@ -280,17 +280,40 @@ export function renderAskAnsweredEmail(input: {
 export function renderNearbyRequestEmail(input: {
   recipientFirstName?: string | null
   fromName: string
-  /** "a round" | "coffee" | "drinks" | "dinner" */
+  /** "a round" | "coffee" | "drinks" | "dinner" | "an intro" */
   intentLabel: string
   placeText: string
   whenText?: string
   note: string
   fromHomeCourse?: string | null
   guestFeesOffered?: boolean
+  /** True when this went to the whole club rather than to people nearby,
+   *  which happens while the club is small enough that a geographic filter
+   *  reaches nobody. Telling someone in Boston that a Chicago round is "in
+   *  your area" is the fastest way to teach them to ignore these. */
+  clubWide?: boolean
+  /** An intro request is a favour, not a place, so it reads differently. */
+  isIntro?: boolean
   url: string
 }): { subject: string; html: string } {
   const greeting = input.recipientFirstName ? `Hi ${escapeHtml(input.recipientFirstName)},` : 'Hi,'
-  const subject = `${input.fromName} is around ${input.placeText}, up for ${input.intentLabel}`
+  const subject = input.isIntro
+    ? `${input.fromName} is asking the Clubhouse for ${input.intentLabel}`
+    : `${input.fromName} is around ${input.placeText}, up for ${input.intentLabel}`
+  const headline = input.isIntro
+    ? 'Someone from Penn Golf is asking'
+    : input.clubWide
+      ? 'Someone from Penn Golf is on the road'
+      : 'Someone from Penn Golf is in your area'
+  const lede = input.isIntro
+    ? `${greeting} <strong>${escapeHtml(input.fromName)}</strong> is asking the Clubhouse for ${escapeHtml(input.intentLabel)}.`
+    : `${greeting} <strong>${escapeHtml(input.fromName)}</strong> is around
+      <strong>${escapeHtml(input.placeText)}</strong> and is up for ${escapeHtml(input.intentLabel)}.`
+  const footnote = input.isIntro
+    ? 'If you know someone, one reply is the whole favour.'
+    : input.clubWide
+      ? 'You are getting this because the Clubhouse is still small enough that everyone hears everything. Add your city and these will narrow to your area.'
+      : 'This is the whole point, a game (or a coffee) wherever the road takes you.'
   const meta = [
     input.whenText ? escapeHtml(input.whenText) : '',
     input.fromHomeCourse ? `member at ${escapeHtml(input.fromHomeCourse)}` : '',
@@ -300,11 +323,10 @@ export function renderNearbyRequestEmail(input: {
     .join(' &middot; ')
   const inner = `
     <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
-      Someone from Penn Golf is in your area
+      ${headline}
     </h1>
     <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
-      ${greeting} <strong>${escapeHtml(input.fromName)}</strong> is around
-      <strong>${escapeHtml(input.placeText)}</strong> and is up for ${escapeHtml(input.intentLabel)}.
+      ${lede}
     </p>
     <blockquote style="margin:0 0 14px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:${CREAM};font-size:15px;line-height:1.5;color:${NAVY};">
       ${escapeHtml(input.note)}
@@ -312,7 +334,7 @@ export function renderNearbyRequestEmail(input: {
     ${meta ? `<p style="margin:0 0 18px 0;font-size:13px;color:${MUTED};">${meta}</p>` : ''}
     <p style="margin:0;">${btn(input.url, 'See it on the Clubhouse')}</p>
     <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
-      This is the whole point, a game (or a coffee) wherever the road takes you.
+      ${footnote}
     </p>
   `
   return { subject, html: shell(inner, input.url) }
@@ -335,10 +357,21 @@ export function renderNewRoundEmail(input: {
   dateText: string
   timeText?: string | null
   description?: string | null
+  /** True when this went to the whole club rather than to people nearby. The
+   *  two lines this email used to end on ("near you", "your card says you are
+   *  nearby") are both false in that case, and a member who reads one lie in
+   *  an email stops reading the rest. */
+  clubWide?: boolean
   url: string
 }): { subject: string; html: string } {
   const greeting = input.recipientFirstName ? `Hi ${escapeHtml(input.recipientFirstName)},` : 'Hi,'
   const subject = `${input.hostName} is hosting ${input.typeLabel} in ${input.placeText}`
+  const headline = input.clubWide
+    ? 'There is a new tee sheet up'
+    : 'There is a new tee sheet near you'
+  const footnote = input.clubWide
+    ? 'You are getting this because the Clubhouse is still small enough that everyone hears everything. Add your city and these will narrow to your area.'
+    : 'You are getting this because your card says you are nearby.'
   const meta = [
     escapeHtml(input.dateText),
     input.timeText ? escapeHtml(input.timeText) : '',
@@ -348,7 +381,7 @@ export function renderNewRoundEmail(input: {
     .join(' &middot; ')
   const inner = `
     <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
-      There is a new tee sheet near you
+      ${headline}
     </h1>
     <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
       ${greeting} <strong>${escapeHtml(input.hostName)}</strong> posted
@@ -364,7 +397,7 @@ export function renderNewRoundEmail(input: {
     }
     <p style="margin:0;">${btn(input.url, 'See it and put your name down')}</p>
     <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
-      You are getting this because your card says you are nearby.
+      ${footnote}
     </p>
   `
   return { subject, html: shell(inner, input.url) }
@@ -455,6 +488,8 @@ export function renderWeeklyDigest(input: {
    * back, so the nudge has to travel with the email.
    */
   profileGaps?: string[]
+  /** One sentence on what the top missing field actually does for them. */
+  profileGapReason?: string
   /** Deep link into this reader's own profile editor. */
   profileUrl?: string
 }): { subject: string; html: string } {
@@ -702,15 +737,16 @@ export function renderWeeklyDigest(input: {
 
   // The reader's own card, straight after everyone else's arrival.
   if (input.profileGaps && input.profileGaps.length > 0) {
+    // profileGaps arrives already ordered by consequence (see
+    // @/lib/profile/gaps), so the first one is the one worth naming.
     const g = input.profileGaps.map(escapeHtml)
     const list =
       g.length === 1 ? g[0] : `${g.slice(0, -1).join(', ')} and ${g[g.length - 1]}`
+    const reason = input.profileGapReason ? ` ${escapeHtml(input.profileGapReason)}` : ''
     sections.push(
       sec(
         'Your card',
-        li(
-          `Yours is still missing ${list}. It is what another member sees before they decide whether to reach out.`,
-        ) +
+        li(`Yours is still missing ${list}.${reason}`) +
           `<p style="margin:10px 0 0 0;"><a href="${escapeHtml(
             input.profileUrl ?? input.clubhouseUrl,
           )}" style="font-size:13px;font-weight:600;color:#990000;text-decoration:none;">Finish your card &rarr;</a></p>`,

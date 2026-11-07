@@ -173,13 +173,15 @@ export default async function NineteenthHolePage() {
       .sort(byMostRecentlyPlayed)
     socialGatherings = socialGatherings.filter(g => !isPastGathering(g))
 
-    // Open Requests with social intents — visiting members looking for
-    // drinks / coffee / dinner.
+    // Open Requests that are not rounds: drinks / coffee / dinner from
+    // members passing through, plus intro requests, which are not about a
+    // place at all and have nowhere else to live.
     const { getOpenRequestsForTeam } = await import('@/lib/store/local-store')
     openSocialRequests = await getOpenRequestsForTeam(team.id, [
       'drinks',
       'coffee',
       'dinner',
+      'intro',
     ])
   }
 

@@ -597,9 +597,17 @@ export interface MomentReaction {
  * and different from inTown on the Loop (which is passive). An Open
  * Request says actively "I'm in NYC Aug 5–10, looking for a round;
  * will cover guest fees." Renders as a strip on /the-course
- * (intent=round) and /19th-hole (intent in drinks/coffee/dinner).
+ * (intent=round) and /19th-hole (every other intent).
+ *
+ * 'intro' is the odd one and the reason this list grew: it is a favour, not
+ * a place. /ask could already carry "I need an intro", but only by making
+ * you pick the person first, which in a club where 9 of 36 members had
+ * filled in what they do meant picking from nobody. It had zero uses in its
+ * lifetime. As an open request it goes to the whole club and anyone who
+ * knows someone can answer, which is the one thing a small network does
+ * better than a big directory.
  */
-export type OpenRequestIntent = 'round' | 'drinks' | 'coffee' | 'dinner'
+export type OpenRequestIntent = 'round' | 'drinks' | 'coffee' | 'dinner' | 'intro'
 
 export interface OpenRequest {
   id: string
