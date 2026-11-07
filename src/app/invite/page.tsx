@@ -24,12 +24,45 @@ export default async function InvitePage() {
     )
   }
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
+  const { findBookEntryForTeamStorePerson } = await import('@/lib/member-book/bridge')
+  const { getMemberStartYear, getMemberEndYear } = await import('@/lib/member-book/helpers')
   const store = await readStore()
   const team = await getTeamBySlug('penn-mens-golf')
 
   const teammates: TeammateEntry[] = []
+  let viewerName: string | null = null
+  let viewerEra: string | null = null
 
   if (team) {
+    // The viewer's own roster years, so the people they actually know come
+    // first. This page used to be every unclaimed member in alphabetical
+    // order, which meant an alum arriving from Your Era with one specific
+    // teammate in mind landed on a wall of strangers beginning with A.
+    // Same derivation as /api/player/your-era, including the Member Book
+    // fallback that pre-2000 alumni depend on.
+    const viewerPerson = store.people.find(p => p.id === approval.linkedPersonId)
+    viewerName = viewerPerson?.canonicalName ?? null
+    const viewerBookEntry = viewerPerson
+      ? findBookEntryForTeamStorePerson(viewerPerson.canonicalName)
+      : null
+    const mine = store.teamMemberships.find(
+      m =>
+        m.teamId === team.id &&
+        m.personId === approval.linkedPersonId &&
+        (m.memberRole === 'current_player' || m.memberRole === 'alumni'),
+    )
+    const myStart =
+      mine?.rosterStartYear ??
+      mine?.rosterEndYear ??
+      (viewerBookEntry ? getMemberStartYear(viewerBookEntry) ?? undefined : undefined)
+    const myEnd =
+      mine?.rosterEndYear ??
+      mine?.rosterStartYear ??
+      (viewerBookEntry ? getMemberEndYear(viewerBookEntry) ?? undefined : undefined)
+    if (myStart && myEnd) {
+      viewerEra = myStart === myEnd ? `${myStart}` : `${myStart}–${myEnd}`
+    }
+
     const memberships = store.teamMemberships.filter(
       m =>
         m.teamId === team.id &&
@@ -52,16 +85,50 @@ export default async function InvitePage() {
       if (!person) continue
       const key = person.canonicalName.toLowerCase().trim()
       if (seen.has(key)) continue
+
+      const bookEntry = findBookEntryForTeamStorePerson(person.canonicalName)
+      const start = m.rosterStartYear ?? m.rosterEndYear ??
+        (bookEntry ? getMemberStartYear(bookEntry) ?? undefined : undefined)
+      const end = m.rosterEndYear ?? m.rosterStartYear ??
+        (bookEntry ? getMemberEndYear(bookEntry) ?? undefined : undefined)
+
+      // Did the two of them share a roster, and for how long?
+      let overlapStart: number | undefined
+      let overlapEnd: number | undefined
+      if (myStart && myEnd && start && end) {
+        const os = Math.max(start, myStart)
+        const oe = Math.min(end, myEnd)
+        if (os <= oe) {
+          overlapStart = os
+          overlapEnd = oe
+        }
+      }
+
       seen.set(key, {
         name: person.canonicalName,
         joined: claimedPersonIds.has(person.id),
+        classLabel: m.classLabel ?? bookEntry?.profile.classYearEstimate ?? null,
+        bookId: bookEntry?.id ?? null,
+        overlapStart,
+        overlapEnd,
       })
     }
 
-    // Sort: not-joined first, then alphabetical within each group
+    // Your era first, longest shared stretch first within it, and the
+    // not-yet-joined ahead of the people already here. Alphabetical only as
+    // the last tiebreak: a name is the least useful thing to sort 370 people
+    // by when the viewer knows maybe twelve of them.
     const all = Array.from(seen.values())
     all.sort((a, b) => {
       if (a.joined !== b.joined) return a.joined ? 1 : -1
+      const ao = a.overlapStart ? 1 : 0
+      const bo = b.overlapStart ? 1 : 0
+      if (ao !== bo) return bo - ao
+      if (ao && bo) {
+        const aLen = (a.overlapEnd ?? 0) - (a.overlapStart ?? 0)
+        const bLen = (b.overlapEnd ?? 0) - (b.overlapStart ?? 0)
+        if (aLen !== bLen) return bLen - aLen
+      }
       return a.name.localeCompare(b.name)
     })
 
@@ -69,6 +136,7 @@ export default async function InvitePage() {
   }
 
   const notJoinedCount = teammates.filter(t => !t.joined).length
+  const myEraMissing = teammates.filter(t => !t.joined && t.overlapStart).length
 
   return (
     <div className="min-h-screen bg-[#fbf9f6]">
@@ -84,8 +152,21 @@ export default async function InvitePage() {
             Invite the people who should be here
           </h1>
           <p className="text-white/70 text-sm sm:text-base max-w-xl leading-relaxed mt-5">
-            The Clubhouse is better the more of us are on it. Pull in the people
-            who aren&rsquo;t here yet, it takes them 30 seconds.
+            {myEraMissing > 0 ? (
+              <>
+                Everyone who has joined so far came because somebody they
+                played with told them to. The{' '}
+                <strong className="text-white font-medium">{myEraMissing}</strong>{' '}
+                {myEraMissing === 1 ? 'person' : 'people'} from your own years
+                {viewerEra ? ` (${viewerEra})` : ''} are at the top, because
+                they are the ones a note from you will actually reach.
+              </>
+            ) : (
+              <>
+                The Clubhouse is better the more of us are on it. Pull in the
+                people who aren&rsquo;t here yet, it takes them 30 seconds.
+              </>
+            )}
           </p>
           {notJoinedCount > 0 && (
             <p className="text-white/30 text-xs mt-3 font-medium tracking-wide">
@@ -100,7 +181,11 @@ export default async function InvitePage() {
 
       {/* Roster + share, cream background */}
       <div className="max-w-[860px] mx-auto px-6 sm:px-8 py-10">
-        <InviteTeammates teammates={teammates} />
+        <InviteTeammates
+          teammates={teammates}
+          viewerName={viewerName}
+          viewerEra={viewerEra}
+        />
 
         {/* Family and affiliates aren't in the player registry, so the list
             above can never contain them, give that invite its own path. */}

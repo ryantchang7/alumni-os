@@ -2,25 +2,39 @@
 
 import { useState, useMemo } from 'react'
 import { Search, Check, Share2, Copy } from 'lucide-react'
+import { shareInvite, inviteUrl } from '@/lib/invite/share'
 
 export interface TeammateEntry {
   name: string
   joined: boolean
+  classLabel?: string | null
+  /** Their Member Book card, so an invite can point at their own page. */
+  bookId?: string | null
+  /** Roster years shared with the viewer, when they overlapped at all. */
+  overlapStart?: number
+  overlapEnd?: number
 }
 
 function getInviteUrl(): string {
-  if (typeof window !== 'undefined') {
-    return window.location.origin
-  }
-  return 'https://www.penngolfclubhouse.com'
+  return inviteUrl()
 }
 
-function buildInviteMessage(name: string, url: string): string {
-  const firstName = name.split(' ')[0]
-  return 'Hey ' + firstName + ', claim your spot in the Penn Golf Clubhouse, takes 30 sec: ' + url
+function overlapText(t: TeammateEntry): string | null {
+  if (!t.overlapStart || !t.overlapEnd) return null
+  return t.overlapStart === t.overlapEnd
+    ? `On the roster with you in ${t.overlapStart}`
+    : `On the roster with you ${t.overlapStart}\u2013${String(t.overlapEnd).slice(2)}`
 }
 
-export default function InviteTeammates({ teammates }: { teammates: TeammateEntry[] }) {
+export default function InviteTeammates({
+  teammates,
+  viewerName,
+  viewerEra,
+}: {
+  teammates: TeammateEntry[]
+  viewerName?: string | null
+  viewerEra?: string | null
+}) {
   const [query, setQuery] = useState('')
   const [toast, setToast] = useState<string | null>(null)
 
@@ -56,30 +70,80 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
     }
   }
 
-  async function handleInvite(name: string) {
-    const url = getInviteUrl()
-    const message = buildInviteMessage(name, url)
-    if (typeof navigator !== 'undefined' && navigator.share) {
-      try {
-        await navigator.share({ text: message, url })
-      } catch {
-        // user cancelled — silent
-      }
-      return
-    }
-    // Desktop fallback: SMS deep-link + copy
-    const smsHref = 'sms:?&body=' + encodeURIComponent(message)
-    window.location.href = smsHref
-    try {
-      await navigator.clipboard.writeText(message)
-      showToast('Message copied to clipboard')
-    } catch {
-      showToast('Message ready to send')
-    }
+  async function handleInvite(t: TeammateEntry) {
+    const result = await shareInvite(
+      {
+        name: t.name,
+        bookId: t.bookId,
+        overlapStart: t.overlapStart,
+        overlapEnd: t.overlapEnd,
+      },
+      viewerName,
+    )
+    showToast(
+      result === 'shared'
+        ? 'Invite ready to send'
+        : result === 'copied'
+          ? 'Message copied, paste it wherever you two talk'
+          : 'Could not open your share sheet',
+    )
   }
 
   const notJoined = filtered.filter(t => !t.joined)
   const joined = filtered.filter(t => t.joined)
+  // Split the missing into the ones this member actually played with and
+  // everybody else. One list of 370 names asks a member to remember who they
+  // know; two lists tell them.
+  const mine = notJoined.filter(t => t.overlapStart)
+  const rest = notJoined.filter(t => !t.overlapStart)
+
+  function renderMissing(list: TeammateEntry[], heading: string, emphasise: boolean) {
+    if (list.length === 0) return null
+    return (
+      <div className="mb-7">
+        <p
+          className={`text-[10px] font-semibold uppercase tracking-[0.18em] mb-3 ${
+            emphasise ? 'text-[#c8a84b]' : 'text-ink-muted'
+          }`}
+        >
+          {heading}
+          <span className="text-ink-muted font-medium"> &middot; {list.length}</span>
+        </p>
+        <div className="space-y-2">
+          {list.map(t => {
+            const shared = overlapText(t)
+            return (
+              <div
+                key={t.name}
+                className={`flex items-center justify-between gap-3 bg-white rounded-xl px-4 py-3 transition-colors border ${
+                  emphasise
+                    ? 'border-[#c8a84b]/45 hover:border-[#c8a84b]'
+                    : 'border-[rgba(180,168,150,0.35)] hover:border-[rgba(180,168,150,0.6)]'
+                }`}
+                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-[#0a1628] truncate">{t.name}</p>
+                  {(shared || t.classLabel) && (
+                    <p className="text-[11px] text-ink-muted truncate mt-0.5">
+                      {shared ?? t.classLabel}
+                    </p>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleInvite(t)}
+                  className="flex-shrink-0 inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-[#0a1628] bg-[#c8a84b] hover:bg-[#b8973b] px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+                >
+                  Invite
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="relative">
@@ -132,31 +196,16 @@ export default function InviteTeammates({ teammates }: { teammates: TeammateEntr
         </div>
       </div>
 
-      {/* Not-joined list */}
-      {notJoined.length > 0 && (
-        <div className="mb-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-3">
-            Not on the Clubhouse yet
-          </p>
-          <div className="space-y-2">
-            {notJoined.map(t => (
-              <div
-                key={t.name}
-                className="flex items-center justify-between gap-3 bg-white border border-[rgba(180,168,150,0.35)] rounded-xl px-4 py-3 hover:border-[rgba(180,168,150,0.6)] transition-colors"
-                style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
-              >
-                <span className="text-sm font-medium text-[#0a1628]">{t.name}</span>
-                <button
-                  type="button"
-                  onClick={() => handleInvite(t.name)}
-                  className="flex-shrink-0 inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-[#0a1628] bg-[#c8a84b] hover:bg-[#b8973b] px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
-                >
-                  Invite
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* The missing, your own era first. */}
+      {renderMissing(
+        mine,
+        viewerEra ? `Played with you, ${viewerEra}` : 'Played with you',
+        true,
+      )}
+      {renderMissing(
+        rest,
+        mine.length > 0 ? 'Other years, also not on yet' : 'Not on the Clubhouse yet',
+        false,
       )}
 
       {/* Joined list */}

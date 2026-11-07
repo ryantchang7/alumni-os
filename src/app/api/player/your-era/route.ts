@@ -19,6 +19,7 @@ import {
   getPublicMembers,
   getMemberStartYear,
   getMemberEndYear,
+  getMemberProgram,
 } from '@/lib/member-book/helpers'
 
 const TEAM_SLUG = 'penn-mens-golf'
@@ -119,13 +120,21 @@ export async function GET() {
   // versus 81 in the store. Without this, an alum from 1994 saw an empty
   // section: the one feature that is personal on day one was dark for the
   // majority of the people being emailed.
+  //
+  // `memberBookEntries` is the MERGED view of both programs, and this loop
+  // matched on overlapping years alone. Since women's golf went live that
+  // meant a men's alum from 2010 was shown women's players from 2010 as
+  // people he was "on the roster with", and invited to pull them in as
+  // teammates. They were never on the same roster. Same program only.
   const seenBookIds = new Set(
     teammates.map(t => t.bookId).filter((b): b is string => !!b),
   )
   const viewerBookId = viewerBookEntry?.id ?? null
+  const viewerProgram = viewerBookEntry ? getMemberProgram(viewerBookEntry) : 'mens'
   for (const entry of getPublicMembers(memberBookEntries)) {
     if (entry.id === viewerBookId) continue
     if (seenBookIds.has(entry.id)) continue
+    if (getMemberProgram(entry) !== viewerProgram) continue
     const start = getMemberStartYear(entry)
     const end = getMemberEndYear(entry)
     if (!start || !end) continue
@@ -158,6 +167,10 @@ export async function GET() {
   return NextResponse.json({
     eraLabel: myStart === myEnd ? `${myStart}` : `${myStart}–${myEnd}`,
     hereCount: teammates.filter(t => t.claimed).length,
+    // So an invite can say who it came from. An SMS naming nobody reads as
+    // spam, and the one invite loop that has actually worked here was a
+    // named alum writing to people who knew him.
+    viewerName: viewerPerson?.canonicalName ?? null,
     teammates,
   })
 }

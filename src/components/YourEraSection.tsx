@@ -1,10 +1,16 @@
 'use client'
 
 /**
- * Your Era — the guys whose roster years overlapped yours: who's here
- * (one-tap hello via chat) and who's missing (one-tap invite). Renders
+ * Your Era — the teammates whose roster years overlapped yours: who is here
+ * (one-tap hello via chat) and who is missing (one-tap invite). Renders
  * on /player for approved members; disappears silently when the viewer
  * has no roster years or no overlapping teammates.
+ *
+ * The invite used to be a link to /invite, which is an alphabetical list of
+ * every unclaimed member. So the loop broke exactly where it was working: a
+ * member had just picked out one specific teammate, and was then sent to a
+ * 370-name page to find them again. The button now sends the invite from
+ * here, naming the sender and the seasons the two of them shared.
  */
 
 import { useEffect, useState } from 'react'
@@ -13,6 +19,7 @@ import { motion } from 'framer-motion'
 import { Users } from 'lucide-react'
 import MemberAvatar from './MemberAvatar'
 import RespondButton from './RespondButton'
+import { shareInvite } from '@/lib/invite/share'
 
 interface EraTeammate {
   personId: string
@@ -29,6 +36,7 @@ interface EraTeammate {
 interface EraResponse {
   eraLabel: string | null
   hereCount: number
+  viewerName: string | null
   teammates: EraTeammate[]
 }
 
@@ -46,6 +54,31 @@ function firstName(name: string): string {
 
 export default function YourEraSection({ approved }: { approved: boolean }) {
   const [data, setData] = useState<EraResponse | null>(null)
+  const [toast, setToast] = useState<string | null>(null)
+  const [sent, setSent] = useState<Record<string, true>>({})
+
+  async function invite(t: EraTeammate) {
+    const result = await shareInvite(
+      {
+        name: t.name,
+        bookId: t.bookId,
+        overlapStart: t.overlapStart,
+        overlapEnd: t.overlapEnd,
+      },
+      data?.viewerName,
+    )
+    // Marked only on a real hand-off. A cancelled share sheet should leave
+    // the button offering to try again, not claiming it is done.
+    if (result !== 'manual') setSent(s => ({ ...s, [t.bookId ?? t.personId]: true }))
+    setToast(
+      result === 'shared'
+        ? `Invite ready for ${firstName(t.name)}`
+        : result === 'copied'
+          ? 'Message copied, paste it wherever you two talk'
+          : 'Could not open your share sheet',
+    )
+    setTimeout(() => setToast(null), 3200)
+  }
 
   useEffect(() => {
     if (!approved) return
@@ -68,12 +101,21 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
       className="pb-8"
       data-testid="your-era-section"
     >
+      {toast && (
+        <div
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0a1628] text-white text-[12.5px] font-medium px-5 py-2.5 rounded-full shadow-lg max-w-[88vw] text-center"
+          role="status"
+          aria-live="polite"
+        >
+          {toast}
+        </div>
+      )}
       <div className="flex items-baseline gap-2 mb-1 flex-wrap">
         <Users className="w-4 h-4 text-[#c8a84b] self-center" />
         <h2 className="text-base font-semibold text-[#0a1628]">Your Era</h2>
         {data.eraLabel && (
           <p className="text-[12px] text-ink-muted italic ml-1">
-           The guys you played with, {data.eraLabel}
+           On the roster with you, {data.eraLabel}
           </p>
         )}
       </div>
@@ -139,12 +181,13 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
                   className="w-full"
                 />
               ) : (
-                <Link
-                  href="/invite"
+                <button
+                  type="button"
+                  onClick={() => invite(t)}
                   className="inline-flex w-full items-center justify-center text-[11.5px] font-semibold uppercase tracking-[0.14em] px-3.5 py-2 rounded-lg border border-[#0a1628]/25 text-[#3d4a5c] hover:bg-[#0a1628] hover:text-white transition-colors"
                 >
-                  Not in yet, invite him
-                </Link>
+                  {sent[t.bookId ?? t.personId] ? 'Invite sent' : 'Not in yet, invite'}
+                </button>
               )}
             </div>
           </div>
