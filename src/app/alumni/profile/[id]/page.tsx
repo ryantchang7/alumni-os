@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { nonRosterPill } from '@/lib/membership/non-roster'
 import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
@@ -24,8 +25,12 @@ interface SelfProfile {
   bookId?: string | null
   memberRole?: 'current_player' | 'alumni' | 'coach' | 'parent'
   /** Only present for parents/affiliates — the relationship line they
-   *  filled in at /parent-signup ("Parent of John Smith C'24"). */
+   *  filled in at /join ("Parent of John Smith C'24", or "C'04, plays out
+   *  of Merion" for a Penn golfer who never played for Penn). */
   parentRelationship?: string
+  /** Which non-roster door they came through, so the banner can say
+   *  "Penn Golfer" rather than calling them somebody's family. */
+  nonRosterKind?: string
   classLabel?: string
   rosterStartYear?: number
   rosterEndYear?: number
@@ -396,15 +401,17 @@ function AlumniProfileInner() {
             </div>
           )}
 
-          {/* Family & Affiliate banner, shown in place of the roster
-              record so parents see something meaningful here. */}
+          {/* Non-roster banner, shown in place of the roster record so a
+              member without one sees something meaningful here. The pill
+              names their door: a Penn alum who plays golf but never played
+              for Penn is not somebody's family. */}
           {isParent && profile.parentRelationship && (
             <div
               className="bg-[#990000]/8 border border-[#990000]/25 rounded-xl p-6"
               style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.04)' }}
             >
               <p className="text-xs font-semibold text-[#990000] uppercase tracking-wider mb-2">
-                Family &amp; Affiliate
+                {nonRosterPill(profile.nonRosterKind)}
               </p>
               <p className="text-sm text-[#0a1628]">
                 {profile.parentRelationship}

@@ -137,7 +137,7 @@ export default function PrivacyPage() {
             <li><strong>Geolocation, approximate only.</strong> City, state, and hometown as entered on your member card. We do not collect or use precise GPS location.</li>
             <li><strong>Visual information.</strong> Photos and videos you upload to your profile or to Moments.</li>
             <li><strong>Commercial information.</strong> Optional subscription tier and status (e.g., Supporting Member), if you choose to support the Clubhouse.</li>
-            <li><strong>Professional or biographical information.</strong> Bio, class year, role (current player, alum, coach, family &amp; affiliate), and how you want to be involved with the community.</li>
+            <li><strong>Professional or biographical information.</strong> Bio, class year, role (current player, alum, coach, Penn golfer, family or friend of the program), and how you want to be involved with the community.</li>
           </ul>
           <p>
             We collect these categories for the purpose of operating the private community, authenticating members, and maintaining security. We do <strong>not</strong> sell or share these categories of personal information as those terms are defined under the CCPA/CPRA. Retention periods are described in the Data Retention section below.

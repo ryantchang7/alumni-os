@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { NON_ROSTER_LABEL } from '@/lib/membership/non-roster'
 import { Flag, MapPin, Users } from 'lucide-react'
 import { normalizeCourseName } from '@/lib/courses'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
@@ -78,8 +79,9 @@ export default async function TheCoursePage() {
 
   if (team) {
     // Any role can opt into "Open to a Round" — players, alumni, coach,
-    // and family/affiliates. The page groups them by role with subheads
-    // so the list reads cleanly regardless of who's opted in.
+    // and the non-roster members (Penn golfers who never played for Penn,
+    // family, friends of the program). The page groups them by role with
+    // subheads so the list reads cleanly regardless of who's opted in.
     const memberships = store.teamMemberships.filter(
       (m) =>
         m.teamId === team.id &&
@@ -527,14 +529,15 @@ export default async function TheCoursePage() {
           ) : (
             (() => {
               // Group "Open to a Round" by role so the page reads cleanly:
-              // Current Players, then Alumni, then Coach. Skip empty
-              // groups. (Parents/affiliates can opt in too if they ever
-              // do, though the role typically belongs to alumni + players.)
+              // Current Players, then Alumni, then Coach, then everyone
+              // without a roster line. Skip empty groups. A Penn alum who
+              // plays golf but never played for Penn belongs in that last
+              // group, and is exactly who this list is for.
               const ROLE_GROUPS = [
                 { key: 'current_player', label: 'Current Players' },
                 { key: 'alumni', label: 'Alumni' },
                 { key: 'coach', label: 'Coach' },
-                { key: 'parent', label: 'Family & Affiliate' },
+                { key: 'parent', label: NON_ROSTER_LABEL },
               ] as const
               return (
                 <div className="space-y-8">

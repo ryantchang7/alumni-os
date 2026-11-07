@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { NON_ROSTER_LABEL } from '@/lib/membership/non-roster'
 import { requireFounderOr404 } from '@/lib/auth/founder-page-gate'
 import type { TeamMembership } from '@/lib/store/types'
 import { memberBookEntries } from '@/lib/member-book/data'
@@ -227,7 +228,7 @@ export default async function MasterListPage() {
                           </span>
                         ) : row.role === 'parent' ? (
                           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#990000]/10 text-[#990000] border border-[#990000]/30">
-                            Family &amp; Affiliate
+                            {NON_ROSTER_LABEL}
                           </span>
                         ) : (
                           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">

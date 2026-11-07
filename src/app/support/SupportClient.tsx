@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { JOIN_PATH } from '@/lib/membership/non-roster'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Check, Heart, ShieldCheck, Crown, Lock } from 'lucide-react'
@@ -161,7 +162,7 @@ export default function SupportClient({ status }: Props) {
       // can land there and start without going through the alumni-claim
       // flow first. Member + Founding Member go through the normal sign-in.
       window.location.href =
-        tier === 'parent' ? '/parent-signup' : '/login?next=/support'
+        tier === 'parent' ? JOIN_PATH : '/login?next=/support'
       return
     }
     setBusyTier(tier)

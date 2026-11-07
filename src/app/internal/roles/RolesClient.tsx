@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { NON_ROSTER_LABEL } from '@/lib/membership/non-roster'
 
 export type ManualBadge = 'founding-member' | 'member' | 'parent'
 
@@ -22,7 +23,7 @@ const BADGE_LABELS: Record<ManualBadge | 'captain', string> = {
   captain: 'PGC Captain',
   'founding-member': 'Founding Member',
   member: 'Supporting Member',
-  parent: 'Family & Affiliate',
+  parent: NON_ROSTER_LABEL,
 }
 
 export default function RolesClient({ initialAccounts }: Props) {
@@ -136,7 +137,7 @@ export default function RolesClient({ initialAccounts }: Props) {
                     {row.stripeTier === 'founding'
                       ? 'Founding'
                       : row.stripeTier === 'parent'
-                        ? 'Family & Affiliate'
+                        ? NON_ROSTER_LABEL
                         : row.stripeTier === 'member'
                           ? 'Supporting'
                           : ', '}

@@ -66,10 +66,16 @@ export interface TeamMembership {
   personId: string
   teamId: string
   memberRole?: 'current_player' | 'alumni' | 'parent' | 'coach'
-  /** Free-text relationship label for parents/affiliates (e.g. "Parent of
-   * John Smith C'24", "Affiliate — long-time supporter"). Shown on their
+  /** Free-text relationship label for non-roster members (e.g. "Parent of
+   * John Smith C'24", "C'04, plays out of Merion"). Shown on their
    * Member Book entry; ignored for current_player and alumni. */
   parentRelationship?: string
+  /** Which door a non-roster member came through. memberRole 'parent' is
+   * the storage bucket for everyone without a roster line, so this is the
+   * only thing that tells a Penn alum who plays golf apart from a player's
+   * parent. Absent on every row created before the door was split, and
+   * those were all family or affiliates, so readers default to 'family'. */
+  nonRosterKind?: 'golfer' | 'family' | 'friend'
   memberStatus?: 'imported' | 'verified' | 'active'
   rosterStartYear?: number
   rosterEndYear?: number

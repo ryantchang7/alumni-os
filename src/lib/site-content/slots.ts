@@ -403,7 +403,7 @@ Penn Golf '28, Brookline, MA`,
       "Women's golf from 2004-05, the earliest season Penn publishes. The program went varsity in 1999, so the first five years are still missing.",
   },
 
-  // ── Login + parent signup ──────────────────────────────────────────────
+  // ── Login + the non-roster join door ───────────────────────────────────
   {
     id: 'login.body',
     label: 'Login page, body paragraph',
@@ -413,12 +413,18 @@ Penn Golf '28, Brookline, MA`,
       'Sign in to claim your Member Book card and keep your profile up to date.',
   },
   {
-    id: 'parent-signup.body',
-    label: 'Parent / Family signup, body paragraph',
-    hint: 'The opening paragraph on /parent-signup.',
+    // Renamed from 'parent-signup.body', whose copy addressed parents
+    // only. A captain override always beats a default, and /api/site-content
+    // returns `override ?? default`, so from outside there is no way to tell
+    // whether an override is sitting on an id whose value equals its default
+    // (this one did). Renaming makes the new copy ship either way, and costs
+    // nothing: any override on the old id held the old default verbatim.
+    id: 'join.body',
+    label: 'Join page, body paragraph',
+    hint: 'The opening paragraph on /join (and its /parent-signup alias).',
     kind: 'longtext',
     default:
-      'Parents, family, and longtime affiliates of Penn Golf, men’s and women’s, can claim a card and stay close to the program.',
+      'One line about who you are and you are in: the Member Book, the member map, and the list when someone is looking for a game. No roster line required.',
   },
 
   // ── Landing splash extras ──────────────────────────────────────────────
@@ -451,11 +457,14 @@ Penn Golf '28, Brookline, MA`,
     default: '',
   },
   {
-    id: 'landing.family-cta',
-    label: 'Landing, family / affiliate pill',
-    hint: 'Pill below the buttons that links to /parent-signup.',
+    // Renamed from 'landing.family-cta' for the same reason as join.body:
+    // the slot now addresses a wider audience than "family", and a rename
+    // guarantees the new wording reaches the site.
+    id: 'landing.join-cta',
+    label: 'Landing, non-roster join pill',
+    hint: 'Pill below the buttons that links to /join. Covers Penn golfers who never played for Penn, family, and friends of the program.',
     kind: 'text',
-    default: 'Family or affiliate? Join here →',
+    default: 'Penn golfer, family, or friend? Join here →',
   },
 ]
 

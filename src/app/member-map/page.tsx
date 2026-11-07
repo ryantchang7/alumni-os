@@ -205,6 +205,7 @@ export default async function MemberMapPage() {
         openToCoffee: enrichment?.openToCoffee ?? false,
         openToGolfRounds: enrichment?.openToGolfRounds ?? false,
         parentRelationship: m.parentRelationship,
+        nonRosterKind: m.nonRosterKind,
       }
 
       const placedCurrentCodes = new Set<string>()

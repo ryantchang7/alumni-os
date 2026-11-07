@@ -1,7 +1,14 @@
 /**
- * POST /api/account/parent-signup — self-serve onboarding for Penn Golf
- * parents and affiliates. Requires sign-in. Creates a Person + Membership
- * (unpublished) + ClaimRequest in front of the captain.
+ * POST /api/account/parent-signup — self-serve onboarding for every member
+ * who is not on a Penn roster: Penn alumni and students who play golf but
+ * never played for Penn, families, and friends of the program. Requires
+ * sign-in. Creates a Person + Membership (unpublished) + ClaimRequest in
+ * front of the captain.
+ *
+ * The path still says "parent" because it is the one already sitting in
+ * sent invites. `kind` says which door the member came through; all three
+ * store memberRole 'parent' (see @/lib/membership/non-roster for why) and
+ * one free-text line that the Member Book card prints verbatim.
  *
  * On captain approval (existing /api/profile/claims/[id]/status flow):
  *  - the account is linked to the person
@@ -22,6 +29,7 @@ import type {
   TeamMembership,
   PersonEnrichment,
 } from '@/lib/store/types'
+import { isJoinKind, joinKindLabel } from '@/lib/membership/non-roster'
 
 const TEAM_SLUG = 'penn-mens-golf'
 
@@ -70,6 +78,9 @@ export async function POST(request: Request) {
   if (relationship.length > 200) {
     return NextResponse.json({ error: 'relationship too long' }, { status: 400 })
   }
+  // Unknown or absent kind falls back to 'family': every request sent
+  // before the door was split came from the family signup page.
+  const kind = isJoinKind(body.kind) ? body.kind : 'family'
 
   const team = await getTeamBySlug(TEAM_SLUG)
   if (!team) return NextResponse.json({ error: 'Team not found' }, { status: 404 })
@@ -115,6 +126,7 @@ export async function POST(request: Request) {
       memberRole: 'parent',
       memberStatus: 'imported',
       parentRelationship: relationship,
+      nonRosterKind: kind,
       bioUrls: [],
       sourceUrls: [],
       confidence: 1,
@@ -171,7 +183,7 @@ export async function POST(request: Request) {
       const { subject, html } = renderClaimNotification({
         requesterName: name,
         requesterEmail: account.email,
-        claimedName: `${name}, Family / Affiliate`,
+        claimedName: `${name}, ${joinKindLabel(kind)}`,
         claimedYears: relationship,
         adminUrl: `${baseUrl}/internal/claims`,
         matchHint: 'strong',

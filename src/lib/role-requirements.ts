@@ -9,6 +9,8 @@
  * a filled value is publicly visible.
  */
 
+import { NON_ROSTER_LABEL } from '@/lib/membership/non-roster'
+
 export type RoleKey = 'player' | 'alumni' | 'coach' | 'parent'
 
 export interface RoleSection {
@@ -113,7 +115,7 @@ const PARENT_REQUIRED: RequirementLine[] = [...COMMON_REQUIRED]
 const PARENT_OPTIONAL: RequirementLine[] = [
   {
     field: 'Photo',
-    appearsOn: ['Member Book Family & Affiliate card'],
+    appearsOn: ['Member Book Golfers & Family card'],
   },
   {
     field: 'Bio',
@@ -121,8 +123,8 @@ const PARENT_OPTIONAL: RequirementLine[] = [
   },
   {
     field: 'Parent relationship line',
-    note: 'Filled at /parent-signup ("Parent of John Smith C\'24"). Read-only on the editor; surfaces on every Family card.',
-    appearsOn: ['Member Book Family & Affiliate card', '/member-map per-state Family group', '/player/alumni/[id] detail banner'],
+    note: 'Filled at /join ("Parent of John Smith C\'24", or "C\'04, plays out of Merion" for a Penn golfer who never played for Penn). Read-only on the editor; surfaces on every Golfers & Family card.',
+    appearsOn: ['Member Book Golfers & Family card', '/member-map per-state Golfers & Family group', '/player/alumni/[id] detail banner'],
   },
   {
     field: 'Contact fields (email, phone, LinkedIn)',
@@ -170,9 +172,9 @@ export const ROLE_SECTIONS: RoleSection[] = [
   },
   {
     key: 'parent',
-    label: 'Family & Affiliate',
+    label: NON_ROSTER_LABEL,
     blurb:
-      'Family, parents, and longtime affiliates. Signs up via /parent-signup; captain approves. Hidden from /the-course Open to a Round (rounds default to alumni + players) but visible in the Member Book Family tab, Member Map Family subtab, and the Open Requests board on both /the-course and /19th-hole if they choose to post.',
+      'Everyone without a roster line: Penn alumni and students who play golf but never played for Penn, families of players, and friends of the program. Signs up via /join (the /parent-signup alias still works); captain approves. Stored as memberRole \'parent\' with a nonRosterKind of golfer / family / friend. Appears in Open to a Round on /the-course, the Member Book Golfers & Family tab, the Member Map Golfers & Family subtab, and the Open Requests board on both /the-course and /19th-hole.',
     required: PARENT_REQUIRED,
     optional: PARENT_OPTIONAL,
   },

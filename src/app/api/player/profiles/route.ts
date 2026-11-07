@@ -65,6 +65,7 @@ export async function GET(request: Request) {
         memberRole: membership.memberRole ?? 'alumni',
         memberStatus: membership.memberStatus,
         parentRelationship: membership.parentRelationship,
+        nonRosterKind: membership.nonRosterKind,
         badges: badgesForPerson(person.id, store.accounts),
         classLabel: membership.classLabel,
         classYearEstimate: membership.classYearEstimate,

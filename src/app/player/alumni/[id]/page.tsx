@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { nonRosterPill } from '@/lib/membership/non-roster'
 import { notFound } from 'next/navigation'
 import { Mail, Phone, ExternalLink, Lock } from 'lucide-react'
 import { auth } from '@/auth'
@@ -214,7 +215,11 @@ export default async function PlayerAlumniProfilePage({ params }: PageProps) {
             >
               <div className="px-5 py-3 border-b border-[rgba(180,168,150,0.22)] bg-[#fdfcf9]">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
-                  {isFamily ? 'Family & Affiliate' : isCoach ? 'Coaching Staff' : 'Penn Golf'}
+                  {isFamily
+                    ? nonRosterPill(membership.nonRosterKind)
+                    : isCoach
+                      ? 'Coaching Staff'
+                      : 'Penn Golf'}
                 </p>
               </div>
               <dl className="px-5 py-1 divide-y divide-[rgba(180,168,150,0.18)]">

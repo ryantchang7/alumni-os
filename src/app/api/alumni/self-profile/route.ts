@@ -77,6 +77,7 @@ export async function GET(request: Request) {
     // Only meaningful for parents/affiliates — surfaces the
     // "Parent of John Smith C'24" line in the profile editor.
     parentRelationship: membership.parentRelationship,
+    nonRosterKind: membership.nonRosterKind,
     // Editable fields
     currentRole: enrichment?.currentRole,
     currentCompany: enrichment?.currentCompany,

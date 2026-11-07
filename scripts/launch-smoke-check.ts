@@ -67,6 +67,7 @@ const REQUIRED_PAGES: Array<[string, string]> = [
   ['/player/requests', 'src/app/player/requests/page.tsx'],
   ['/alumni/requests', 'src/app/alumni/requests/page.tsx'],
   ['/login', 'src/app/login/page.tsx'],
+  ['/join', 'src/app/join/page.tsx'],
   ['/parent-signup', 'src/app/parent-signup/page.tsx'],
   ['/privacy', 'src/app/privacy/page.tsx'],
   ['/terms', 'src/app/terms/page.tsx'],

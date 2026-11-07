@@ -23,6 +23,7 @@ const ROUTES = [
   ['/team-room', true], ['/team/updates', true], ['/team/questions', true],
   ['/support', true], ['/ask', true], ['/chat', true], ['/chat/new', true],
   ['/account/setup', true], ['/account/profile', true], ['/parent-signup', true],
+  ['/join', true],
   ['/alumni/requests', true], ['/requests/new', true], ['/invite', true],
   ['/privacy', true], ['/terms', true], ['/community-guidelines', true],
   ['/subscription-terms', true], ['/suggest', true], ['/scotland', true],

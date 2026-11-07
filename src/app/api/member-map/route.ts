@@ -21,9 +21,12 @@ export interface MapMember {
   // When the member appears on the "where they are now" lens because of
   // an additional location (e.g. "winters" in FL), this is the user's label.
   locationLabel?: string
-  // Only present for parents/affiliates — surfaces "Parent of X" in the
-  // per-state member list.
+  // Only present for non-roster members — surfaces "Parent of X" or
+  // "C'04, plays out of Merion" in the per-state member list.
   parentRelationship?: string
+  // Which non-roster door they came through, so the card's pill does not
+  // call a Penn alum who plays golf somebody's family.
+  nonRosterKind?: 'golfer' | 'family' | 'friend'
 }
 
 export interface MapState {
@@ -225,6 +228,7 @@ export async function GET(request: Request) {
         openToCoffee: enrichment?.openToCoffee ?? false,
         openToGolfRounds: enrichment?.openToGolfRounds ?? false,
         parentRelationship: m.parentRelationship,
+        nonRosterKind: m.nonRosterKind,
       })
       seenStates.add(primaryCode)
     }
@@ -243,6 +247,7 @@ export async function GET(request: Request) {
           openToCoffee: enrichment?.openToCoffee ?? false,
           openToGolfRounds: enrichment?.openToGolfRounds ?? false,
           parentRelationship: m.parentRelationship,
+          nonRosterKind: m.nonRosterKind,
           locationLabel: loc.label,
         })
       }

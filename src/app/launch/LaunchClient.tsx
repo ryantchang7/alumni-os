@@ -8,6 +8,7 @@
  */
 
 import { useEffect, useState } from 'react'
+import { JOIN_PATH } from '@/lib/membership/non-roster'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
@@ -318,22 +319,22 @@ export default function LaunchClient({ film }: { film: React.ReactNode }) {
             </Link>
 
             <Link
-              href="/parent-signup"
+              href={JOIN_PATH}
               className="group bg-white border border-[rgba(180,168,150,0.5)] rounded-2xl px-7 py-7 block hover:border-[#0a1628]/50 transition-colors"
             >
               <p className="text-[10.5px] font-semibold uppercase tracking-[0.28em] text-[#990000] mb-3">
-                If you are family or a friend of the program
+                If you never played for Penn
               </p>
               <p className="text-[#0a1628] text-xl font-medium mb-2 font-heading">
                 You will not be in the book, and that is fine.
               </p>
               <p className="text-[13.5px] text-[#3d4a5c] leading-relaxed mb-4">
-                Parents, family, and longtime supporters have their own signup.
-                Tell us who you are and how you are connected, and you get your
-                own card.
+                Penn alumni and students who play golf, families, and friends
+                of the program have their own signup. One line about who you
+                are and you get your own card.
               </p>
               <span className="text-[12px] font-semibold text-[#990000] group-hover:underline">
-                Sign up as family &rarr;
+                Join here &rarr;
               </span>
             </Link>
           </div>

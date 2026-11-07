@@ -20,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/career-room',
     '/support',
     '/spotlight',
+    '/join',
     '/parent-signup',
     '/legal',
     '/privacy',

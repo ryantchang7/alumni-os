@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { NON_ROSTER_LABEL } from '@/lib/membership/non-roster'
 import Link from 'next/link'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import OpenRequestStrip from '@/components/OpenRequestStrip'
@@ -28,7 +29,7 @@ const ROLE_GROUPS = [
   { key: 'current_player', label: 'Current Players' },
   { key: 'alumni', label: 'Alumni' },
   { key: 'coach', label: 'Coach' },
-  { key: 'parent', label: 'Family & Affiliate' },
+  { key: 'parent', label: NON_ROSTER_LABEL },
 ] as const
 
 function memberCareerLine(entry: AlumniEntry): string | null {
@@ -199,7 +200,7 @@ export default function NineteenthHoleClient({
 
       {/* Open to Coffee, grouped by role so every list of "who's
           open" reads cleanly: Current Players, then Alumni, then Coach,
-          then Family & Affiliate. Groups with zero members are hidden. */}
+          then Golfers & Family. Groups with zero members are hidden. */}
       <section>
         <div className="flex items-baseline gap-3 mb-1">
           <h2 className="text-base font-semibold text-[#0a1628]">Open to Coffee</h2>

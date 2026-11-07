@@ -1,6 +1,7 @@
 'use client'
 
 import { Suspense, useState } from 'react'
+import { JOIN_PATH } from '@/lib/membership/non-roster'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -135,6 +136,18 @@ function LoginInner() {
 
         <p className="text-[11px] text-ink-muted mt-8">
           New here? After signing in you&rsquo;ll find your name in the Member Book and claim your card.
+        </p>
+        {/* Static, not a content slot: a captain override on login.body
+            would silently outrank a new default, and this line has to be
+            there. Someone who went to Penn and plays golf but never played
+            for Penn has no card to find, and the line above sends them
+            looking for one. */}
+        <p className="text-[11px] text-ink-muted mt-2">
+          Never played for Penn?{' '}
+          <Link href={JOIN_PATH} className="text-[#0a1628] font-medium hover:underline">
+            Penn golfers, family and friends join here
+          </Link>
+          .
         </p>
         <Link
           href="/member-book"

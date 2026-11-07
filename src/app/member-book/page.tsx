@@ -13,6 +13,12 @@ import FoundersWall from '@/components/FoundersWall'
 import RecentlyJoined from '@/components/RecentlyJoined'
 import ProfileNudge from '@/components/ProfileNudge'
 import type { FounderEntry, FamilySupporterEntry } from '@/lib/founders'
+import {
+  NON_ROSTER_LABEL,
+  NON_ROSTER_BLURB,
+  JOIN_PATH,
+  nonRosterPill,
+} from '@/lib/membership/non-roster'
 import type { BadgeId } from '@/lib/badges'
 import { useSiteContent } from '@/lib/site-content/use-site-content'
 import SectionEmblemHeader from '@/components/SectionEmblemHeader'
@@ -195,6 +201,9 @@ function FamilyRegistryEntry({
             >
               {entry.canonicalName}
             </p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#990000]/85 mt-1">
+              {nonRosterPill(entry.nonRosterKind)}
+            </p>
             {entry.badges && entry.badges.length > 0 && (
               <div className="mt-1.5">
                 <MemberBadges badges={entry.badges} size="sm" />
@@ -279,6 +288,7 @@ interface ParentEntry {
   personId: string
   canonicalName: string
   parentRelationship?: string
+  nonRosterKind?: string
   photoUrl?: string
   badges?: BadgeId[]
 }
@@ -328,6 +338,7 @@ function MemberBookPageInner() {
           canonicalName: string
           memberRole?: string
           parentRelationship?: string
+          nonRosterKind?: string
           bookId?: string | null
           photoUrl?: string | null
           industry?: string | null
@@ -350,6 +361,7 @@ function MemberBookPageInner() {
               personId: p.personId,
               canonicalName: p.canonicalName,
               parentRelationship: p.parentRelationship,
+              nonRosterKind: p.nonRosterKind,
               photoUrl: p.photoUrl ?? undefined,
               badges: p.badges,
             })
@@ -472,9 +484,11 @@ function MemberBookPageInner() {
       )}
 
       {/* Subtab pill bar, sits on a navy strip immediately under the
-          hero, matching the /moments All-vs-Locker treatment. The Family
+          hero, matching the /moments All-vs-Locker treatment. The second
           pill uses Penn red since that's the tier's accent everywhere
-          else in the app. */}
+          else in the app. It used to read "Family & Affiliate", which told
+          a Penn alum who plays golf but never played for Penn that the tab
+          was not about them. */}
       <div className="bg-[#0a1628] border-t border-[rgba(255,255,255,0.06)] border-b border-[rgba(255,255,255,0.06)]">
         <div className="max-w-[1280px] mx-auto px-5 sm:px-8 py-4 flex items-center gap-3">
           <button
@@ -508,7 +522,7 @@ function MemberBookPageInner() {
                 : 'text-[#f4ecdb]/75 hover:text-white border border-[#990000]/45 hover:bg-[#990000]/15'
             }`}
           >
-            Family &amp; Affiliate
+            {NON_ROSTER_LABEL}
             <span
               className={`text-[10.5px] tabular-nums px-1.5 py-0.5 rounded-full ${
                 view === 'family'
@@ -564,16 +578,16 @@ function MemberBookPageInner() {
                 </span>{' '}
                 {view === 'family'
                   ? filteredParents.length === 1
-                    ? 'family & affiliate'
-                    : 'family & affiliates'
+                    ? 'member'
+                    : 'members'
                   : filtered.length === 1
                     ? 'player'
                     : 'players'}
               </span>
             </div>
 
-            {/* Era chips + sort, players-only metadata, so hide on
-                the Family & Affiliate tab. */}
+            {/* Era chips + sort, roster-only metadata, so hide on the
+                Golfers & Family tab. */}
             {view === 'all' && (
               <div className="px-5 py-3.5 flex items-center gap-2 flex-wrap">
                 {isMultiProgram() && (
@@ -711,27 +725,27 @@ function MemberBookPageInner() {
                 </AnimatePresence>
               )}
 
-              {/* Family & Affiliate group, appended below the main
+              {/* Golfers & Family group, appended below the main
                   registry on the All Members tab. Subhead doubles as a
-                  recruiting CTA when zero or more parents exist. */}
+                  recruiting CTA. */}
               {filteredParents.length > 0 && (
                 <div className="mt-10 pt-8 border-t border-[rgba(180,168,150,0.4)]">
                   <div className="flex items-baseline justify-between gap-4 mb-5 flex-wrap">
                     <div>
                       <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-1">
-                        Family &amp; Affiliate
+                        {NON_ROSTER_LABEL}
                       </p>
                       <p
                         className="text-[#0a1628] text-2xl font-heading"
                       >
-                        Family and longtime supporters of Penn Golf.
+                        {NON_ROSTER_BLURB}
                       </p>
                     </div>
                     <Link
-                      href="/parent-signup"
+                      href={JOIN_PATH}
                       className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline whitespace-nowrap"
                     >
-                      Join as family &rarr;
+                      Join the Clubhouse &rarr;
                     </Link>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -743,7 +757,7 @@ function MemberBookPageInner() {
               )}
             </>
           ) : (
-            /* Family & Affiliate dedicated view */
+            /* Golfers & Family dedicated view */
             <>
               {filteredParents.length === 0 ? (
                 <div
@@ -753,18 +767,18 @@ function MemberBookPageInner() {
                   <p
                     className="text-[#0a1628] text-lg font-medium mb-2 font-heading"
                   >
-                    {parents.length === 0 ? 'No family members yet.' : 'No matches.'}
+                    {parents.length === 0 ? 'Nobody here yet.' : 'No matches.'}
                   </p>
                   <p className="text-[13px] text-ink-muted max-w-md mx-auto mb-6">
                     {parents.length === 0
-                      ? 'Parents, family, and longtime supporters of Penn Golf can join the Clubhouse too.'
+                      ? NON_ROSTER_BLURB
                       : 'Try a different name.'}
                   </p>
                   <Link
-                    href="/parent-signup"
+                    href={JOIN_PATH}
                     className="inline-block bg-[#990000] hover:bg-[#7a0000] text-white text-[12.5px] font-semibold uppercase tracking-[0.14em] px-5 py-2.5 rounded-lg transition-colors"
                   >
-                    Join as family
+                    Join the Clubhouse
                   </Link>
                 </div>
               ) : (

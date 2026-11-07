@@ -16,6 +16,13 @@
  * measured. Both are gone. An alum deciding whether to bother reads two
  * lines, not an essay.
  *
+ * The four steps describe the roster path, which is how most members
+ * arrive. They are wrong for the other door: someone who went to Penn and
+ * plays golf but never played for Penn has no card waiting and no roster
+ * years to match, and "your card is already here" reads to them as proof
+ * the place is not theirs. So the steps are followed by one panel that
+ * says, in as few words as possible, that they count too.
+ *
  * The animation is there to make the order legible one step at a time rather
  * than to decorate: the gold rail draws down as the steps arrive, and the
  * whole thing holds still for anyone who asked their system not to animate.
@@ -66,7 +73,8 @@ export default function WhatThisIs({
         Every Penn golfer, one place.
       </h2>
       <p className="text-white/60 text-[13.5px] leading-relaxed mt-3 max-w-[58ch]">
-        Not a directory. The people you actually played with.
+        Not a directory. The people you actually played with, and the Penn
+        golfers you have not met yet.
       </p>
 
       <div className="relative mt-8 pl-7">
@@ -107,7 +115,24 @@ export default function WhatThisIs({
         </ol>
       </div>
 
-      <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap items-center gap-x-6 gap-y-3">
+      <div className="mt-8 rounded-xl border border-[#c8a84b]/30 bg-[#c8a84b]/[0.07] px-5 py-4">
+        <p className="text-white text-[14px] font-medium font-heading leading-snug">
+          Never played for Penn?
+        </p>
+        <p className="text-white/60 text-[13px] leading-relaxed mt-1 max-w-[58ch]">
+          If you went to Penn and you play golf, you are a Penn golfer. Same
+          goes for the families and the friends of the program. You will not
+          have a card waiting, so you write one line about yourself instead.
+        </p>
+        <Link
+          href="/join"
+          className="inline-block mt-2.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-[#c8a84b] hover:text-white transition-colors"
+        >
+          Join here &rarr;
+        </Link>
+      </div>
+
+      <div className="mt-6 pt-6 border-t border-white/10 flex flex-wrap items-center gap-x-6 gap-y-3">
         <Link
           href="/launch"
           className="inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.16em] text-[#c8a84b] hover:text-white transition-colors"

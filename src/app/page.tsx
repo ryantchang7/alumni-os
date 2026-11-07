@@ -19,7 +19,7 @@ export default function LandingPage() {
   const primaryCta = useSlot('landing.primary-cta')
   const secondaryCta = useSlot('landing.secondary-cta')
   const claimNote = useSlot('landing.claim-note')
-  const familyCta = useSlot('landing.family-cta')
+  const joinCta = useSlot('landing.join-cta')
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 120)
@@ -188,11 +188,11 @@ export default function LandingPage() {
           transition={{ delay: 1.95, duration: 0.7, ease }}
         >
           <Link
-            href="/parent-signup"
+            href="/join"
             className="inline-flex items-center gap-2 text-[14px] sm:text-[15px] font-medium text-white hover:text-[#c8a84b] transition-colors border border-white/40 hover:border-[#c8a84b]/70 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12]"
             style={{ textShadow: '0 1px 8px rgba(10,22,40,0.45)' }}
           >
-            {familyCta}
+            {joinCta}
           </Link>
         </motion.div>
       </div>

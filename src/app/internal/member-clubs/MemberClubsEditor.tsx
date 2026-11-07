@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { NON_ROSTER_LABEL } from '@/lib/membership/non-roster'
 import CourseAutocomplete from '@/components/CourseAutocomplete'
 
 export interface MemberRow {
@@ -17,7 +18,7 @@ const ROLE_LABELS: Record<string, string> = {
   current_player: 'Current player',
   alumni: 'Alumni',
   coach: 'Coach',
-  parent: 'Family & Affiliate',
+  parent: NON_ROSTER_LABEL,
 }
 
 function RoleChip({ role }: { role: string }) {

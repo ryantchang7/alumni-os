@@ -9,7 +9,14 @@ const DISMISS_KEY = 'pgc-install-dismissed'
 // Never compete with the pages where someone is trying to get in. /launch is
 // the URL in the alumni email, and the banner is bottom-fixed: on an iPhone it
 // landed straight on top of "Claim Your Member Card".
-const SUPPRESSED = ['/launch', '/login', '/account/setup', '/account/pending', '/parent-signup']
+const SUPPRESSED = [
+  '/launch',
+  '/login',
+  '/account/setup',
+  '/account/pending',
+  '/join',
+  '/parent-signup',
+]
 
 // Wait for a sign of interest before asking for anything. Either is enough.
 const DWELL_MS = 15000

@@ -1,4 +1,5 @@
 import InviteTeammates from '@/components/InviteTeammates'
+import { JOIN_PATH } from '@/lib/membership/non-roster'
 import type { TeammateEntry } from '@/components/InviteTeammates'
 import Link from 'next/link'
 import { getApprovalState } from '@/lib/access/approval'
@@ -189,18 +190,18 @@ export default async function InvitePage() {
         <div className="mt-8 bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="min-w-0">
             <p className="text-[#0a1628] font-medium text-[15px] font-heading">
-              Inviting family or an affiliate?
+              Inviting someone who never played?
             </p>
             <p className="text-[12.5px] text-ink-muted mt-0.5 leading-relaxed">
-              Parents, spouses, and longtime friends of the program join through
-              their own door, send them this link.
+              A Penn friend who plays golf, a parent, a spouse. They join
+              through their own door, send them this link.
             </p>
           </div>
           <Link
-            href="/parent-signup"
+            href={JOIN_PATH}
             className="inline-flex items-center justify-center border border-[#990000]/30 hover:border-[#990000] text-[#990000] text-[12px] font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap flex-shrink-0"
           >
-            Family sign-up &rarr;
+            Their door &rarr;
           </Link>
         </div>
       </div>

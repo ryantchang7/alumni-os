@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { JOIN_PATH } from '@/lib/membership/non-roster'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Search, X } from 'lucide-react'
@@ -130,12 +131,14 @@ export default function AccountSetupClient({
             {signedInEmail ? <>Signed in as {signedInEmail}. </> : null}
             Search by name, hometown, or class year. Once you claim, edit your role and how you can help.
           </p>
-          {/* Family and affiliates aren't in the player registry, say so here
-              instead of only after a search returns nothing. */}
+          {/* Nobody without a roster line is in the player registry, say so
+              here instead of only after a search returns nothing. The people
+              most likely to search and find nothing are Penn alumni who play
+              golf but never played for Penn. */}
           <p className="text-white/60 text-[12.5px] mt-2.5 max-w-xl leading-relaxed">
-            Family, parent, or affiliate of the program?{' '}
-            <Link href="/parent-signup" className="text-[#c8a84b] font-medium hover:underline">
-              Join through the family door &rarr;
+            Never played for Penn?{' '}
+            <Link href={JOIN_PATH} className="text-[#c8a84b] font-medium hover:underline">
+              Penn golfers, family and friends join here &rarr;
             </Link>
           </p>
         </div>
@@ -193,8 +196,8 @@ export default function AccountSetupClient({
               </p>
             )}
             <p className="text-sm text-[#0a1628] mb-6">
-              Family or affiliate of a player?{' '}
-              <Link href="/parent-signup" className="text-[#990000] font-medium hover:underline">
+              Never played for Penn?{' '}
+              <Link href={JOIN_PATH} className="text-[#990000] font-medium hover:underline">
                 Join here &rarr;
               </Link>
             </p>

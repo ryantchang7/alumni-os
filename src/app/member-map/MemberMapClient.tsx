@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { NON_ROSTER_LABEL, nonRosterPill } from '@/lib/membership/non-roster'
 import Link from 'next/link'
 import type { MapState, MapMember } from '@/app/api/member-map/route'
 import MemberAvatar from '@/components/MemberAvatar'
@@ -112,8 +113,8 @@ const ERA_LABELS: Record<EraFilter, string> = {
 function matchesCombined(m: MapMember, role: RoleFilter, era: EraFilter): boolean {
   if (role === 'current_player' && m.memberRole !== 'current_player') return false
   if (role === 'alumni' && m.memberRole !== 'alumni') return false
-  // Parents have no roster era — they show up regardless of the era
-  // filter so the family/affiliate group always lands in the panel.
+  // Non-roster members have no roster era — they show up regardless of
+  // the era filter so the Golfers & Family group always lands in the panel.
   if (m.memberRole === 'parent') return true
   if (era === 'all') return true
   if (m.memberRole === 'current_player') return era === '2020s'
@@ -181,7 +182,7 @@ function ContextualRow({ member }: { member: MapMember }) {
         )}
         {isParent && (
           <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full text-[#990000] bg-[#990000]/8 border border-[#990000]/30 whitespace-nowrap mt-0.5">
-            Family
+            {nonRosterPill(member.nonRosterKind)}
           </span>
         )}
       </div>
@@ -222,7 +223,7 @@ export default function MemberMapClient({
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('all')
   const [eraFilter, setEraFilter] = useState<EraFilter>('all')
 
-  // On the Family & Affiliate view, the lens/role/era filters are
+  // On the Golfers & Family view, the lens/role/era filters are
   // irrelevant — parents only have current location and they're all
   // the same role. We collapse to a single dataset.
   const stateData =
@@ -334,7 +335,7 @@ export default function MemberMapClient({
 
   return (
     <div className="space-y-6">
-      {/* Top-level subtab, All Members vs Family & Affiliate. Family
+      {/* Top-level subtab, All Members vs Golfers & Family. That tab
           gets its own separate map (current location only); no lens or
           role/era filter on that view. */}
       <div
@@ -366,7 +367,7 @@ export default function MemberMapClient({
               : 'bg-white border border-[#990000]/35 text-[#990000] hover:bg-[#990000]/8'
           }`}
         >
-          Family &amp; Affiliate
+          {NON_ROSTER_LABEL}
           {familyTotal > 0 && (
             <span
               className={`text-[10.5px] tabular-nums px-1.5 py-0.5 rounded-full ${
@@ -420,7 +421,8 @@ export default function MemberMapClient({
       )}
       {view === 'family' && (
         <p className="text-[12px] text-ink-muted max-w-md">
-          Parents, family, and longtime supporters, by where they live now.
+          Penn alumni and students who play golf, plus the families and
+          friends of the program, by where they live now.
         </p>
       )}
 
