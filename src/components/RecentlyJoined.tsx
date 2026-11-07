@@ -24,6 +24,15 @@ interface RecentClaim {
   createdAt: string
 }
 
+/**
+ * The list is capped by the API, so its length is a ceiling, not a count.
+ * The honest total rides along in `totals.recentClaimsCount`.
+ */
+interface ActivityResponse {
+  recentClaims?: unknown
+  totals?: { recentClaimsCount?: number }
+}
+
 function daysAgo(iso: string): string {
   const d = Math.floor((Date.now() - Date.parse(iso)) / 86400000)
   if (Number.isNaN(d)) return ''
@@ -40,17 +49,23 @@ export default function RecentlyJoined({
   photosByBookId?: Record<string, string>
 }) {
   const [claims, setClaims] = useState<RecentClaim[] | null>(null)
+  const [total, setTotal] = useState(0)
 
   useEffect(() => {
     fetch('/api/clubhouse/activity', { cache: 'no-store' })
-      .then(r => (r.ok ? r.json() : null))
-      .then(d => setClaims(Array.isArray(d?.recentClaims) ? d.recentClaims : []))
+      .then(r => (r.ok ? (r.json() as Promise<ActivityResponse>) : null))
+      .then(d => {
+        setClaims(Array.isArray(d?.recentClaims) ? (d.recentClaims as RecentClaim[]) : [])
+        setTotal(d?.totals?.recentClaimsCount ?? 0)
+      })
       .catch(() => setClaims([]))
   }, [])
 
   if (!claims || claims.length === 0) return null
 
   const named = claims.filter((c): c is RecentClaim & { name: string } => !!c.name)
+  // Never fewer than the rows in hand, in case an older API answers.
+  const count = Math.max(total, claims.length)
 
   return (
     <section className="mb-8" data-testid="recently-joined">
@@ -102,8 +117,8 @@ export default function RecentlyJoined({
       ) : (
         <div className="bg-white border border-[rgba(180,168,150,0.4)] rounded-xl px-5 py-4 flex flex-wrap items-center justify-between gap-3">
           <p className="text-[13.5px] text-[#3d4a5c]">
-            <span className="font-semibold text-[#0a1628]">{claims.length}</span>{' '}
-            {claims.length === 1 ? 'member has' : 'members have'} claimed a card in
+            <span className="font-semibold text-[#0a1628]">{count}</span>{' '}
+            {count === 1 ? 'member has' : 'members have'} claimed a card in
             the last 30 days. Names are members only.
           </p>
           <Link

@@ -198,6 +198,12 @@ export async function GET() {
     membersClaimed: store.accounts.filter(
       (a) => a.teamId === team.id && a.linkedPersonId,
     ).length,
+    // How many actually arrived in the window, BEFORE the list is sliced.
+    // The signed-out strip says "N members have claimed a card in the last 30
+    // days" and was reading the length of the sliced list, so it reported the
+    // cap as the count: a week in which ten people joined and a week in which
+    // forty did both read "10".
+    recentClaimsCount: recentClaims.length,
     openGatherings: upcoming.length,
     upcomingRsvps: upcoming.reduce((s, g) => s + g.interestedCount, 0),
     publishedMoments: store.moments.filter(
