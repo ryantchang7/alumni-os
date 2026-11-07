@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Lock } from 'lucide-react'
 import { APPROVAL_PROMISE } from '@/lib/access/promise'
 import { revealedStats, BOOK_PROOF_STATS } from '@/lib/proof'
+import WhatThisIs from '@/components/WhatThisIs'
 
 interface PreviewStat {
   label: string
@@ -115,6 +116,13 @@ export default function GatedPreview({
             Watch the film &rarr;
           </Link>
         </div>
+      </div>
+
+      {/* The lock says what they cannot see. This says what the thing is,
+          which is the question somebody who arrived from a teammate's
+          message is actually asking. */}
+      <div className="mt-8">
+        <WhatThisIs />
       </div>
     </div>
   )

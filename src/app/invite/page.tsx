@@ -26,8 +26,23 @@ export default async function InvitePage() {
   const { readStore, getTeamBySlug } = await import('@/lib/store/local-store')
   const { findBookEntryForTeamStorePerson } = await import('@/lib/member-book/bridge')
   const { getMemberStartYear, getMemberEndYear } = await import('@/lib/member-book/helpers')
+  const { livePrograms } = await import('@/lib/teams/programs')
+  const { resolveViewerProgram } = await import('@/lib/teams/viewer-program')
   const store = await readStore()
-  const team = await getTeamBySlug('penn-mens-golf')
+
+  // The viewer's own program, not the men's team by assumption. A women's
+  // member was being handed the men's roster to invite.
+  const teamsBySlug = new Map<string, string>()
+  for (const prog of livePrograms()) {
+    const t = await getTeamBySlug(prog.slug)
+    if (t) teamsBySlug.set(prog.slug, t.id)
+  }
+  const viewer = resolveViewerProgram(
+    store,
+    approval.linkedPersonId,
+    slug => teamsBySlug.get(slug) ?? null,
+  )
+  const team = viewer.teamId ? { id: viewer.teamId } : null
 
   const teammates: TeammateEntry[] = []
   let viewerName: string | null = null
@@ -40,28 +55,10 @@ export default async function InvitePage() {
     // teammate in mind landed on a wall of strangers beginning with A.
     // Same derivation as /api/player/your-era, including the Member Book
     // fallback that pre-2000 alumni depend on.
-    const viewerPerson = store.people.find(p => p.id === approval.linkedPersonId)
-    viewerName = viewerPerson?.canonicalName ?? null
-    const viewerBookEntry = viewerPerson
-      ? findBookEntryForTeamStorePerson(viewerPerson.canonicalName)
-      : null
-    const mine = store.teamMemberships.find(
-      m =>
-        m.teamId === team.id &&
-        m.personId === approval.linkedPersonId &&
-        (m.memberRole === 'current_player' || m.memberRole === 'alumni'),
-    )
-    const myStart =
-      mine?.rosterStartYear ??
-      mine?.rosterEndYear ??
-      (viewerBookEntry ? getMemberStartYear(viewerBookEntry) ?? undefined : undefined)
-    const myEnd =
-      mine?.rosterEndYear ??
-      mine?.rosterStartYear ??
-      (viewerBookEntry ? getMemberEndYear(viewerBookEntry) ?? undefined : undefined)
-    if (myStart && myEnd) {
-      viewerEra = myStart === myEnd ? `${myStart}` : `${myStart}–${myEnd}`
-    }
+    viewerName = viewer.canonicalName
+    viewerEra = viewer.eraLabel
+    const myStart = viewer.startYear
+    const myEnd = viewer.endYear
 
     const memberships = store.teamMemberships.filter(
       m =>

@@ -37,6 +37,8 @@ interface EraResponse {
   eraLabel: string | null
   hereCount: number
   viewerName: string | null
+  /** The viewer's own program. Profile links 404 on the wrong one. */
+  teamSlug: string | null
   teammates: EraTeammate[]
 }
 
@@ -159,7 +161,7 @@ export default function YourEraSection({ approved }: { approved: boolean }) {
                   href={
                     t.bookId
                       ? `/member-book/${encodeURIComponent(t.bookId)}`
-                      : `/player/alumni/${encodeURIComponent(t.personId)}?teamSlug=penn-mens-golf`
+                      : `/player/alumni/${encodeURIComponent(t.personId)}?teamSlug=${encodeURIComponent(data.teamSlug ?? 'penn-mens-golf')}`
                   }
                   className="block text-[#0a1628] text-[14.5px] leading-snug truncate hover:underline font-heading"
                 >

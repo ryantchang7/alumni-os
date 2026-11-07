@@ -13,6 +13,8 @@
 import { NextResponse } from 'next/server'
 import { requireApprovedMember } from '@/lib/auth/guards'
 import { getTeamBySlug, readStore } from '@/lib/store/local-store'
+import { livePrograms } from '@/lib/teams/programs'
+import { resolveViewerProgram } from '@/lib/teams/viewer-program'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import { memberBookEntries, getMemberById } from '@/lib/member-book/data'
 import {
@@ -21,8 +23,6 @@ import {
   getMemberEndYear,
   getMemberProgram,
 } from '@/lib/member-book/helpers'
-
-const TEAM_SLUG = 'penn-mens-golf'
 
 interface EraTeammate {
   personId: string
@@ -41,35 +41,37 @@ export async function GET() {
   const gate = await requireApprovedMember()
   if (!gate.ok) return gate.response
 
-  const team = await getTeamBySlug(TEAM_SLUG)
-  if (!team) return NextResponse.json({ error: 'Team not found' }, { status: 404 })
-
   const store = await readStore()
   const viewerPersonId = gate.session.linkedPersonId
 
-  const mine = store.teamMemberships.find(
-    m =>
-      m.teamId === team.id &&
-      m.personId === viewerPersonId &&
-      (m.memberRole === 'current_player' || m.memberRole === 'alumni'),
+  // Which roster the viewer was actually on. This was hardcoded to the men's
+  // team, so a women's member had no era, no teammates and nobody to invite:
+  // the teammate loop was simply dark for her.
+  const teamsBySlug = new Map<string, string>()
+  for (const prog of livePrograms()) {
+    const t = await getTeamBySlug(prog.slug)
+    if (t) teamsBySlug.set(prog.slug, t.id)
+  }
+  const viewer = resolveViewerProgram(
+    store,
+    viewerPersonId,
+    slug => teamsBySlug.get(slug) ?? null,
   )
-  // The store only holds rosters from 2000 onward, so deriving the viewer's
-  // era from it alone left every pre-2000 alum — most of the Member Book —
-  // with no era at all. Fall back to their Member Book record.
-  const viewerPerson = store.people.find(p => p.id === viewerPersonId)
-  const viewerBookEntry = viewerPerson
-    ? findBookEntryForTeamStorePerson(viewerPerson.canonicalName)
-    : null
-  const myStart =
-    mine?.rosterStartYear ??
-    mine?.rosterEndYear ??
-    (viewerBookEntry ? getMemberStartYear(viewerBookEntry) ?? undefined : undefined)
-  const myEnd =
-    mine?.rosterEndYear ??
-    mine?.rosterStartYear ??
-    (viewerBookEntry ? getMemberEndYear(viewerBookEntry) ?? undefined : undefined)
+  if (!viewer.teamId) {
+    return NextResponse.json({ error: 'Team not found' }, { status: 404 })
+  }
+  const team = { id: viewer.teamId }
+  const viewerBookEntry = viewer.bookEntry
+  const myStart = viewer.startYear
+  const myEnd = viewer.endYear
   if (!myStart || !myEnd) {
-    return NextResponse.json({ eraLabel: null, hereCount: 0, teammates: [] })
+    return NextResponse.json({
+      eraLabel: null,
+      hereCount: 0,
+      viewerName: viewer.canonicalName,
+      teamSlug: viewer.program.slug,
+      teammates: [],
+    })
   }
 
   const accountByPerson = new Map(
@@ -130,7 +132,7 @@ export async function GET() {
     teammates.map(t => t.bookId).filter((b): b is string => !!b),
   )
   const viewerBookId = viewerBookEntry?.id ?? null
-  const viewerProgram = viewerBookEntry ? getMemberProgram(viewerBookEntry) : 'mens'
+  const viewerProgram = viewer.program.id
   for (const entry of getPublicMembers(memberBookEntries)) {
     if (entry.id === viewerBookId) continue
     if (seenBookIds.has(entry.id)) continue
@@ -165,12 +167,15 @@ export async function GET() {
   )
 
   return NextResponse.json({
-    eraLabel: myStart === myEnd ? `${myStart}` : `${myStart}–${myEnd}`,
+    eraLabel: viewer.eraLabel,
+    // The UI links to /player/alumni/[id]?teamSlug=..., which 404s on the
+    // wrong program. It had the men's slug hardcoded.
+    teamSlug: viewer.program.slug,
     hereCount: teammates.filter(t => t.claimed).length,
     // So an invite can say who it came from. An SMS naming nobody reads as
     // spam, and the one invite loop that has actually worked here was a
     // named alum writing to people who knew him.
-    viewerName: viewerPerson?.canonicalName ?? null,
+    viewerName: viewer.canonicalName,
     teammates,
   })
 }

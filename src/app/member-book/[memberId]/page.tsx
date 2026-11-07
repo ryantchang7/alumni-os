@@ -17,6 +17,7 @@ import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
 import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
 import MessageMemberButton from '@/components/MessageMemberButton'
+import WhatThisIs from '@/components/WhatThisIs'
 
 // Detail pages render on demand so we don't ship 337 prebuilt HTML payloads
 // in the deploy artifact (caused vercel CLI Upload aborted at ~29 MB).
@@ -563,6 +564,13 @@ export default async function MemberDetailPage({
               </Link>
             </div>
           )}
+
+          {/* For anyone who is not a member yet, which from now on includes
+              everyone arriving from a teammate's text message. Keyed on
+              isApprovedViewer rather than on being signed out, because
+              somebody who signed in and has not claimed anything yet is
+              exactly the person still asking what this is. */}
+          {!isApprovedViewer && <WhatThisIs inset />}
         </div>
 
         {/* Back link below card */}
