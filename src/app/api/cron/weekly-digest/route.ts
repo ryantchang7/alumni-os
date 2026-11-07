@@ -63,22 +63,49 @@ async function runJob(req: NextRequest) {
   const cutoffMs = now.getTime() - ONE_WEEK_MS
 
   // Gather week's content.
+  //
+  // Who arrived. Two things were wrong here and both mattered once arrivals
+  // went from two a week to seven in a day.
+  //
+  // It filtered on `createdAt`, which is the first Google sign-in, not the
+  // claim. Somebody who signed in during the board meeting and claimed a card
+  // nine days later was announced in the wrong week, or in no week at all.
+  // `linkedAt` is the claim; `createdAt` is the fallback for the accounts
+  // linked before that field existed.
+  //
+  // And it had no `linkedPersonId` check, so an account that signed in and
+  // never claimed was listed under "New in the book" while not being in the
+  // book. For such an account there is no person and often no Google display
+  // name, and the last fallback in the name chain was `a.email` — which would
+  // have mailed a stranger's address to the entire alumni body.
+  const { findBookEntryForTeamStorePerson } = await import('@/lib/member-book/bridge')
+  const joinedAtOf = (a: { linkedAt?: string; createdAt: string }) =>
+    a.linkedAt ?? a.createdAt
   const newMembers = store.accounts
-    .filter(a => a.teamId === team.id && Date.parse(a.createdAt) >= cutoffMs)
+    .filter(a => {
+      if (a.teamId !== team.id) return false
+      if (!a.linkedPersonId) return false
+      return Date.parse(joinedAtOf(a)) >= cutoffMs
+    })
     .map(a => {
-      const person = a.linkedPersonId
-        ? store.people.find(p => p.id === a.linkedPersonId)
-        : undefined
+      const person = store.people.find(p => p.id === a.linkedPersonId)
       const membership = person
         ? store.teamMemberships.find(
             m => m.personId === person.id && m.teamId === team.id,
           )
         : undefined
+      const bookEntry = person
+        ? findBookEntryForTeamStorePerson(person.canonicalName)
+        : null
       return {
-        name: person?.canonicalName ?? a.name ?? a.email,
+        name: person?.canonicalName ?? a.name ?? 'A new member',
         classLabel: deriveClassLabel(membership?.classYearEstimate) ?? membership?.classLabel,
+        bookId: bookEntry?.id,
+        personId: a.linkedPersonId,
+        joinedAt: joinedAtOf(a),
       }
     })
+    .sort((x, y) => y.joinedAt.localeCompare(x.joinedAt))
 
   const careerPosts = store.careerPosts
     .filter(p => p.teamId === team.id && Date.parse(p.createdAt) >= cutoffMs)
@@ -188,6 +215,8 @@ async function runJob(req: NextRequest) {
     moments,
     newsItems,
     clubhouseUrl: `${clubhouseUrl}/player`,
+    memberBookUrl: `${clubhouseUrl}/member-book`,
+    postMomentUrl: `${clubhouseUrl}/moments/new`,
   }
   // The shared copy. Used for the hasContent gate and the dry-run preview;
   // each recipient is rendered again below with their own card's gaps.
@@ -235,6 +264,7 @@ async function runJob(req: NextRequest) {
       subject,
       htmlBytes: html.length,
       newMembers: newMembers.length,
+      newMemberNames: newMembers.map(m => m.name),
       careerPosts: careerPosts.length,
       gatherings: gatherings.length,
       moments: moments.length,
@@ -261,18 +291,23 @@ async function runJob(req: NextRequest) {
       skipped.push(account.email)
       continue
     }
-    // Rendered per recipient so the "Your card" section names their own
-    // gaps. Everything else in the email is identical.
+    // Rendered per recipient: the "Your card" section names their own gaps,
+    // and the arrivals section asks a brand-new member to post while asking
+    // everyone else to say hello. Everything else in the email is identical.
     const gaps = profileGapsFor(account.linkedPersonId)
-    const personal = gaps.length
-      ? renderWeeklyDigest({
-          ...baseDigest,
-          profileGaps: gaps,
-          profileUrl: account.linkedPersonId
-            ? `${clubhouseUrl}/alumni/profile/${account.linkedPersonId}?teamSlug=${teamSlug}`
-            : `${clubhouseUrl}/account/profile`,
-        })
-      : { subject, html }
+    const viewerIsNew = newMembers.some(m => m.personId === account.linkedPersonId)
+    const personal =
+      gaps.length || viewerIsNew
+        ? renderWeeklyDigest({
+            ...baseDigest,
+            viewerIsNew,
+            viewerPersonId: account.linkedPersonId,
+            profileGaps: gaps,
+            profileUrl: account.linkedPersonId
+              ? `${clubhouseUrl}/alumni/profile/${account.linkedPersonId}?teamSlug=${teamSlug}`
+              : `${clubhouseUrl}/account/profile`,
+          })
+        : { subject, html }
     const res = await sendEmail({
       to: account.email,
       subject: personal.subject,

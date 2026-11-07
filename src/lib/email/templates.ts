@@ -394,7 +394,15 @@ export function renderSignInLinkEmail(input: {
 
 // ── Weekly Digest ────────────────────────────────────────────────────────────
 
-interface DigestMember { name: string; classLabel?: string }
+interface DigestMember {
+  name: string
+  classLabel?: string
+  /** Member Book card id, so a name in the email is one click from a hello. */
+  bookId?: string
+  /** Used only to tell whether the reader is one of the arrivals. */
+  personId?: string
+  joinedAt?: string
+}
 interface DigestGathering { title: string; dateText: string; city?: string }
 interface DigestCareerPost { kind: 'ask' | 'offer'; headline: string; sector: string; postedByName: string }
 interface DigestMoment { caption: string; postedByName: string; photoUrl?: string; mediaType?: 'image' | 'video' }
@@ -426,6 +434,19 @@ export function renderWeeklyDigest(input: {
   moments: DigestMoment[]
   newsItems: DigestNewsItem[]
   clubhouseUrl: string
+  /** The Member Book, for "say hello" when a name has no card of its own. */
+  memberBookUrl?: string
+  /** Straight into the Moment composer, for a brand-new member's first post. */
+  postMomentUrl?: string
+  /**
+   * True when this reader is one of the week's arrivals. Flips the arrivals
+   * section from "say hello to them" to "you are one of them, post something":
+   * the two readers need opposite instructions and the old copy gave the new
+   * member nothing to do.
+   */
+  viewerIsNew?: boolean
+  /** This reader's person id, so their own name is not listed back at them. */
+  viewerPersonId?: string
   /**
    * What this particular reader's own card is still missing, in plain words
    * ("a photo", "your city"). Empty for a finished card, and for anyone the
@@ -445,12 +466,22 @@ export function renderWeeklyDigest(input: {
    * open an email; a score is.
    */
   const subject = (() => {
+    // Their first email. Whatever else happened, this is what it is about.
+    if (input.viewerIsNew) {
+      return `Welcome to the ${input.teamName} Clubhouse`
+    }
     if (input.result) {
       return `${input.teamName} · ${input.result.resultText.split(' · ')[0]} at ${input.result.eventName}`
     }
     if (input.nextUp && input.nextUp.daysAway <= 8) {
       const when = input.nextUp.daysAway <= 1 ? 'tomorrow' : `in ${input.nextUp.daysAway} days`
       return `${input.teamName} · ${input.nextUp.eventName} ${when}`
+    }
+    // A wave of arrivals outranks the standing round list. Seven people
+    // claiming cards in a week is the news; the Scotland rounds have been on
+    // the board for a month and were the subject line every one of them.
+    if (input.newMembers.length >= 4) {
+      return `${input.teamName} · ${input.newMembers.length} more joined the Clubhouse`
     }
     if (input.gatherings.length === 1) {
       return `${input.teamName} · ${input.gatherings[0].title}`
@@ -591,22 +622,82 @@ export function renderWeeklyDigest(input: {
     sections.push(sec('Posted this week', body))
   }
 
-  // 5. Who joined. Brief, and last of the people sections, because a name
-  //    from a class you never overlapped with means little on its own.
+  // 5. Who joined.
+  //
+  // This used to be six names and a tally, placed last on the reasoning that
+  // a name from a class you never overlapped with means little on its own.
+  // That held when two people arrived a week. Seven claimed cards in a single
+  // day and the arrival itself became the week's news, so the whole list goes
+  // in: these are the people a reader might actually know, and the one left
+  // off the end is somebody's teammate.
+  //
+  // It also ends in something to do, which it never did. Every name here is
+  // one tap from their card, and the closing line differs by reader: a
+  // brand-new member is asked to post, everybody else is asked to say hello.
+  // The old copy asked nobody for anything, which is most of why six of
+  // twenty-nine members have ever filled in a field.
   if (input.newMembers.length) {
-    const names = input.newMembers
-      .slice(0, 6)
-      .map(
-        m =>
-          `${escapeHtml(m.name)}${m.classLabel ? ` <span style="color:${MUTED}">${escapeHtml(m.classLabel)}</span>` : ''}`,
-      )
-      .join(', ')
-    sections.push(
-      sec(
-        input.newMembers.length === 1 ? 'New in the book' : 'New in the book',
-        li(names) + more(input.newMembers.length - 6, 'claimed a card'),
-      ),
+    // A hard ceiling only so a freak week cannot mail a directory.
+    const VISIBLE = 24
+    const others = input.newMembers.filter(
+      m => !input.viewerPersonId || m.personId !== input.viewerPersonId,
     )
+    const shown = others.slice(0, VISIBLE)
+    const names = shown
+      .map(m => {
+        const label = `${escapeHtml(m.name)}${
+          m.classLabel ? ` <span style="color:${MUTED}">${escapeHtml(m.classLabel)}</span>` : ''
+        }`
+        return m.bookId && input.memberBookUrl
+          ? `<a href="${input.memberBookUrl}/${encodeURIComponent(m.bookId)}" style="color:${NAVY};text-decoration:none;border-bottom:1px solid ${GOLD};">${label}</a>`
+          : label
+      })
+      .join(', ')
+
+    const n = input.newMembers.length
+    const heading = input.viewerIsNew
+      ? 'You and who else arrived'
+      : n === 1
+        ? 'New in the book'
+        : 'Who just arrived'
+
+    const closer = input.viewerIsNew
+      ? `<p style="margin:12px 0 0 0;font-size:13.5px;line-height:1.55;color:#3d4a5c;">
+           You claimed your card this week, so you are one of them. The fastest
+           way to stop being a name on a list is to put one thing up: a photo
+           from a round, where you are living now, anything.
+         </p>
+         <p style="margin:10px 0 0 0;"><a href="${escapeHtml(
+           input.postMomentUrl ?? input.clubhouseUrl,
+         )}" style="font-size:13px;font-weight:600;color:#990000;text-decoration:none;">Post something &rarr;</a></p>`
+      : `<p style="margin:12px 0 0 0;font-size:13.5px;line-height:1.55;color:#3d4a5c;">
+           ${
+             n === 1
+               ? `One name, and a card that stays mostly blank until somebody
+                  gets in touch. If you overlapped, a note from you is worth`
+               : `Most of these cards are still just a name and a class year.
+                  If you played with any of them, a note from you is worth`
+           }
+           more than anything the site can do on its own.
+         </p>
+         <p style="margin:10px 0 0 0;"><a href="${escapeHtml(
+           input.memberBookUrl ?? input.clubhouseUrl,
+         )}" style="font-size:13px;font-weight:600;color:#990000;text-decoration:none;">Open the Member Book &rarr;</a></p>`
+
+    if (shown.length) {
+      sections.push(
+        sec(heading, li(names) + more(others.length - VISIBLE, 'claimed a card') + closer),
+      )
+    } else if (input.viewerIsNew) {
+      // They are the only arrival. Still worth the nudge, without a list of
+      // one name that is their own.
+      sections.push(
+        sec(
+          'Welcome in',
+          li('You claimed your card this week.') + closer,
+        ),
+      )
+    }
   }
 
   // The reader's own card, straight after everyone else's arrival.

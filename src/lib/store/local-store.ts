@@ -1957,6 +1957,9 @@ export async function linkAccountToPerson(
     store.accounts[idx] = {
       ...store.accounts[idx],
       linkedPersonId: personId,
+      // Stamped once, and only if absent: a re-link must not make an old
+      // member look like a new arrival in Sunday's email.
+      linkedAt: store.accounts[idx].linkedAt ?? new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
     return store.accounts[idx]

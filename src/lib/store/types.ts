@@ -336,6 +336,15 @@ export interface Account {
   name?: string
   image?: string
   linkedPersonId?: string
+  /**
+   * ISO timestamp the account claimed its card, i.e. when `linkedPersonId`
+   * was first set. Distinct from `createdAt`, which is when they first signed
+   * in with Google: people sign in, look around, and claim later, sometimes
+   * much later. "Joined the Clubhouse" means this, and the weekly digest and
+   * the Just Joined strip both read it. Absent on accounts linked before this
+   * field existed, so readers fall back to `createdAt`.
+   */
+  linkedAt?: string
   teamId: string
   createdAt: string
   updatedAt: string

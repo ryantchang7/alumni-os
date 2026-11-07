@@ -13,6 +13,9 @@ import { usEasternToday } from '@/lib/us-date'
 
 const TEAM_SLUG = 'penn-mens-golf'
 const RECENT_DAYS = 30
+// How many arrivals the Just Joined strip shows. It is a horizontal scroller,
+// and five was hiding most of a day on which seven people claimed cards.
+const RECENT_LIMIT = 10
 
 interface RecentClaim {
   name: string | null
@@ -73,7 +76,12 @@ export async function GET() {
   for (const account of store.accounts) {
     if (account.teamId !== team.id) continue
     if (!account.linkedPersonId) continue
-    const created = Date.parse(account.createdAt)
+    // When they claimed the card, not when they first signed in with Google.
+    // Keyed on createdAt, this strip missed anyone who signed in, looked
+    // around, and claimed days later. `createdAt` remains the fallback for
+    // accounts linked before `linkedAt` existed.
+    const joinedAt = account.linkedAt ?? account.createdAt
+    const created = Date.parse(joinedAt)
     if (Number.isNaN(created) || created < cutoff) continue
     const person = store.people.find((p) => p.id === account.linkedPersonId)
     const bookEntry = person ? findBookEntryForTeamStorePerson(person.canonicalName) : null
@@ -81,7 +89,7 @@ export async function GET() {
       name: person?.canonicalName ?? account.name ?? null,
       personId: account.linkedPersonId,
       bookId: bookEntry?.id ?? null,
-      createdAt: account.createdAt,
+      createdAt: joinedAt,
     })
   }
   recentClaims.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
@@ -211,7 +219,7 @@ export async function GET() {
   if (!approved) {
     return NextResponse.json({
       recentClaims: recentClaims
-        .slice(0, 5)
+        .slice(0, RECENT_LIMIT)
         .map((c) => ({ name: null, personId: null, bookId: null, createdAt: c.createdAt })),
       upcoming: upcoming
         .slice(0, 4)
@@ -236,7 +244,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    recentClaims: recentClaims.slice(0, 5),
+    recentClaims: recentClaims.slice(0, RECENT_LIMIT),
     upcoming: upcoming.slice(0, 4),
     recentMoments,
     onTheLoop,
