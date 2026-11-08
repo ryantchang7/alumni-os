@@ -156,7 +156,7 @@ const ADDITIONS: AdditionInput[] = [
     endYear: 1985,
     rememberedBy: 'Stephen DesJardins, his brother',
     uncertain:
-      'Years approximate and not confirmed by Jay himself. The account jdesjardins219@gmail.com has NOT been verified as belonging to him.',
+      'Years approximate, remembered by his brother Stephen rather than confirmed by Jay. The account jdesjardins219@gmail.com was confirmed as his by Ryan Chang on 2026-11-08.',
     sourceRecordType: 'club_era_recollection',
   },
   {
