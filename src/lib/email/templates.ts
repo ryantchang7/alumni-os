@@ -17,7 +17,20 @@ const MUTED = '#6b6155'
 const SERIF = "Georgia, 'Times New Roman', serif"
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
 
-function shell(inner: string, footerCtaUrl?: string, unsubscribeUrl?: string): string {
+/**
+ * `eyebrow` was the string "Penn Men's Golf", hardcoded, on every email
+ * this product sends. Women's golf went live on 2026-10-31, so every mail
+ * to a women's member since has been headed with the wrong program,
+ * including a 2004-05 women's captain's approval. It defaults to the name
+ * that is true for everyone and takes an override where the program is
+ * known.
+ */
+function shell(
+  inner: string,
+  footerCtaUrl?: string,
+  unsubscribeUrl?: string,
+  eyebrow = 'Penn Golf',
+): string {
   return `<!doctype html>
 <html><body style="margin:0;padding:0;background:${CREAM};font-family:${SANS};color:${NAVY};">
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${CREAM};padding:40px 16px;">
@@ -25,7 +38,7 @@ function shell(inner: string, footerCtaUrl?: string, unsubscribeUrl?: string): s
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="max-width:560px;background:#ffffff;border:1px solid #e8dec9;border-radius:14px;overflow:hidden;">
         <tr><td style="height:6px;background:${GOLD};"></td></tr>
         <tr><td style="padding:32px 36px;">
-          <p style="margin:0 0 6px 0;font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:${MUTED};">Penn Men&rsquo;s Golf</p>
+          <p style="margin:0 0 6px 0;font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:${MUTED};">${eyebrow}</p>
           ${inner}
           ${
             footerCtaUrl
@@ -84,6 +97,65 @@ export function renderWelcomeEmail(input: {
     <p style="margin:0;">${btn(input.clubhouseUrl, 'Open the Clubhouse')}</p>
   `
   return { subject, html: shell(inner, input.clubhouseUrl) }
+}
+
+/**
+ * "You were in here the whole time, and we did not find you."
+ *
+ * For a member whose historical card existed but whom the matcher missed.
+ * Two of the ten people who signed in after the November 3 board meeting
+ * were in that position: a 1976 men's captain whose card carries a middle
+ * initial his account name does not, and a 2004-05 women's captain whose
+ * card is under her maiden name and whose account carries no name at all.
+ *
+ * The apology is specific on purpose. "Sorry for the inconvenience" from a
+ * club that lost track of its own captain is worth nothing; naming the
+ * actual reason tells them the record is right and the software was wrong.
+ */
+export function renderClaimApprovedWithApology(input: {
+  firstName: string
+  /** Exactly what went wrong, in one sentence, in plain words. */
+  apology: string
+  /** How their card reads, so they can see what we hold. */
+  cardName: string
+  cardDetail: string
+  cardUrl: string
+  clubhouseUrl: string
+  /** Shown at the top of the mail. A women's captain should not be sent an
+   *  email headed with the men's program. */
+  programLabel?: string
+}): { subject: string; html: string } {
+  const subject = `You are in, ${input.firstName}, and we owe you an explanation`
+  const inner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:26px;line-height:1.2;color:${NAVY};">
+      You are in, and you always should have been
+    </h1>
+    <p style="margin:0 0 14px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">
+      ${escapeHtml(input.firstName)}, your Penn Golf Clubhouse account is
+      approved and linked to your record. You do not need to do anything
+      else.
+    </p>
+    <blockquote style="margin:0 0 16px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:${CREAM};font-size:15px;line-height:1.5;color:${NAVY};">
+      <strong>${escapeHtml(input.cardName)}</strong><br />
+      <span style="font-size:13.5px;color:${MUTED};">${escapeHtml(input.cardDetail)}</span>
+    </blockquote>
+    <p style="margin:0 0 14px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">
+      I owe you an apology for how long that took. ${escapeHtml(input.apology)}
+      Your record was never in question. The software was.
+    </p>
+    <p style="margin:0 0 20px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">
+      It is fixed now, and fixed for anyone else it would have caught.
+    </p>
+    <p style="margin:0;">${btn(input.cardUrl, 'See your card')}</p>
+    <p style="margin:18px 0 0 0;font-size:13.5px;color:${MUTED};line-height:1.5;">
+      If anything on it is wrong, reply to this and I will correct it myself.
+      <br />Ryan Chang
+    </p>
+  `
+  return {
+    subject,
+    html: shell(inner, input.cardUrl, undefined, input.programLabel ?? 'Penn Golf'),
+  }
 }
 
 // ── Captain notification: new claim ──────────────────────────────────────────
