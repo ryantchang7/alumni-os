@@ -29,6 +29,14 @@ export interface UnclaimedRow {
   matchBookId: string | null
   matchClaimedByOther: boolean
   clubYearsDetail: string | null
+  candidates: {
+    bookId: string
+    displayName: string
+    program: string
+    years: string | null
+    basis: string
+    evidence: string
+  }[]
   nudgedAt: string | null
 }
 
@@ -266,6 +274,27 @@ export default function ActivityClient({
                             </span>
                           )}
                         </>
+                      ) : u.candidates.length > 0 ? (
+                        <div className="space-y-1">
+                          {u.candidates.map(c => (
+                            <div key={c.bookId}>
+                              <Link
+                                href={`/member-book/${c.bookId}`}
+                                className="text-[#2d6a4f] font-semibold hover:underline"
+                              >
+                                {c.displayName}
+                              </Link>
+                              <span className="text-ink-muted">
+                                {' '}
+                                · {c.program}
+                                {c.years ? ` ${c.years}` : ''} · {c.basis}
+                              </span>
+                              <p className="text-[11.5px] text-ink-muted leading-snug">
+                                {c.evidence} Needs your yes.
+                              </p>
+                            </div>
+                          ))}
+                        </div>
                       ) : u.clubYearsDetail ? (
                         <span className="text-[#0a1628]">
                           Club years, {u.clubYearsDetail}

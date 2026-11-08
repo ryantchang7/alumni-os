@@ -21,6 +21,7 @@ import { auth } from '@/auth'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
 import { findClubYearsName } from '@/lib/program-history/penn-club-years'
+import { findCardCandidates } from '@/lib/member-book/candidates'
 import ActivityClient, { type MemberRow, type UnclaimedRow } from './ActivityClient'
 
 const TEAM_SLUG = 'penn-mens-golf'
@@ -103,6 +104,25 @@ export default async function ActivityPage() {
     .map((a): UnclaimedRow => {
       const entry = a.name ? findBookEntryForTeamStorePerson(a.name) : null
       const clubYears = entry ? null : findClubYearsName(a.name)
+      // Review-only suggestions. The strict matcher above missed a 1976
+      // captain over a middle initial and a 2004-05 women's captain whose
+      // account carries no name at all, so the page shows what it suspects
+      // and leaves the decision to a human.
+      const candidates = entry
+        ? []
+        : findCardCandidates({ name: a.name, email: a.email }).slice(0, 3).map(c => ({
+            bookId: c.entry.id,
+            displayName: c.entry.displayName,
+            program: c.program,
+            years:
+              c.startYear && c.endYear
+                ? c.startYear === c.endYear
+                  ? `${c.startYear}`
+                  : `${c.startYear}-${c.endYear}`
+                : null,
+            basis: c.basis,
+            evidence: c.evidence,
+          }))
       return {
         accountId: a.id,
         name: a.name ?? null,
@@ -114,6 +134,7 @@ export default async function ActivityPage() {
         matchClaimedByOther:
           !!entry && claimedNames.has(entry.displayName.trim().toLowerCase()),
         clubYearsDetail: clubYears?.detail ?? clubYears?.name ?? null,
+        candidates,
         nudgedAt: a.claimNudgeSentAt ?? null,
       }
     })
