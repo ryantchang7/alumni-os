@@ -50,9 +50,25 @@ const localParts = (email: string): string[] =>
     .split(/[^a-z]+/)
     .filter(t => t.length > 1)
 
+/**
+ * Names a card is also known by: maiden and married names, and the formal
+ * version of a name the record holds as a nickname.
+ *
+ * Hand-curated and deliberately small. These are not guesses: each one is
+ * a person whose two names are known to be the same person. Fuzzy
+ * nickname expansion (Rich/Richard/Dick) applied in general would merge
+ * strangers, so a name only appears here when somebody established it.
+ */
+export const NAME_ALIASES: Record<string, string[]> = {
+  'w-melissa-aylor': ['Melissa Maurer'],
+  'club-rich-furman': ['Richard Furman'],
+  'w-stacy-kress-politziner': ['Stacy Kress', 'Stacy Politziner'],
+}
+
 export type CandidateBasis =
   | 'exact-name'
   | 'name-without-initials'
+  | 'known-alias'
   | 'email-local-part'
 
 export interface CardCandidate {
@@ -67,8 +83,9 @@ export interface CardCandidate {
 
 const BASIS_RANK: Record<CandidateBasis, number> = {
   'exact-name': 0,
-  'name-without-initials': 1,
-  'email-local-part': 2,
+  'known-alias': 1,
+  'name-without-initials': 2,
+  'email-local-part': 3,
 }
 
 /**
@@ -105,8 +122,15 @@ export function findCardCandidates(input: {
     const exact = letters(name)
     const loose = withoutInitials(name)
     for (const e of pub) {
+      const aliases = NAME_ALIASES[e.id] ?? []
       if (letters(e.displayName) === exact) {
         add(e, 'exact-name', `Account name "${name}" matches the card exactly.`)
+      } else if (aliases.some(a => letters(a) === exact)) {
+        add(
+          e,
+          'known-alias',
+          `"${name}" is a recorded alternate name for "${e.displayName}".`,
+        )
       } else if (loose && withoutInitials(e.displayName) === loose) {
         add(
           e,
@@ -125,7 +149,8 @@ export function findCardCandidates(input: {
     // and matches far too many people to put in front of a reviewer.
     if (parts.length >= 2) {
       for (const e of pub) {
-        const dn = letters(e.displayName)
+        const names = [e.displayName, ...(NAME_ALIASES[e.id] ?? [])]
+        const dn = names.map(letters).join('|')
         if (parts.every(p => dn.includes(p))) {
           add(
             e,

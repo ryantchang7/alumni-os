@@ -1,6 +1,7 @@
 import rawMens from '../../../data/member-book/penn-mgolf-member-book.json'
 import rawWomens from '../../../data/member-book/penn-wgolf-member-book.json'
 import type { MemberBookData, MemberBookEntry } from './types'
+import { historicalAdditions } from './historical-additions'
 
 /**
  * Two books, one registry.
@@ -24,9 +25,22 @@ export const memberBookWomens: MemberBookData = womens
 /** Back-compat: the men's book, which is still the one with the checksum. */
 export const memberBook: MemberBookData = mens
 
+/**
+ * The merged registry every page reads.
+ *
+ * Third source added 2026-11-08: people Penn never published. The two
+ * generated books stay byte-identical to their imports, because the men's
+ * carries a checksum and the women's states it was built only from
+ * published rosters. Club-era men and pre-2004 women are real Penn
+ * golfers with no Penn record, so they get cards from
+ * historicalAdditions, each marked isLetterWinner:false and carrying who
+ * remembered them. Nothing here is a Penn record and nothing may be
+ * rendered as one.
+ */
 export const memberBookEntries: readonly MemberBookEntry[] = [
   ...mens.members,
   ...womens.members,
+  ...historicalAdditions,
 ]
 
 export const memberBookCounts = mens.counts
