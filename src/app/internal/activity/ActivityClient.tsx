@@ -103,8 +103,9 @@ export default function ActivityClient({
           </Link>
           <h1 className="text-white text-2xl font-medium font-heading mt-2">Who is actually doing anything</h1>
           <p className="text-white/60 text-[13px] mt-1">
-            {members.length} claimed &middot; {withProfile} filled in a card &middot; {active} have
-            done something &middot; {unclaimed.length} signed in and never claimed
+            {members.length} claimed &middot; {withProfile} filled in a card &middot;{' '}
+            {active} did anything beyond that &middot; {unclaimed.length} signed in and
+            never claimed
           </p>
         </div>
       </div>
