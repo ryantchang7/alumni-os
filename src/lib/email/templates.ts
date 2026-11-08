@@ -424,9 +424,13 @@ export function renderNewRoundEmail(input: {
  * which is false, insulting, and aimed at the three alumni who have brought
  * in more members than anything else this product does.
  *
- * Otherwise they are probably a Penn golfer who never played for Penn, who
- * until last week had no door at all, and telling them to search the book
- * again would send them back to the same dead end.
+ * Otherwise we do not know, and the email must not pretend to. Six of the
+ * twelve accounts in the first real run had NO name at all, because they
+ * signed in with an email link rather than Google, and a seventh was
+ * stored as the formal version of a name the club-years list holds as a
+ * nickname. An earlier draft opened by telling the reader their name
+ * matched no Penn roster, which is an assertion about a person made from
+ * a name we often never had. It now asserts nothing and offers both doors.
  */
 export function renderClaimNudgeEmail(input: {
   recipientFirstName?: string | null
@@ -509,21 +513,32 @@ export function renderClaimNudgeEmail(input: {
     <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
       You never finished signing up
     </h1>
-    <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
-      ${greeting} you signed in to the Penn Golf Clubhouse and stopped, and
-      we think we know why. We could not match your name to a Penn roster,
-      and until recently that meant there was nothing here for you.
+    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${greeting} you signed in to the Penn Golf Clubhouse and stopped, so you
+      are not in the Member Book and nobody can find you. There are two ways
+      in, and we would rather you picked than have us guess.
+    </p>
+    <p style="margin:0 0 6px 0;font-size:14px;line-height:1.6;color:${NAVY};">
+      <strong>If you played for Penn</strong>
+    </p>
+    <p style="margin:0 0 14px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      Your card is already in the Member Book, built from Penn's own records
+      back to 1930. Find your name and say it is you.
+      <a href="${escapeHtml(input.clubhouseUrl)}/member-book" style="color:${NAVY};font-weight:600;">Search the Member Book &rarr;</a>
+      One exception: Penn dropped the men's team to club status from 1983 to
+      1992 and published no roster, so if those were your years there is no
+      card to find and the door below is yours.
+    </p>
+    <p style="margin:0 0 6px 0;font-size:14px;line-height:1.6;color:${NAVY};">
+      <strong>If you did not</strong>
     </p>
     <p style="margin:0 0 18px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
-      There is now. If you went to Penn and you play golf, you count, and so
-      do families and friends of the program. One line about who you are and
-      you are in.
+      Penn alumni and students who play golf count, and so do families and
+      friends of the program. One line about who you are and you are in.
     </p>
     <p style="margin:0;">${btn(input.joinUrl, 'Join the Clubhouse')}</p>
     <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
-      Reviewed by Ryan Chang, usually within a day. If you did play for Penn,
-      <a href="${escapeHtml(input.clubhouseUrl)}/member-book" style="color:${NAVY};">your card is in the Member Book</a>
-      and just needs claiming.
+      Reviewed by Ryan Chang, usually within a day.
     </p>`
   const body = matched ? inner : input.clubYears ? clubYearsInner : inner
   return { subject, html: shell(body, matched ? (input.cardUrl as string) : input.joinUrl) }

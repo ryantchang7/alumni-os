@@ -27,6 +27,11 @@ export interface ClubYearName {
   rememberedBy: string
   /** Set when the person who gave it flagged their own uncertainty. */
   uncertain?: string
+  /** Other spellings of the same person, for matching an account whose
+   *  sign-in name is the formal version of a remembered nickname. Penn's
+   *  own records are gone for these seasons, so the name we hold is
+   *  whatever a teammate said out loud. */
+  aliases?: string[]
 }
 
 /** The gap, measured from the Member Book rather than asserted. */
@@ -43,6 +48,7 @@ export const CLUB_YEARS_NAMES: ClubYearName[] = [
     name: 'Rich Furman',
     detail: 'W’88, on the team before David',
     rememberedBy: 'David Posnick',
+    aliases: ['Richard Furman'],
   },
   {
     name: 'Stephen DesJardins',
@@ -120,5 +126,9 @@ export function findClubYearsName(name: string | null | undefined): ClubYearName
   if (!name) return null
   const target = norm(name)
   if (!target) return null
-  return CLUB_YEARS_NAMES.find(n => norm(n.name) === target) ?? null
+  return (
+    CLUB_YEARS_NAMES.find(
+      n => norm(n.name) === target || (n.aliases ?? []).some(a => norm(a) === target),
+    ) ?? null
+  )
 }
