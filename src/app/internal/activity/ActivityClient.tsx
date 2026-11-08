@@ -27,6 +27,8 @@ export interface UnclaimedRow {
   matchName: string | null
   matchClassLabel: string | null
   matchBookId: string | null
+  matchClaimedByOther: boolean
+  clubYearsDetail: string | null
   nudgedAt: string | null
 }
 
@@ -59,7 +61,10 @@ export default function ActivityClient({
 
   const active = members.filter(m => m.total > 0).length
   const withProfile = members.filter(m => m.profile).length
-  const pending = unclaimed.filter(u => !u.nudgedAt)
+  // Mirrors the route's own exclusions, so the count on the button is the
+  // number of emails that will actually go out.
+  const pending = unclaimed.filter(u => !u.nudgedAt && !u.matchClaimedByOther)
+  const skipped = unclaimed.filter(u => u.matchClaimedByOther)
 
   async function run(send: boolean) {
     setBusy(true)
@@ -174,7 +179,11 @@ export default function ActivityClient({
                 Signed in, never claimed
               </h2>
               <p className="text-[12.5px] text-ink-muted">
-                They already have an account. {pending.length} have not been written to.
+                They already have an account. {pending.length} will be written to
+                {skipped.length > 0
+                  ? `, ${skipped.length} skipped because the card is already claimed`
+                  : ''}
+                .
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -242,13 +251,24 @@ export default function ActivityClient({
                     <td className="px-4 py-2 text-ink-muted">{u.email}</td>
                     <td className="px-4 py-2">
                       {u.matchBookId ? (
-                        <Link
-                          href={`/member-book/${u.matchBookId}`}
-                          className="text-[#990000] hover:underline"
-                        >
-                          {u.matchName}
-                          {u.matchClassLabel ? ` · ${u.matchClassLabel}` : ''}
-                        </Link>
+                        <>
+                          <Link
+                            href={`/member-book/${u.matchBookId}`}
+                            className="text-[#990000] hover:underline"
+                          >
+                            {u.matchName}
+                            {u.matchClassLabel ? ` · ${u.matchClassLabel}` : ''}
+                          </Link>
+                          {u.matchClaimedByOther && (
+                            <span className="ml-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#990000]">
+                              card taken, skipped
+                            </span>
+                          )}
+                        </>
+                      ) : u.clubYearsDetail ? (
+                        <span className="text-[#0a1628]">
+                          Club years, {u.clubYearsDetail}
+                        </span>
                       ) : (
                         <span className="text-ink-muted">no match, gets the Join email</span>
                       )}

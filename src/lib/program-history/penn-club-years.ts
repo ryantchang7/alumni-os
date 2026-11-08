@@ -96,3 +96,29 @@ export const CLUB_YEARS_OPEN_QUESTIONS: Array<{ question: string; why: string }>
       'The men’s demotion is described as a consequence of Title IX. Penn women’s golf did not become varsity until 1999, and its first five seasons are also unpublished. The two gaps may be the same story told from opposite ends.',
   },
 ]
+
+/** Loose name match, same normalisation the Member Book bridge uses. */
+function norm(name: string): string {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/**
+ * Is this person one of the club-years players?
+ *
+ * Needed because they have no Member Book card and never will: Penn
+ * published no roster for 1983-1992, so a name-against-the-book check
+ * reports them as "not a Penn golfer", which is the opposite of true.
+ * Anything that writes to or classifies an unmatched person has to ask
+ * this before deciding what they are.
+ */
+export function findClubYearsName(name: string | null | undefined): ClubYearName | null {
+  if (!name) return null
+  const target = norm(name)
+  if (!target) return null
+  return CLUB_YEARS_NAMES.find(n => norm(n.name) === target) ?? null
+}

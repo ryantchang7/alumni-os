@@ -20,6 +20,7 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { FOUNDER_EMAILS } from '@/lib/badges'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
+import { findClubYearsName } from '@/lib/program-history/penn-club-years'
 import ActivityClient, { type MemberRow, type UnclaimedRow } from './ActivityClient'
 
 const TEAM_SLUG = 'penn-mens-golf'
@@ -87,10 +88,21 @@ export default async function ActivityPage() {
     })
     .sort((x, y) => y.total - x.total || x.name.localeCompare(y.name))
 
+  // Cards already spoken for, so the page can mark a namesake or a second
+  // sign-in as skipped rather than inviting a bogus claim.
+  const claimedNames = new Set(
+    teamAccounts
+      .filter(a => a.linkedPersonId)
+      .map(a => personName.get(a.linkedPersonId as string))
+      .filter((n): n is string => !!n)
+      .map(n => n.trim().toLowerCase()),
+  )
+
   const unclaimed: UnclaimedRow[] = teamAccounts
     .filter(a => !a.linkedPersonId && !!a.email)
     .map((a): UnclaimedRow => {
       const entry = a.name ? findBookEntryForTeamStorePerson(a.name) : null
+      const clubYears = entry ? null : findClubYearsName(a.name)
       return {
         accountId: a.id,
         name: a.name ?? null,
@@ -99,6 +111,9 @@ export default async function ActivityPage() {
         matchName: entry?.displayName ?? null,
         matchClassLabel: entry?.profile.classYearEstimate ?? null,
         matchBookId: entry?.id ?? null,
+        matchClaimedByOther:
+          !!entry && claimedNames.has(entry.displayName.trim().toLowerCase()),
+        clubYearsDetail: clubYears?.detail ?? clubYears?.name ?? null,
         nudgedAt: a.claimNudgeSentAt ?? null,
       }
     })

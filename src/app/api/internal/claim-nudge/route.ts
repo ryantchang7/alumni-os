@@ -19,6 +19,7 @@
 import { NextResponse } from 'next/server'
 import { requireFounder } from '@/lib/auth/guards'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
+import { findClubYearsName } from '@/lib/program-history/penn-club-years'
 
 export const dynamic = 'force-dynamic'
 
@@ -33,6 +34,13 @@ export interface NudgeTarget {
   matchName: string | null
   matchClassLabel: string | null
   matchBookId: string | null
+  /** Their matched card is already claimed by a different account, so this
+   *  is either their own duplicate sign-in or a namesake. Either way we do
+   *  not tell them to claim it, which would put a bogus claim in the queue. */
+  matchClaimedByOther: boolean
+  /** Named in the 1983-1992 club years: they played, and there is no card
+   *  to find because Penn published no roster for those seasons. */
+  clubYearsDetail: string | null
   alreadyNudgedAt: string | null
 }
 
@@ -43,10 +51,20 @@ async function collectTargets(): Promise<NudgeTarget[]> {
   const team = await getTeamBySlug(TEAM_SLUG)
   if (!team) return []
 
+  // Which Member Book cards are already spoken for, by person name.
+  const claimedNames = new Set(
+    store.accounts
+      .filter(a => a.linkedPersonId)
+      .map(a => store.people.find(p => p.id === a.linkedPersonId)?.canonicalName)
+      .filter((n): n is string => !!n)
+      .map(n => n.trim().toLowerCase()),
+  )
+
   return store.accounts
     .filter(a => a.teamId === team.id && !a.linkedPersonId && !!a.email)
     .map((a): NudgeTarget => {
       const entry = a.name ? findBookEntryForTeamStorePerson(a.name) : null
+      const clubYears = entry ? null : findClubYearsName(a.name)
       return {
         accountId: a.id,
         name: a.name ?? null,
@@ -55,6 +73,8 @@ async function collectTargets(): Promise<NudgeTarget[]> {
         matchName: entry?.displayName ?? null,
         matchClassLabel: entry?.profile.classYearEstimate ?? null,
         matchBookId: entry?.id ?? null,
+        matchClaimedByOther: !!entry && claimedNames.has(entry.displayName.trim().toLowerCase()),
+        clubYearsDetail: clubYears?.detail ?? clubYears?.name ?? null,
         alreadyNudgedAt: a.claimNudgeSentAt ?? null,
       }
     })
@@ -68,8 +88,10 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     total: targets.length,
-    matched: targets.filter(t => t.matchBookId).length,
-    unmatched: targets.filter(t => !t.matchBookId).length,
+    matched: targets.filter(t => t.matchBookId && !t.matchClaimedByOther).length,
+    clubYears: targets.filter(t => t.clubYearsDetail).length,
+    skippedClaimed: targets.filter(t => t.matchClaimedByOther).length,
+    unmatched: targets.filter(t => !t.matchBookId && !t.clubYearsDetail).length,
     alreadyNudged: targets.filter(t => t.alreadyNudgedAt).length,
     targets,
   })
@@ -92,6 +114,9 @@ export async function POST(request: Request) {
   let targets = await collectTargets()
   if (only) targets = targets.filter(t => only.has(t.accountId))
   if (!force) targets = targets.filter(t => !t.alreadyNudgedAt)
+  // Never write to someone whose card another account already holds. It is
+  // either their own second sign-in or a namesake, and both deserve a human.
+  targets = targets.filter(t => !t.matchClaimedByOther)
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://penngolfclubhouse.com'
   const { renderClaimNudgeEmail } = await import('@/lib/email/templates')
@@ -102,10 +127,16 @@ export async function POST(request: Request) {
       matchName: t.matchName,
       matchClassLabel: t.matchClassLabel,
       cardUrl: t.matchBookId ? `${baseUrl}/member-book/${t.matchBookId}` : null,
+      clubYears: !!t.clubYearsDetail,
+      clubYearsDetail: t.clubYearsDetail,
       joinUrl: `${baseUrl}/join`,
       clubhouseUrl: baseUrl,
     })
-    return { email: t.email, variant: t.matchBookId ? 'card' : 'join', subject }
+    return {
+      email: t.email,
+      variant: t.matchBookId ? 'card' : t.clubYearsDetail ? 'club-years' : 'join',
+      subject,
+    }
   })
 
   if (!send) {
@@ -123,6 +154,8 @@ export async function POST(request: Request) {
       matchName: t.matchName,
       matchClassLabel: t.matchClassLabel,
       cardUrl: t.matchBookId ? `${baseUrl}/member-book/${t.matchBookId}` : null,
+      clubYears: !!t.clubYearsDetail,
+      clubYearsDetail: t.clubYearsDetail,
       joinUrl: `${baseUrl}/join`,
       clubhouseUrl: baseUrl,
     })

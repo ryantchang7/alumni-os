@@ -411,12 +411,22 @@ export function renderNewRoundEmail(input: {
  * already found the site, already have an account, and are one click from
  * being in. Nobody had ever written to them.
  *
- * Two shapes, because the reason splits two ways. If their name matches a
- * Member Book card, the only useful thing this email can do is put that
- * card in front of them. If it does not, they are probably one of the Penn
- * golfers who never played for Penn, who until this week had no door at
- * all, and telling them to search the book again would send them back to
- * the same dead end.
+ * Three shapes, because the reason splits three ways.
+ *
+ * If their name matches a Member Book card, the only useful thing this
+ * email can do is put that card in front of them.
+ *
+ * If their name is one of the club years, they DID play for Penn and there
+ * is no card to find, because Penn dropped the men's team to club status
+ * between 1983 and 1992 and published no roster for those seasons. The
+ * first draft of this email would have told David Posnick, Rich Furman and
+ * Stephen DesJardins that we "could not match your name to a Penn roster",
+ * which is false, insulting, and aimed at the three alumni who have brought
+ * in more members than anything else this product does.
+ *
+ * Otherwise they are probably a Penn golfer who never played for Penn, who
+ * until last week had no door at all, and telling them to search the book
+ * again would send them back to the same dead end.
  */
 export function renderClaimNudgeEmail(input: {
   recipientFirstName?: string | null
@@ -424,6 +434,11 @@ export function renderClaimNudgeEmail(input: {
   matchName?: string | null
   matchClassLabel?: string | null
   cardUrl?: string | null
+  /** They are named in the 1983-1992 club years, so they played and there
+   *  is deliberately no Member Book card to claim. */
+  clubYears?: boolean
+  /** What that era's page records about them, in their own words. */
+  clubYearsDetail?: string | null
   joinUrl: string
   clubhouseUrl: string
 }): { subject: string; html: string } {
@@ -433,7 +448,37 @@ export function renderClaimNudgeEmail(input: {
   const matched = !!(input.matchName && input.cardUrl)
   const subject = matched
     ? `${input.matchName}, your Penn Golf card is still unclaimed`
-    : 'You are one step from being in the Penn Golf Clubhouse'
+    : input.clubYears
+      ? 'There is no card for your years, and that is on Penn'
+      : 'You are one step from being in the Penn Golf Clubhouse'
+  const clubYearsInner = `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      We know you played
+    </h1>
+    <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${greeting} you signed in and found nothing to claim, and the reason is
+      not you. Penn dropped the men's team to club status between 1983 and
+      1992 and stopped publishing a roster, so the Member Book has a
+      ten-season hole in it where your years should be.
+    </p>
+    ${
+      input.clubYearsDetail
+        ? `<blockquote style="margin:0 0 14px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:${CREAM};font-size:15px;line-height:1.5;color:${NAVY};">
+      ${escapeHtml(input.clubYearsDetail)}
+    </blockquote>`
+        : ''
+    }
+    <p style="margin:0 0 18px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      You are already named on the club years page, from what your teammates
+      remembered. To get a card of your own, use the door below and say which
+      years you played. It takes one line.
+    </p>
+    <p style="margin:0;">${btn(input.joinUrl, 'Get your card')}</p>
+    <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
+      Reviewed by Ryan Chang, usually within a day. If you can fill in a name
+      we are missing from those seasons,
+      <a href="${escapeHtml(input.clubhouseUrl)}/club-years" style="color:${NAVY};">the page is here</a>.
+    </p>`
   const inner = matched
     ? `
     <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
@@ -480,7 +525,8 @@ export function renderClaimNudgeEmail(input: {
       <a href="${escapeHtml(input.clubhouseUrl)}/member-book" style="color:${NAVY};">your card is in the Member Book</a>
       and just needs claiming.
     </p>`
-  return { subject, html: shell(inner, matched ? (input.cardUrl as string) : input.joinUrl) }
+  const body = matched ? inner : input.clubYears ? clubYearsInner : inner
+  return { subject, html: shell(body, matched ? (input.cardUrl as string) : input.joinUrl) }
 }
 
 /** The one-time sign-in link, for members who do not use a Google account. */
