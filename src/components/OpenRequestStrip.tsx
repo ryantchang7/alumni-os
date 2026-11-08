@@ -71,6 +71,10 @@ interface Props {
   eyebrow?: string
   /** Section title — defaults vary per surface ("In town, looking for a round" etc.) */
   title?: string
+  /** Shown when the board is empty. The default assumes every request is
+   *  about being somewhere, which stopped being true when intros arrived:
+   *  the 19th Hole board carries asks that have no city at all. */
+  emptyText?: string
   /** Subtitle — short paragraph below the title. */
   subtitle?: string
   /** Accent color for the section header and "Respond" button. */
@@ -95,6 +99,7 @@ export default function OpenRequestStrip({
   eyebrow = 'Open Requests',
   title = 'Members in town.',
   subtitle = 'Penn Golf members visiting somewhere, ping them if you can play host.',
+  emptyText,
   accent = '#0a1628',
   limit = 6,
   homeCourseByPersonId,
@@ -119,7 +124,7 @@ export default function OpenRequestStrip({
             {eyebrow}
           </p>
           <p className="text-[14px] font-medium text-[#3d4a5c]">
-            Nobody&rsquo;s in town with an open ask right now.
+            {emptyText ?? 'Nobody\u2019s in town with an open ask right now.'}
           </p>
         </div>
         <Link

@@ -192,6 +192,7 @@ export default function NineteenthHoleClient({
           eyebrow="Open Requests"
           title="Asking the room."
           subtitle="Members passing through who want company, and members who need an intro. If you can help with one, say so."
+          emptyText="Nothing on the board. If you need an intro or a game somewhere, ask."
           accent="#b8860b"
           limit={6}
           viewerAccountId={viewerAccountId}
