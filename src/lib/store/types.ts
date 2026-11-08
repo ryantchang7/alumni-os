@@ -356,6 +356,10 @@ export interface Account {
   updatedAt: string
   /** ISO timestamp of the last weekly digest email sent to this account. */
   lastDigestSentAt?: string
+  /** When this account was last written to about claiming a card. Set only
+   *  for accounts that signed in and never linked to a person, so a second
+   *  run of the nudge does not write to the same people twice. */
+  claimNudgeSentAt?: string
   /** Stripe customer id, set the first time this account interacts with billing. */
   stripeCustomerId?: string
   /** Active subscription state (Founding Member tier). */

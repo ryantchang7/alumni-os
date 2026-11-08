@@ -3,6 +3,12 @@ import { requireFounderOr404 } from '@/lib/auth/founder-page-gate'
 
 const tools = [
   {
+    label: 'Who Is Active',
+    description:
+      'Every member and what they have actually done, plus the accounts that signed in and never claimed a card.',
+    href: '/internal/activity',
+  },
+  {
     label: 'Profile Claims',
     description: 'Approve or decline alumni who want to claim their Member Book card.',
     href: '/internal/claims',

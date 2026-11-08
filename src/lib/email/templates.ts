@@ -403,6 +403,86 @@ export function renderNewRoundEmail(input: {
   return { subject, html: shell(inner, input.url) }
 }
 
+/**
+ * For someone who signed in and then stopped.
+ *
+ * Twelve accounts had signed in and never claimed a card as of 2026-11-07,
+ * against 36 who had. They are the cheapest pool in the product: they
+ * already found the site, already have an account, and are one click from
+ * being in. Nobody had ever written to them.
+ *
+ * Two shapes, because the reason splits two ways. If their name matches a
+ * Member Book card, the only useful thing this email can do is put that
+ * card in front of them. If it does not, they are probably one of the Penn
+ * golfers who never played for Penn, who until this week had no door at
+ * all, and telling them to search the book again would send them back to
+ * the same dead end.
+ */
+export function renderClaimNudgeEmail(input: {
+  recipientFirstName?: string | null
+  /** Their likely Member Book card, when the name matched one. */
+  matchName?: string | null
+  matchClassLabel?: string | null
+  cardUrl?: string | null
+  joinUrl: string
+  clubhouseUrl: string
+}): { subject: string; html: string } {
+  const greeting = input.recipientFirstName
+    ? `Hi ${escapeHtml(input.recipientFirstName)},`
+    : 'Hi,'
+  const matched = !!(input.matchName && input.cardUrl)
+  const subject = matched
+    ? `${input.matchName}, your Penn Golf card is still unclaimed`
+    : 'You are one step from being in the Penn Golf Clubhouse'
+  const inner = matched
+    ? `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      Your card is still sitting there
+    </h1>
+    <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${greeting} you signed in to the Penn Golf Clubhouse but never picked
+      your card, so you are not in the Member Book yet and nobody can find
+      you.
+    </p>
+    <blockquote style="margin:0 0 16px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:${CREAM};font-size:15px;line-height:1.5;color:${NAVY};">
+      <strong>${escapeHtml(input.matchName as string)}</strong>${
+        input.matchClassLabel
+          ? ` <span style="color:${MUTED}">· ${escapeHtml(input.matchClassLabel)}</span>`
+          : ''
+      }
+    </blockquote>
+    <p style="margin:0 0 18px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      We think that is you. Nothing to fill out, you just say so.
+    </p>
+    <p style="margin:0;">${btn(input.cardUrl as string, 'That is me, claim it')}</p>
+    <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
+      Reviewed by Ryan Chang, usually within a day. If that is not you,
+      <a href="${escapeHtml(input.clubhouseUrl)}/member-book" style="color:${NAVY};">search the Member Book</a>
+      for your own name.
+    </p>`
+    : `
+    <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      You never finished signing up
+    </h1>
+    <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      ${greeting} you signed in to the Penn Golf Clubhouse and stopped, and
+      we think we know why. We could not match your name to a Penn roster,
+      and until recently that meant there was nothing here for you.
+    </p>
+    <p style="margin:0 0 18px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
+      There is now. If you went to Penn and you play golf, you count, and so
+      do families and friends of the program. One line about who you are and
+      you are in.
+    </p>
+    <p style="margin:0;">${btn(input.joinUrl, 'Join the Clubhouse')}</p>
+    <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
+      Reviewed by Ryan Chang, usually within a day. If you did play for Penn,
+      <a href="${escapeHtml(input.clubhouseUrl)}/member-book" style="color:${NAVY};">your card is in the Member Book</a>
+      and just needs claiming.
+    </p>`
+  return { subject, html: shell(inner, matched ? (input.cardUrl as string) : input.joinUrl) }
+}
+
 /** The one-time sign-in link, for members who do not use a Google account. */
 export function renderSignInLinkEmail(input: {
   url: string

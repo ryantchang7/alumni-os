@@ -2466,6 +2466,30 @@ export async function updateAccountRoles(
   return next
 }
 
+/**
+ * Mark a batch of accounts as nudged, in ONE write.
+ *
+ * Deliberately not the per-account shape of stampDigestSent: that is a full
+ * readStore + writeStore each time, and a dozen of them in a single request
+ * is a dozen round trips to a store whose bandwidth has already had this
+ * database suspended once.
+ */
+export async function stampClaimNudgeSent(accountIds: string[]): Promise<void> {
+  if (accountIds.length === 0) return
+  const wanted = new Set(accountIds)
+  await mutateStore(store => {
+    const now = new Date().toISOString()
+    for (let i = 0; i < store.accounts.length; i++) {
+      if (!wanted.has(store.accounts[i].id)) continue
+      store.accounts[i] = {
+        ...store.accounts[i],
+        claimNudgeSentAt: now,
+        updatedAt: now,
+      }
+    }
+  })
+}
+
 export async function stampDigestSent(accountId: string): Promise<void> {
   const store = await readStore()
   const idx = store.accounts.findIndex(a => a.id === accountId)
