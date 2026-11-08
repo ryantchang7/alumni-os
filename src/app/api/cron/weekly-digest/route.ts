@@ -139,6 +139,37 @@ async function runJob(req: NextRequest) {
     .sort((a, b) => gatheringSortKey(a) - gatheringSortKey(b))
     .map(g => ({ title: g.title, dateText: g.dateText, city: g.city }))
 
+  // "2026-11-20" in an email to alumni reads like a bug. No Date() here:
+  // parsing a bare yyyy-mm-dd shifts it a day in half the world's timezones.
+  const REQ_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const fmtReqDate = (iso: string): string => {
+    const [, m, d] = iso.split('-')
+    const mi = Number(m) - 1
+    return mi >= 0 && mi < 12 ? `${REQ_MONTHS[mi]} ${Number(d)}` : iso
+  }
+
+  // Open requests still standing. They mail everyone the moment they are
+  // posted, but that is one impression on a Tuesday; an ask nobody answered
+  // is invisible by Sunday. Intros first, because one reply finishes them.
+  const openRequests = store.openRequests
+    .filter(r => r.teamId === team.id && r.status === 'open')
+    .sort(
+      (a, b) =>
+        Number(b.intent === 'intro') - Number(a.intent === 'intro') ||
+        b.createdAt.localeCompare(a.createdAt),
+    )
+    .map(r => ({
+      intent: r.intent,
+      fromName: r.fromName,
+      note: r.note,
+      placeText: [r.city, r.state].filter(Boolean).join(', ') || undefined,
+      whenText: r.startDate
+        ? r.endDate && r.endDate !== r.startDate
+          ? `${fmtReqDate(r.startDate)} to ${fmtReqDate(r.endDate)}`
+          : fmtReqDate(r.startDate)
+        : undefined,
+    }))
+
   const moments = store.moments
     .filter(
       m =>
@@ -213,6 +244,7 @@ async function runJob(req: NextRequest) {
     asks: careerPosts.filter(p => p.kind === 'ask'),
     offers: careerPosts.filter(p => p.kind === 'offer'),
     gatherings,
+    openRequests,
     moments,
     newsItems,
     clubhouseUrl: `${clubhouseUrl}/player`,
@@ -251,7 +283,12 @@ async function runJob(req: NextRequest) {
   // up" does not, or a quiet January would mail everyone every Sunday.
   const hasContent =
     Boolean(result) ||
-    newMembers.length + gatherings.length + careerPosts.length + moments.length > 0
+    newMembers.length +
+      gatherings.length +
+      careerPosts.length +
+      openRequests.length +
+      moments.length >
+      0
 
   if (!hasContent) {
     return NextResponse.json({
@@ -271,6 +308,7 @@ async function runJob(req: NextRequest) {
       newMemberNames: newMembers.map(m => m.name),
       careerPosts: careerPosts.length,
       gatherings: gatherings.length,
+      openRequests: openRequests.length,
       moments: moments.length,
       newsItems: newsItems.length,
       result: result ? `${result.eventName}: ${result.resultText}` : null,

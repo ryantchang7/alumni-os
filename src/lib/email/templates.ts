@@ -440,6 +440,14 @@ interface DigestGathering { title: string; dateText: string; city?: string }
 interface DigestCareerPost { kind: 'ask' | 'offer'; headline: string; sector: string; postedByName: string }
 interface DigestMoment { caption: string; postedByName: string; photoUrl?: string; mediaType?: 'image' | 'video' }
 interface DigestNewsItem { title: string; sourceUrl: string }
+/** A live open request: someone passing through, or someone after an intro. */
+interface DigestOpenRequest {
+  intent: 'round' | 'drinks' | 'coffee' | 'dinner' | 'intro'
+  fromName: string
+  note: string
+  placeText?: string
+  whenText?: string
+}
 interface DigestResult { eventName: string; resultText: string; dateRange: string; leaderboardUrl?: string }
 interface DigestNextUp { eventName: string; dateRange: string; locationText?: string; daysAway: number }
 
@@ -464,6 +472,14 @@ export function renderWeeklyDigest(input: {
   asks: DigestCareerPost[]
   offers: DigestCareerPost[]
   gatherings: DigestGathering[]
+  /**
+   * Open requests still standing. They email everyone the moment they are
+   * posted, but that is one impression on a Tuesday; by Sunday an unanswered
+   * ask is invisible. This is the one channel that reaches every member
+   * every week, so a request that nobody picked up gets a second look here
+   * instead of expiring in silence.
+   */
+  openRequests: DigestOpenRequest[]
   moments: DigestMoment[]
   newsItems: DigestNewsItem[]
   clubhouseUrl: string
@@ -603,6 +619,41 @@ export function renderWeeklyDigest(input: {
             ),
           )
           .join('') + more(input.gatherings.length - CAP, 'on the board'),
+      ),
+    )
+  }
+
+  // 2b. Open requests. A specific person wanting a specific thing outranks
+  //     anything generic, and an intro request is the only item in this
+  //     email that one reply can finish.
+  if (input.openRequests.length) {
+    const intros = input.openRequests.filter(r => r.intent === 'intro')
+    const heading =
+      intros.length === input.openRequests.length
+        ? input.openRequests.length === 1
+          ? 'Someone needs an intro'
+          : 'People need intros'
+        : 'Asking the room'
+    sections.push(
+      sec(
+        heading,
+        input.openRequests
+          .slice(0, CAP)
+          .map(r => {
+            const meta = [r.placeText, r.whenText]
+              .filter((v): v is string => !!v)
+              .map(escapeHtml)
+              .join(' &middot; ')
+            return li(
+              `<strong>${escapeHtml(r.fromName)}</strong>: ${escapeHtml(r.note)}` +
+                (meta ? ` <span style="color:${MUTED}">· ${meta}</span>` : ''),
+            )
+          })
+          .join('') +
+          more(input.openRequests.length - CAP, 'on the board') +
+          `<p style="margin:10px 0 0 0;"><a href="${escapeHtml(
+            input.clubhouseUrl,
+          )}/19th-hole" style="font-size:13px;font-weight:600;color:#990000;text-decoration:none;">If you can help one of them &rarr;</a></p>`,
       ),
     )
   }

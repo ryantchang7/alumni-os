@@ -6,10 +6,17 @@
  * MessageMemberButton, but trimmed down to a small inline form factor
  * for use inside compact cards (e.g. OpenRequestStrip).
  *
- * `kickoff` is the message the viewer probably wants to send first.
- * We don't currently inject it into the chat thread input (would
- * require thread-page changes); we stash it in sessionStorage so a
- * future iteration can pick it up.
+ * `kickoff` is the message the viewer probably wants to send first. It is
+ * handed to the thread through sessionStorage, keyed by the conversation id
+ * that the POST below returns, and ChatThreadClient pulls it into the
+ * composer on mount and clears the key.
+ *
+ * For most of this product's life it was stashed under the target's account
+ * id and read by nobody, which made every "Say hello" and "Respond" button
+ * a dead end: the card composed a specific, warm opening line, threw it
+ * away, and dropped the member on a blank text box facing someone they had
+ * not spoken to in twenty years. RSVPs, the one thing that takes a single
+ * tap, were the only member action anyone was doing.
  */
 
 import { useState } from 'react'
@@ -66,16 +73,6 @@ export default function RespondButton({
     setBusy(true)
     setError(null)
     try {
-      if (kickoff && typeof window !== 'undefined') {
-        try {
-          window.sessionStorage.setItem(
-            `chat:kickoff:${targetAccountId}`,
-            kickoff,
-          )
-        } catch {
-          // sessionStorage can throw in private browsing — best-effort only
-        }
-      }
       const res = await fetch('/api/chat/conversations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,7 +82,17 @@ export default function RespondButton({
       if (!res.ok || !j?.conversation?.id) {
         throw new Error(j?.error ?? "Couldn't start chat")
       }
-      router.push(`/chat/${j.conversation.id}`)
+      const conversationId: string = j.conversation.id
+      // Keyed by conversation, not by target: the thread is what reads it,
+      // and it is the only id both sides of the hand-off agree on.
+      if (kickoff && typeof window !== 'undefined') {
+        try {
+          window.sessionStorage.setItem(`chat:kickoff:${conversationId}`, kickoff)
+        } catch {
+          // sessionStorage can throw in private browsing — best-effort only
+        }
+      }
+      router.push(`/chat/${conversationId}`)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not start chat')
       setBusy(false)

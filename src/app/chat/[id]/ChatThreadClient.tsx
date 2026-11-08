@@ -88,6 +88,38 @@ export default function ChatThreadClient({
     }
   }
   const [draft, setDraft] = useState('')
+  const composerRef = useRef<HTMLTextAreaElement | null>(null)
+  // Did this thread open from a "Say hello" / "Respond" / "I can help"
+  // button? Those compose a specific opening line, and until now it was
+  // written to sessionStorage and read by nobody, so the member arrived at
+  // a blank box facing someone they had not spoken to in twenty years.
+  // Pulled in once, cleared immediately so a later visit is a clean slate,
+  // and never over the top of something already typed.
+  const kickoffUsed = useRef(false)
+  useEffect(() => {
+    if (kickoffUsed.current) return
+    kickoffUsed.current = true
+    if (typeof window === 'undefined') return
+    let text: string | null = null
+    try {
+      const key = `chat:kickoff:${conversationId}`
+      text = window.sessionStorage.getItem(key)
+      if (text) window.sessionStorage.removeItem(key)
+    } catch {
+      // private browsing can throw on either call; nothing to recover
+      return
+    }
+    if (!text) return
+    setDraft(prev => (prev ? prev : text))
+    // Focus with the caret at the end, so the opener reads as a draft they
+    // are free to finish or delete rather than as a message already sent.
+    requestAnimationFrame(() => {
+      const el = composerRef.current
+      if (!el) return
+      el.focus()
+      el.setSelectionRange(el.value.length, el.value.length)
+    })
+  }, [conversationId])
   const [sending, setSending] = useState(false)
   const [reconnecting, setReconnecting] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -413,6 +445,7 @@ export default function ChatThreadClient({
       <div className="border-t border-[rgba(180,168,150,0.35)] bg-white px-5 sm:px-8 py-4 shadow-[0_-2px_12px_rgba(10,22,40,0.05)]">
         <div className="max-w-[680px] mx-auto flex items-end gap-2.5">
           <textarea
+            ref={composerRef}
             value={draft}
             onChange={e => setDraft(e.target.value)}
             onKeyDown={e => {

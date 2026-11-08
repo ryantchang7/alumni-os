@@ -35,6 +35,16 @@ const INTENT_LABEL: Record<OpenRequestIntent, string> = {
   intro: 'Intro',
 }
 
+/** The pill label does not survive a sentence: "about round in Chicago".
+ *  Mirrors INTENT_LABEL in the open-requests route. */
+const INTENT_PHRASE: Record<OpenRequestIntent, string> = {
+  round: 'a round',
+  drinks: 'drinks',
+  coffee: 'coffee',
+  dinner: 'dinner',
+  intro: 'an intro',
+}
+
 function formatDateWindow(start?: string, end?: string): string | null {
   if (!start && !end) return null
   const fmt = (iso?: string) => {
@@ -176,10 +186,20 @@ export default function OpenRequestStrip({
           const location = [req.city, req.state].filter(Boolean).join(', ')
           const window = formatDateWindow(req.startDate, req.endDate)
           const firstName = req.fromName.split(/\s+/)[0]
-          // Pre-compose a kickoff message — RespondButton stashes it in
-          // sessionStorage so a future chat-thread enhancement can pull
-          // it back as a pre-filled message.
-          const kickoff = `Hey ${firstName}, saw your open ${INTENT_LABEL[req.intent].toLowerCase()} request${location ? ` in ${location}` : ''}, `
+          // The opener the responder arrives with. It lands in the chat
+          // composer (RespondButton stashes it, ChatThreadClient picks it
+          // up), so it has to be a complete sentence: a member who taps and
+          // hits send without adding anything should still have said
+          // something human. The old version ended in a trailing comma and
+          // was thrown away before anyone read it.
+          const kickoff =
+            req.intent === 'intro'
+              ? `Hey ${firstName}, saw you are looking for an intro.`
+              : `Hey ${firstName}, saw your note about ${
+                  INTENT_PHRASE[req.intent]
+                }${location ? ` in ${location}` : ''}.`
+          // An intro is answered by knowing somebody, not by being free.
+          const respondLabel = req.intent === 'intro' ? 'I can help' : 'Respond'
           const homeCourse = req.fromPersonId && homeCourseByPersonId
             ? homeCourseByPersonId.get(req.fromPersonId)
             : undefined
@@ -255,6 +275,7 @@ export default function OpenRequestStrip({
                 ) : (
                   <RespondButton
                     targetAccountId={req.fromAccountId}
+                    label={respondLabel}
                     kickoff={kickoff}
                     bgColor={accent}
                     className="w-full"
