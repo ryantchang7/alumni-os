@@ -6,13 +6,20 @@ import { getMemberById } from '@/lib/member-book/data'
 import {
   isPublicMember,
   getMemberPennGolfYears,
+  getMemberStartYear,
+  getMemberEndYear,
   getMemberHometownLabel,
   getMemberProgram,
   isActiveMember,
 } from '@/lib/member-book/helpers'
 import { PROGRAMS } from '@/lib/teams/programs'
 import { findTeamStorePersonForBookEntry } from '@/lib/member-book/bridge'
-import { readStore, getTeamBySlug } from '@/lib/store/local-store'
+import {
+  readStore,
+  getTeamBySlug,
+  getApprovedRosterCorrections,
+} from '@/lib/store/local-store'
+import RosterYearsFix from '@/components/RosterYearsFix'
 import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
 import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
@@ -108,7 +115,19 @@ export default async function MemberDetailPage({
     !!storeMatch?.personId &&
     session.linkedPersonId === storeMatch.personId
 
-  const years = getMemberPennGolfYears(member)
+  // An approved correction wins over both books. Peyton Wallace had four
+  // letter seasons against two roster pages Penn still publishes, and the
+  // only way to tell us was an email. The books are never edited, so a
+  // correction is read on top of them here.
+  const correctionTeam = await getTeamBySlug(TEAM_SLUG)
+  const correction = correctionTeam
+    ? (await getApprovedRosterCorrections(correctionTeam.id)).get(member.id)
+    : undefined
+  const years = correction
+    ? correction.startYear === correction.endYear
+      ? `Penn Golf ${correction.startYear}`
+      : `Penn Golf ${correction.startYear}\u2013${String(correction.endYear).slice(-2)}`
+    : getMemberPennGolfYears(member)
   const hometown =
     storeMatch?.membership?.hometown ?? getMemberHometownLabel(member)
   const classYear = member.profile.classYearEstimate
@@ -253,6 +272,14 @@ export default async function MemberDetailPage({
               <p className="text-[15px] text-[#3d4a5c] mt-3" data-testid="member-detail-years">
                 {years}
               </p>
+            )}
+            {/* Only the person who played them can correct them, and the
+                only place they will notice the mistake is here. */}
+            {isOwner && (
+              <RosterYearsFix
+                currentStart={correction?.startYear ?? getMemberStartYear(member)}
+                currentEnd={correction?.endYear ?? getMemberEndYear(member)}
+              />
             )}
             <dl className="text-[13.5px] text-[#3d4a5c] mt-3 space-y-0.5">
               {classYear && (

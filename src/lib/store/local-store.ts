@@ -12,6 +12,7 @@ import path from 'path'
 import { Redis } from '@upstash/redis'
 import { usEasternToday } from '@/lib/us-date'
 import type {
+  RosterYearCorrection,
   Store,
   Team,
   ScrapeRun,
@@ -2474,6 +2475,113 @@ export async function updateAccountRoles(
  * is a dozen round trips to a store whose bandwidth has already had this
  * database suspended once.
  */
+// ── Roster year corrections ───────────────────────────────────────────────────
+
+/**
+ * Approved corrections, newest wins, keyed by Member Book id.
+ *
+ * The array is optional on the Store because every store written before
+ * 2026-11-08 lacks it, so every read here tolerates undefined rather than
+ * assuming a migration ran.
+ */
+export async function getApprovedRosterCorrections(
+  teamId: string,
+): Promise<Map<string, { startYear: number; endYear: number }>> {
+  const store = await readStore()
+  const out = new Map<string, { startYear: number; endYear: number }>()
+  const rows = (store.rosterYearCorrections ?? [])
+    .filter(c => c.teamId === teamId && c.status === 'approved')
+    .sort((a, b) => a.updatedAt.localeCompare(b.updatedAt))
+  for (const c of rows) out.set(c.memberId, { startYear: c.startYear, endYear: c.endYear })
+  return out
+}
+
+export async function getRosterCorrections(
+  teamId: string,
+): Promise<RosterYearCorrection[]> {
+  const store = await readStore()
+  return (store.rosterYearCorrections ?? [])
+    .filter(c => c.teamId === teamId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+}
+
+export async function createRosterCorrection(input: {
+  teamId: string
+  memberId: string
+  requestedByAccountId?: string
+  requestedByName: string
+  previousStartYear: number | null
+  previousEndYear: number | null
+  startYear: number
+  endYear: number
+  note?: string
+}): Promise<RosterYearCorrection | { conflict: RosterYearCorrection }> {
+  return mutateStore(store => {
+    store.rosterYearCorrections ??= []
+    // One open request per card. A member who sends the same correction
+    // twice should not create two things for a captain to read.
+    const open = store.rosterYearCorrections.find(
+      c => c.teamId === input.teamId && c.memberId === input.memberId && c.status === 'pending',
+    )
+    if (open) return { conflict: open }
+    const now = new Date().toISOString()
+    const row: RosterYearCorrection = {
+      id: crypto.randomUUID(),
+      ...input,
+      status: 'pending',
+      createdAt: now,
+      updatedAt: now,
+    }
+    store.rosterYearCorrections.push(row)
+    return row
+  })
+}
+
+/**
+ * Approve or decline, and on approval also write the member's roster years
+ * onto their TeamMembership, which is what era matching and Your Era read.
+ * Both happen in one mutateStore: a correction that showed on the card but
+ * not in era matching would be worse than none.
+ */
+export async function reviewRosterCorrection(input: {
+  correctionId: string
+  approve: boolean
+  reviewedByEmail: string
+}): Promise<RosterYearCorrection | null> {
+  return mutateStore(store => {
+    const rows = (store.rosterYearCorrections ??= [])
+    const idx = rows.findIndex(c => c.id === input.correctionId)
+    if (idx === -1) return null
+    const now = new Date().toISOString()
+    const row: RosterYearCorrection = {
+      ...rows[idx],
+      status: input.approve ? 'approved' : 'declined',
+      reviewedByEmail: input.reviewedByEmail,
+      reviewedAt: now,
+      updatedAt: now,
+    }
+    rows[idx] = row
+    if (input.approve && row.requestedByAccountId) {
+      const account = store.accounts.find(a => a.id === row.requestedByAccountId)
+      const personId = account?.linkedPersonId
+      if (personId) {
+        const mIdx = store.teamMemberships.findIndex(
+          m => m.personId === personId && m.teamId === row.teamId,
+        )
+        if (mIdx !== -1) {
+          store.teamMemberships[mIdx] = {
+            ...store.teamMemberships[mIdx],
+            rosterStartYear: row.startYear,
+            rosterEndYear: row.endYear,
+            updatedAt: now,
+          }
+        }
+      }
+    }
+    return row
+  })
+}
+
 export async function stampClaimNudgeSent(accountIds: string[]): Promise<void> {
   if (accountIds.length === 0) return
   const wanted = new Set(accountIds)

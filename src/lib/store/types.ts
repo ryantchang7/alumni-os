@@ -247,6 +247,46 @@ export interface PlayerAlumniRequest {
   updatedAt: string
 }
 
+/**
+ * "I played 1999-2003, not 2000-2002."
+ *
+ * Peyton Wallace emailed that on 2026-11-08 and he was right: his four
+ * letter seasons ran wider than the two roster pages Penn still has
+ * online. The only way to tell anyone was to email Ryan, and the only way
+ * to fix it was a code change.
+ *
+ * Keyed by Member Book id rather than person id, so a card nobody has
+ * claimed can still be corrected, and so the correction survives a member
+ * relinking. The books themselves are never edited: the men's carries a
+ * checksum and the women's declares itself built only from published
+ * rosters, so a correction is an overlay read on top of them.
+ *
+ * Approving one also writes the member's TeamMembership roster years,
+ * which is what era matching and Your Era read.
+ */
+export interface RosterYearCorrection {
+  id: string
+  teamId: string
+  /** Member Book entry this corrects. */
+  memberId: string
+  /** Who asked. Absent when a captain enters a correction directly. */
+  requestedByAccountId?: string
+  requestedByName: string
+  /** What the book says today, captured at request time so a reviewer can
+   *  see what is being changed without re-deriving it. */
+  previousStartYear: number | null
+  previousEndYear: number | null
+  startYear: number
+  endYear: number
+  /** The member's own words. Often the only evidence there is. */
+  note?: string
+  status: 'pending' | 'approved' | 'declined'
+  reviewedByEmail?: string
+  reviewedAt?: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface ClubhouseProfileClaimRequest {
   id: string
   teamId: string
@@ -818,6 +858,8 @@ export interface Store {
   clubhouseGatherings: ClubhouseGathering[]
   clubhouseGatheringRequests: ClubhouseGatheringRequest[]
   profileClaimRequests: ClubhouseProfileClaimRequest[]
+  /** Optional: absent on stores written before 2026-11-08. */
+  rosterYearCorrections?: RosterYearCorrection[]
   accounts: Account[]
   moments: ClubhouseMoment[]
   momentComments: MomentComment[]
