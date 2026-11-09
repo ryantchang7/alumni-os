@@ -35,25 +35,37 @@ export async function POST(request: Request) {
   } catch {
     /* empty body is a dry run */
   }
-  const primaryId = typeof body.primaryAccountId === 'string' ? body.primaryAccountId : ''
-  const duplicateId = typeof body.duplicateAccountId === 'string' ? body.duplicateAccountId : ''
+  // Either ids or addresses. A captain doing this thinks in addresses,
+  // and the account ids are not shown anywhere they can copy them from.
+  const str = (k: string) => (typeof body[k] === 'string' ? (body[k] as string) : '')
   const confirm = body.confirm === true
-  if (!primaryId || !duplicateId) {
+  const primaryRef = str('primaryAccountId') || str('primaryEmail')
+  const duplicateRef = str('duplicateAccountId') || str('duplicateEmail')
+  if (!primaryRef || !duplicateRef) {
     return NextResponse.json(
-      { error: 'primaryAccountId and duplicateAccountId required' },
+      { error: 'Give primaryEmail and duplicateEmail (or the account ids).' },
       { status: 400 },
     )
-  }
-  if (primaryId === duplicateId) {
-    return NextResponse.json({ error: 'Those are the same account.' }, { status: 400 })
   }
 
   const { readStore, mutateStore } = await import('@/lib/store/local-store')
   const pre = await readStore()
-  const primary = pre.accounts.find(a => a.id === primaryId)
-  const duplicate = pre.accounts.find(a => a.id === duplicateId)
+  const norm = (v: string) => v.trim().toLowerCase()
+  const find = (ref: string) =>
+    pre.accounts.find(a => a.id === ref) ??
+    pre.accounts.find(a => norm(a.email ?? '') === norm(ref))
+  const primary = find(primaryRef)
+  const duplicate = find(duplicateRef)
   if (!primary || !duplicate) {
-    return NextResponse.json({ error: 'Account not found' }, { status: 404 })
+    return NextResponse.json(
+      { error: `Account not found: ${!primary ? primaryRef : duplicateRef}` },
+      { status: 404 },
+    )
+  }
+  const primaryId = primary.id
+  const duplicateId = duplicate.id
+  if (primaryId === duplicateId) {
+    return NextResponse.json({ error: 'Those are the same account.' }, { status: 400 })
   }
   if (duplicate.linkedPersonId) {
     return NextResponse.json(
