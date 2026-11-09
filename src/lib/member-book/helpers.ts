@@ -14,12 +14,58 @@ import { DEFAULT_PROGRAM_ID, type ProgramId } from '@/lib/teams/programs'
 export const LETTER_YEAR_NOTE =
   'Letter years are ending years; 2004 refers to the 2003-04 season.'
 
+/**
+ * A member's playing span, from the widest Penn record we hold.
+ *
+ * These used to read `career.startYear ?? letterWinner.firstYear`, which
+ * takes the career span whenever it exists and only falls back to the
+ * letter record when it does not. Both are Penn records, and the career
+ * span is built from the season roster pages Penn still has online. Where
+ * the letter record proves a season the roster archive is missing, the
+ * career span is simply too short.
+ *
+ * Peyton Wallace wrote in on 2026-11-08 to say he played 1999-2003, four
+ * seasons, and the Clubhouse said 2000-2002. His own record already
+ * agreed with him: four letters covering 1999-00 to 2002-03, against two
+ * verified roster seasons, because pennathletics.com has no roster page
+ * before 2000-01. Two other members were truncated the same way, Chance
+ * Pipitone by three years.
+ *
+ * So take the union. Nothing is invented: every year here comes from a
+ * Penn source already in the entry, and the books themselves are never
+ * edited, being checksummed and provenance-locked.
+ *
+ * Season convention: letterWinner.years are ENDING years, so a letter year
+ * of 2000 is the 1999-00 season and the span opens in 1999.
+ */
+function letterSpan(m: MemberBookEntry): { first: number | null; last: number | null } {
+  const seasons = m.letterWinner.seasons
+  if (seasons.length > 0) {
+    const starts = seasons.map(s => Number(s.slice(0, 4))).filter(n => Number.isFinite(n))
+    if (starts.length > 0) {
+      return { first: Math.min(...starts), last: Math.max(...starts) + 1 }
+    }
+  }
+  return {
+    first: m.letterWinner.firstYear != null ? m.letterWinner.firstYear - 1 : null,
+    last: m.letterWinner.lastYear ?? null,
+  }
+}
+
 export function getMemberStartYear(m: MemberBookEntry): number | null {
-  return m.career.startYear ?? m.letterWinner.firstYear ?? null
+  const { first } = letterSpan(m)
+  const career = m.career.startYear
+  if (career == null) return first
+  if (first == null) return career
+  return Math.min(career, first)
 }
 
 export function getMemberEndYear(m: MemberBookEntry): number | null {
-  return m.career.finishYear ?? m.letterWinner.lastYear ?? null
+  const { last } = letterSpan(m)
+  const career = m.career.finishYear
+  if (career == null) return last
+  if (last == null) return career
+  return Math.max(career, last)
 }
 
 export function getMemberEra(m: MemberBookEntry): EraFilter {
