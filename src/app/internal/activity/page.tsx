@@ -100,7 +100,7 @@ export default async function ActivityPage() {
   )
 
   const unclaimed: UnclaimedRow[] = teamAccounts
-    .filter(a => !a.linkedPersonId && !!a.email)
+    .filter(a => !a.linkedPersonId && !!a.email && !a.supersededByAccountId)
     .map((a): UnclaimedRow => {
       const entry = a.name ? findBookEntryForTeamStorePerson(a.name) : null
       const clubYears = entry ? null : findClubYearsName(a.name)

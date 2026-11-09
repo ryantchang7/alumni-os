@@ -61,7 +61,12 @@ async function collectTargets(): Promise<NudgeTarget[]> {
   )
 
   return store.accounts
-    .filter(a => a.teamId === team.id && !a.linkedPersonId && !!a.email)
+    // A superseded duplicate is somebody who is already a member under
+    // another address. Writing "you never finished signing up" to them
+    // would be telling a member they are not one.
+    .filter(
+      a => a.teamId === team.id && !a.linkedPersonId && !!a.email && !a.supersededByAccountId,
+    )
     .map((a): NudgeTarget => {
       const entry = a.name ? findBookEntryForTeamStorePerson(a.name) : null
       const clubYears = entry ? null : findClubYearsName(a.name)

@@ -1895,8 +1895,25 @@ export async function upsertAccountByEmail(input: {
   const target = normalizeAccountEmail(input.email)
   return mutateStore(store => {
     const now = new Date().toISOString()
+    // An address recorded as an alternate of another account signs the
+    // person into THAT account. Without this, an alum with a work address
+    // and a personal one becomes two members, one of whom owns the card
+    // and one of whom is told to claim a card that is already taken.
+    const aliasIdx = store.accounts.findIndex(a =>
+      (a.alternateEmails ?? []).some(e => normalizeAccountEmail(e) === target),
+    )
+    if (aliasIdx !== -1) {
+      store.accounts[aliasIdx] = { ...store.accounts[aliasIdx], updatedAt: now }
+      return store.accounts[aliasIdx]
+    }
     const idx = store.accounts.findIndex(a => normalizeAccountEmail(a.email) === target)
     if (idx !== -1) {
+      // A superseded duplicate hands the session to its primary.
+      const superseded = store.accounts[idx].supersededByAccountId
+      if (superseded) {
+        const primary = store.accounts.find(a => a.id === superseded)
+        if (primary) return primary
+      }
       store.accounts[idx] = {
         ...store.accounts[idx],
         name: store.accounts[idx].name ?? input.name,

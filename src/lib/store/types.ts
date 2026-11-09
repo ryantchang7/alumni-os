@@ -400,6 +400,18 @@ export interface Account {
    *  for accounts that signed in and never linked to a person, so a second
    *  run of the nudge does not write to the same people twice. */
   claimNudgeSentAt?: string
+  /** Other addresses the same person signs in with. Signing in with one
+   *  of these lands in THIS account rather than making a second one.
+   *  Stacy Kress Politziner arrived as both stacypolitziner@gmail.com and
+   *  slkress@comcast.net, and an alum with a work address and a personal
+   *  one is the ordinary case, not the exception. */
+  alternateEmails?: string[]
+  /** This account is a duplicate of another and should not be used. Set
+   *  instead of deleting, so a sign-in that still carries its session can
+   *  be redirected rather than dropped, and so the record of the mistake
+   *  survives. linkAccountToPerson refuses two accounts on one person by
+   *  design, and that guard is not weakened for this. */
+  supersededByAccountId?: string
   /** Stripe customer id, set the first time this account interacts with billing. */
   stripeCustomerId?: string
   /** Active subscription state (Founding Member tier). */
