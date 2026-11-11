@@ -2495,6 +2495,90 @@ export async function updateAccountRoles(
 // ── Roster year corrections ───────────────────────────────────────────────────
 
 /**
+ * A captain setting years directly, with no member request behind it.
+ *
+ * Ryan holds records nobody else does: the board roster identified Stacy
+ * Kress as the women's programme's first recruit, 1999-2003, years that
+ * appear in no Penn roster Penn publishes. He needs to be able to put
+ * that in without the member having to ask first.
+ *
+ * Writes an approved correction for the audit trail AND the linked
+ * member's TeamMembership years, in one mutateStore, for the same reason
+ * reviewRosterCorrection does: a correction on the card but not in era
+ * matching is worse than none. Resolves the person from the card rather
+ * than from a requester, because there may not be one.
+ */
+export async function setRosterYearsForBookEntry(input: {
+  teamId: string
+  memberId: string
+  displayName: string
+  startYear: number
+  endYear: number
+  previousStartYear: number | null
+  previousEndYear: number | null
+  setByEmail: string
+  note?: string
+}): Promise<RosterYearCorrection> {
+  const { findTeamStorePersonForBookEntry } = await import('@/lib/member-book/bridge')
+  return mutateStore(store => {
+    const now = new Date().toISOString()
+    const row: RosterYearCorrection = {
+      id: crypto.randomUUID(),
+      teamId: input.teamId,
+      memberId: input.memberId,
+      requestedByName: input.displayName,
+      previousStartYear: input.previousStartYear,
+      previousEndYear: input.previousEndYear,
+      startYear: input.startYear,
+      endYear: input.endYear,
+      note: input.note,
+      status: 'approved',
+      reviewedByEmail: input.setByEmail,
+      reviewedAt: now,
+      createdAt: now,
+      updatedAt: now,
+    }
+    ;(store.rosterYearCorrections ??= []).push(row)
+
+    // Supersede any open member request for the same card, so a captain
+    // answering by hand does not leave a stale item in the queue.
+    for (let i = 0; i < store.rosterYearCorrections.length; i++) {
+      const c = store.rosterYearCorrections[i]
+      if (c.id !== row.id && c.memberId === input.memberId && c.status === 'pending') {
+        store.rosterYearCorrections[i] = {
+          ...c,
+          status: 'approved',
+          reviewedByEmail: input.setByEmail,
+          reviewedAt: now,
+          updatedAt: now,
+        }
+      }
+    }
+
+    const person = findTeamStorePersonForBookEntry(
+      { displayName: input.displayName } as Parameters<
+        typeof findTeamStorePersonForBookEntry
+      >[0],
+      store.people,
+    )
+    if (person) {
+      const mIdx = store.teamMemberships.findIndex(
+        m => m.personId === person.id && m.teamId === input.teamId,
+      )
+      if (mIdx !== -1) {
+        store.teamMemberships[mIdx] = {
+          ...store.teamMemberships[mIdx],
+          rosterStartYear: input.startYear,
+          rosterEndYear: input.endYear,
+          updatedAt: now,
+        }
+      }
+    }
+    return row
+  })
+}
+
+/**
  * Approved corrections, newest wins, keyed by Member Book id.
  *
  * The array is optional on the Store because every store written before

@@ -18,9 +18,16 @@ import { useState } from 'react'
 export default function RosterYearsFix({
   currentStart,
   currentEnd,
+  /** Founder mode: applies to ANY card, immediately, no review step. Ryan
+   *  holds records nobody else does and should not have to wait for the
+   *  member to ask before entering them. */
+  admin = false,
+  memberId,
 }: {
   currentStart: number | null
   currentEnd: number | null
+  admin?: boolean
+  memberId?: string
 }) {
   const [open, setOpen] = useState(false)
   const [startYear, setStartYear] = useState(currentStart ? String(currentStart) : '')
@@ -36,17 +43,22 @@ export default function RosterYearsFix({
     setError(null)
     try {
       const res = await fetch('/api/player/roster-correction', {
-        method: 'POST',
+        method: admin ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           startYear: Number(startYear),
           endYear: Number(endYear),
           note,
+          ...(admin ? { memberId } : {}),
         }),
       })
       const j = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(j?.error ?? `Could not send that (${res.status})`)
       setDone(true)
+      // The card is server-rendered, so the new years only appear on a
+      // reload. Without this a captain sees "saved" above the old span
+      // and reasonably concludes it did not work.
+      if (admin) setTimeout(() => window.location.reload(), 900)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not send that')
     } finally {
@@ -57,7 +69,9 @@ export default function RosterYearsFix({
   if (done) {
     return (
       <p className="text-[12.5px] text-[#2d6a4f] mt-3" data-testid="roster-fix-done">
-        Thanks. Ryan will check it against the records and your card will update.
+        {admin
+          ? 'Saved. Reloading the card…'
+          : 'Thanks. Ryan will check it against the records and your card will update.'}
       </p>
     )
   }
@@ -70,7 +84,7 @@ export default function RosterYearsFix({
         className="mt-3 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-[#990000] hover:underline"
         data-testid="roster-fix-open"
       >
-        These years are wrong &rarr;
+        {admin ? 'Set roster years \u2192' : 'These years are wrong \u2192'}
       </button>
     )
   }
@@ -82,9 +96,9 @@ export default function RosterYearsFix({
       data-testid="roster-fix-form"
     >
       <p className="text-[12.5px] text-[#3d4a5c] mb-3 leading-relaxed">
-        Penn&rsquo;s published rosters do not go back as far as its letter
-        records, so some spans here are short. Tell us the right years and
-        Ryan will confirm them.
+        {admin
+          ? 'Captain edit. This applies straight away and is recorded against your name.'
+          : 'Penn\u2019s published rosters do not go back as far as its letter records, so some spans here are short. Tell us the right years and Ryan will confirm them.'}
       </p>
       <div className="flex items-end gap-2 flex-wrap">
         <label className="flex flex-col">
@@ -135,7 +149,7 @@ export default function RosterYearsFix({
           disabled={busy || !startYear || !endYear}
           className="bg-[#0a1628] hover:bg-[#112240] text-white text-[11.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
         >
-          {busy ? 'Sending…' : 'Send to Ryan'}
+          {busy ? 'Saving…' : admin ? 'Set years' : 'Send to Ryan'}
         </button>
         <button
           type="button"

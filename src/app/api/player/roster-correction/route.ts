@@ -32,6 +32,20 @@ const TEAM_SLUG = 'penn-mens-golf'
 /** Penn golf predates this, but a typo'd year should not become history. */
 const EARLIEST = 1900
 
+/** One rule set, so a captain cannot enter what a member is refused. */
+function validateYears(startYear: number, endYear: number): string | null {
+  const thisYear = new Date().getFullYear()
+  if (!Number.isInteger(startYear) || !Number.isInteger(endYear)) {
+    return 'Both years are required.'
+  }
+  if (startYear < EARLIEST || endYear < EARLIEST) return 'That start year looks wrong.'
+  // +1 so a current player can say they finish next spring.
+  if (endYear > thisYear + 1) return 'That end year is in the future.'
+  if (endYear < startYear) return 'The end year is before the start year.'
+  if (endYear - startYear > 10) return 'That is more than ten seasons.'
+  return null
+}
+
 export async function POST(request: Request) {
   const session = await auth()
   if (!session?.accountId || !session.linkedPersonId) {
@@ -50,25 +64,8 @@ export async function POST(request: Request) {
   const note = typeof body.note === 'string' ? body.note.trim().slice(0, 500) : ''
   const thisYear = new Date().getFullYear()
 
-  if (!Number.isInteger(startYear) || !Number.isInteger(endYear)) {
-    return NextResponse.json({ error: 'Both years are required.' }, { status: 400 })
-  }
-  if (startYear < EARLIEST || endYear < EARLIEST) {
-    return NextResponse.json({ error: 'That start year looks wrong.' }, { status: 400 })
-  }
-  // +1 so a current player can say they finish next spring.
-  if (endYear > thisYear + 1) {
-    return NextResponse.json({ error: 'That end year is in the future.' }, { status: 400 })
-  }
-  if (endYear < startYear) {
-    return NextResponse.json({ error: 'The end year is before the start year.' }, { status: 400 })
-  }
-  if (endYear - startYear > 10) {
-    return NextResponse.json(
-      { error: 'That is more than ten seasons. Email Ryan and he will sort it out.' },
-      { status: 400 },
-    )
-  }
+  const invalid = validateYears(startYear, endYear)
+  if (invalid) return NextResponse.json({ error: invalid }, { status: 400 })
 
   const { readStore, getTeamBySlug, createRosterCorrection } = await import(
     '@/lib/store/local-store'
@@ -134,6 +131,61 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ ok: true, correction: result })
+}
+
+/**
+ * PUT — a captain sets years on any card, directly.
+ *
+ * Distinct from PATCH, which answers a member's request. Ryan holds
+ * records nobody else does (the board roster identified Stacy Kress as
+ * the women's first recruit, 1999-2003, years that appear in no roster
+ * Penn publishes), so he needs to enter them without a member having to
+ * ask first. Still founder only, still audited, still an overlay.
+ */
+export async function PUT(request: Request) {
+  const gate = await requireFounder()
+  if (!gate.ok) return gate.response
+
+  let body: Record<string, unknown>
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  const memberId = typeof body.memberId === 'string' ? body.memberId : ''
+  const startYear = Number(body.startYear)
+  const endYear = Number(body.endYear)
+  const note = typeof body.note === 'string' ? body.note.trim().slice(0, 500) : ''
+  if (!memberId) return NextResponse.json({ error: 'memberId required' }, { status: 400 })
+
+  const bad = validateYears(startYear, endYear)
+  if (bad) return NextResponse.json({ error: bad }, { status: 400 })
+
+  const { getMemberById } = await import('@/lib/member-book/data')
+  const entry = getMemberById(memberId)
+  if (!entry || !isPublicMember(entry)) {
+    return NextResponse.json({ error: 'Member Book entry not found' }, { status: 404 })
+  }
+
+  const { getTeamBySlug, setRosterYearsForBookEntry } = await import(
+    '@/lib/store/local-store'
+  )
+  const team = await getTeamBySlug(TEAM_SLUG)
+  if (!team) return NextResponse.json({ error: 'Team not found' }, { status: 404 })
+
+  const row = await setRosterYearsForBookEntry({
+    teamId: team.id,
+    memberId,
+    displayName: entry.displayName,
+    startYear,
+    endYear,
+    previousStartYear: getMemberStartYear(entry),
+    previousEndYear: getMemberEndYear(entry),
+    setByEmail: gate.email,
+    note: note || undefined,
+  })
+  return NextResponse.json({ ok: true, correction: row })
 }
 
 export async function GET() {

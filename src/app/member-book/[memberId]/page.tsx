@@ -21,7 +21,7 @@ import {
 } from '@/lib/store/local-store'
 import RosterYearsFix from '@/components/RosterYearsFix'
 import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
-import { getBadgesForAccount, type BadgeId } from '@/lib/badges'
+import { getBadgesForAccount, FOUNDER_EMAILS, type BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
 import MessageMemberButton from '@/components/MessageMemberButton'
 import WhatThisIs from '@/components/WhatThisIs'
@@ -110,6 +110,9 @@ export default async function MemberDetailPage({
     lookupStoreMatch(member.displayName),
     auth(),
   ])
+  const isFounder = FOUNDER_EMAILS.has(
+    (session?.user?.email ?? '').toLowerCase().trim(),
+  )
   const isOwner =
     !!session?.linkedPersonId &&
     !!storeMatch?.personId &&
@@ -273,10 +276,13 @@ export default async function MemberDetailPage({
                 {years}
               </p>
             )}
-            {/* Only the person who played them can correct them, and the
-                only place they will notice the mistake is here. */}
-            {isOwner && (
+            {/* The person who played them can ask for a correction, and the
+                only place they will notice the mistake is here. A captain
+                looking at the same card can just set them. */}
+            {(isOwner || isFounder) && (
               <RosterYearsFix
+                admin={isFounder}
+                memberId={member.id}
                 currentStart={correction?.startYear ?? getMemberStartYear(member)}
                 currentEnd={correction?.endYear ?? getMemberEndYear(member)}
               />

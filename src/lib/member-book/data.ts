@@ -2,6 +2,7 @@ import rawMens from '../../../data/member-book/penn-mgolf-member-book.json'
 import rawWomens from '../../../data/member-book/penn-wgolf-member-book.json'
 import type { MemberBookData, MemberBookEntry } from './types'
 import { historicalAdditions } from './historical-additions'
+import { coachingStaff } from './coaching-staff'
 
 /**
  * Two books, one registry.
@@ -41,6 +42,7 @@ export const memberBookEntries: readonly MemberBookEntry[] = [
   ...mens.members,
   ...womens.members,
   ...historicalAdditions,
+  ...coachingStaff,
 ]
 
 export const memberBookCounts = mens.counts
