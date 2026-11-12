@@ -446,40 +446,60 @@ export function renderNewRoundEmail(input: {
   // people organise something, and buries the one thing a member scanning
   // an inbox wants: what it is and when.
   const subject = `${input.title}, ${input.dateText}`
-  // "Tee sheet" is a round. Saying it about a happy hour tells a member the
-  // email was written by a machine that did not read its own event.
   const isRound = input.typeLabel === 'a round'
-  const headline = isRound
-    ? input.clubWide
-      ? 'There is a new tee sheet up'
-      : 'There is a new tee sheet near you'
-    : input.clubWide
-      ? `Penn Golf is getting together in ${input.placeText}`
-      : `Penn Golf is getting together near you`
-  const footnote = input.clubWide
-    ? 'You are getting this because the Clubhouse is still small enough that everyone hears everything. Add your city and these will narrow to your area.'
-    : 'You are getting this because your card says you are nearby.'
-  const meta = [
-    escapeHtml(input.dateText),
-    input.timeText ? escapeHtml(input.timeText) : '',
-    input.venue ? escapeHtml(input.venue) : '',
-  ]
-    .filter(Boolean)
-    .join(' &middot; ')
-  const inner = `
+
+  const row = (label: string, value: string) =>
+    `<tr><td style="padding:3px 14px 3px 0;font-size:13px;color:${MUTED};white-space:nowrap;vertical-align:top;">${label}</td>` +
+    `<td style="padding:3px 0;font-size:15px;line-height:1.45;color:${NAVY};">${value}</td></tr>`
+
+  const where = [input.venue, input.placeText].filter(Boolean).map(v => escapeHtml(v as string)).join(', ')
+  const when = [input.dateText, input.timeText].filter(Boolean).map(v => escapeHtml(v as string)).join(', ')
+
+  const image = input.imageUrl
+    ? `<a href="${escapeHtml(input.url)}"><img src="${escapeHtml(input.imageUrl)}" alt="" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 18px 0;"></a>`
+    : ''
+
+  /**
+   * A gathering is not a tee sheet and does not need a pitch.
+   *
+   * The first draft of this opened "There is a new tee sheet near you" for
+   * drinks in a midtown bar, and closed by explaining the mailing list to
+   * the reader. What someone actually wants is what it is, where, when and
+   * who is running it, in that order and in that few words. Rounds keep
+   * their own wording below, because a tee sheet really is one.
+   */
+  const gatheringInner = `
+    ${image}
+    <h1 style="margin:6px 0 16px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
+      ${escapeHtml(input.title)}
+    </h1>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px 0;">
+      ${when ? row('When', when) : ''}
+      ${where ? row('Where', where) : ''}
+      ${row('Hosted by', escapeHtml(input.hostName))}
+    </table>
     ${
-      input.imageUrl
-        ? `<a href="${escapeHtml(input.url)}"><img src="${escapeHtml(input.imageUrl)}" alt="" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 16px 0;"></a>`
+      input.description
+        ? `<p style="margin:0 0 18px 0;font-size:15px;line-height:1.55;color:#3d4a5c;">${escapeHtml(input.description)}</p>`
         : ''
     }
+    <p style="margin:0;">${btn(input.url, 'See it on the Clubhouse')}</p>
+  `
+
+  const roundInner = `
+    ${image}
     <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
-      ${headline}
+      ${input.clubWide ? 'There is a new tee sheet up' : 'There is a new tee sheet near you'}
     </h1>
     <p style="margin:0 0 12px 0;font-size:14px;line-height:1.6;color:#3d4a5c;">
       ${greeting} <strong>${escapeHtml(input.hostName)}</strong> posted
       <strong>${escapeHtml(input.title)}</strong> in ${escapeHtml(input.placeText)}.
     </p>
-    ${meta ? `<p style="margin:0 0 14px 0;font-size:14px;color:${NAVY};">${meta}</p>` : ''}
+    ${
+      when || where
+        ? `<p style="margin:0 0 14px 0;font-size:14px;color:${NAVY};">${[when, where].filter(Boolean).join(' &middot; ')}</p>`
+        : ''
+    }
     ${
       input.description
         ? `<blockquote style="margin:0 0 14px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:${CREAM};font-size:15px;line-height:1.5;color:${NAVY};">
@@ -487,15 +507,17 @@ export function renderNewRoundEmail(input: {
     </blockquote>`
         : ''
     }
-    <p style="margin:0;">${btn(
-      input.url,
-      isRound ? 'See it and put your name down' : 'See it on the Clubhouse',
-    )}</p>
+    <p style="margin:0;">${btn(input.url, 'See it and put your name down')}</p>
     <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
-      ${footnote}
+      ${
+        input.clubWide
+          ? 'You are getting this because the Clubhouse is still small enough that everyone hears everything. Add your city and these will narrow to your area.'
+          : 'You are getting this because your card says you are nearby.'
+      }
     </p>
   `
-  return { subject, html: shell(inner, input.url) }
+
+  return { subject, html: shell(isRound ? roundInner : gatheringInner, input.url) }
 }
 
 /**
