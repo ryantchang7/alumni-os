@@ -101,6 +101,7 @@ export async function notifyNearbyMembers(
           dateText: gathering.dateText,
           timeText: gathering.timeText ?? null,
           description: gathering.description ?? null,
+          imageUrl: gathering.imageUrl ?? null,
           clubWide: mode === 'nearby' && reach === 'everyone',
           url,
         })

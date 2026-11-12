@@ -61,6 +61,7 @@ const localParts = (email: string): string[] =>
  */
 export const NAME_ALIASES: Record<string, string[]> = {
   'w-melissa-aylor': ['Melissa Maurer'],
+  'w-lisette-vitter': ['Lisette Williamson'],
   'club-rich-furman': ['Richard Furman'],
   'w-stacy-kress-politziner': ['Stacy Kress', 'Stacy Politziner'],
 }

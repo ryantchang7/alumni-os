@@ -429,6 +429,10 @@ export function renderNewRoundEmail(input: {
   dateText: string
   timeText?: string | null
   description?: string | null
+  /** The host's flyer or venue photo, shown above the detail. An event that
+   *  arrives with its own graphic loses most of its punch as a wall of text,
+   *  and the Penn Golf ones come from the Athletics office already designed. */
+  imageUrl?: string | null
   /** True when this went to the whole club rather than to people nearby. The
    *  two lines this email used to end on ("near you", "your card says you are
    *  nearby") are both false in that case, and a member who reads one lie in
@@ -437,10 +441,21 @@ export function renderNewRoundEmail(input: {
   url: string
 }): { subject: string; html: string } {
   const greeting = input.recipientFirstName ? `Hi ${escapeHtml(input.recipientFirstName)},` : 'Hi,'
-  const subject = `${input.hostName} is hosting ${input.typeLabel} in ${input.placeText}`
-  const headline = input.clubWide
-    ? 'There is a new tee sheet up'
-    : 'There is a new tee sheet near you'
+  // Title first. The old subject was `${hostName} is hosting ...`, which
+  // reads "Carter Thompson and Ivana Shah is hosting drinks" the moment two
+  // people organise something, and buries the one thing a member scanning
+  // an inbox wants: what it is and when.
+  const subject = `${input.title}, ${input.dateText}`
+  // "Tee sheet" is a round. Saying it about a happy hour tells a member the
+  // email was written by a machine that did not read its own event.
+  const isRound = input.typeLabel === 'a round'
+  const headline = isRound
+    ? input.clubWide
+      ? 'There is a new tee sheet up'
+      : 'There is a new tee sheet near you'
+    : input.clubWide
+      ? `Penn Golf is getting together in ${input.placeText}`
+      : `Penn Golf is getting together near you`
   const footnote = input.clubWide
     ? 'You are getting this because the Clubhouse is still small enough that everyone hears everything. Add your city and these will narrow to your area.'
     : 'You are getting this because your card says you are nearby.'
@@ -452,6 +467,11 @@ export function renderNewRoundEmail(input: {
     .filter(Boolean)
     .join(' &middot; ')
   const inner = `
+    ${
+      input.imageUrl
+        ? `<a href="${escapeHtml(input.url)}"><img src="${escapeHtml(input.imageUrl)}" alt="" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 16px 0;"></a>`
+        : ''
+    }
     <h1 style="margin:6px 0 14px 0;font-family:${SERIF};font-weight:500;font-size:24px;line-height:1.2;color:${NAVY};">
       ${headline}
     </h1>
@@ -467,7 +487,10 @@ export function renderNewRoundEmail(input: {
     </blockquote>`
         : ''
     }
-    <p style="margin:0;">${btn(input.url, 'See it and put your name down')}</p>
+    <p style="margin:0;">${btn(
+      input.url,
+      isRound ? 'See it and put your name down' : 'See it on the Clubhouse',
+    )}</p>
     <p style="margin:16px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">
       ${footnote}
     </p>
