@@ -19,6 +19,7 @@ import type { BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import MomentEditForm from '@/components/moments/MomentEditForm'
+import MediaFrame from '@/components/media/MediaFrame'
 
 // emoji-picker-react is browser-only and large; load it lazily so it
 // doesn't bloat the initial bundle. The picker only mounts after the
@@ -276,6 +277,13 @@ export default function MomentCard({
     >
       {/* Media, single item renders plain; multiple items get a carousel */}
       <div className={`relative ${postAudience === 'locker-room' ? 'bg-[#0a1628]' : 'bg-[#fdfcf9]'}`}>
+        {/* Contained, never cropped, on a blurred wash of the photo
+            itself. A landscape photo lands under the 640 cap and fills
+            the frame exactly as before. A tall portrait keeps all of
+            itself: Lisette Williamson's championship photo is 830x1792,
+            which at full card width wants to be 1628px tall and gets
+            clamped to 640, so object-cover was throwing away about sixty
+            per cent of her down the middle. */}
         {media[mediaIdx].type === 'video' ? (
           <video
             key={media[mediaIdx].url}
@@ -286,22 +294,12 @@ export default function MomentCard({
             className="w-full max-h-[640px] object-contain bg-black"
           />
         ) : (
-          /* object-contain, not cover, and for the same reason the video
-             above already uses it. A photo wider than it is tall is
-             unaffected: its natural height lands under the 640 cap, so the
-             box is the image. A tall portrait is not. Lisette Williamson's
-             championship photo is 830x1792, which at full card width wants
-             to be 1628px tall, gets clamped to 640, and had object-cover
-             throw away about sixty per cent of her down the middle. The
-             whole picture now fits inside the cap and letterboxes onto the
-             card's own background. */
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <MediaFrame
+            key={media[mediaIdx].url}
             src={media[mediaIdx].url}
             alt={moment.caption}
-            loading="lazy"
-            decoding="async"
-            className="w-full max-h-[640px] object-contain"
+            maxHeight={640}
+            className="w-full"
           />
         )}
         {media.length > 1 && (

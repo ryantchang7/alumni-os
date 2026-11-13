@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { MapPin, Clock, Users, Calendar, CalendarPlus, Lock } from 'lucide-react'
 import { buildIcs, buildGoogleCalendarUrl } from '@/lib/calendar/ics'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import MediaFrame from '@/components/media/MediaFrame'
 
 export interface GatheringData {
   id: string
@@ -485,24 +486,18 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
       className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
-      {/* Host-supplied photo or short clip of the venue/vibe. */}
+      {/* Host-supplied photo or short clip of the venue/vibe. Framed
+          rather than cropped: what hosts actually attach is a flyer, and
+          a flyer is a tall poster that a 3:2 crop decapitates. */}
       {gathering.imageUrl && (
-        VIDEO_EXT_RE.test(gathering.imageUrl) ? (
-          <video
-            src={gathering.imageUrl}
-            controls
-            playsInline
-            preload="metadata"
-            className="w-full aspect-[3/2] object-cover bg-black"
-          />
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={gathering.imageUrl}
-            alt={gathering.title}
-            className="w-full aspect-[3/2] object-cover"
-          />
-        )
+        <MediaFrame
+          src={gathering.imageUrl}
+          alt={gathering.title}
+          type={VIDEO_EXT_RE.test(gathering.imageUrl) ? 'video' : 'image'}
+          aspect="4 / 3"
+          controls
+          className="w-full"
+        />
       )}
 
       <div className="border-l-4 border-[#0a1628] px-5 pt-5 pb-4">

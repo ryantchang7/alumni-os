@@ -336,11 +336,14 @@ export default function PhotoUpload({
                 onError={() => setError("Couldn't load that video URL.")}
               />
             ) : (
+              /* Contained, not cropped. A preview that crops is worse
+                 than no preview: it hides the exact problem the person
+                 is checking the preview for. */
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={value}
                 alt="preview"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 onError={() => setError("Couldn't load that image URL.")}
               />
             )

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Sparkles, Camera, UserPlus } from 'lucide-react'
 import MemberOnlyTease from './MemberOnlyTease'
+import MediaFrame from './media/MediaFrame'
 
 interface RecentClaim {
   name: string | null
@@ -115,24 +116,14 @@ export default function ClubhouseActivityFeed({ approved }: ClubhouseActivityFee
                   href="/moments"
                   className="group block"
                 >
-                  <div className="aspect-[4/3] rounded-lg overflow-hidden bg-[#fdfcf9] border border-[rgba(180,168,150,0.35)]">
-                    {m.mediaType === 'video' ? (
-                      <video
-                        src={m.photoUrl}
-                        muted
-                        playsInline
-                        preload="metadata"
-                        className="w-full h-full object-cover bg-black"
-                      />
-                    ) : (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={m.photoUrl}
-                        alt={m.caption}
-                        className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                      />
-                    )}
-                  </div>
+                  <MediaFrame
+                    src={m.photoUrl}
+                    alt={m.caption}
+                    type={m.mediaType === 'video' ? 'video' : 'image'}
+                    aspect="4 / 3"
+                    className="rounded-lg border border-[rgba(180,168,150,0.35)]"
+                    imgClassName="group-hover:scale-[1.02] transition-transform duration-300"
+                  />
                   <p className="text-[12px] text-[#3d4a5c] mt-1.5 line-clamp-2 leading-snug">
                     {m.caption}
                   </p>
