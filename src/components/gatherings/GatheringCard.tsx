@@ -153,8 +153,11 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
     approved && !!gathering.hostPersonId && session?.linkedPersonId === gathering.hostPersonId
   const isHost = viewerIsRealHost || (isFounder && sessionStatus === 'authenticated')
   // "Cancel this round" is the wrong words for a happy hour, and a founder
-  // now sees these controls on gatherings that are not rounds.
+  // now sees these controls on gatherings that are not rounds. A round has a
+  // tee sheet; drinks have a list of people coming. Ryan's note on the
+  // announcement email was exactly this: a happy hour is not a tee sheet.
   const isRound = gathering.type === 'round'
+  const sheetNoun = isRound ? 'the sheet' : 'the list'
 
   // Responding to RSVPs. The API for this existed with proper ownership
   // checks but had no UI at all, so a host could see who asked in and had no
@@ -593,7 +596,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             <div className="flex items-center gap-1.5 text-xs text-ink-muted">
               <Users className="w-3 h-3 flex-shrink-0" />
               <span>
-                {liveCount > 0 ? `${liveCount} ${played ? 'played' : 'on the sheet'}` : null}
+                {liveCount > 0 ? `${liveCount} ${played ? 'played' : isRound ? 'on the sheet' : 'going'}` : null}
                 {liveCount > 0 && gathering.capacity && !played ? ' · ' : null}
                 {gathering.capacity && !played ? `Up to ${gathering.capacity} members` : null}
               </span>
@@ -706,7 +709,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
         {approved && !gathering.isExample && attendees && attendees.length > 0 && (
           <div className="mb-4 pt-3 border-t border-[rgba(180,168,150,0.3)]">
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted mb-1.5">
-              On the sheet
+              {isRound ? 'On the sheet' : 'Going'}
             </p>
             {groupedAttendees.map(([label, rows]) => (
             <div key={label || '_'} className={label ? 'mb-2.5 last:mb-0' : ''}>
@@ -802,7 +805,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                       disabled={rsvpBusy === a.requestId}
                       onClick={() => respondToRsvp(a.requestId, 'declined')}
                       className="flex-shrink-0 text-[11px] text-ink-muted hover:text-[#990000] disabled:opacity-40"
-                      title="Take them off the sheet"
+                      title={`Take them off ${sheetNoun}`}
                     >
                       Remove
                     </button>
@@ -871,14 +874,14 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 onClick={() => { setSheetOpen(v => !v); setEditOpen(false); setMsgOpen(false) }}
                 className="text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] px-3.5 py-2 rounded-lg transition-colors"
               >
-                {sheetOpen ? 'Done adding' : 'Add to the sheet'}
+                {sheetOpen ? 'Done adding' : `Add to ${sheetNoun}`}
               </button>
               <button
                 type="button"
                 onClick={() => { setMsgOpen(v => !v); setEditOpen(false); setSheetOpen(false) }}
                 className="text-xs font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] px-3.5 py-2 rounded-lg transition-colors"
               >
-                {msgOpen ? 'Cancel note' : 'Message the sheet'}
+                {msgOpen ? 'Cancel note' : isRound ? 'Message the sheet' : 'Message everyone'}
               </button>
               <button
                 type="button"
@@ -1051,7 +1054,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             {msgOpen && (
               <form onSubmit={sendMessage} className="mt-1 space-y-2 rounded-lg border border-[rgba(180,168,150,0.5)] p-3 bg-[#fdfcf9]">
                 <p className="text-[11.5px] text-ink-muted">
-                  Goes to everyone on the sheet, in the Clubhouse and by email.
+                  Goes to everyone on {sheetNoun}, in the Clubhouse and by email.
                 </p>
                 <textarea
                   value={msg}
@@ -1066,7 +1069,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                   disabled={sending || !msg.trim()}
                   className="text-[11.5px] font-semibold uppercase tracking-[0.12em] bg-[#0a1628] hover:bg-[#112240] text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-40"
                 >
-                  {sending ? 'Sending…' : 'Send to the sheet'}
+                  {sending ? 'Sending…' : isRound ? 'Send to the sheet' : 'Send to everyone'}
                 </button>
               </form>
             )}
@@ -1106,7 +1109,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
             )}
             {sent && (
               <p className="text-xs text-[#2d6a4f] font-medium mt-1">
-                You&rsquo;re on the sheet. Confirmation + calendar invite sent to your inbox.
+                You&rsquo;re on {sheetNoun}. Confirmation + calendar invite sent to your inbox.
               </p>
             )}
           </>
