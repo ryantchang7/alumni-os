@@ -286,13 +286,22 @@ export default function MomentCard({
             className="w-full max-h-[640px] object-contain bg-black"
           />
         ) : (
+          /* object-contain, not cover, and for the same reason the video
+             above already uses it. A photo wider than it is tall is
+             unaffected: its natural height lands under the 640 cap, so the
+             box is the image. A tall portrait is not. Lisette Williamson's
+             championship photo is 830x1792, which at full card width wants
+             to be 1628px tall, gets clamped to 640, and had object-cover
+             throw away about sixty per cent of her down the middle. The
+             whole picture now fits inside the cap and letterboxes onto the
+             card's own background. */
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={media[mediaIdx].url}
             alt={moment.caption}
             loading="lazy"
             decoding="async"
-            className="w-full max-h-[640px] object-cover"
+            className="w-full max-h-[640px] object-contain"
           />
         )}
         {media.length > 1 && (

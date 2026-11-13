@@ -8,6 +8,13 @@ interface Props {
   file: File
   /** 'square' for profile photos, 'wide' for moments (3:2). */
   shape?: 'square' | 'wide'
+  /** Shown in the header when several photos are being cropped in turn,
+   *  e.g. "Photo 2 of 3". */
+  stepLabel?: string
+  /** Offered as "Use original" when present. A pre-designed flyer or a tall
+   *  portrait is already the shape its author wanted, and forcing it into
+   *  3:2 is worse than leaving it alone. */
+  onUseOriginal?: () => void
   /** Called when the user confirms the crop. Returns a Blob whose type
    *  matches the source (PNG stays PNG to preserve transparency). */
   onComplete: (blob: Blob) => void
@@ -19,7 +26,14 @@ interface Props {
  * Modal that lets the user drag + zoom to crop the picked image before
  * upload. Returns the cropped portion as a JPEG Blob.
  */
-export default function PhotoCropper({ file, shape = 'square', onComplete, onCancel }: Props) {
+export default function PhotoCropper({
+  file,
+  shape = 'square',
+  stepLabel,
+  onUseOriginal,
+  onComplete,
+  onCancel,
+}: Props) {
   const [src, setSrc] = useState<string | null>(null)
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
@@ -66,7 +80,7 @@ export default function PhotoCropper({ file, shape = 'square', onComplete, onCan
       <div className="bg-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-xl">
         <div className="flex items-center justify-between px-5 py-3 border-b border-[rgba(180,168,150,0.35)] bg-[#fdfcf9]">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
-            Crop your photo
+            {stepLabel ? `Crop your photo \u00b7 ${stepLabel}` : 'Crop your photo'}
           </p>
           <button
             type="button"
@@ -109,15 +123,25 @@ export default function PhotoCropper({ file, shape = 'square', onComplete, onCan
           />
         </div>
 
-        <div className="px-5 py-4 flex items-center justify-end gap-3">
+        <div className="px-5 py-4 flex items-center justify-end gap-3 flex-wrap">
           <button
             type="button"
             onClick={onCancel}
             disabled={working}
-            className="text-[12px] text-ink-muted hover:text-[#0a1628] px-3 py-2"
+            className="text-[12px] text-ink-muted hover:text-[#0a1628] px-3 py-2 mr-auto"
           >
             Cancel
           </button>
+          {onUseOriginal && (
+            <button
+              type="button"
+              onClick={onUseOriginal}
+              disabled={working}
+              className="text-[12px] font-semibold text-[#0a1628] hover:underline px-3 py-2 disabled:opacity-50"
+            >
+              Use original
+            </button>
+          )}
           <button
             type="button"
             onClick={handleConfirm}

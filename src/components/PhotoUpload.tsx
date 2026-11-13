@@ -54,7 +54,13 @@ export default function PhotoUpload({
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
   const captureRef = useRef<HTMLInputElement>(null)
-  const [pickedFile, setPickedFile] = useState<File | null>(null)
+  // A queue, not a single file. Picking several photos used to skip the
+  // cropper entirely and upload every one raw, which is how a 830x1792
+  // portrait reached the Moments feed and got its middle sixty per cent
+  // cropped out by the card. Images now go through the cropper one at a
+  // time; videos still upload as they are.
+  const [queue, setQueue] = useState<File[]>([])
+  const pickedFile = queue[0] ?? null
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null)
   /** Percentage for a single large file going browser-to-Blob. A video can
@@ -210,12 +216,40 @@ export default function PhotoUpload({
 
   function onFilesPicked(files: File[]) {
     if (files.length === 0) return
-    if (multiple) {
-      void uploadBatch(files)
+    if (!multiple) {
+      onFilePicked(files[0])
+      return
+    }
+    const accepted = files.filter(
+      f => f.type.startsWith('image/') || (allowVideo && f.type.startsWith('video/')),
+    )
+    const cap = maxFiles !== undefined ? Math.max(0, maxFiles) : accepted.length
+    const batch = accepted.slice(0, cap)
+    if (batch.length === 0) {
+      setError('This moment is full, remove something first (max 8).')
       clearInputs()
       return
     }
-    onFilePicked(files[0])
+    setError(
+      accepted.length > batch.length
+        ? `Only the first ${batch.length} fit (max 8 per moment).`
+        : null,
+    )
+    // Videos cannot be cropped, so they go straight up. Images queue.
+    const videos = batch.filter(f => f.type.startsWith('video/'))
+    const images = batch.filter(f => !f.type.startsWith('video/'))
+    if (videos.length > 0) void uploadBatch(videos)
+    if (skipCropper) {
+      if (images.length > 0) void uploadBatch(images)
+    } else {
+      setQueue(images)
+    }
+    clearInputs()
+  }
+
+  /** Finish with the current file and move to the next one waiting. */
+  function advanceQueue() {
+    setQueue(q => q.slice(1))
   }
 
   function onFilePicked(file: File) {
@@ -228,12 +262,22 @@ export default function PhotoUpload({
       onMediaTypeChange?.(file.type.startsWith('video/') ? 'video' : 'image')
       return
     }
-    setPickedFile(file)
+    setQueue([file])
   }
 
   function clearInputs() {
     if (fileRef.current) fileRef.current.value = ''
     if (captureRef.current) captureRef.current.value = ''
+  }
+
+  /** Upload the queued file untouched, for a flyer or a portrait that is
+   *  already the shape its author intended. */
+  async function useOriginal() {
+    const file = queue[0]
+    if (!file) return
+    advanceQueue()
+    await uploadFile(await downscaleImage(file))
+    onMediaTypeChange?.('image')
   }
 
   async function onCropComplete(blob: Blob) {
@@ -243,15 +287,17 @@ export default function PhotoUpload({
     const ext = isPng ? 'png' : 'jpg'
     const mime = isPng ? 'image/png' : 'image/jpeg'
     const filename = `crop-${Date.now()}.${ext}`
-    setPickedFile(null)
+    advanceQueue()
     const file = new File([blob], filename, { type: mime })
     await uploadFile(file)
     clearInputs()
     onMediaTypeChange?.('image')
   }
 
+  /** Cancel skips this photo only. Dropping the whole batch because one
+   *  did not crop well would make a member re-pick all of them. */
   function onCropCancel() {
-    setPickedFile(null)
+    advanceQueue()
     clearInputs()
   }
 
@@ -382,8 +428,11 @@ export default function PhotoUpload({
 
       {pickedFile && (
         <PhotoCropper
+          key={`${pickedFile.name}-${pickedFile.lastModified}-${queue.length}`}
           file={pickedFile}
           shape={shape}
+          stepLabel={queue.length > 1 ? `${queue.length} left` : undefined}
+          onUseOriginal={useOriginal}
           onComplete={onCropComplete}
           onCancel={onCropCancel}
         />
