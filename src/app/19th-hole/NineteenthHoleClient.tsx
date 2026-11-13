@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { NON_ROSTER_LABEL } from '@/lib/membership/non-roster'
 import Link from 'next/link'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
+import { gatheringGridClass } from '@/lib/gatherings/hosts'
 import OpenRequestStrip from '@/components/OpenRequestStrip'
 import AlumniCard from '@/components/alumni/AlumniCard'
 import type { OpenRequest } from '@/lib/store/types'
@@ -52,6 +53,9 @@ interface Props {
   viewerAccountId?: string
   /** Open Requests with social intents (drinks/coffee/dinner). */
   openRequests?: OpenRequest[]
+  /** Resolved on the server. Lets Ryan edit or remove any gathering,
+   *  including ones posted on someone else's behalf. */
+  isFounder?: boolean
 }
 
 type TypeFilter = 'all' | 'coffee' | 'drinks' | 'dinner' | 'event'
@@ -74,6 +78,7 @@ export default function NineteenthHoleClient({
   viewerPersonId,
   viewerAccountId,
   openRequests = [],
+  isFounder = false,
 }: Props) {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
 
@@ -150,13 +155,14 @@ export default function NineteenthHoleClient({
               No {typeFilter === 'all' ? '' : typeFilter + ' '}gatherings scheduled right now.
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className={gatheringGridClass(filteredGatherings.length)}>
               {filteredGatherings.map(g => (
                 <GatheringCard
                   key={g.id}
                   gathering={g}
                   interestedCount={interestedCounts?.[g.id] ?? 0}
                   detailHref={`/gatherings/${g.id}`}
+                  isFounder={isFounder}
                 />
               ))}
             </div>
@@ -167,7 +173,7 @@ export default function NineteenthHoleClient({
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-3">
                 Recently gathered
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className={gatheringGridClass(playedGatherings.length)}>
                 {playedGatherings.map(g => (
                   <GatheringCard
                     key={g.id}
@@ -175,6 +181,7 @@ export default function NineteenthHoleClient({
                     interestedCount={interestedCounts?.[g.id] ?? 0}
                     detailHref={`/gatherings/${g.id}`}
                     played
+                    isFounder={isFounder}
                   />
                 ))}
               </div>

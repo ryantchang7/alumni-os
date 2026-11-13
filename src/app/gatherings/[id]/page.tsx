@@ -3,6 +3,8 @@ import { ArrowLeft } from 'lucide-react'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
+import { auth } from '@/auth'
+import { FOUNDER_EMAILS } from '@/lib/badges'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -87,12 +89,25 @@ export default async function GatheringDetailPage({ params }: Props) {
     )
   }
 
+  const store = await readStore()
+
+  // Host links were resolved on the two list pages and nowhere here, so a
+  // host's name was plain text on the one page dedicated to their event.
+  const { resolveHostLinks } = await import('@/lib/seed-data/example-gatherings')
+  const { findBookEntryForTeamStorePerson } = await import('@/lib/member-book/bridge')
   const data = {
     ...gathering,
     isExample: isExampleGathering(gathering.id, gathering.isExample),
+    hostLinks: resolveHostLinks(gathering.hostName, store.people, name => {
+      const e = findBookEntryForTeamStorePerson(name)
+      return e?.id ?? null
+    }),
   } as GatheringData
 
-  const store = await readStore()
+  const session = await auth()
+  const viewerIsFounder = FOUNDER_EMAILS.has(
+    (session?.user?.email ?? '').toLowerCase().trim(),
+  )
   const interestedCount = store.clubhouseGatheringRequests.filter(
     r => r.gatheringId === gathering.id && r.status !== 'declined' && r.status !== 'closed',
   ).length
@@ -121,7 +136,11 @@ export default async function GatheringDetailPage({ params }: Props) {
       </div>
 
       <div className="max-w-[640px] mx-auto px-6 sm:px-8 -mt-7 pb-16 relative z-10">
-        <GatheringCard gathering={data} interestedCount={interestedCount} />
+        <GatheringCard
+          gathering={data}
+          interestedCount={interestedCount}
+          isFounder={viewerIsFounder}
+        />
       </div>
     </div>
   )

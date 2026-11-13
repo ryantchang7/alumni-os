@@ -7,6 +7,7 @@ import { MapPin, Clock, Users, Calendar, CalendarPlus, Lock } from 'lucide-react
 import { buildIcs, buildGoogleCalendarUrl } from '@/lib/calendar/ics'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import MediaFrame from '@/components/media/MediaFrame'
+import { hostTokens } from '@/lib/gatherings/hosts'
 
 export interface GatheringData {
   id: string
@@ -122,7 +123,7 @@ export function GatheringPlayedPill() {
   )
 }
 
-export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', interestedCount, detailHref, played = false }: {
+export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', interestedCount, detailHref, played = false, isFounder = false }: {
   gathering: GatheringData
   teamSlug?: string
   interestedCount?: number
@@ -132,13 +133,28 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
   /** The day has passed. The card becomes a record of what happened: no
    * RSVP, no calendar links, no editing the groups — just who played. */
   played?: boolean
+  /** Passed from the server for a founder, never derived here: putting
+   *  FOUNDER_EMAILS in a client component would ship Ryan's addresses to
+   *  every visitor. The API already lets a founder edit or remove any
+   *  gathering; this is the control that was missing. */
+  isFounder?: boolean
 }) {
   const { data: session, status: sessionStatus } = useSession()
   const approved = sessionStatus === 'authenticated' && !!session?.linkedPersonId
   // The host of this gathering — they shouldn't RSVP to their own event,
   // and they get a Remove control instead.
-  const isHost =
+  //
+  // A founder counts as the host of everything, which is the only way to
+  // take down a gathering somebody else posted. It also covers a gathering
+  // with no hostPersonId at all: the NYC happy hour was put up on behalf of
+  // Carter Thompson and Ivana Shah, so it belonged to no account and had no
+  // Remove control for anyone, not even them.
+  const viewerIsRealHost =
     approved && !!gathering.hostPersonId && session?.linkedPersonId === gathering.hostPersonId
+  const isHost = viewerIsRealHost || (isFounder && sessionStatus === 'authenticated')
+  // "Cancel this round" is the wrong words for a happy hour, and a founder
+  // now sees these controls on gatherings that are not rounds.
+  const isRound = gathering.type === 'round'
 
   // Responding to RSVPs. The API for this existed with proper ownership
   // checks but had no UI at all, so a host could see who asked in and had no
@@ -486,15 +502,21 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
       className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl overflow-hidden"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06), 0 4px 12px rgba(10,22,40,0.04)' }}
     >
-      {/* Host-supplied photo or short clip of the venue/vibe. Framed
-          rather than cropped: what hosts actually attach is a flyer, and
-          a flyer is a tall poster that a 3:2 crop decapitates. */}
+      {/* Host-supplied photo or short clip of the venue/vibe.
+          What hosts actually attach is a flyer from the Athletics office,
+          and a flyer is a designed graphic on a flat background. Forcing
+          one into a fixed frame is wrong twice over: a 3:2 crop decapitated
+          the tall ones, and containing a 16:9 one inside 4:3 left blurred
+          bands above and below that read as a rendering fault rather than
+          a picture. So the image keeps its own shape up to a cap, which
+          means a flyer meets all four edges exactly and nothing is cropped
+          or padded. */}
       {gathering.imageUrl && (
         <MediaFrame
           src={gathering.imageUrl}
           alt={gathering.title}
           type={VIDEO_EXT_RE.test(gathering.imageUrl) ? 'video' : 'image'}
-          aspect="4 / 3"
+          maxHeight={440}
           controls
           className="w-full"
         />
@@ -582,22 +604,22 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
               <Clock className="w-3 h-3 flex-shrink-0" />
               <span>
                 Hosted by{' '}
-                {gathering.hostName.split(/\s*&\s*/).map((who, i, all) => {
-                  const href = gathering.hostLinks?.[who.trim()]
-                  return (
-                    <span key={who + i}>
-                      {href ? (
-                        <Link
-                          href={href}
-                          className="text-[#0a1628] hover:underline font-medium"
-                        >
-                          {who.trim()}
-                        </Link>
-                      ) : (
-                        who.trim()
-                      )}
-                      {i < all.length - 1 ? ' & ' : ''}
-                    </span>
+                {hostTokens(gathering.hostName).map((tok, i) => {
+                  // Separators are printed back exactly as the host typed
+                  // them, so "A & B" stays "A & B" and "A and B" stays
+                  // "A and B".
+                  if (!tok.isName) return <span key={i}>{tok.text}</span>
+                  const href = gathering.hostLinks?.[tok.text]
+                  return href ? (
+                    <Link
+                      key={i}
+                      href={href}
+                      className="text-[#0a1628] hover:underline font-medium"
+                    >
+                      {tok.text}
+                    </Link>
+                  ) : (
+                    <span key={i}>{tok.text}</span>
                   )
                 })}
               </span>
@@ -828,7 +850,9 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
           // Host view — no RSVP to your own event; a Remove control instead.
           <div className="mt-1 space-y-2">
             <p className="text-xs text-[#2d6a4f] font-medium">
-              You&rsquo;re hosting this. Members can pencil themselves in.
+              {viewerIsRealHost
+                ? 'You’re hosting this. Members can pencil themselves in.'
+                : `Posted for ${gathering.hostName}. You can edit or remove it.`}
             </p>
             {error && <p className="text-xs text-[#990000]">{error}</p>}
             {savedAt && <p className="text-xs text-[#2d6a4f]">{savedAt}</p>}
@@ -862,7 +886,7 @@ export default function GatheringCard({ gathering, teamSlug = 'penn-mens-golf', 
                 disabled={removing}
                 className="text-xs font-semibold text-[#990000] border border-[#990000]/30 hover:bg-[#990000] hover:text-white px-3.5 py-2 rounded-lg transition-colors disabled:opacity-40"
               >
-                {removing ? 'Removing…' : 'Cancel this round'}
+                {removing ? 'Removing…' : isRound ? 'Cancel this round' : 'Remove this gathering'}
               </button>
             </div>
 

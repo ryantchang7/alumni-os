@@ -3,6 +3,8 @@ import { NON_ROSTER_LABEL } from '@/lib/membership/non-roster'
 import { Flag, MapPin, Users } from 'lucide-react'
 import { normalizeCourseName } from '@/lib/courses'
 import GatheringCard, { type GatheringData } from '@/components/gatherings/GatheringCard'
+import { gatheringGridClass } from '@/lib/gatherings/hosts'
+import { FOUNDER_EMAILS } from '@/lib/badges'
 import type { Person, TeamMembership, PersonEnrichment } from '@/lib/store/types'
 import { getApprovalState } from '@/lib/access/approval'
 import GatedPreview from '@/components/GatedPreview'
@@ -53,6 +55,9 @@ export default async function TheCoursePage() {
   let viewerOptedToRounds = false
   let viewerPersonId: string | undefined
   let viewerAccountId: string | undefined
+  // Resolved server-side and passed to the card; see the note in
+  // GatheringCard's isFounder prop.
+  let viewerIsFounder = false
   let viewerHandicap: string | undefined
   let similarPlayers: AlumniEntry[] = []
   let viewerBucket: HandicapBucket | null = null
@@ -116,6 +121,7 @@ export default async function TheCoursePage() {
     // then recently active. Filter the viewer out of their own list.
     const session = await auth()
     viewerAccountId = session?.accountId ?? undefined
+    viewerIsFounder = FOUNDER_EMAILS.has((session?.user?.email ?? '').toLowerCase().trim())
     const viewer = resolveViewerLocation(session, store, team.id)
     const decorated = visible
       .filter((a) => a.enrichment.openToGolfRounds)
@@ -427,11 +433,12 @@ export default async function TheCoursePage() {
               rightLabel={`${rounds.length} open`}
               subtitle="Organized rounds open for members to join."
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className={gatheringGridClass(rounds.length)}>
                 {rounds.map((g) => (
                   <GatheringCard
                     key={g.id}
                     gathering={g}
+                    isFounder={viewerIsFounder}
                     interestedCount={interestedByGathering.get(g.id) ?? 0}
                     detailHref={`/gatherings/${g.id}`}
                   />
@@ -452,11 +459,12 @@ export default async function TheCoursePage() {
               rightLabel={`${playedRounds.length} played`}
               subtitle="Rounds Penn Golf has already teed off."
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className={gatheringGridClass(playedRounds.length)}>
                 {playedRounds.map((g) => (
                   <GatheringCard
                     key={g.id}
                     gathering={g}
+                    isFounder={viewerIsFounder}
                     interestedCount={interestedByGathering.get(g.id) ?? 0}
                     detailHref={`/gatherings/${g.id}`}
                     played

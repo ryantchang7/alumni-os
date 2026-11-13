@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { GatheringStatusPill, type GatheringData } from '@/components/gatherings/GatheringCard'
 import PhotoUpload from '@/components/PhotoUpload'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 const TYPE_OPTIONS = ['round', 'coffee', 'drinks', 'dinner', 'event'] as const
 const AUDIENCE_OPTIONS = ['players', 'alumni', 'both'] as const
@@ -18,7 +19,40 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-function GatheringRow({ gathering }: { gathering: GatheringWithRequests }) {
+function GatheringRow({
+  gathering,
+  onRemoved,
+}: {
+  gathering: GatheringWithRequests
+  onRemoved: () => void
+}) {
+  const [removing, setRemoving] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // The API has allowed a founder to remove any gathering all along; this
+  // page just never offered it, so taking down something posted for someone
+  // else meant a hand-written fetch in a console.
+  async function remove() {
+    setRemoving(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/gatherings?id=${encodeURIComponent(gathering.id)}`, {
+        method: 'DELETE',
+      })
+      if (res.ok) {
+        onRemoved()
+      } else {
+        const d = await res.json().catch(() => ({}))
+        setError(d.error ?? 'Could not remove it.')
+        setRemoving(false)
+      }
+    } catch {
+      setError('Could not connect.')
+      setRemoving(false)
+    }
+  }
+
   return (
     <div className="bg-white border border-[rgba(180,168,150,0.35)] rounded-xl p-4"
       style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.06)' }}>
@@ -35,12 +69,43 @@ function GatheringRow({ gathering }: { gathering: GatheringWithRequests }) {
             {gathering.dateText}
             {gathering.city ? ` · ${gathering.city}${gathering.state ? `, ${gathering.state}` : ''}` : ''}
           </p>
+          <p className="text-xs text-ink-muted mt-0.5">Hosted by {gathering.hostName}</p>
         </div>
         <div className="text-right flex-shrink-0">
           <p className="text-xs font-semibold text-[#0a1628]">{gathering.requestCount ?? 0}</p>
           <p className="text-[11px] text-ink-muted">requests</p>
         </div>
       </div>
+      <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t border-[rgba(180,168,150,0.3)]">
+        {error
+          ? <p className="text-[11.5px] text-[#990000]">{error}</p>
+          : <span className="text-[11.5px] text-ink-muted">Anyone&rsquo;s gathering, yours to manage.</span>}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link
+            href={`/gatherings/${gathering.id}`}
+            className="text-[11.5px] font-semibold text-[#0a1628] border border-[rgba(180,168,150,0.6)] hover:border-[#0a1628] px-3 py-1.5 rounded-lg transition-colors"
+          >
+            Open
+          </Link>
+          <button
+            type="button"
+            onClick={() => setConfirmOpen(true)}
+            disabled={removing}
+            className="text-[11.5px] font-semibold text-[#990000] border border-[#990000]/30 hover:bg-[#990000] hover:text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40"
+          >
+            {removing ? 'Removing…' : 'Remove'}
+          </button>
+        </div>
+      </div>
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Remove this gathering?"
+        message={`"${gathering.title}" comes off the board for everyone. It is closed rather than deleted, so it can be brought back.`}
+        confirmLabel="Remove"
+        destructive
+        onConfirm={() => { setConfirmOpen(false); remove() }}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   )
 }
@@ -257,7 +322,7 @@ export default function GatheringsManager() {
       ) : (
         <div className="space-y-3">
           {gatherings.map(g => (
-            <GatheringRow key={g.id} gathering={g} />
+            <GatheringRow key={g.id} gathering={g} onRemoved={() => setCreateSuccess(v => !v)} />
           ))}
         </div>
       )}

@@ -11,6 +11,7 @@ import ScotlandTourBanner from '@/components/ScotlandTourBanner'
 
 import type { Metadata } from 'next'
 import { findBookEntryForTeamStorePerson } from '@/lib/member-book/bridge'
+import { FOUNDER_EMAILS } from '@/lib/badges'
 
 export const metadata: Metadata = {
   title: '19th Hole',
@@ -49,6 +50,10 @@ export default async function NineteenthHolePage() {
   let viewerOptedToCoffee = false
   let viewerPersonId: string | undefined
   let viewerAccountId: string | undefined
+  // Founder status is resolved here and passed down, never computed in the
+  // client card: FOUNDER_EMAILS in a client bundle is Ryan's addresses
+  // shipped to every visitor.
+  let viewerIsFounder = false
   // Open Requests with social intents (drinks/coffee/dinner). The viewer's
   // own posts stay in — the strip pins + badges them with a Close button.
   let openSocialRequests: OpenRequest[] = []
@@ -115,6 +120,7 @@ export default async function NineteenthHolePage() {
     // themselves in there).
     const session = await auth()
     viewerAccountId = session?.accountId ?? undefined
+    viewerIsFounder = FOUNDER_EMAILS.has((session?.user?.email ?? '').toLowerCase().trim())
     const viewer = resolveViewerLocation(session, store, team.id)
     openToCoffee = prioritizeForViewer(
       visible.filter(a => a.openToCoffee),
@@ -221,6 +227,7 @@ export default async function NineteenthHolePage() {
         viewerOptedToCoffee={viewerOptedToCoffee}
         viewerPersonId={viewerPersonId}
         viewerAccountId={viewerAccountId}
+        isFounder={viewerIsFounder}
         openRequests={openSocialRequests}
       />
     </div>

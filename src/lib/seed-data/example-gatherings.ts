@@ -18,6 +18,7 @@
  * here silently did nothing until the real id was used.
  */
 import { isPastGathering, gatheringSortKey } from '@/lib/gatherings/date'
+import { splitHostNames } from '@/lib/gatherings/hosts'
 
 export const EXAMPLE_GATHERING_IDS = new Set<string>([
   // Merion round (/the-course)
@@ -86,9 +87,11 @@ export function byGatheringDate(
  * Resolve each name in a gathering's `hostName` to a Member Book id so the
  * card can link them.
  *
- * hostName is free text and often two people ("Ryan Chang & Raymond Chang"),
- * while `hostPersonId` only holds one. Splitting on "&" and matching each name
- * means both hosts are clickable and neither has to have claimed a card.
+ * hostName is free text and often two people ("Ryan Chang & Raymond Chang",
+ * "Carter Thompson and Ivana Shah"), while `hostPersonId` only holds one.
+ * Splitting the line and matching each name means every host is clickable
+ * and none of them has to have claimed a card. The splitter is shared with
+ * the renderer so the keys here are exactly the strings it looks up.
  */
 export function resolveHostLinks(
   hostName: string,
@@ -96,9 +99,7 @@ export function resolveHostLinks(
   toBookId: (name: string) => string | null,
 ): Record<string, string> {
   const out: Record<string, string> = {}
-  for (const raw of (hostName || '').split(/\s*&\s*/)) {
-    const name = raw.trim()
-    if (!name) continue
+  for (const name of splitHostNames(hostName)) {
     const person = people.find(
       p => p.canonicalName.trim().toLowerCase() === name.toLowerCase(),
     )
