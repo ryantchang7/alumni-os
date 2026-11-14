@@ -774,38 +774,77 @@ export function renderWeeklyDigest(input: {
    * of things a reader cannot picture ("2 on the books") is not a reason to
    * open an email; a score is.
    */
+  /**
+   * The club, not one programme. `input.teamName` is "Men's Golf", which was
+   * the subject prefix on every digest — including the week Mark Anderson,
+   * the women's head coach, and Stacy Kress, the women's programme's first
+   * ever recruit, claimed their cards, in an email that went to the women's
+   * Golf Board co-chair. The site already decided shared rooms read "Penn
+   * Golf"; the digest is the most shared thing there is and never got the
+   * memo. teamName stays on the input because the body and the route still
+   * describe one team's results; only the envelope speaks for the club.
+   */
+  const CLUB = 'Penn Golf'
+
+  /** "Penn Golf NYC Happy Hour" under a "Penn Golf ·" prefix says it twice. */
+  const shortTitle = (t: string): string => t.replace(/^Penn Golf\s+/i, '')
+
+  /**
+   * "Thursday, December 3, 2026" -> "Dec 3". A subject line has no room for
+   * a weekday or a year the reader can infer, and the month name is the part
+   * that tells them whether this is soon.
+   */
+  const shortWhen = (dateText: string): string => {
+    const m = dateText.match(/([A-Z][a-z]+)\s+(\d{1,2})/)
+    return m ? `${m[1].slice(0, 3)} ${m[2]}` : ''
+  }
+
   const subject = (() => {
     // Their first email. Whatever else happened, this is what it is about.
     if (input.viewerIsNew) {
-      return `Welcome to the ${input.teamName} Clubhouse`
+      return `Welcome to the ${CLUB} Clubhouse`
     }
     if (input.result) {
-      return `${input.teamName} · ${input.result.resultText.split(' · ')[0]} at ${input.result.eventName}`
+      return `${CLUB} · ${input.result.resultText.split(' · ')[0]} at ${input.result.eventName}`
     }
     if (input.nextUp && input.nextUp.daysAway <= 8) {
       const when = input.nextUp.daysAway <= 1 ? 'tomorrow' : `in ${input.nextUp.daysAway} days`
-      return `${input.teamName} · ${input.nextUp.eventName} ${when}`
+      return `${CLUB} · ${input.nextUp.eventName} ${when}`
     }
     // A wave of arrivals outranks the standing round list. Seven people
     // claiming cards in a week is the news; the Scotland rounds have been on
     // the board for a month and were the subject line every one of them.
+    //
+    // But a tally on its own is still only a tally, and it was burying the
+    // one thing in the email a reader can actually turn up to. When there is
+    // exactly one gathering on the board it leads and the tally rides along:
+    // an inbox list truncates somewhere around forty characters, so whatever
+    // goes second may never be read, and of these two only one of them is
+    // something a reader can do. One member has ever RSVP'd to anything.
     if (input.newMembers.length >= 4) {
-      return `${input.teamName} · ${input.newMembers.length} more joined the Clubhouse`
+      const only = input.gatherings.length === 1 ? input.gatherings[0] : undefined
+      if (only) {
+        const when = shortWhen(only.dateText)
+        return `${CLUB} · ${shortTitle(only.title)}${when ? ` ${when}` : ''}, and ${input.newMembers.length} more joined`
+      }
+      return `${CLUB} · ${input.newMembers.length} more joined the Clubhouse`
     }
     if (input.gatherings.length === 1) {
-      return `${input.teamName} · ${input.gatherings[0].title}`
+      const only = input.gatherings[0]
+      const when = shortWhen(only.dateText)
+      return `${CLUB} · ${shortTitle(only.title)}${when ? ` ${when}` : ''}`
     }
     if (input.gatherings.length > 1) {
-      return `${input.teamName} · ${input.gatherings.length} rounds on the board`
+      return `${CLUB} · ${input.gatherings.length} rounds on the board`
     }
     if (input.asks.length) {
-      return `${input.teamName} · A player is asking for help`
+      return `${CLUB} · A player is asking for help`
     }
     if (input.newMembers.length) {
       const n = input.newMembers.length
-      return `${input.teamName} · ${n === 1 ? `${input.newMembers[0].name} joined` : `${n} more joined the Clubhouse`}`
+      return `${CLUB} · ${n === 1 ? `${input.newMembers[0].name} joined` : `${n} more joined the Clubhouse`}`
     }
-    return `${input.teamName} · This week at the Clubhouse`
+    return `${CLUB} · This week at the Clubhouse`
   })()
 
   const sec = (title: string, body: string): string => `
