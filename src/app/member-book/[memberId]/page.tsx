@@ -79,9 +79,23 @@ export async function generateMetadata({
   const { memberId } = await params
   const member = getMemberById(decodeURIComponent(memberId))
   if (!member) return { title: 'Member Book' }
-  const { startYear, finishYear } = member.career
+  // An approved correction has to win here too, not just in the card body.
+  // Melissa Aylor's card read "Penn Golf 2001–05" the moment her request was
+  // approved, while this description still said 2004–2005, so the one thing
+  // that travels when she shares her own card carried the years she had just
+  // told us were wrong.
+  const metaTeam = await getTeamBySlug(TEAM_SLUG)
+  const metaCorrection = metaTeam
+    ? (await getApprovedRosterCorrections(metaTeam.id)).get(member.id)
+    : undefined
+  const startYear = metaCorrection?.startYear ?? member.career.startYear
+  const finishYear = metaCorrection?.endYear ?? member.career.finishYear
   const years =
-    startYear && finishYear ? ` · Penn Golf ${startYear}–${finishYear}` : ''
+    startYear && finishYear
+      ? startYear === finishYear
+        ? ` · Penn Golf ${startYear}`
+        : ` · Penn Golf ${startYear}–${finishYear}`
+      : ''
   return {
     title: member.displayName,
     description: `${member.displayName}${years}, in the Penn Golf Clubhouse Member Book.`,
