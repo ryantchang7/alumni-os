@@ -910,7 +910,11 @@ export function renderWeeklyDigest(input: {
   const gatheringsBlock = gatheringsSection()
   if (gatheringsBlock && !input.result) sections.push(gatheringsBlock)
 
-  // The team. The reason an alum opens this when there is a score.
+  // The team. The reason an alum opens this when there is a score, and a
+  // footnote when it is only a fixture: "Next up, in 91 days" was sitting
+  // above a championship photo and a flyer for an event three weeks out.
+  // Built here either way, placed by whether there is a result.
+  let teamBlock: string | null = null
   if (input.result || input.nextUp) {
     const rows: string[] = []
     if (input.result) {
@@ -944,13 +948,14 @@ export function renderWeeklyDigest(input: {
         </p>
       `)
     }
-    sections.push(
-      sec(
-        'The team',
-        `<div style="padding:14px 16px;background:${CREAM};border:1px solid #e8dec9;border-radius:8px;">${rows.join('')}</div>`,
-      ),
+    teamBlock = sec(
+      'The team',
+      `<div style="padding:14px 16px;background:${CREAM};border:1px solid #e8dec9;border-radius:8px;">${rows.join('')}</div>`,
     )
   }
+  // A score leads the email. A fixture waits until after the things people
+  // actually did this week, and is pushed in further down.
+  if (teamBlock && input.result) sections.push(teamBlock)
 
   // Only reached when a result pushed it below the team.
   if (gatheringsBlock && input.result) sections.push(gatheringsBlock)
@@ -1136,6 +1141,10 @@ export function renderWeeklyDigest(input: {
       ),
     )
   }
+
+  // The fixture, if that is all the team block was. Above Penn's headlines,
+  // because what Penn plays next is still closer to home than a press release.
+  if (teamBlock && !input.result) sections.push(teamBlock)
 
   // 6. Penn's own headlines last, capped. They are already public, so they
   //    are the least exclusive thing in here.
