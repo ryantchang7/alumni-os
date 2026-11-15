@@ -137,7 +137,15 @@ async function runJob(req: NextRequest) {
       return !isPastGathering(g)
     })
     .sort((a, b) => gatheringSortKey(a) - gatheringSortKey(b))
-    .map(g => ({ title: g.title, dateText: g.dateText, city: g.city }))
+    .map(g => ({
+      title: g.title,
+      dateText: g.dateText,
+      city: g.city,
+      // The host's flyer and what kind of thing it is. The template leads
+      // the email with the flyer and will not say "play" over a happy hour.
+      imageUrl: g.imageUrl,
+      type: g.type,
+    }))
 
   // "2026-11-20" in an email to alumni reads like a bug. No Date() here:
   // parsing a bare yyyy-mm-dd shifts it a day in half the world's timezones.

@@ -694,7 +694,17 @@ interface DigestMember {
   personId?: string
   joinedAt?: string
 }
-interface DigestGathering { title: string; dateText: string; city?: string }
+interface DigestGathering {
+  title: string
+  dateText: string
+  city?: string
+  /** A flyer, where the host made one. The lead one becomes the email's
+   *  opening image, so it is the first thing a reader sees. */
+  imageUrl?: string
+  /** 'round', 'drinks', 'dinner', 'coffee'. Decides whether the section can
+   *  honestly say "play". */
+  type?: string
+}
 interface DigestCareerPost { kind: 'ask' | 'offer'; headline: string; sector: string; postedByName: string }
 interface DigestMoment { caption: string; postedByName: string; photoUrl?: string; mediaType?: 'image' | 'video' }
 interface DigestNewsItem { title: string; sourceUrl: string }
@@ -861,7 +871,46 @@ export function renderWeeklyDigest(input: {
 
   const sections: string[] = []
 
-  // 1. The team. The reason an alum opens this at all.
+  /**
+   * Things a reader could actually turn up to, with the host's flyer where
+   * there is one.
+   *
+   * This section used to sit under the team, which was right while the team
+   * block meant a score and wrong the rest of the year: on a quiet week it
+   * put "Next up, in 91 days" above the one item in the email that is
+   * somewhere to be on a date. A result still outranks a flyer, because a
+   * score is the thing an alum cannot get anywhere else. A fixture three
+   * months out does not.
+   */
+  const gatheringsSection = (): string | null => {
+    if (!input.gatherings.length) return null
+    const lead = input.gatherings.find(g => g.imageUrl)
+    // Flyers are posters and arrive in every shape. Width is capped and the
+    // height left to follow, so nothing is cropped and nothing is stretched;
+    // the NYC happy hour's is 1333x750 and lands about 275px tall.
+    const flyer = lead?.imageUrl
+      ? `<a href="${escapeHtml(input.clubhouseUrl)}"><img src="${escapeHtml(lead.imageUrl)}" alt="${escapeHtml(lead.title)}" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 14px 0;"></a>`
+      : ''
+    // "Where you could play" over a happy hour is the tee-sheet mistake in
+    // heading form. Only say play when every one of them is golf.
+    const allRounds = input.gatherings.every(g => !g.type || g.type === 'round')
+    return sec(
+      allRounds ? 'Where you could play' : 'Where you could turn up',
+      flyer +
+        input.gatherings
+          .slice(0, CAP)
+          .map(g =>
+            li(
+              `<strong>${escapeHtml(g.title)}</strong> <span style="color:${MUTED}">· ${escapeHtml(g.dateText)}${g.city ? ' · ' + escapeHtml(g.city) : ''}</span>`,
+            ),
+          )
+          .join('') + more(input.gatherings.length - CAP, 'on the board'),
+    )
+  }
+  const gatheringsBlock = gatheringsSection()
+  if (gatheringsBlock && !input.result) sections.push(gatheringsBlock)
+
+  // The team. The reason an alum opens this when there is a score.
   if (input.result || input.nextUp) {
     const rows: string[] = []
     if (input.result) {
@@ -903,22 +952,8 @@ export function renderWeeklyDigest(input: {
     )
   }
 
-  // 2. Things a reader could actually turn up to.
-  if (input.gatherings.length) {
-    sections.push(
-      sec(
-        'Where you could play',
-        input.gatherings
-          .slice(0, CAP)
-          .map(g =>
-            li(
-              `<strong>${escapeHtml(g.title)}</strong> <span style="color:${MUTED}">· ${escapeHtml(g.dateText)}${g.city ? ' · ' + escapeHtml(g.city) : ''}</span>`,
-            ),
-          )
-          .join('') + more(input.gatherings.length - CAP, 'on the board'),
-      ),
-    )
-  }
+  // Only reached when a result pushed it below the team.
+  if (gatheringsBlock && input.result) sections.push(gatheringsBlock)
 
   // 2b. Open requests. A specific person wanting a specific thing outranks
   //     anything generic, and an intro request is the only item in this
