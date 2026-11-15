@@ -7,11 +7,12 @@
  * to put them, so they became prose in a source note that no page renders.
  * This is the place to put them.
  *
- * Founder only, on purpose. The roster-years control next to it works the
- * other way round, because a member knows their own playing span better
- * than anybody and a captain confirms it. A captaincy is different: a card
- * that said "Team captain" because its owner typed it would be worth
- * nothing to the people reading it.
+ * Two modes, and the difference matters. A founder sets a captaincy and it
+ * is true immediately. A member asks, and a human agrees before the card
+ * says it: a card reading "Team Captain" because its owner typed it would
+ * be worth nothing to the people reading it. But a member is frequently the
+ * only source there will ever be, so the ask has to exist. Penn printed no
+ * captain for the men's 1983-91 club seasons at all.
  *
  * Years are season-END years, the convention everywhere in the Member Book:
  * 2005 is the 2004-05 season. The field takes a list, not a span, because
@@ -26,11 +27,14 @@ export default function TeamCaptainFix({
   currentYears,
   currentShared,
   currentNote,
+  /** Founder mode: applies straight away, on any card. */
+  admin = false,
 }: {
   memberId: string
   currentYears: readonly number[]
   currentShared?: boolean
   currentNote?: string
+  admin?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const [years, setYears] = useState(currentYears.join(', '))
@@ -54,12 +58,21 @@ export default function TeamCaptainFix({
     setError(null)
     try {
       const res = await fetch('/api/player/team-captain', {
-        method: 'PUT',
+        method: admin ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ memberId, years: parsed, shared, note }),
+        body: JSON.stringify({
+          years: parsed,
+          shared,
+          note,
+          ...(admin ? { memberId } : {}),
+        }),
       })
       const j = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(j?.error ?? `Could not save that (${res.status})`)
+      if (!admin) {
+        setDone('Thanks. Ryan will check it against the records and your card will update.')
+        return
+      }
       setDone(typeof j?.warning === 'string' ? j.warning : 'Saved. Reloading the card…')
       // Server-rendered card: without the reload the captaincy is saved and
       // invisible, which reads exactly like a failure.
@@ -99,9 +112,20 @@ export default function TeamCaptainFix({
       data-testid="captain-fix-form"
     >
       <p className="text-[12.5px] text-[#3d4a5c] mb-3 leading-relaxed">
-        Captain of the team, not of the Clubhouse. This records a season, and
-        grants nobody any access. Years are the season each captaincy
-        <em> ended</em>, so 2005 is the 2004-05 season.
+        {admin ? (
+          <>
+            Captain of the team, not of the Clubhouse. This records a season and
+            grants nobody any access. Years are the season each captaincy
+            <em> ended</em>, so 2005 is the 2004-05 season.
+          </>
+        ) : (
+          <>
+            Which season did you captain? Give the spring it finished, so 2005
+            means the 2004-05 season. Ryan checks it against Penn&rsquo;s records
+            before it shows on your card, and for the seasons Penn never
+            published you may be the only person who knows.
+          </>
+        )}
       </p>
       <label className="block">
         <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted mb-1 block">
@@ -154,7 +178,7 @@ export default function TeamCaptainFix({
           disabled={busy || (parsed.length === 0 && !note.trim() && !hadOne)}
           className="bg-[#0a1628] hover:bg-[#112240] text-white text-[11.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
         >
-          {busy ? 'Saving…' : 'Save captaincy'}
+          {busy ? 'Saving…' : admin ? 'Save captaincy' : 'Send to Ryan'}
         </button>
         <button
           type="button"
@@ -164,9 +188,10 @@ export default function TeamCaptainFix({
           Cancel
         </button>
       </div>
-      {hadOne && (
+      {hadOne && admin && (
         <p className="text-[11.5px] text-ink-muted mt-3 leading-relaxed">
-          Clearing both fields removes the captaincy from the card.
+          Clearing both fields removes the captaincy from the card, including
+          one matched from Penn&rsquo;s published list.
         </p>
       )}
     </form>

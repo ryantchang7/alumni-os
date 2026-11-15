@@ -19,7 +19,18 @@
 import { memberBookMens, memberBookWomens, memberBookEntries } from '../src/lib/member-book/data'
 import { historicalAdditions, isHistoricalAddition } from '../src/lib/member-book/historical-additions'
 import { coachingStaff } from '../src/lib/member-book/coaching-staff'
-import { teamCaptaincies, formatCaptainSeasons } from '../src/lib/member-book/team-captains'
+import {
+  getCaptaincies,
+  getStaticCaptaincy,
+  unmatchedCaptains,
+  ambiguousCaptains,
+  formatCaptainSeasons,
+} from '../src/lib/member-book/team-captains'
+import {
+  PENN_CAPTAINS,
+  PENN_CAPTAIN_NAMES,
+  CAPTAIN_NAME_TO_CARD,
+} from '../src/lib/member-book/penn-captains'
 import {
   isPublicMember,
   getMemberProgram,
@@ -145,49 +156,84 @@ ok('David Posnick has a card', !!find('club-david-posnick'))
 ok('Mark Anderson is a public coach', find('w-mark-anderson')?.role === 'coach' && isPublicMember(find('w-mark-anderson')!))
 
 console.log('\nTeam captaincies')
-// A captaincy is keyed by card id, and a card id is the one thing an import
-// can quietly change. A row pointing at nothing would not fail a build and
-// would not render: the captaincy would simply stop existing.
-const orphanCaptaincies = teamCaptaincies.filter(c => !find(c.memberId))
+// Penn's published lists are transcribed verbatim and then matched to
+// cards. Both halves can break silently: a transcription can gain a
+// duplicate year, and a card-id rename can detach a captaincy from the
+// person it belongs to. Neither would fail a build.
+const capYears = PENN_CAPTAINS.map(s2 => `${s2.program}:${s2.year}`)
+ok('no season appears twice in a Penn list', new Set(capYears).size === capYears.length)
 ok(
-  'every captaincy points at a card that exists',
-  orphanCaptaincies.length === 0,
-  orphanCaptaincies.map(c => c.memberId).join(', '),
+  'Penn captain years are plausible seasons',
+  PENN_CAPTAINS.every(s2 => s2.year >= 1900 && s2.year <= new Date().getFullYear() + 1),
 )
-const privateCaptaincies = teamCaptaincies.filter(c => {
-  const e = find(c.memberId)
-  return e && !isPublicMember(e)
-})
+const captaincies = getCaptaincies()
+ok('Penn\u2019s lists match at least 120 cards', captaincies.length >= 120, String(captaincies.length))
+ok(
+  'every matched captaincy points at a card that exists',
+  captaincies.every(c => !!find(c.memberId)),
+  captaincies.filter(c => !find(c.memberId)).map(c => c.memberId).join(', '),
+)
 ok(
   'no captaincy sits on a card nobody can see',
-  privateCaptaincies.length === 0,
-  privateCaptaincies.map(c => c.memberId).join(', '),
+  captaincies.every(c => isPublicMember(find(c.memberId)!)),
 )
-const wrongProgram = teamCaptaincies.filter(c => {
-  const e = find(c.memberId)
-  return e && getMemberProgram(e) !== c.program
-})
 ok(
   'captaincy program matches the card',
-  wrongProgram.length === 0,
-  wrongProgram.map(c => c.memberId).join(', '),
+  captaincies.every(c => getMemberProgram(find(c.memberId)!) === c.program),
+  captaincies.filter(c => getMemberProgram(find(c.memberId)!) !== c.program).map(c => c.memberId).join(', '),
 )
 ok(
   'a captaincy with no year keeps its explanation',
-  teamCaptaincies.every(c => c.years.length > 0 || !!c.uncertain),
-  teamCaptaincies.filter(c => c.years.length === 0 && !c.uncertain).map(c => c.memberId).join(', '),
+  captaincies.every(c => c.years.length > 0 || !!c.uncertain),
+)
+ok('every captaincy says who stands behind it', captaincies.every(c => c.source.trim().length > 0))
+// The matcher is allowed to fail to find somebody; it is never allowed to
+// pick between two people. An ambiguous row would attach one member's
+// history to another, which is the one mistake this book cannot make.
+ok('the matcher never guessed between two cards', ambiguousCaptains().length === 0,
+  ambiguousCaptains().map(a => `${a.cap.name} -> ${a.ids.join('|')}`).join('; '))
+// Every explicit binding must still resolve. A card-id rename would
+// otherwise drop a captaincy with no sign that it had gone.
+const deadBindings = Object.entries(CAPTAIN_NAME_TO_CARD).filter(([, id]) => !find(id))
+ok('every explicit name-to-card binding resolves', deadBindings.length === 0,
+  deadBindings.map(([k, v]) => `${k} -> ${v}`).join(', '))
+const boundButUnmatched = Object.keys(CAPTAIN_NAME_TO_CARD).filter(k =>
+  unmatchedCaptains().some(u => `${u.program}:${u.name}` === k),
+)
+ok('no explicit binding is being ignored', boundButUnmatched.length === 0, boundButUnmatched.join(', '))
+ok(
+  'every printed captain is matched or reported, never dropped',
+  PENN_CAPTAIN_NAMES.length ===
+    unmatchedCaptains().length +
+      captaincies.reduce((n, c) => n + (c.source.startsWith('Penn') ? c.years.length : 0), 0),
+)
+// Every woman Penn names has a card. That was true on 2026-11-15 and it is
+// worth knowing the day it stops being true.
+ok(
+  'no women\u2019s captain is missing a card',
+  unmatchedCaptains().filter(u => u.program === 'womens').length === 0,
+  unmatchedCaptains().filter(u => u.program === 'womens').map(u => `${u.year} ${u.name}`).join(', '),
+)
+// Named people, so a reshuffle cannot go unnoticed. Melissa reconstructed
+// her five from memory and Penn's document agrees with all five; Rick
+// Steingraber's card name differs from Penn's printed name, so he only
+// matches through an explicit binding.
+ok(
+  "Melissa Aylor captained 2003-04 and 2004-05",
+  formatCaptainSeasons(getStaticCaptaincy('w-melissa-aylor')?.years ?? []) === '2003-04 and 2004-05',
 )
 ok(
-  'every captaincy says who stands behind it',
-  teamCaptaincies.every(c => c.source.trim().length > 0),
+  'Rick Steingraber co-captained 1975-76',
+  formatCaptainSeasons(getStaticCaptaincy('richard-g-steingraber')?.years ?? []) === '1975-76' &&
+    getStaticCaptaincy('richard-g-steingraber')?.shared === true,
 )
-// Melissa Maurer's five, the reason this list exists. Her own card is the
-// one to assert: if a women's re-import renames it, the captaincy silently
-// detaches from the person who sent us the other four.
 ok(
-  "Melissa Aylor's captaincy reads 2003-04 and 2004-05",
-  formatCaptainSeasons(teamCaptaincies.find(c => c.memberId === 'w-melissa-aylor')?.years ?? []) ===
-    '2003-04 and 2004-05',
+  "James M. O\u2019Leary captained 1976-77",
+  formatCaptainSeasons(getStaticCaptaincy('james-m-o-leary')?.years ?? []) === '1976-77',
+)
+ok(
+  'Stacy Kress Politziner captained two seasons',
+  (getStaticCaptaincy('w-stacy-kress-politziner')?.years ?? []).length === 2,
 )
 
 console.log(

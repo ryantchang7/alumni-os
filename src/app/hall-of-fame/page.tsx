@@ -10,6 +10,7 @@ import { Trophy, Award } from 'lucide-react'
 import {
   PENN_GOLF_TRADITION,
   PENN_GOLF_HISTORICAL_NOTES,
+  PENN_GOLF_HONORS,
   NCAA_CHAMPIONSHIP_YEARS,
   IVY_CHAMPIONSHIP_YEARS,
 } from '@/lib/program-history/penn-mens-golf'
@@ -47,10 +48,10 @@ const BOOKS = {
   mens: {
     tradition: PENN_GOLF_TRADITION,
     notes: PENN_GOLF_HISTORICAL_NOTES,
-    // The men's individual honours are carried as a count on the plaque
-    // above, because the underlying list exists and is complete. Until it
-    // is transcribed season by season there is nothing to put here.
-    honors: [] as readonly ProgramHonorSeason[],
+    // Transcribed 2026-11-15 from Penn's own Ivy Championship and
+    // individual-honours documents, which had been on pennathletics.com the
+    // whole time this said there was nothing to put here.
+    honors: PENN_GOLF_HONORS as readonly ProgramHonorSeason[],
     ivyYears: IVY_CHAMPIONSHIP_YEARS as readonly number[],
     postseasonYears: NCAA_CHAMPIONSHIP_YEARS as readonly number[],
     postseasonTitle: 'NCAA Championships',

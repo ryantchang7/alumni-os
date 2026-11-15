@@ -10,6 +10,10 @@ import type {
   ProgramTradition,
   ProgramHistoryNote,
 } from './types'
+import {
+  MENS_ALL_IVY_SELECTIONS,
+  MENS_ALL_IVY_FIRST_YEAR,
+} from './penn-mens-golf-honors'
 
 export type { TraditionAchievement, ProgramTradition, ProgramHistoryNote }
 
@@ -70,10 +74,18 @@ export const PENN_GOLF_TRADITION: ProgramTradition = {
       description: 'Individual wins from Adam Bradshaw through Josh Goldenberg across Ivy, Big 5, and invitational fields.',
     },
     {
+      label: 'All-Ivy Selections',
+      value: String(MENS_ALL_IVY_SELECTIONS),
+      detail: `${MENS_ALL_IVY_FIRST_YEAR}\u20132026`,
+      description:
+        'Every Penn selection since All-Ivy was first awarded in 1970, counted from Penn\u2019s own season-by-season list rather than estimated. The women\u2019s figure is given as a floor because no such list exists for them.',
+    },
+    {
       label: 'Individual Honors',
       value: '42',
-      detail: 'All-America · Ivy · All-Region · Scholar',
-      description: 'All-America honors, Ivy major awards, All-Region recognition, and All-America Scholar selections.',
+      detail: 'All-America \u00b7 Ivy \u00b7 All-Region \u00b7 Scholar',
+      description:
+        'All-America honors, Ivy major awards, All-Region recognition, and All-America Scholar selections. Named season by season in the record below since 2026-11-15, from Penn\u2019s two published history documents.',
     },
   ],
 }
@@ -91,3 +103,17 @@ export const PENN_GOLF_HISTORICAL_NOTES: ProgramHistoryNote[] = [
       'Bob Hays, a Penn Athletics Hall of Fame member, was the program’s longtime coach through this era.',
   },
 ]
+
+/**
+ * Individual honours, season by season. Lives in its own file because it is
+ * a hundred-odd transcribed rows; re-exported here so the men's record book
+ * reads from one module like the women's does.
+ */
+export {
+  PENN_GOLF_HONORS,
+  MENS_ALL_IVY_SELECTIONS,
+  MENS_ALL_IVY_FIRST_YEAR,
+  MENS_MEDALIST_YEARS,
+  MENS_CHAMPIONSHIP_BEST_SCORES,
+  MENS_CHAMPIONSHIP_BEST_ROUNDS,
+} from './penn-mens-golf-honors'

@@ -10,23 +10,39 @@
  * in the roster-years form even reads "Four seasons, captain my senior
  * year" — we were inviting the fact and then dropping it.
  *
- * Years here are SEASON-END years, the same convention as the rest of the
- * Member Book: 2005 means the 2004-05 season. `years` may be empty, which
- * means somebody remembers the captaincy but not when, and that is a
- * legitimate record rather than a reason to omit the person.
+ * Three layers, strongest first:
  *
- * Every row carries a source. These are not inferences from a letter count
- * or a four-season career; a captaincy is a thing somebody has to say.
+ *   1. A runtime entry (store), which Ryan types from a card.
+ *   2. Penn's own published all-time captains lists, in penn-captains.ts,
+ *      matched to cards by the rules below.
+ *   3. Recollection, in RECOLLECTED below, for seasons Penn never printed.
  *
- * This file is the committed layer. A captaincy Ryan enters from a card at
- * /member-book/<id> is stored at runtime instead and read on top of this
- * (see getTeamCaptaincies in the store), so he never has to wait for a
- * deploy to record one. Same split as roster-year corrections, and with
- * the same consequence: the overlay shows on the card immediately, while
- * the Member Book list only picks it up when it lands in this file.
+ * Penn's lists arriving on 2026-11-15 changed what this file is. It started
+ * as seven hand-entered rows and is now mostly a matching problem, because
+ * Penn prints every men's captain from 1912 and every women's captain from
+ * 1999. Melissa's five turned out to be in Penn's document too, all five
+ * exactly as she remembered them, which is worth saying out loud: she
+ * reconstructed from memory a list that matches a published record she had
+ * not seen.
+ *
+ * Years are SEASON-END years everywhere: 2005 means the 2004-05 season.
  */
 
 import type { ProgramId } from '@/lib/teams/programs'
+import type { MemberBookEntry } from './types'
+import { memberBookEntries } from './data'
+import {
+  isPublicMember,
+  getMemberProgram,
+  getMemberStartYear,
+  getMemberEndYear,
+} from './helpers'
+import { NAME_ALIASES } from './candidates'
+import {
+  PENN_CAPTAIN_NAMES,
+  CAPTAIN_NAME_TO_CARD,
+  type PennCaptainName,
+} from './penn-captains'
 
 export interface TeamCaptaincy {
   /** Member Book card this belongs to. */
@@ -64,9 +80,7 @@ export function captainSentence(
   return seasons ? `${verb} the team in ${seasons}.` : `${verb} the team.`
 }
 
-/**
- * Season-end year to the season it ends: 2005 -> "2004-05".
- */
+/** Season-end year to the season it ends: 2005 -> "2004-05". */
 export function seasonForEndYear(endYear: number): string {
   return `${endYear - 1}-${String(endYear).slice(-2)}`
 }
@@ -85,92 +99,169 @@ export function formatCaptainSeasons(years: readonly number[]): string {
   return `${seasons.slice(0, -1).join(', ')} and ${seasons[seasons.length - 1]}`
 }
 
-const CAPTAINCIES: TeamCaptaincy[] = [
-  // ── Men's ────────────────────────────────────────────────────────────
-  //
-  // Penn Athletics keeps a captains document. It is the source for the one
-  // men's captaincy below and for the claim that the club era ran 1982-1991;
-  // it is not in this repository, and transcribing the rest of it is the
-  // single biggest thing that would fill this list out.
-  {
-    memberId: 'richard-g-steingraber',
-    program: 'mens',
-    years: [1976],
-    shared: true,
-    source:
-      "Ryan Chang, 2026-11-12, who calls him “Penn Golf co-captain in 1976” in the Clubhouse post about Lisette Williamson; Penn Athletics' captains document also has him in 1976",
-    uncertain:
-      'Co-captain, so there is at least one other 1976 captain this list cannot yet name. His four letter years are 1973 through 1976 and the captaincy is recorded for the last of them, which is what the sources give rather than a statement that he captained no other season.',
-  },
+// ── Matching Penn's names to cards ─────────────────────────────────────
+//
+// Deliberately strict, for the reason stated at the top of candidates.ts: a
+// wrong answer attaches one member's history to another, and a captaincy is
+// the most quotable thing on a card. Three rules, all of which must hold:
+//
+//   1. The name matches a card's display name or a recorded alias, reduced
+//      to letters, or matches once single-letter name parts are set aside.
+//   2. The card is in the same program.
+//   3. The captain year falls inside the card's career span. Penn's roster
+//      archive is shorter than its letter records, so a span can be too
+//      short — but it is never too long, and the year test is what stops
+//      "Tom Wecal" from attaching to a different Wecal eighty years apart.
+//
+// A name that matches two cards is dropped rather than guessed at.
+
+const letters = (s: string): string => s.toLowerCase().replace(/[^a-z]/g, '')
+
+const withoutInitials = (s: string): string =>
+  letters(
+    s
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(part => part.replace(/[^a-z]/g, '').length > 1)
+      .join(' '),
+  )
+
+interface Candidate {
+  entry: MemberBookEntry
+  exact: boolean
+}
+
+function candidatesFor(cap: PennCaptainName): Candidate[] {
+  // An explicit binding is the strongest signal there is: somebody checked
+  // it. It still has to resolve to a real, public card in the right
+  // program, so a card-id typo fails loudly in the integrity test rather
+  // than silently dropping a captaincy.
+  const bound = CAPTAIN_NAME_TO_CARD[`${cap.program}:${cap.name}`]
+  if (bound) {
+    const e = memberBookEntries.find(x => x.id === bound)
+    if (e && isPublicMember(e) && getMemberProgram(e) === cap.program) {
+      return [{ entry: e, exact: true }]
+    }
+    return []
+  }
+  const want = letters(cap.name)
+  const wantLoose = withoutInitials(cap.name)
+  const out: Candidate[] = []
+  for (const e of memberBookEntries) {
+    if (!isPublicMember(e)) continue
+    if (getMemberProgram(e) !== cap.program) continue
+    const start = getMemberStartYear(e)
+    const end = getMemberEndYear(e)
+    if (start == null || end == null) continue
+    if (cap.year < start || cap.year > end) continue
+    const names = [e.displayName, ...(NAME_ALIASES[e.id] ?? [])]
+    if (names.some(n => letters(n) === want)) {
+      out.push({ entry: e, exact: true })
+      continue
+    }
+    if (wantLoose && names.some(n => withoutInitials(n) === wantLoose)) {
+      out.push({ entry: e, exact: false })
+    }
+  }
+  // An exact hit beats a loose one, and only then is a single answer safe.
+  const exact = out.filter(c => c.exact)
+  return exact.length > 0 ? exact : out
+}
+
+interface Matched {
+  years: number[]
+  shared: boolean
+  names: Set<string>
+}
+
+/** Built once at module load: card id -> the Penn captaincies it owns. */
+const PENN_BY_MEMBER = new Map<string, Matched>()
+const UNMATCHED: PennCaptainName[] = []
+const AMBIGUOUS: Array<{ cap: PennCaptainName; ids: string[] }> = []
+
+for (const cap of PENN_CAPTAIN_NAMES) {
+  const found = candidatesFor(cap)
+  if (found.length === 0) {
+    UNMATCHED.push(cap)
+    continue
+  }
+  if (found.length > 1) {
+    AMBIGUOUS.push({ cap, ids: found.map(f => f.entry.id) })
+    UNMATCHED.push(cap)
+    continue
+  }
+  const id = found[0].entry.id
+  const row = PENN_BY_MEMBER.get(id) ?? { years: [], shared: false, names: new Set() }
+  row.years.push(cap.year)
+  // Shared if ANY of this person's seasons was shared, which is what the
+  // chip has to say when someone captained alone one year and not the next.
+  row.shared = row.shared || cap.shared
+  row.names.add(cap.name)
+  PENN_BY_MEMBER.set(id, row)
+}
+
+for (const row of PENN_BY_MEMBER.values()) row.years.sort((a, b) => a - b)
+
+/**
+ * Penn captains with no card, in Penn's order.
+ *
+ * Mostly men who captained before the records the Member Book was built
+ * from: the men's book came from an all-time letter-winner PDF, and a
+ * captain who never won a varsity letter, or whose letter years Penn never
+ * digitised, has no card to attach to. A name here is a person Penn says
+ * captained its golf team and whom the Clubhouse cannot show. That is the
+ * to-do list, and it is why this is exported rather than silently dropped.
+ */
+export function unmatchedCaptains(): readonly PennCaptainName[] {
+  return UNMATCHED
+}
+
+/** Names that matched more than one card. Never guessed at; always reported. */
+export function ambiguousCaptains(): ReadonlyArray<{
+  cap: PennCaptainName
+  ids: string[]
+}> {
+  return AMBIGUOUS
+}
+
+/** What Penn's lists say about one card, if anything. */
+export function pennCaptaincyFor(memberId: string): TeamCaptaincy | null {
+  const row = PENN_BY_MEMBER.get(memberId)
+  if (!row) return null
+  const entry = memberBookEntries.find(e => e.id === memberId)
+  if (!entry) return null
+  const printed = [...row.names]
+  // Penn prints maiden names for most of the early women. Saying so on the
+  // card is the difference between a reader believing the record and
+  // wondering whether we matched the wrong person.
+  const asPrinted =
+    printed.some(n => letters(n) !== letters(entry.displayName))
+      ? ` Printed by Penn as ${printed.join(', ')}.`
+      : ''
+  return {
+    memberId,
+    program: getMemberProgram(entry),
+    years: row.years,
+    shared: row.shared || undefined,
+    source: `Penn Athletics' all-time captains list, published 27 April 2026`,
+    uncertain: asPrinted.trim() || undefined,
+  }
+}
+
+// ── Recollection, for seasons Penn never printed ───────────────────────
+
+const RECOLLECTED: TeamCaptaincy[] = [
   {
     memberId: 'club-gregory-weinstein',
     program: 'mens',
     years: [],
     source: 'David Posnick, 2026-11-04',
     uncertain:
-      'Remembered as captain for several seasons somewhere in the 1983 to 1987 window. Penn published no roster for the club era, so no year can be attached and none is guessed at.',
-  },
-
-  // ── Women's ──────────────────────────────────────────────────────────
-  //
-  // All five come from one email, 2026-11-15, from Melissa Maurer, who
-  // captained in 2004 and 2005. It is the only account anyone has of the
-  // programme's first five varsity seasons, and it is the reason the
-  // women's side of this list is more complete than the men's: for
-  // 1999-2005 a teammate wrote it down, and for the men nobody has yet.
-  {
-    memberId: 'w-lindsay-stern-ornstein',
-    program: 'womens',
-    years: [1999],
-    source: "Melissa Maurer, women's captain 2004 and 2005",
-    uncertain:
-      "Under this book's season-end convention her year reads 1998-99, the season BEFORE Penn women's golf went varsity in 1999-2000. So either she captained the club team in its last pre-varsity season or this one entry is counted differently from the rest of the list. Left exactly as given rather than moved a year to fit.",
-  },
-  {
-    memberId: 'w-natasha-miller-sekkat',
-    program: 'womens',
-    years: [2000],
-    source: "Melissa Maurer, women's captain 2004 and 2005",
-    uncertain: "Captain in the programme's first varsity season.",
-  },
-  {
-    memberId: 'w-jennifer-schraut-keith',
-    program: 'womens',
-    years: [2001],
-    source: "Melissa Maurer, women's captain 2004 and 2005",
-  },
-  {
-    memberId: 'w-stacy-kress-politziner',
-    program: 'womens',
-    years: [2002, 2003],
-    source: "Melissa Maurer, women's captain 2004 and 2005",
-    uncertain:
-      "Two seasons as captain, in a four-season career Penn's own roster archive does not contain: it begins in 2004-05.",
-  },
-  {
-    memberId: 'w-melissa-aylor',
-    program: 'womens',
-    years: [2004, 2005],
-    source: 'Melissa Maurer, from her own playing years, 2026-11-15',
-    uncertain:
-      "Penn published no women's roster for three of her four seasons and no All-Ivy selection list for 2005, so neither her captaincy nor that honour has a Penn page behind it.",
+      'Remembered as captain for several seasons somewhere in the 1983 to 1987 window. Penn’s own captains list prints no name for 1983-91, saying only that Penn played as a club program, so no year can be attached and none is guessed at.',
   },
 ]
 
-const BY_MEMBER = new Map(CAPTAINCIES.map(c => [c.memberId, c]))
-
-export const teamCaptaincies: readonly TeamCaptaincy[] = CAPTAINCIES
-
-/** The committed captaincy for a card, if there is one. */
-export function getStaticCaptaincy(memberId: string): TeamCaptaincy | undefined {
-  return BY_MEMBER.get(memberId)
-}
-
-/** Every captaincy in a program, most recent season first. */
-export function getCaptaincies(program?: ProgramId): readonly TeamCaptaincy[] {
-  const rows = program ? CAPTAINCIES.filter(c => c.program === program) : CAPTAINCIES
-  return [...rows].sort((a, b) => Math.max(0, ...b.years) - Math.max(0, ...a.years))
-}
+const RECOLLECTED_BY_MEMBER = new Map(RECOLLECTED.map(c => [c.memberId, c]))
 
 /**
  * A captaincy entered at runtime, as the store holds it. Declared here so
@@ -184,10 +275,13 @@ export interface CaptaincyOverride {
 }
 
 /**
- * The captaincy to show on a card: an entry Ryan typed wins over the
- * committed one, because he types it when the committed one is wrong or
- * missing. A runtime entry with no years and no note is a deletion, so a
- * captaincy added by mistake can be taken back without a deploy.
+ * The captaincy to show on a card, strongest source first.
+ *
+ * A runtime entry wins because it is typed when the published record is
+ * wrong or silent; Penn's list wins over recollection because it is the
+ * record. A runtime entry with no years and no note is a deletion, so a
+ * captaincy added by mistake can be taken back without a deploy — and so
+ * that a Penn row matched to the wrong person can be suppressed.
  */
 export function resolveCaptaincy(
   memberId: string,
@@ -206,5 +300,23 @@ export function resolveCaptaincy(
       uncertain: override.note,
     }
   }
-  return BY_MEMBER.get(memberId) ?? null
+  return pennCaptaincyFor(memberId) ?? RECOLLECTED_BY_MEMBER.get(memberId) ?? null
+}
+
+/**
+ * The committed captaincy for a card, with no store read. This is what the
+ * Member Book list uses: that list has never read the store, and buying it
+ * a store read per visit is what suspended the database in August.
+ */
+export function getStaticCaptaincy(memberId: string): TeamCaptaincy | undefined {
+  return pennCaptaincyFor(memberId) ?? RECOLLECTED_BY_MEMBER.get(memberId)
+}
+
+/** Every card with a captaincy, most recent season first. */
+export function getCaptaincies(program?: ProgramId): readonly TeamCaptaincy[] {
+  const rows = [
+    ...[...PENN_BY_MEMBER.keys()].map(id => pennCaptaincyFor(id)!),
+    ...RECOLLECTED,
+  ].filter(c => !program || c.program === program)
+  return rows.sort((a, b) => Math.max(0, ...b.years) - Math.max(0, ...a.years))
 }

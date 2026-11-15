@@ -19,6 +19,7 @@ import {
   getTeamBySlug,
   getApprovedRosterCorrections,
   getTeamCaptaincies,
+  getPendingCaptaincyRequests,
 } from '@/lib/store/local-store'
 import {
   resolveCaptaincy,
@@ -27,6 +28,7 @@ import {
 } from '@/lib/member-book/team-captains'
 import RosterYearsFix from '@/components/RosterYearsFix'
 import TeamCaptainFix from '@/components/TeamCaptainFix'
+import TeamCaptainReview from '@/components/TeamCaptainReview'
 import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
 import { getBadgesForAccount, FOUNDER_EMAILS, type BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
@@ -163,6 +165,12 @@ export default async function MemberDetailPage({
         await getTeamCaptaincies(correctionTeam.id),
       )
     : resolveCaptaincy(member.id, getMemberProgram(member))
+  // A request the member filed about their own card, waiting on a yes. Only
+  // the founder is shown it; the member already knows they sent it.
+  const pendingCaptaincy =
+    isFounder && correctionTeam
+      ? (await getPendingCaptaincyRequests(correctionTeam.id)).get(member.id)
+      : undefined
   const hometown =
     storeMatch?.membership?.hometown ?? getMemberHometownLabel(member)
   const classYear = member.profile.classYearEstimate
@@ -322,12 +330,22 @@ export default async function MemberDetailPage({
             {/* Not the member's to enter: a captaincy is a claim about
                 standing in front of teammates, and a card that said it
                 because its owner typed it would be worth nothing. */}
-            {isFounder && (
+            {(isFounder || (isOwner && !captaincy)) && (
               <TeamCaptainFix
+                admin={isFounder}
                 memberId={member.id}
                 currentYears={captaincy?.years ?? []}
                 currentShared={captaincy?.shared}
                 currentNote={captaincy?.uncertain}
+              />
+            )}
+            {pendingCaptaincy && (
+              <TeamCaptainReview
+                captaincyId={pendingCaptaincy.id}
+                requestedByName={pendingCaptaincy.requestedByName ?? member.displayName}
+                years={pendingCaptaincy.years}
+                shared={pendingCaptaincy.shared}
+                note={pendingCaptaincy.note}
               />
             )}
             <dl className="text-[13.5px] text-[#3d4a5c] mt-3 space-y-0.5">

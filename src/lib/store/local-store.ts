@@ -2685,13 +2685,17 @@ export async function reviewRosterCorrection(input: {
 }
 
 /**
- * Captaincies entered at runtime, keyed by Member Book id.
+ * Approved captaincies, keyed by Member Book id.
  *
- * Read on top of the committed list in
- * `src/lib/member-book/team-captains.ts`. One row per card: a second entry
+ * Read on top of Penn's published lists in
+ * `src/lib/member-book/penn-captains.ts`. One row per card: a second entry
  * for the same person replaces the first, because a captaincy is a fact
- * being corrected rather than a request being queued, and there is no
- * reviewer to queue it for.
+ * being corrected rather than a request being queued.
+ *
+ * Pending rows are excluded. A member can say they captained, and for the
+ * men's club era and the women's first five seasons they may be the only
+ * source there will ever be, but the card does not say it until a human
+ * agrees.
  *
  * Tolerates the array being absent, as every store written before
  * 2026-11-15 has it missing.
@@ -2707,7 +2711,7 @@ export async function getTeamCaptaincies(
     { years: number[]; shared?: boolean; note?: string; setByEmail: string }
   >()
   const rows = (store.teamCaptaincies ?? [])
-    .filter(c => c.teamId === teamId)
+    .filter(c => c.teamId === teamId && c.status === 'approved')
     .sort((a, b) => a.updatedAt.localeCompare(b.updatedAt))
   for (const c of rows) {
     out.set(c.memberId, {
@@ -2716,6 +2720,18 @@ export async function getTeamCaptaincies(
       note: c.note,
       setByEmail: c.setByEmail,
     })
+  }
+  return out
+}
+
+/** Requests waiting on a human, keyed by Member Book id. */
+export async function getPendingCaptaincyRequests(
+  teamId: string,
+): Promise<Map<string, TeamCaptaincyRecord>> {
+  const store = await readStore()
+  const out = new Map<string, TeamCaptaincyRecord>()
+  for (const c of store.teamCaptaincies ?? []) {
+    if (c.teamId === teamId && c.status === 'pending') out.set(c.memberId, c)
   }
   return out
 }
@@ -2729,6 +2745,51 @@ export async function listTeamCaptaincies(
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
 }
 
+/** One upsert path, so a member request and a founder edit cannot diverge. */
+function upsertCaptaincy(
+  store: Store,
+  input: {
+    teamId: string
+    memberId: string
+    displayName: string
+    years: number[]
+    shared?: boolean
+    note?: string
+    setByEmail: string
+    status: 'pending' | 'approved'
+    requestedByAccountId?: string
+    requestedByName?: string
+    reviewedByEmail?: string
+  },
+): TeamCaptaincyRecord {
+  const rows = (store.teamCaptaincies ??= [])
+  const now = new Date().toISOString()
+  const idx = rows.findIndex(
+    c => c.teamId === input.teamId && c.memberId === input.memberId,
+  )
+  const row: TeamCaptaincyRecord = {
+    id: idx === -1 ? crypto.randomUUID() : rows[idx].id,
+    teamId: input.teamId,
+    memberId: input.memberId,
+    displayName: input.displayName,
+    years: [...new Set(input.years)].sort((a, b) => a - b),
+    shared: input.shared,
+    note: input.note,
+    status: input.status,
+    requestedByAccountId: input.requestedByAccountId,
+    requestedByName: input.requestedByName,
+    reviewedByEmail: input.reviewedByEmail,
+    reviewedAt: input.reviewedByEmail ? now : undefined,
+    setByEmail: input.setByEmail,
+    createdAt: idx === -1 ? now : rows[idx].createdAt,
+    updatedAt: now,
+  }
+  if (idx === -1) rows.push(row)
+  else rows[idx] = row
+  return row
+}
+
+/** Founder sets a captaincy directly. Approved on arrival. */
 export async function setTeamCaptaincy(input: {
   teamId: string
   memberId: string
@@ -2738,27 +2799,67 @@ export async function setTeamCaptaincy(input: {
   note?: string
   setByEmail: string
 }): Promise<TeamCaptaincyRecord> {
+  return mutateStore(store =>
+    upsertCaptaincy(store, {
+      ...input,
+      status: 'approved',
+      reviewedByEmail: input.setByEmail,
+    }),
+  )
+}
+
+/**
+ * A member says they captained their own team. Pending until confirmed.
+ *
+ * Returns the existing row as a conflict when there is already an approved
+ * captaincy on the card: they are not telling us something new, and
+ * overwriting a confirmed record from an unreviewed request would be the
+ * wrong way round.
+ */
+export async function requestTeamCaptaincy(input: {
+  teamId: string
+  memberId: string
+  displayName: string
+  years: number[]
+  shared?: boolean
+  note?: string
+  requestedByAccountId: string
+  requestedByName: string
+}): Promise<TeamCaptaincyRecord | { conflict: TeamCaptaincyRecord }> {
+  return mutateStore(store => {
+    const existing = (store.teamCaptaincies ?? []).find(
+      c =>
+        c.teamId === input.teamId &&
+        c.memberId === input.memberId &&
+        c.status === 'approved',
+    )
+    if (existing) return { conflict: existing }
+    return upsertCaptaincy(store, {
+      ...input,
+      status: 'pending',
+      setByEmail: input.requestedByName,
+    })
+  })
+}
+
+export async function reviewTeamCaptaincy(input: {
+  captaincyId: string
+  approve: boolean
+  reviewedByEmail: string
+}): Promise<TeamCaptaincyRecord | null> {
   return mutateStore(store => {
     const rows = (store.teamCaptaincies ??= [])
+    const idx = rows.findIndex(c => c.id === input.captaincyId)
+    if (idx === -1) return null
     const now = new Date().toISOString()
-    const idx = rows.findIndex(
-      c => c.teamId === input.teamId && c.memberId === input.memberId,
-    )
-    const row: TeamCaptaincyRecord = {
-      id: idx === -1 ? crypto.randomUUID() : rows[idx].id,
-      teamId: input.teamId,
-      memberId: input.memberId,
-      displayName: input.displayName,
-      years: [...new Set(input.years)].sort((a, b) => a - b),
-      shared: input.shared,
-      note: input.note,
-      setByEmail: input.setByEmail,
-      createdAt: idx === -1 ? now : rows[idx].createdAt,
+    rows[idx] = {
+      ...rows[idx],
+      status: input.approve ? 'approved' : 'declined',
+      reviewedByEmail: input.reviewedByEmail,
+      reviewedAt: now,
       updatedAt: now,
     }
-    if (idx === -1) rows.push(row)
-    else rows[idx] = row
-    return row
+    return rows[idx]
   })
 }
 

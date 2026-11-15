@@ -314,6 +314,23 @@ export interface TeamCaptaincyRecord {
   shared?: boolean
   /** What is uncertain, or where it came from. Shown on the card. */
   note?: string
+  /**
+   * Pending when the member said it about their own card, approved when a
+   * founder entered or confirmed it. Only approved rows render.
+   *
+   * A member may say "I captained in 1994" — and for the men's club era and
+   * the women's first five seasons they are the only source there will ever
+   * be — but a card reading "Team Captain" because its owner typed it is
+   * worth nothing to the people reading it. So the member tells us and a
+   * human agrees, exactly like a roster-year correction.
+   */
+  status: 'pending' | 'approved' | 'declined'
+  /** Absent when a founder entered it directly. */
+  requestedByAccountId?: string
+  requestedByName?: string
+  reviewedByEmail?: string
+  reviewedAt?: string
+  /** Who last wrote the row. A founder's email, or the member's own name. */
   setByEmail: string
   createdAt: string
   updatedAt: string
