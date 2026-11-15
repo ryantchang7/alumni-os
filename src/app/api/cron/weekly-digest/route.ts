@@ -312,6 +312,11 @@ async function runJob(req: NextRequest) {
       dryRun: true,
       subject,
       htmlBytes: html.length,
+      // The point of a dry run is to see what sends, and a byte count is not
+      // that. Counting bytes to infer whether a flyer rendered is how an
+      // afternoon gets spent; `?html=1` just shows it. Founder-gated and
+      // dry-run only, like everything else on this branch.
+      ...(req.nextUrl.searchParams.get('html') === '1' ? { html } : {}),
       newMembers: newMembers.length,
       newMemberNames: newMembers.map(m => m.name),
       careerPosts: careerPosts.length,
