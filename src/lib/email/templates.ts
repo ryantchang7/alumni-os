@@ -1030,15 +1030,22 @@ export function renderWeeklyDigest(input: {
   // 4. Moments, with the photo rather than only its caption.
   if (input.moments.length) {
     const lead = input.moments.find(m => m.photoUrl && m.mediaType !== 'video')
+    // One moment gets room to finish its sentence; two share the space. A
+    // flat 90 characters cut Lisette Williamson's third California Women's
+    // Amateur off at "winning her THIRD Ca…", which is the one word in the
+    // post that mattered. Cut on a word boundary for the same reason.
+    const limit = input.moments.length === 1 ? 400 : 110
     const body =
       (lead?.photoUrl
-        ? `<a href="${input.clubhouseUrl}"><img src="${lead.photoUrl}" alt="" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 8px 0;"></a>`
+        ? `<a href="${input.clubhouseUrl}"><img src="${lead.photoUrl}" alt="${escapeHtml(
+            clip(lead.caption, 80),
+          )}" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 8px 0;"></a>`
         : '') +
       input.moments
         .slice(0, 2)
         .map(m =>
           li(
-            `<em style="color:#3d4a5c">${escapeHtml(m.caption.slice(0, 90))}${m.caption.length > 90 ? '…' : ''}</em> <span style="color:${MUTED}">· ${escapeHtml(m.postedByName)}</span>`,
+            `<em style="color:#3d4a5c">${escapeHtml(clip(m.caption, limit))}</em> <span style="color:${MUTED}">· ${escapeHtml(m.postedByName)}</span>`,
           ),
         )
         .join('') + more(input.moments.length - 2, 'posted')
@@ -1339,6 +1346,29 @@ export function renderIdeaSubmissionEmail(input: {
     <p style="margin:0;">${btn(input.internalUrl, 'Open /internal')}</p>
   `
   return { subject, html: shell(inner, input.internalUrl) }
+}
+
+/**
+ * Shorten to fit: a finished sentence if one is near the limit, otherwise a
+ * word boundary with an ellipsis, and never mid-word.
+ *
+ * All three rules come from one caption. "winning her THIRD Ca…" reads as a
+ * bug and hides the only word that mattered; "Championship in 2010 at…"
+ * stops on a preposition. Ending on the full stop before the limit reads
+ * like a choice, which it now is.
+ */
+function clip(text: string, limit: number): string {
+  const t = text.trim().replace(/\s+/g, ' ')
+  if (t.length <= limit) return t
+  const cut = t.slice(0, limit)
+  const ends = [...cut.matchAll(/[.!?](?=\s|$)/g)]
+  const lastEnd = ends.length ? (ends[ends.length - 1].index ?? -1) : -1
+  // Only if it keeps most of what fits. Hunting for a full stop is not
+  // worth halving the caption.
+  if (lastEnd > limit * 0.5) return cut.slice(0, lastEnd + 1)
+  const space = cut.lastIndexOf(' ')
+  const kept = space > limit * 0.6 ? cut.slice(0, space) : cut
+  return `${kept.replace(/[\s,.;:!?-]+$/, '')}…`
 }
 
 function escapeHtml(s: string): string {

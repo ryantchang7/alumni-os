@@ -22,7 +22,8 @@ import {
 } from '@/lib/store/local-store'
 import {
   resolveCaptaincy,
-  formatCaptainSeasons,
+  captainLabel,
+  captainSentence,
 } from '@/lib/member-book/team-captains'
 import RosterYearsFix from '@/components/RosterYearsFix'
 import TeamCaptainFix from '@/components/TeamCaptainFix'
@@ -162,7 +163,6 @@ export default async function MemberDetailPage({
         await getTeamCaptaincies(correctionTeam.id),
       )
     : resolveCaptaincy(member.id, getMemberProgram(member))
-  const captainSeasons = captaincy ? formatCaptainSeasons(captaincy.years) : ''
   const hometown =
     storeMatch?.membership?.hometown ?? getMemberHometownLabel(member)
   const classYear = member.profile.classYearEstimate
@@ -326,6 +326,7 @@ export default async function MemberDetailPage({
               <TeamCaptainFix
                 memberId={member.id}
                 currentYears={captaincy?.years ?? []}
+                currentShared={captaincy?.shared}
                 currentNote={captaincy?.uncertain}
               />
             )}
@@ -364,15 +365,11 @@ export default async function MemberDetailPage({
                       the same chip. */}
                   {captaincy && (
                     <span
-                      title={
-                        captainSeasons
-                          ? `Captained the team in ${captainSeasons}`
-                          : 'Captained the team'
-                      }
+                      title={captainSentence(captaincy.years, captaincy.shared)}
                       className="inline-block text-[10px] font-semibold px-2.5 py-1 rounded-full text-[#990000] bg-[#990000]/8 border border-[#990000]/30 uppercase tracking-[0.14em]"
                       data-testid="member-team-captain-chip"
                     >
-                      Team Captain
+                      {captainLabel(captaincy.shared)}
                     </span>
                   )}
                 </div>
@@ -409,9 +406,7 @@ export default async function MemberDetailPage({
               {captaincy && (
                 <div className="mt-3" data-testid="member-team-captain">
                   <p className="text-[14px] text-[#0a1628] leading-relaxed">
-                    {captainSeasons
-                      ? `Captained the team in ${captainSeasons}.`
-                      : 'Captained the team.'}
+                    {captainSentence(captaincy.years, captaincy.shared)}
                   </p>
                   <p className="text-[12.5px] text-ink-muted leading-relaxed mt-1">
                     {captaincy.uncertain

@@ -37,10 +37,31 @@ export interface TeamCaptaincy {
    * captaincy is remembered and the year is not.
    */
   years: readonly number[]
+  /**
+   * One of two or more captains that season. Penn golf has used co-captains
+   * for most of its history and the distinction is not cosmetic: a card
+   * reading "Team Captain" for a shared job overstates it, and a reader who
+   * knows the season will notice.
+   */
+  shared?: boolean
   /** Who stands behind it. Attribution is the only provenance there is. */
   source: string
   /** What is NOT established, in plain words. Rendered, never hidden. */
   uncertain?: string
+}
+
+/** The chip and the sentence, so they can never disagree. */
+export function captainLabel(shared?: boolean): string {
+  return shared ? 'Team Co-Captain' : 'Team Captain'
+}
+
+export function captainSentence(
+  years: readonly number[],
+  shared?: boolean,
+): string {
+  const verb = shared ? 'Co-captained' : 'Captained'
+  const seasons = formatCaptainSeasons(years)
+  return seasons ? `${verb} the team in ${seasons}.` : `${verb} the team.`
 }
 
 /**
@@ -75,9 +96,11 @@ const CAPTAINCIES: TeamCaptaincy[] = [
     memberId: 'richard-g-steingraber',
     program: 'mens',
     years: [1976],
-    source: "Penn Athletics' captains document, read 2026-11-08",
+    shared: true,
+    source:
+      "Ryan Chang, 2026-11-12, who calls him “Penn Golf co-captain in 1976” in the Clubhouse post about Lisette Williamson; Penn Athletics' captains document also has him in 1976",
     uncertain:
-      'His four letter years are 1973 through 1976. The captaincy is recorded for 1976 only, which is what the document gives rather than a statement that he captained no other season.',
+      'Co-captain, so there is at least one other 1976 captain this list cannot yet name. His four letter years are 1973 through 1976 and the captaincy is recorded for the last of them, which is what the sources give rather than a statement that he captained no other season.',
   },
   {
     memberId: 'club-gregory-weinstein',
@@ -155,6 +178,7 @@ export function getCaptaincies(program?: ProgramId): readonly TeamCaptaincy[] {
  */
 export interface CaptaincyOverride {
   years: readonly number[]
+  shared?: boolean
   note?: string
   setByEmail: string
 }
@@ -177,6 +201,7 @@ export function resolveCaptaincy(
       memberId,
       program,
       years: override.years,
+      shared: override.shared,
       source: `Entered by ${override.setByEmail}`,
       uncertain: override.note,
     }

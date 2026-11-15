@@ -19,19 +19,22 @@
  */
 
 import { useState } from 'react'
-import { formatCaptainSeasons } from '@/lib/member-book/team-captains'
+import { formatCaptainSeasons, captainSentence } from '@/lib/member-book/team-captains'
 
 export default function TeamCaptainFix({
   memberId,
   currentYears,
+  currentShared,
   currentNote,
 }: {
   memberId: string
   currentYears: readonly number[]
+  currentShared?: boolean
   currentNote?: string
 }) {
   const [open, setOpen] = useState(false)
   const [years, setYears] = useState(currentYears.join(', '))
+  const [shared, setShared] = useState(!!currentShared)
   const [note, setNote] = useState(currentNote ?? '')
   const [busy, setBusy] = useState(false)
   const [done, setDone] = useState<string | null>(null)
@@ -53,7 +56,7 @@ export default function TeamCaptainFix({
       const res = await fetch('/api/player/team-captain', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ memberId, years: parsed, note }),
+        body: JSON.stringify({ memberId, years: parsed, shared, note }),
       })
       const j = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(j?.error ?? `Could not save that (${res.status})`)
@@ -113,10 +116,22 @@ export default function TeamCaptainFix({
           className="w-full border border-[rgba(180,168,150,0.5)] rounded-lg px-3 py-2 text-[14px] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-[#c8a84b]/30"
         />
       </label>
-      <p className="text-[12px] text-ink-muted mt-1.5">
-        {preview
-          ? `Reads as: Team captain, ${preview}.`
-          : 'Leave it empty if somebody remembers the captaincy but not the year, and say so below.'}
+      <label className="flex items-start gap-2 mt-3 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={shared}
+          onChange={e => setShared(e.target.checked)}
+          className="mt-[3px] accent-[#990000]"
+        />
+        <span className="text-[12.5px] text-[#3d4a5c] leading-relaxed">
+          Co-captain, one of two or more that season. Penn has used
+          co-captains for most of its history.
+        </span>
+      </label>
+      <p className="text-[12px] text-ink-muted mt-2">
+        {parsed.length > 0 || shared
+          ? `Reads as: ${captainSentence(parsed, shared)}`
+          : 'Leave the years empty if somebody remembers the captaincy but not the year, and say so below.'}
       </p>
       <label className="block mt-3">
         <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted mb-1 block">

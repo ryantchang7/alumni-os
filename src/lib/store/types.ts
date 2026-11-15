@@ -309,6 +309,9 @@ export interface TeamCaptaincyRecord {
   displayName: string
   /** Season-end years. Empty means the captaincy is known and the year is not. */
   years: number[]
+  /** One of two or more captains that season. Penn has used co-captains for
+   *  most of its history, and "Team Captain" on a shared job overstates it. */
+  shared?: boolean
   /** What is uncertain, or where it came from. Shown on the card. */
   note?: string
   setByEmail: string

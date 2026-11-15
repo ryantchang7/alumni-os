@@ -42,7 +42,8 @@ import type {
 } from '@/lib/member-book/types'
 import {
   getStaticCaptaincy,
-  formatCaptainSeasons,
+  captainLabel,
+  captainSentence,
 } from '@/lib/member-book/team-captains'
 import { BOOK_PROOF } from '@/lib/proof'
 import { APPROVAL_PROMISE } from '@/lib/access/promise'
@@ -163,14 +164,10 @@ function RegistryEntry({
             ) : null}
             {captaincy && (
               <span
-                title={
-                  captaincy.years.length > 0
-                    ? `Captained the team in ${formatCaptainSeasons(captaincy.years)}`
-                    : 'Captained the team'
-                }
+                title={captainSentence(captaincy.years, captaincy.shared)}
                 className="text-[11px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full text-[#990000] bg-[#990000]/8 border border-[#990000]/25 whitespace-nowrap"
               >
-                Team Captain
+                {captainLabel(captaincy.shared)}
               </span>
             )}
           </div>

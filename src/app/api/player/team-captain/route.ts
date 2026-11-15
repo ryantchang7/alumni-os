@@ -70,6 +70,9 @@ export async function PUT(request: Request) {
   const memberId = typeof body.memberId === 'string' ? body.memberId.trim() : ''
   if (!memberId) return NextResponse.json({ error: 'memberId required' }, { status: 400 })
   const note = typeof body.note === 'string' ? body.note.trim().slice(0, 500) : ''
+  // Co-captain unless told otherwise is wrong in the other direction, so
+  // this is opt-in and the form asks.
+  const shared = body.shared === true
 
   const checked = validateYears(body.years ?? [])
   if ('error' in checked) return NextResponse.json({ error: checked.error }, { status: 400 })
@@ -100,6 +103,7 @@ export async function PUT(request: Request) {
     memberId,
     displayName: entry.displayName,
     years,
+    shared: shared || undefined,
     note: note || undefined,
     setByEmail: gate.email,
   })

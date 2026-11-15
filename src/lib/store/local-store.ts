@@ -2698,14 +2698,24 @@ export async function reviewRosterCorrection(input: {
  */
 export async function getTeamCaptaincies(
   teamId: string,
-): Promise<Map<string, { years: number[]; note?: string; setByEmail: string }>> {
+): Promise<
+  Map<string, { years: number[]; shared?: boolean; note?: string; setByEmail: string }>
+> {
   const store = await readStore()
-  const out = new Map<string, { years: number[]; note?: string; setByEmail: string }>()
+  const out = new Map<
+    string,
+    { years: number[]; shared?: boolean; note?: string; setByEmail: string }
+  >()
   const rows = (store.teamCaptaincies ?? [])
     .filter(c => c.teamId === teamId)
     .sort((a, b) => a.updatedAt.localeCompare(b.updatedAt))
   for (const c of rows) {
-    out.set(c.memberId, { years: c.years, note: c.note, setByEmail: c.setByEmail })
+    out.set(c.memberId, {
+      years: c.years,
+      shared: c.shared,
+      note: c.note,
+      setByEmail: c.setByEmail,
+    })
   }
   return out
 }
@@ -2724,6 +2734,7 @@ export async function setTeamCaptaincy(input: {
   memberId: string
   displayName: string
   years: number[]
+  shared?: boolean
   note?: string
   setByEmail: string
 }): Promise<TeamCaptaincyRecord> {
@@ -2739,6 +2750,7 @@ export async function setTeamCaptaincy(input: {
       memberId: input.memberId,
       displayName: input.displayName,
       years: [...new Set(input.years)].sort((a, b) => a - b),
+      shared: input.shared,
       note: input.note,
       setByEmail: input.setByEmail,
       createdAt: idx === -1 ? now : rows[idx].createdAt,
