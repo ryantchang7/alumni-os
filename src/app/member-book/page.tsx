@@ -40,6 +40,10 @@ import type {
   EraFilter,
   SortMode,
 } from '@/lib/member-book/types'
+import {
+  getStaticCaptaincy,
+  formatCaptainSeasons,
+} from '@/lib/member-book/team-captains'
 import { BOOK_PROOF } from '@/lib/proof'
 import { APPROVAL_PROMISE } from '@/lib/access/promise'
 import { useSession } from 'next-auth/react'
@@ -102,6 +106,11 @@ function RegistryEntry({
   const years = getMemberPennGolfYears(member)
   const hometown = getMemberHometownLabel(member)
   const isCurrent = isActiveMember(member)
+  // The committed captaincy list only. A captaincy Ryan types from a card
+  // is a runtime overlay and shows there first, the same way a roster-year
+  // correction already does: this list has never read the store and buying
+  // it one store read per visit is what suspended the database in August.
+  const captaincy = getStaticCaptaincy(member.id)
   const classYear = member.profile.classYearEstimate
     ? `Class of ${member.profile.classYearEstimate}`
     : null
@@ -142,15 +151,29 @@ function RegistryEntry({
               </div>
             </div>
           </div>
-          {member.role === 'coach' ? (
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full text-[#c8a84b] bg-[#0a1628] border border-[#c8a84b]/55 whitespace-nowrap mt-1">
-              Coach
-            </span>
-          ) : isCurrent ? (
-            <span className="text-[11px] font-medium px-2 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap mt-1">
-              Current Player
-            </span>
-          ) : null}
+          <div className="flex flex-col items-end gap-1.5 mt-1">
+            {member.role === 'coach' ? (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full text-[#c8a84b] bg-[#0a1628] border border-[#c8a84b]/55 whitespace-nowrap">
+                Coach
+              </span>
+            ) : isCurrent ? (
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/20 whitespace-nowrap">
+                Current Player
+              </span>
+            ) : null}
+            {captaincy && (
+              <span
+                title={
+                  captaincy.years.length > 0
+                    ? `Captained the team in ${formatCaptainSeasons(captaincy.years)}`
+                    : 'Captained the team'
+                }
+                className="text-[11px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full text-[#990000] bg-[#990000]/8 border border-[#990000]/25 whitespace-nowrap"
+              >
+                Team Captain
+              </span>
+            )}
+          </div>
         </div>
         {claimed ? (
           <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#2d6a4f] mt-4 inline-flex items-center gap-1.5">

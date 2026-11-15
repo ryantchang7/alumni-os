@@ -19,6 +19,7 @@
 import { memberBookMens, memberBookWomens, memberBookEntries } from '../src/lib/member-book/data'
 import { historicalAdditions, isHistoricalAddition } from '../src/lib/member-book/historical-additions'
 import { coachingStaff } from '../src/lib/member-book/coaching-staff'
+import { teamCaptaincies, formatCaptainSeasons } from '../src/lib/member-book/team-captains'
 import {
   isPublicMember,
   getMemberProgram,
@@ -142,6 +143,52 @@ ok('Peyton Wallace, 1999-2003 (he told us)', spanOf('peyton-wallace') === '1999-
 ok('Melissa Aylor is in and is women’s', getMemberProgram(find('w-melissa-aylor')!) === 'womens')
 ok('David Posnick has a card', !!find('club-david-posnick'))
 ok('Mark Anderson is a public coach', find('w-mark-anderson')?.role === 'coach' && isPublicMember(find('w-mark-anderson')!))
+
+console.log('\nTeam captaincies')
+// A captaincy is keyed by card id, and a card id is the one thing an import
+// can quietly change. A row pointing at nothing would not fail a build and
+// would not render: the captaincy would simply stop existing.
+const orphanCaptaincies = teamCaptaincies.filter(c => !find(c.memberId))
+ok(
+  'every captaincy points at a card that exists',
+  orphanCaptaincies.length === 0,
+  orphanCaptaincies.map(c => c.memberId).join(', '),
+)
+const privateCaptaincies = teamCaptaincies.filter(c => {
+  const e = find(c.memberId)
+  return e && !isPublicMember(e)
+})
+ok(
+  'no captaincy sits on a card nobody can see',
+  privateCaptaincies.length === 0,
+  privateCaptaincies.map(c => c.memberId).join(', '),
+)
+const wrongProgram = teamCaptaincies.filter(c => {
+  const e = find(c.memberId)
+  return e && getMemberProgram(e) !== c.program
+})
+ok(
+  'captaincy program matches the card',
+  wrongProgram.length === 0,
+  wrongProgram.map(c => c.memberId).join(', '),
+)
+ok(
+  'a captaincy with no year keeps its explanation',
+  teamCaptaincies.every(c => c.years.length > 0 || !!c.uncertain),
+  teamCaptaincies.filter(c => c.years.length === 0 && !c.uncertain).map(c => c.memberId).join(', '),
+)
+ok(
+  'every captaincy says who stands behind it',
+  teamCaptaincies.every(c => c.source.trim().length > 0),
+)
+// Melissa Maurer's five, the reason this list exists. Her own card is the
+// one to assert: if a women's re-import renames it, the captaincy silently
+// detaches from the person who sent us the other four.
+ok(
+  "Melissa Aylor's captaincy reads 2003-04 and 2004-05",
+  formatCaptainSeasons(teamCaptaincies.find(c => c.memberId === 'w-melissa-aylor')?.years ?? []) ===
+    '2003-04 and 2004-05',
+)
 
 console.log(
   failures ? `\n${failures} FAILED\n` : `\nAll integrity checks passed (${memberBookEntries.length} cards)\n`,

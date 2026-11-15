@@ -287,6 +287,35 @@ export interface RosterYearCorrection {
   updatedAt: string
 }
 
+/**
+ * Who captained the team in a given season, entered at runtime.
+ *
+ * Not a permission. `src/lib/captains.ts` decides who can approve a claim;
+ * this records a fact about a season that ended, in most cases, decades
+ * before the Clubhouse existed. The committed list lives in
+ * `src/lib/member-book/team-captains.ts` and this is the overlay on top of
+ * it, so a captaincy somebody mentions in an email is recorded the same
+ * afternoon rather than at the next deploy.
+ *
+ * `years` are season-END years: 2005 is the 2004-05 season. An empty
+ * `years` with no `note` is how a row is withdrawn.
+ */
+export interface TeamCaptaincyRecord {
+  id: string
+  teamId: string
+  /** Member Book entry this captaincy belongs to. */
+  memberId: string
+  /** Kept for the audit line, so the row is readable without the book. */
+  displayName: string
+  /** Season-end years. Empty means the captaincy is known and the year is not. */
+  years: number[]
+  /** What is uncertain, or where it came from. Shown on the card. */
+  note?: string
+  setByEmail: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface ClubhouseProfileClaimRequest {
   id: string
   teamId: string
@@ -872,6 +901,8 @@ export interface Store {
   profileClaimRequests: ClubhouseProfileClaimRequest[]
   /** Optional: absent on stores written before 2026-11-08. */
   rosterYearCorrections?: RosterYearCorrection[]
+  /** Optional: absent on stores written before 2026-11-15. */
+  teamCaptaincies?: TeamCaptaincyRecord[]
   accounts: Account[]
   moments: ClubhouseMoment[]
   momentComments: MomentComment[]

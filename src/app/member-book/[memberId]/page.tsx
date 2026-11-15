@@ -18,8 +18,14 @@ import {
   readStore,
   getTeamBySlug,
   getApprovedRosterCorrections,
+  getTeamCaptaincies,
 } from '@/lib/store/local-store'
+import {
+  resolveCaptaincy,
+  formatCaptainSeasons,
+} from '@/lib/member-book/team-captains'
 import RosterYearsFix from '@/components/RosterYearsFix'
+import TeamCaptainFix from '@/components/TeamCaptainFix'
 import type { TeamMembership, PersonEnrichment } from '@/lib/store/types'
 import { getBadgesForAccount, FOUNDER_EMAILS, type BadgeId } from '@/lib/badges'
 import MemberBadges from '@/components/MemberBadges'
@@ -145,6 +151,18 @@ export default async function MemberDetailPage({
       ? `Penn Golf ${correction.startYear}`
       : `Penn Golf ${correction.startYear}\u2013${String(correction.endYear).slice(-2)}`
     : getMemberPennGolfYears(member)
+  // Captain of the team, which the Clubhouse had no word for until now:
+  // `src/lib/captains.ts` only knows who may approve a claim. The committed
+  // list is read first and a runtime entry wins over it, exactly like the
+  // correction above, and off the same store read.
+  const captaincy = correctionTeam
+    ? resolveCaptaincy(
+        member.id,
+        getMemberProgram(member),
+        await getTeamCaptaincies(correctionTeam.id),
+      )
+    : resolveCaptaincy(member.id, getMemberProgram(member))
+  const captainSeasons = captaincy ? formatCaptainSeasons(captaincy.years) : ''
   const hometown =
     storeMatch?.membership?.hometown ?? getMemberHometownLabel(member)
   const classYear = member.profile.classYearEstimate
@@ -301,6 +319,16 @@ export default async function MemberDetailPage({
                 currentEnd={correction?.endYear ?? getMemberEndYear(member)}
               />
             )}
+            {/* Not the member's to enter: a captaincy is a claim about
+                standing in front of teammates, and a card that said it
+                because its owner typed it would be worth nothing. */}
+            {isFounder && (
+              <TeamCaptainFix
+                memberId={member.id}
+                currentYears={captaincy?.years ?? []}
+                currentNote={captaincy?.uncertain}
+              />
+            )}
             <dl className="text-[13.5px] text-[#3d4a5c] mt-3 space-y-0.5">
               {classYear && (
                 <div className="flex gap-2">
@@ -321,15 +349,33 @@ export default async function MemberDetailPage({
                 </div>
               )}
             </dl>
-                {member.role === 'coach' ? (
-                  <span className="inline-flex items-center gap-1 mt-5 text-[10px] font-semibold px-2.5 py-1 rounded-full text-[#c8a84b] bg-[#0a1628] border border-[#c8a84b]/55 uppercase tracking-[0.14em]">
-                    Coach
-                  </span>
-                ) : isCurrent ? (
-                  <span className="inline-block mt-5 text-[10px] font-medium px-2.5 py-1 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 uppercase tracking-[0.14em]">
-                    Current Player
-                  </span>
-                ) : null}
+                <div className="flex flex-wrap items-center gap-2 mt-5 empty:mt-0">
+                  {member.role === 'coach' ? (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full text-[#c8a84b] bg-[#0a1628] border border-[#c8a84b]/55 uppercase tracking-[0.14em]">
+                      Coach
+                    </span>
+                  ) : isCurrent ? (
+                    <span className="inline-block text-[10px] font-medium px-2.5 py-1 rounded-full text-[#2d6a4f] bg-[#2d6a4f]/8 border border-[#2d6a4f]/25 uppercase tracking-[0.14em]">
+                      Current Player
+                    </span>
+                  ) : null}
+                  {/* Team captain. Penn red rather than the gold the site
+                      uses for its own captains, so the two never read as
+                      the same chip. */}
+                  {captaincy && (
+                    <span
+                      title={
+                        captainSeasons
+                          ? `Captained the team in ${captainSeasons}`
+                          : 'Captained the team'
+                      }
+                      className="inline-block text-[10px] font-semibold px-2.5 py-1 rounded-full text-[#990000] bg-[#990000]/8 border border-[#990000]/30 uppercase tracking-[0.14em]"
+                      data-testid="member-team-captain-chip"
+                    >
+                      Team Captain
+                    </span>
+                  )}
+                </div>
                 {storeMatch?.accountId && !isOwner && (
                   <div className="mt-6">
                     <MessageMemberButton
@@ -355,6 +401,24 @@ export default async function MemberDetailPage({
                 <p className="text-[14px] text-[#3d4a5c] leading-relaxed">
                   {years.replace('Penn Golf ', 'On the team from ')}.
                 </p>
+              )}
+              {/* The captaincy in words, with who said so. Penn published no
+                  roster for most of these seasons, so attribution is the
+                  only provenance there is and hiding it would be a lie by
+                  omission. */}
+              {captaincy && (
+                <div className="mt-3" data-testid="member-team-captain">
+                  <p className="text-[14px] text-[#0a1628] leading-relaxed">
+                    {captainSeasons
+                      ? `Captained the team in ${captainSeasons}.`
+                      : 'Captained the team.'}
+                  </p>
+                  <p className="text-[12.5px] text-ink-muted leading-relaxed mt-1">
+                    {captaincy.uncertain
+                      ? `${captaincy.source}. ${captaincy.uncertain}`
+                      : `${captaincy.source}.`}
+                  </p>
+                </div>
               )}
               {(totalLetters > 0 || totalSeasons > 0) && (
                 <div className="mt-5 grid grid-cols-2 gap-4 max-w-md">

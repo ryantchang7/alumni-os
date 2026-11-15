@@ -13,6 +13,7 @@ import { Redis } from '@upstash/redis'
 import { usEasternToday } from '@/lib/us-date'
 import type {
   RosterYearCorrection,
+  TeamCaptaincyRecord,
   Store,
   Team,
   ScrapeRun,
@@ -2679,6 +2680,72 @@ export async function reviewRosterCorrection(input: {
         }
       }
     }
+    return row
+  })
+}
+
+/**
+ * Captaincies entered at runtime, keyed by Member Book id.
+ *
+ * Read on top of the committed list in
+ * `src/lib/member-book/team-captains.ts`. One row per card: a second entry
+ * for the same person replaces the first, because a captaincy is a fact
+ * being corrected rather than a request being queued, and there is no
+ * reviewer to queue it for.
+ *
+ * Tolerates the array being absent, as every store written before
+ * 2026-11-15 has it missing.
+ */
+export async function getTeamCaptaincies(
+  teamId: string,
+): Promise<Map<string, { years: number[]; note?: string; setByEmail: string }>> {
+  const store = await readStore()
+  const out = new Map<string, { years: number[]; note?: string; setByEmail: string }>()
+  const rows = (store.teamCaptaincies ?? [])
+    .filter(c => c.teamId === teamId)
+    .sort((a, b) => a.updatedAt.localeCompare(b.updatedAt))
+  for (const c of rows) {
+    out.set(c.memberId, { years: c.years, note: c.note, setByEmail: c.setByEmail })
+  }
+  return out
+}
+
+export async function listTeamCaptaincies(
+  teamId: string,
+): Promise<TeamCaptaincyRecord[]> {
+  const store = await readStore()
+  return (store.teamCaptaincies ?? [])
+    .filter(c => c.teamId === teamId)
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+}
+
+export async function setTeamCaptaincy(input: {
+  teamId: string
+  memberId: string
+  displayName: string
+  years: number[]
+  note?: string
+  setByEmail: string
+}): Promise<TeamCaptaincyRecord> {
+  return mutateStore(store => {
+    const rows = (store.teamCaptaincies ??= [])
+    const now = new Date().toISOString()
+    const idx = rows.findIndex(
+      c => c.teamId === input.teamId && c.memberId === input.memberId,
+    )
+    const row: TeamCaptaincyRecord = {
+      id: idx === -1 ? crypto.randomUUID() : rows[idx].id,
+      teamId: input.teamId,
+      memberId: input.memberId,
+      displayName: input.displayName,
+      years: [...new Set(input.years)].sort((a, b) => a - b),
+      note: input.note,
+      setByEmail: input.setByEmail,
+      createdAt: idx === -1 ? now : rows[idx].createdAt,
+      updatedAt: now,
+    }
+    if (idx === -1) rows.push(row)
+    else rows[idx] = row
     return row
   })
 }
