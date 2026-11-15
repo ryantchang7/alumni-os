@@ -60,10 +60,19 @@ const localParts = (email: string): string[] =>
  * strangers, so a name only appears here when somebody established it.
  */
 export const NAME_ALIASES: Record<string, string[]> = {
-  'w-melissa-aylor': ['Melissa Maurer'],
+  'w-melissa-aylor': ['Melissa Maurer', 'Melissa Aylor Maurer'],
   'w-lisette-vitter': ['Lisette Williamson'],
   'club-rich-furman': ['Richard Furman'],
   'w-stacy-kress-politziner': ['Stacy Kress', 'Stacy Politziner'],
+  // The 1999-2003 women, each written by Melissa Maurer with the maiden name
+  // in parentheses, which is her telling us both names belong to one person.
+  // Any of them may sign in under either, and a card nobody can match to the
+  // name on their Google account is a card they cannot claim.
+  'w-lindsay-stern-ornstein': ['Lindsay Stern', 'Lindsay Ornstein'],
+  'w-natasha-miller-sekkat': ['Natasha Miller', 'Natasha Sekkat'],
+  'w-jennifer-schraut-keith': ['Jennifer Keith', 'Jennifer Schraut'],
+  'w-rachel-slosburg-kramer': ['Rachel Kramer', 'Rachel Slosburg'],
+  'w-valerie-wong-fountain': ['Valerie Fountain', 'Valerie Wong'],
 }
 
 export type CandidateBasis =

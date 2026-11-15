@@ -167,7 +167,25 @@ export const PENN_WOMENS_GOLF_HONORS: ProgramHonorSeason[] = [
       { name: 'Meg Bender', honor: 'All-Ivy' },
       { name: 'Kim Thompson', honor: 'All-Ivy' },
     ],
-    note: 'Two of only four Penn women to earn All-Ivy between 2000, when the program first played the Ivy Championship, and 2010. The other two are not named in any source found so far.',
+    note: 'Two of the four Penn women to earn All-Ivy between 2000, when the program first played the Ivy Championship, and 2010. The other two are Stacy Kress Politziner in 2000 and Melissa Aylor Maurer in 2005, named by Melissa Maurer in 2026 after sixteen years in which no source listed them.',
+  },
+  {
+    year: 2005,
+    title: 'Melissa Aylor Maurer',
+    entries: [{ name: 'Melissa Aylor Maurer', honor: 'All-Ivy', detail: 'As a senior, and captain' }],
+    note: "Recorded from Melissa Maurer's own account, 2026. Penn Athletics published no women's golf roster for three of her four seasons and no selection list for this one, so this honour has no Penn page behind it.",
+  },
+  {
+    year: 2000,
+    title: "Stacy Kress Politziner, in the program's first varsity season",
+    entries: [
+      {
+        name: 'Stacy Kress Politziner',
+        honor: 'First-Team All-Ivy',
+        detail: 'As a freshman, in the first varsity season',
+      },
+    ],
+    note: "The program's first recruit, honoured in the first season it played. Recorded from Daily Pennsylvanian archives and confirmed in 2026 by Melissa Maurer; Penn's own roster archive begins five years later and does not contain her.",
   },
 ]
 
@@ -204,6 +222,20 @@ export const PENN_WOMENS_GOLF_HISTORICAL_NOTES: ProgramHistoryNote[] = [
     title: 'Ivy League Coach of the Year',
     detail:
       'Mark Anderson was named Ivy League Coach of the Year for 2022-23, the first Penn golf coach to receive the award.',
+  },
+  {
+    year: 2004,
+    title: 'Lehigh Invitational, team and individual',
+    detail:
+      'Penn won the Lehigh Invitational as a team and Melissa Aylor Maurer won it individually, six years before the program won its first Ivy title. ' +
+      'Recorded from her own account in 2026; no Penn page covering it has been found, which is true of most of what this team did.',
+  },
+  {
+    year: 2003,
+    title: 'William and Mary Invitational',
+    detail:
+      'Melissa Aylor Maurer was individual champion at the William and Mary Invitational. ' +
+      'Recorded from her own account in 2026.',
   },
 ]
 

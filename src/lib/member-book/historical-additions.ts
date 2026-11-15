@@ -195,16 +195,123 @@ const ADDITIONS: AdditionInput[] = [
   },
 
   // ── Women's pre-2004 ─────────────────────────────────────────────────
+  //
+  // Everything from here down rests on one email, 2026-11-15, from Melissa
+  // Maurer, women's captain in 2004 and 2005: roster information "to the best
+  // of my knowledge, for women's players arriving at Penn in 2001 (my year)
+  // or before". It is the only account anyone has of the five seasons Penn
+  // went varsity without publishing a roster, and it closed two things the
+  // record book had open: Stacy Kress's and Valerie Wong Fountain's seasons,
+  // both of which read "not established" until it arrived.
+  //
+  // Her years are SEASON-END years, and that is established rather than
+  // assumed. She lists herself as "2002, 2003, 2004, 2005" and says she
+  // arrived in 2001, which makes those the spring ends of 2001-02 through
+  // 2004-05; independently, she had already filed a correction asking for her
+  // own card to read 2001-2005, which is the same career under this file's
+  // convention. Stacy Kress confirms it from the other end: listed "2000"
+  // for the All-Ivy she won as a freshman, and the program's first varsity
+  // season was 1999-2000. So a listed year Y becomes the season (Y-1)-Y, and
+  // a span is startYear = first fall, endYear = last spring.
+  //
+  // What her email does NOT give is class years, and for anyone whose listed
+  // seasons do not already make four, it does not establish that the career
+  // was no longer than she remembers. Those stay null and say so.
+  {
+    id: 'w-lindsay-stern-ornstein',
+    displayName: 'Lindsay Stern-Ornstein',
+    program: 'womens',
+    classYearEstimate: null,
+    startYear: 1998,
+    endYear: 1999,
+    rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
+    uncertain:
+      "Recorded as playing one season and captaining it. Under the season-end convention her year reads 1998-99, which is the season BEFORE Penn women's golf went varsity in 1999-2000 — so either she captained the club team in its last pre-varsity season, or this one year is counted differently from the rest of the list. Left exactly as given rather than moved a year to fit. Class year not given.",
+    sourceRecordType: 'womens_pre_2004_recollection',
+  },
+  {
+    id: 'w-natasha-miller-sekkat',
+    displayName: 'Natasha Miller Sekkat',
+    program: 'womens',
+    classYearEstimate: null,
+    startYear: 1999,
+    endYear: 2000,
+    rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
+    uncertain:
+      "Captain of the 1999-2000 team, the programme's first varsity season. Only that season is recorded; earlier club seasons would not appear in any source. Class year not given.",
+    sourceRecordType: 'womens_pre_2004_recollection',
+  },
+  {
+    id: 'w-jennifer-schraut-keith',
+    displayName: 'Jennifer Schraut Keith',
+    program: 'womens',
+    classYearEstimate: null,
+    startYear: 1999,
+    endYear: 2001,
+    rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
+    uncertain:
+      'Recorded on the 1999-2000 and 2000-01 teams and as captain in 2000-01. Class year not given.',
+    sourceRecordType: 'womens_pre_2004_recollection',
+  },
+  {
+    id: 'w-rachel-slosburg-kramer',
+    displayName: 'Rachel Slosburg Kramer',
+    program: 'womens',
+    classYearEstimate: null,
+    startYear: 1999,
+    endYear: 2000,
+    rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
+    uncertain:
+      'Recorded on the 1999-2000 team. Whether she played other seasons is not established. Class year not given.',
+    sourceRecordType: 'womens_pre_2004_recollection',
+  },
   {
     id: 'w-stacy-kress-politziner',
     displayName: 'Stacy Kress Politziner',
     program: 'womens',
     classYearEstimate: "C'03",
-    startYear: null,
-    endYear: null,
-    rememberedBy: 'Ryan Chang, from Penn Golf Board records',
+    startYear: 1999,
+    endYear: 2003,
+    rememberedBy:
+      "Ryan Chang, from Penn Golf Board records; seasons and captaincies from Melissa Maurer, women's captain 2004 and 2005",
     uncertain:
-      "Seasons not established. Penn publishes no women's roster before 2004-05, five years after the program went varsity.",
+      "Four seasons, 1999-2000 through 2002-03, and captain in 2001-02 and 2002-03. The programme's first recruit: first-team All-Ivy as a freshman in the first varsity season. Penn publishes no women's roster before 2004-05, so none of this appears in Penn's own archive. Two independent sources now agree on C'03.",
+    sourceRecordType: 'womens_pre_2004_recollection',
+  },
+  {
+    id: 'w-laura-dolan',
+    displayName: 'Laura Dolan',
+    program: 'womens',
+    classYearEstimate: null,
+    startYear: 2000,
+    endYear: 2002,
+    rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
+    uncertain:
+      'Recorded on the 2000-01 and 2001-02 teams. Written "Laura M. Dolan" in the source; the middle initial is dropped on the card and kept as a claim alias, because an initial in a display name has already hidden one Penn captain from his own card. Class year not given.',
+    sourceRecordType: 'womens_pre_2004_recollection',
+  },
+  {
+    id: 'w-jessica-penzell',
+    displayName: 'Jessica Penzell',
+    program: 'womens',
+    classYearEstimate: null,
+    startYear: 2000,
+    endYear: 2002,
+    rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
+    uncertain:
+      'Recorded on the 2000-01 and 2001-02 teams. Written "Jessica J. Penzell" in the source; initial kept as a claim alias only. Class year not given.',
+    sourceRecordType: 'womens_pre_2004_recollection',
+  },
+  {
+    id: 'w-victoria-entine',
+    displayName: 'Victoria Entine',
+    program: 'womens',
+    classYearEstimate: null,
+    startYear: 2001,
+    endYear: 2002,
+    rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
+    uncertain:
+      'Recorded on the 2001-02 team. Whether she played other seasons is not established. Class year not given.',
     sourceRecordType: 'womens_pre_2004_recollection',
   },
   {
@@ -212,11 +319,12 @@ const ADDITIONS: AdditionInput[] = [
     displayName: 'Valerie Wong Fountain',
     program: 'womens',
     classYearEstimate: null,
-    startYear: null,
-    endYear: null,
-    rememberedBy: 'Ryan Chang, from Penn Golf Board records',
+    startYear: 2000,
+    endYear: 2003,
+    rememberedBy:
+      "Ryan Chang, from Penn Golf Board records; seasons from Melissa Maurer, women's captain 2004 and 2005",
     uncertain:
-      "Wharton alumna, recorded as a women's golf letter winner and a Golf Board member. Letter years not established, and no published women's roster exists for her era, so no letter is asserted on this card.",
+      "Three seasons, 2000-01 through 2002-03. Wharton alumna, recorded as a women's golf letter winner and a Golf Board member. Penn published no women's roster for those seasons, so the seasons are recollection and no letter is asserted on this card. Class year not given.",
     sourceRecordType: 'womens_pre_2004_recollection',
   },
 ]
