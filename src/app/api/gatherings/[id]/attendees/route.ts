@@ -1,7 +1,7 @@
 /**
  * GET /api/gatherings/[id]/attendees — list of approved members who have
- * RSVP'd to this gathering. Approved-members-only (we don't leak attendee
- * names to the public).
+ * RSVP'd to this gathering, plus whether the reader is one of them.
+ * Approved-members-only (we don't leak attendee names to the public).
  */
 
 import { NextResponse } from 'next/server'
@@ -72,7 +72,20 @@ export async function GET(_request: Request, { params }: RouteParams) {
     }
   })
 
-  return NextResponse.json({ attendees })
+  // Whether the reader is already on the sheet. Without this a client has
+  // to guess by matching its own name against the list, which gets it
+  // wrong for anyone a host added by hand under a different spelling.
+  const mineRow = attendees.find(
+    a =>
+      (a.accountId && a.accountId === session.accountId) ||
+      (a.personId && a.personId === session.linkedPersonId),
+  )
+
+  return NextResponse.json({
+    attendees,
+    mine: !!mineRow,
+    mineRequestId: mineRow?.requestId ?? null,
+  })
 }
 
 /** Keeps a label short enough to read on a card, and non-abusive. */

@@ -37,12 +37,8 @@ import {
   getMemberStartYear,
   getMemberEndYear,
 } from './helpers'
-import { NAME_ALIASES } from './candidates'
-import {
-  PENN_CAPTAIN_NAMES,
-  CAPTAIN_NAME_TO_CARD,
-  type PennCaptainName,
-} from './penn-captains'
+import { matchPennName } from './penn-name-match'
+import { PENN_CAPTAIN_NAMES, type PennCaptainName } from './penn-captains'
 
 export interface TeamCaptaincy {
   /** Member Book card this belongs to. */
@@ -101,72 +97,12 @@ export function formatCaptainSeasons(years: readonly number[]): string {
 
 // ── Matching Penn's names to cards ─────────────────────────────────────
 //
-// Deliberately strict, for the reason stated at the top of candidates.ts: a
-// wrong answer attaches one member's history to another, and a captaincy is
-// the most quotable thing on a card. Three rules, all of which must hold:
-//
-//   1. The name matches a card's display name or a recorded alias, reduced
-//      to letters, or matches once single-letter name parts are set aside.
-//   2. The card is in the same program.
-//   3. The captain year falls inside the card's career span. Penn's roster
-//      archive is shorter than its letter records, so a span can be too
-//      short — but it is never too long, and the year test is what stops
-//      "Tom Wecal" from attaching to a different Wecal eighty years apart.
-//
-// A name that matches two cards is dropped rather than guessed at.
+// The rules and the explicit bindings now live in penn-name-match.ts,
+// because the individual-honours list needs exactly the same join and two
+// copies of a matcher this strict would drift apart.
 
+/** Letters only, for comparing a printed name to a card's display name. */
 const letters = (s: string): string => s.toLowerCase().replace(/[^a-z]/g, '')
-
-const withoutInitials = (s: string): string =>
-  letters(
-    s
-      .toLowerCase()
-      .split(/\s+/)
-      .filter(part => part.replace(/[^a-z]/g, '').length > 1)
-      .join(' '),
-  )
-
-interface Candidate {
-  entry: MemberBookEntry
-  exact: boolean
-}
-
-function candidatesFor(cap: PennCaptainName): Candidate[] {
-  // An explicit binding is the strongest signal there is: somebody checked
-  // it. It still has to resolve to a real, public card in the right
-  // program, so a card-id typo fails loudly in the integrity test rather
-  // than silently dropping a captaincy.
-  const bound = CAPTAIN_NAME_TO_CARD[`${cap.program}:${cap.name}`]
-  if (bound) {
-    const e = memberBookEntries.find(x => x.id === bound)
-    if (e && isPublicMember(e) && getMemberProgram(e) === cap.program) {
-      return [{ entry: e, exact: true }]
-    }
-    return []
-  }
-  const want = letters(cap.name)
-  const wantLoose = withoutInitials(cap.name)
-  const out: Candidate[] = []
-  for (const e of memberBookEntries) {
-    if (!isPublicMember(e)) continue
-    if (getMemberProgram(e) !== cap.program) continue
-    const start = getMemberStartYear(e)
-    const end = getMemberEndYear(e)
-    if (start == null || end == null) continue
-    if (cap.year < start || cap.year > end) continue
-    const names = [e.displayName, ...(NAME_ALIASES[e.id] ?? [])]
-    if (names.some(n => letters(n) === want)) {
-      out.push({ entry: e, exact: true })
-      continue
-    }
-    if (wantLoose && names.some(n => withoutInitials(n) === wantLoose)) {
-      out.push({ entry: e, exact: false })
-    }
-  }
-  // An exact hit beats a loose one, and only then is a single answer safe.
-  const exact = out.filter(c => c.exact)
-  return exact.length > 0 ? exact : out
-}
 
 interface Matched {
   years: number[]
@@ -180,17 +116,13 @@ const UNMATCHED: PennCaptainName[] = []
 const AMBIGUOUS: Array<{ cap: PennCaptainName; ids: string[] }> = []
 
 for (const cap of PENN_CAPTAIN_NAMES) {
-  const found = candidatesFor(cap)
-  if (found.length === 0) {
+  const found = matchPennName({ name: cap.name, program: cap.program, year: cap.year })
+  if (!found.entry) {
+    if (found.ambiguousWith) AMBIGUOUS.push({ cap, ids: found.ambiguousWith })
     UNMATCHED.push(cap)
     continue
   }
-  if (found.length > 1) {
-    AMBIGUOUS.push({ cap, ids: found.map(f => f.entry.id) })
-    UNMATCHED.push(cap)
-    continue
-  }
-  const id = found[0].entry.id
+  const id = found.entry.id
   const row = PENN_BY_MEMBER.get(id) ?? { years: [], shared: false, names: new Set() }
   row.years.push(cap.year)
   // Shared if ANY of this person's seasons was shared, which is what the

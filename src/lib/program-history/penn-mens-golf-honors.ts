@@ -48,7 +48,7 @@
 import type { ProgramHonorSeason } from './types'
 
 /** One honour: who, what, and the finish behind it where there is one. */
-interface HonorRow {
+export interface HonorRow {
   year: number
   name: string
   honor: string
@@ -298,6 +298,12 @@ function buildSeasons(rows: HonorRow[]): ProgramHonorSeason[] {
 }
 
 export const PENN_GOLF_HONORS: ProgramHonorSeason[] = buildSeasons(ROWS)
+
+/**
+ * The same honours flat, for joining to Member Book cards. The Hall of Fame
+ * wants them grouped by season; a member's own card wants only their own.
+ */
+export const MENS_HONOR_ROWS: readonly HonorRow[] = ROWS
 
 /**
  * All-Ivy selections, counted rather than asserted.

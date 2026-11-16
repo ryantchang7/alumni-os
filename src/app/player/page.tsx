@@ -22,6 +22,7 @@ import ClubhouseActivityFeed from '@/components/ClubhouseActivityFeed'
 import OnTheLoopStrip from '@/components/OnTheLoopStrip'
 import YourEraSection from '@/components/YourEraSection'
 import ClubhouseChecklist from '@/components/ClubhouseChecklist'
+import FeaturedGathering from '@/components/FeaturedGathering'
 import TeamNewsStrip from '@/components/TeamNewsStrip'
 import CoachIntroCard from '@/components/CoachIntroCard'
 import SeasonUpdateTiles from '@/components/SeasonUpdateTiles'
@@ -68,10 +69,13 @@ function ThisWeekPanel({ teamSlug, approved }: { teamSlug: string; approved: boo
           (g: GatheringSnippet) => !g.isExample,
         )
         setTotalCount(all.length)
+        // FeaturedGathering leads the page with the first of these, so this
+        // panel skips it. Without that the same happy hour appeared twice.
+        const rest = all.slice(1)
         // One of each type class: round, social (coffee/drinks/dinner), event
-        const round = all.find(g => g.type === 'round')
-        const social = all.find(g => g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner')
-        const event = all.find(g => g.type === 'event')
+        const round = rest.find(g => g.type === 'round')
+        const social = rest.find(g => g.type === 'coffee' || g.type === 'drinks' || g.type === 'dinner')
+        const event = rest.find(g => g.type === 'event')
         setGatherings([round, social, event].filter((g): g is GatheringSnippet => !!g))
         setLoading(false)
       })
@@ -794,6 +798,12 @@ function ClubhouseInner() {
             />
           </div>
         )}
+
+        {/* The next real gathering, with its flyer, above everything else
+            on the page. It used to sit tenth, as a third-width card with no
+            image, while the same event led the Sunday email at full width:
+            the email was advertising it better than the site it links to. */}
+        <FeaturedGathering teamSlug={teamSlug} approved={!!onboarding?.linked} />
 
         {/* Support nudge, approved members who haven't subscribed yet. */}
         {onboarding?.linked &&

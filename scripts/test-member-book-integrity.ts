@@ -20,6 +20,13 @@ import { memberBookMens, memberBookWomens, memberBookEntries } from '../src/lib/
 import { historicalAdditions, isHistoricalAddition } from '../src/lib/member-book/historical-additions'
 import { coachingStaff } from '../src/lib/member-book/coaching-staff'
 import {
+  honorsForMember,
+  unplacedHonors,
+  ambiguousHonors,
+  honoredCardCount,
+} from '../src/lib/member-book/member-honors'
+import { PENN_NAME_TO_CARD } from '../src/lib/member-book/penn-name-match'
+import {
   getCaptaincies,
   getStaticCaptaincy,
   unmatchedCaptains,
@@ -235,6 +242,43 @@ ok(
   'Stacy Kress Politziner captained two seasons',
   (getStaticCaptaincy('w-stacy-kress-politziner')?.years ?? []).length === 2,
 )
+
+console.log('\nIndividual honours, joined to cards')
+// Both record books are joined to cards by name, program and year. The
+// join can break silently in two directions: a card-id rename drops an
+// honour, and a loosened matcher attaches one man's award to another.
+const honoredCards = honoredCardCount()
+ok('both books reach at least 55 cards', honoredCards >= 55, String(honoredCards))
+ok(
+  'the matcher never guessed between two cards',
+  ambiguousHonors().length === 0,
+  ambiguousHonors().map(a => `${a.honor.name} ${a.honor.year} -> ${a.ids.join('|')}`).join('; '),
+)
+// Two honourees genuinely have no card: Julian Jordan, All-Ivy 1992 and
+// captain 1992-93, and Bob Heintz, Ivy Coach of the Year 2015, a former
+// head coach the book has no card for. If this number grows, a join broke.
+ok('at most two honours are unplaced', unplacedHonors().length <= 2,
+  unplacedHonors().map(u => `${u.year} ${u.name}`).join(', '))
+ok(
+  'every explicit name-to-card binding resolves',
+  Object.values(PENN_NAME_TO_CARD).every(id => !!find(id)),
+  Object.entries(PENN_NAME_TO_CARD).filter(([, id]) => !find(id)).map(([k, v]) => `${k} -> ${v}`).join(', '),
+)
+// Named people. Ryan Chang had to point out his own award; Tom Wecal's
+// three straight All-America honourable mentions are the longest such run
+// Penn records; Burt McHugh only reaches his through an explicit binding
+// because his club-era card has no years at all.
+ok('Ryan Chang carries his 2026 All-America Scholar award',
+  honorsForMember('ryan-chang').some(h => h.year === 2026 && /All-America Scholar/.test(h.honor)))
+ok('Tom Wecal carries six honours including three All-America',
+  honorsForMember('thomas-e-wecal').length === 6 &&
+    honorsForMember('thomas-e-wecal').filter(h => /All-America/.test(h.honor)).length === 3)
+ok('Burt McHugh carries the two All-Ivy seasons Penn prints',
+  honorsForMember('club-burt-mchugh').length === 2)
+ok('Melissa Aylor carries her 2005 All-Ivy',
+  honorsForMember('w-melissa-aylor').some(h => h.year === 2005))
+ok('a card with no honours returns an empty list',
+  honorsForMember('club-david-posnick').length === 0)
 
 console.log(
   failures ? `\n${failures} FAILED\n` : `\nAll integrity checks passed (${memberBookEntries.length} cards)\n`,

@@ -26,6 +26,10 @@ import {
   captainLabel,
   captainSentence,
 } from '@/lib/member-book/team-captains'
+import {
+  honorsForMember,
+  honorSeason,
+} from '@/lib/member-book/member-honors'
 import RosterYearsFix from '@/components/RosterYearsFix'
 import TeamCaptainFix from '@/components/TeamCaptainFix'
 import TeamCaptainReview from '@/components/TeamCaptainReview'
@@ -167,6 +171,12 @@ export default async function MemberDetailPage({
     : resolveCaptaincy(member.id, getMemberProgram(member))
   // A request the member filed about their own card, waiting on a yes. Only
   // the founder is shown it; the member already knows they sent it.
+  // This member's own honours, joined from both record books by the same
+  // strict matcher the captaincies use. All 116 men's honours render on
+  // /hall-of-fame grouped by season, which is the right shape for reading
+  // the programme's history and the wrong one for the question a member
+  // asks about themselves.
+  const honors = honorsForMember(member.id)
   const pendingCaptaincy =
     isFounder && correctionTeam
       ? (await getPendingCaptaincyRequests(correctionTeam.id)).get(member.id)
@@ -431,6 +441,38 @@ export default async function MemberDetailPage({
                       ? `${captaincy.source}. ${captaincy.uncertain}`
                       : `${captaincy.source}.`}
                   </p>
+                </div>
+              )}
+              {honors.length > 0 && (
+                <div className="mt-5" data-testid="member-honors">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted mb-2.5">
+                    {honors.length === 1 ? 'Honor' : 'Honors'}
+                  </p>
+                  <ul className="space-y-2">
+                    {honors.map((h, i) => (
+                      <li key={i} className="flex gap-3 text-[13.5px] leading-relaxed">
+                        <span className="text-ink-muted tabular-nums shrink-0 w-[58px]">
+                          {honorSeason(h.year)}
+                        </span>
+                        <span className="text-[#0a1628]">
+                          {h.honor}
+                          {h.detail && (
+                            <span className="text-[#3d4a5c]"> &middot; {h.detail}</span>
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  {/* Penn prints maiden names for the early women and
+                      nicknames for the men. Saying so is the difference
+                      between a reader believing the record and wondering
+                      whether we matched the wrong person. */}
+                  {honors.some(h => h.printedAs) && (
+                    <p className="text-[12px] text-ink-muted mt-2.5 leading-relaxed">
+                      Penn&rsquo;s record book prints some of these as{' '}
+                      {[...new Set(honors.map(h => h.printedAs).filter(Boolean))].join(', ')}.
+                    </p>
+                  )}
                 </div>
               )}
               {(totalLetters > 0 || totalSeasons > 0) && (
