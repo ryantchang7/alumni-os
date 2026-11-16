@@ -325,7 +325,7 @@ async function runJob(req: NextRequest) {
   const norm = (v?: string): string => (v ?? '').trim().toLowerCase()
   const roundPartnersFor = (
     personId?: string,
-  ): Array<{ name: string; city?: string; cardUrl?: string }> => {
+  ): Array<{ name: string; city?: string; cardUrl?: string; sameCity?: boolean }> => {
     if (!personId) return []
     const me = store.personEnrichments.find(
       x => x.teamId === team.id && x.personId === personId,
@@ -339,7 +339,13 @@ async function runJob(req: NextRequest) {
         .filter(a => a.teamId === team.id && a.linkedPersonId)
         .map(a => a.linkedPersonId as string),
     )
-    const scored: Array<{ name: string; city?: string; cardUrl?: string; rank: number }> = []
+    const scored: Array<{
+      name: string
+      city?: string
+      cardUrl?: string
+      sameCity: boolean
+      rank: number
+    }> = []
     for (const e of store.personEnrichments) {
       if (e.teamId !== team.id) continue
       if (e.personId === personId) continue
@@ -355,13 +361,23 @@ async function runJob(req: NextRequest) {
         name: person.canonicalName,
         city: e.city,
         cardUrl: book ? `${clubhouseUrl}/member-book/${encodeURIComponent(book.id)}` : undefined,
+        sameCity,
         rank: sameCity ? 0 : 1,
       })
     }
     return scored
       .sort((a, b) => a.rank - b.rank || a.name.localeCompare(b.name))
       .slice(0, 3)
-      .map(({ name, city, cardUrl }) => ({ name, city, cardUrl }))
+      .map(({ name, city, cardUrl, sameCity }) => ({ name, city, cardUrl, sameCity }))
+  }
+
+  /** The reader's own city and state, so the heading can be truthful. */
+  const placeFor = (personId?: string): { city?: string; state?: string } => {
+    if (!personId) return {}
+    const e = store.personEnrichments.find(
+      x => x.teamId === team.id && x.personId === personId,
+    )
+    return { city: e?.city, state: e?.state }
   }
 
   /** Whether this reader has told anyone they are available for a round. */
@@ -420,6 +436,7 @@ async function runJob(req: NextRequest) {
           viewerPersonId: asAccount.linkedPersonId,
           viewerHasNeverPosted: !hasEverPosted.has(asAccount.id),
           nearbyRounds: roundPartnersFor(asAccount.linkedPersonId),
+          viewerPlace: placeFor(asAccount.linkedPersonId),
           viewerOpenToRounds: isOpenToRounds(asAccount.linkedPersonId),
           profileGaps: profileGapsFor(asAccount.linkedPersonId).map(g => g.label),
           profileGapReason: gapReason(profileGapsFor(asAccount.linkedPersonId)),
@@ -506,6 +523,7 @@ async function runJob(req: NextRequest) {
             viewerPersonId: account.linkedPersonId,
             viewerHasNeverPosted,
             nearbyRounds,
+            viewerPlace: placeFor(account.linkedPersonId),
             viewerOpenToRounds: isOpenToRounds(account.linkedPersonId),
             profileGaps: gaps.map(g => g.label),
             profileGapReason: gapReason(gaps),

@@ -803,7 +803,15 @@ export function renderWeeklyDigest(input: {
    * two of them to each other. The field was stored and read back to
    * nobody.
    */
-  nearbyRounds?: Array<{ name: string; city?: string; cardUrl?: string }>
+  nearbyRounds?: Array<{
+    name: string
+    city?: string
+    cardUrl?: string
+    /** False when the match is only in the same state, which is not "near". */
+    sameCity?: boolean
+  }>
+  /** The reader's own city and state, so the heading can be truthful. */
+  viewerPlace?: { city?: string; state?: string }
   /** False when the reader has not ticked it themselves, which is worth saying. */
   viewerOpenToRounds?: boolean
   /**
@@ -1264,9 +1272,22 @@ export function renderWeeklyDigest(input: {
       )
       .join('')
     const n = input.nearbyRounds.length
+    // "Near you" has to be true. The first run of this matched Peyton
+    // Wallace on Martha's Vineyard to Brookline, which is the same state
+    // and a ferry; it also matched three New Yorkers to a New Yorker, which
+    // is the real thing. So the heading names the place rather than
+    // asserting proximity, and falls back to the state when nobody shares
+    // the reader's city.
+    const anySameCity = input.nearbyRounds.some(p => p.sameCity)
+    const place = anySameCity
+      ? input.viewerPlace?.city
+      : input.viewerPlace?.state
+    const heading = place
+      ? `Open to a round in ${place}`
+      : 'Open to a round'
     sections.push(
       sec(
-        'Open to a round near you',
+        heading,
         rows +
           `<p style="margin:12px 0 0 0;font-size:13.5px;line-height:1.55;color:#3d4a5c;">
              ${
