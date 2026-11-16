@@ -16,9 +16,18 @@
  *     Ivy Coach / Player / Rookie of the Year, GCAA All-America, GCAA
  *     All-Region, GCAA All-America Scholar.
  *
- * One honour comes from neither: Hayden Adams' first-team All-Ivy for
- * 2025-26, which Penn announced on 29 April 2026, two days after the
- * Championship PDF was published. The PDF's first-team list stops at 2022.
+ * **The individual-honours PDF lags a cycle, and that is a trap.** It is
+ * dated 29 July 2025, the same day as Penn's 2024-25 All-America Scholar
+ * release, so it ends where that cycle ends and knows nothing about
+ * 2025-26. Transcribing it alone left out Hayden Adams and Ryan Chang's
+ * 2026 scholar honours, which Penn announced on 3 August 2026 — Ryan had
+ * to point out his own. The newest season always needs the news releases
+ * as well as the PDF, and the rows below name which release.
+ *
+ * Two honours come from releases rather than either PDF: Adams' first-team
+ * All-Ivy for 2025-26 (29 April 2026, two days after the Championship PDF
+ * was published, whose first-team list stops at 2022), and the Philly-SIDA
+ * Academic All-Area selections, an award family neither PDF carries.
  *
  * **How All-Ivy was decided changed twice, and the rows say which rule
  * applied.** Through 2009 the top seven Ivy finishers at the Championship
@@ -58,6 +67,21 @@ const ROWS: HonorRow[] = [
     name: 'Hayden Adams',
     honor: 'Ivy All-Championship Team',
     detail: 'Tied for fifth; his 219 is the fifth-best score by a Penn player at the Championship',
+  },
+  // Penn's release, 3 August 2026. The GCAA named 649 Division I players
+  // from 210 schools; Penn had two. Neither is in the honours PDF, which
+  // was published a year earlier.
+  {
+    year: 2026,
+    name: 'Hayden Adams',
+    honor: 'GCAA All-America Scholar',
+    detail: 'Team-low 72.9 stroke average over 27 rounds in ten tournaments',
+  },
+  {
+    year: 2026,
+    name: 'Ryan Chang',
+    honor: 'GCAA All-America Scholar',
+    detail: 'Nine of Penn\u2019s ten tournaments, and Penn\u2019s second-lowest score at the Ivy Championship',
   },
   { year: 2025, name: 'Max Fonseca', honor: 'Second-Team All-Ivy', detail: 'Voted by the coaches' },
   {
@@ -200,6 +224,14 @@ const ROWS: HonorRow[] = [
   { year: 2002, name: 'Peyton Wallace', honor: 'GCAA All-America Scholar' },
   { year: 2001, name: 'Kyle Moran', honor: 'GCAA All-America Scholar' },
   { year: 2000, name: 'Kyle Moran', honor: 'GCAA All-America Scholar' },
+
+  // ── Philly-SIDA Academic All-Area ────────────────────────────────────
+  //
+  // Neither Penn history PDF carries this award family. Both rows come
+  // from Penn's release of 2 July 2026, which calls it Adams' second
+  // consecutive selection and is therefore the source for 2025 as well.
+  { year: 2026, name: 'Hayden Adams', honor: 'Philly-SIDA Academic All-Area', detail: 'A second straight year' },
+  { year: 2025, name: 'Hayden Adams', honor: 'Philly-SIDA Academic All-Area' },
 ]
 
 /**
@@ -208,7 +240,7 @@ const ROWS: HonorRow[] = [
  * nothing a source does not support.
  */
 const SEASON_TITLES: Record<number, string> = {
-  2026: 'Hayden Adams, first team and the All-Championship team',
+  2026: 'Hayden Adams, first-team All-Ivy, and two All-America Scholars',
   2015: 'Austin Powell, Player of the Year, and Bob Heintz, Coach of the Year',
   2013: 'P.J. Fielding and Max Marsico tie for second',
   2010: 'Scotty Williams wins it in a playoff',
@@ -222,7 +254,7 @@ const SEASON_TITLES: Record<number, string> = {
 
 const SEASON_NOTES: Record<number, string> = {
   2026:
-    'Adams was low Penn player in three of four spring events. All-Ivy has been voted on by the coaches since 2025; before that it went by finish at the Championship.',
+    'Adams was low Penn player in three of four spring events and carried a team-low 72.9 average. All-Ivy has been voted on by the coaches since 2025; before that it went by finish at the Championship. The All-America Scholar award needs a sub-76.0 average over half the team\u2019s rounds and a 3.2 career GPA, so the two Penn names on it are an academic record as much as a golfing one.',
   2025: 'The first season the coaches voted, which is also the first season Penn had an honourable mention.',
   2015: 'Penn won the Ivy League title, and took Player and Coach of the Year in the same season.',
   2010:
