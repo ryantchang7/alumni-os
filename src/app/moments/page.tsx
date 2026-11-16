@@ -159,6 +159,13 @@ export default async function MomentsPage({ searchParams }: PageProps) {
   const allReactions = store?.momentReactions ?? []
   const viewerAccountId = session?.accountId ?? null
   const canPost = !!session?.linkedPersonId
+  // Has this reader ever posted anything, in any state? Seven Moments
+  // exist and all seven are the founder's, across 49 members. The feed
+  // never asked anyone; it only offered a composer link in the header,
+  // which is not an ask and gives no idea what belongs here.
+  const viewerHasPosted =
+    !!session?.accountId &&
+    (store?.moments ?? []).some(m => m.postedByAccountId === session.accountId)
 
   const isLockerView = view === 'locker-room'
 
@@ -232,6 +239,38 @@ export default async function MomentsPage({ searchParams }: PageProps) {
       )}
 
       <div className="max-w-[820px] mx-auto px-5 sm:px-8 py-10 sm:py-14">
+        {/* The ask, with examples, for a member who has not posted. Three
+            concrete prompts rather than "share a moment": every one of
+            these people has a photo on their phone that fits one of them,
+            and the blank page is what stops them. Disappears for good once
+            they have posted once. */}
+        {canPost && !viewerHasPosted && moments.length > 0 && (
+          <div
+            className="mb-10 bg-white border border-[rgba(180,168,150,0.45)] rounded-2xl px-6 py-5 sm:px-7"
+            style={{ boxShadow: '0 1px 3px rgba(10,22,40,0.05), 0 8px 24px rgba(10,22,40,0.05)' }}
+            data-testid="post-prompt"
+          >
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#990000] mb-2">
+              Your turn
+            </p>
+            <p className="text-[14px] text-[#3d4a5c] leading-relaxed">
+              You haven&rsquo;t put anything up yet. This goes to the people who
+              played for Penn and nobody else, so it doesn&rsquo;t have to be
+              polished.
+            </p>
+            <ul className="mt-3 space-y-1.5 text-[13.5px] text-[#0a1628]">
+              <li>A photo from a round you played this autumn, and where it was.</li>
+              <li>Something a teammate of yours did that deserves saying out loud.</li>
+              <li>The best course you got on this year, and whether it lived up to it.</li>
+            </ul>
+            <Link
+              href="/moments/new"
+              className="inline-block mt-4 bg-[#0a1628] hover:bg-[#112240] text-white text-[11.5px] font-semibold uppercase tracking-[0.14em] px-4 py-2.5 rounded-lg transition-colors"
+            >
+              Post one of them
+            </Link>
+          </div>
+        )}
         {moments.length === 0 ? (
           isLockerView ? (
             // Locker-room empty state — atmospheric navy panel with the

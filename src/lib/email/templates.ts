@@ -786,6 +786,27 @@ export function renderWeeklyDigest(input: {
   /** Deep link into this reader's own profile editor. */
   profileUrl?: string
   /**
+   * True when this reader has never posted a Moment, ever.
+   *
+   * Seven Moments exist and all seven are Ryan's, across 49 members who
+   * filled in their own profiles unprompted. The only reader this email
+   * ever asked to post was one who had claimed a card that same week, so
+   * forty-eight people were never asked at all. When this is set the email
+   * asks, with examples, because "post something" without an example is a
+   * blank page and a blank page is where this stalls.
+   */
+  viewerHasNeverPosted?: boolean
+  /**
+   * Penn golfers near this reader who are open to a round.
+   *
+   * 38 of 49 members ticked that box and the Clubhouse never introduced
+   * two of them to each other. The field was stored and read back to
+   * nobody.
+   */
+  nearbyRounds?: Array<{ name: string; city?: string; cardUrl?: string }>
+  /** False when the reader has not ticked it themselves, which is worth saying. */
+  viewerOpenToRounds?: boolean
+  /**
    * The site origin, so an item can link to itself.
    *
    * Every link in this email used to land on the Clubhouse front page.
@@ -1093,6 +1114,34 @@ export function renderWeeklyDigest(input: {
     sections.push(sec('Posted this week', body))
   }
 
+  // 4b. Your turn.
+  //
+  // Placed immediately after the posts, because the strongest moment to
+  // ask somebody to put something up is just after they have read what
+  // somebody else put up. Three examples rather than "post something":
+  // every one of these 49 people has a photo on their phone that fits one
+  // of them, and the blank page is the whole problem.
+  if (input.viewerHasNeverPosted) {
+    const prompts = [
+      'A photo from a round you played this autumn, and where it was.',
+      'Something a teammate of yours did that deserves saying out loud.',
+      'The best course you got on this year, and whether it lived up to it.',
+    ]
+    sections.push(
+      sec(
+        'Your turn',
+        `<p style="margin:0 0 10px 0;font-size:13.5px;line-height:1.55;color:#3d4a5c;">
+           You have not put anything up yet. It goes to the people who played
+           for Penn, and nobody else, so it does not have to be polished.
+         </p>` +
+          prompts.map(p => li(escapeHtml(p))).join('') +
+          `<p style="margin:12px 0 0 0;"><a href="${escapeHtml(
+            input.postMomentUrl ?? input.clubhouseUrl,
+          )}" style="font-size:13px;font-weight:600;color:#990000;text-decoration:none;">Post one of them &rarr;</a></p>`,
+      ),
+    )
+  }
+
   // 5. Who joined.
   //
   // This used to be six names and a tally, placed last on the reasoning that
@@ -1138,9 +1187,15 @@ export function renderWeeklyDigest(input: {
            way to stop being a name on a list is to put one thing up: a photo
            from a round, where you are living now, anything.
          </p>
-         <p style="margin:10px 0 0 0;"><a href="${escapeHtml(
-           input.postMomentUrl ?? input.clubhouseUrl,
-         )}" style="font-size:13px;font-weight:600;color:#990000;text-decoration:none;">Post something &rarr;</a></p>`
+         ${
+           // The "Your turn" section above already asks, with examples.
+           // Two asks in one email is one too many.
+           input.viewerHasNeverPosted
+             ? ''
+             : `<p style="margin:10px 0 0 0;"><a href="${escapeHtml(
+                 input.postMomentUrl ?? input.clubhouseUrl,
+               )}" style="font-size:13px;font-weight:600;color:#990000;text-decoration:none;">Post something &rarr;</a></p>`
+         }`
       : `<p style="margin:12px 0 0 0;font-size:13.5px;line-height:1.55;color:#3d4a5c;">
            ${
              n === 1
@@ -1193,6 +1248,44 @@ export function renderWeeklyDigest(input: {
   // The fixture, if that is all the team block was. Above Penn's headlines,
   // because what Penn plays next is still closer to home than a press release.
   if (teamBlock && !input.result) sections.push(teamBlock)
+  // 5b. Open to a round, near this reader.
+  //
+  // 38 of 49 members ticked the box and the Clubhouse introduced none of
+  // them to each other. A name and a city and a link to their card is the
+  // whole feature; the card already carries a Message button.
+  if (input.nearbyRounds && input.nearbyRounds.length > 0) {
+    const rows = input.nearbyRounds
+      .map(p =>
+        li(
+          p.cardUrl
+            ? `<a href="${escapeHtml(p.cardUrl)}" style="color:${NAVY};text-decoration:none;border-bottom:1px solid #c8a84b;">${escapeHtml(p.name)}</a>${p.city ? ` <span style="color:${MUTED}">· ${escapeHtml(p.city)}</span>` : ''}`
+            : `${escapeHtml(p.name)}${p.city ? ` <span style="color:${MUTED}">· ${escapeHtml(p.city)}</span>` : ''}`,
+        ),
+      )
+      .join('')
+    const n = input.nearbyRounds.length
+    sections.push(
+      sec(
+        'Open to a round near you',
+        rows +
+          `<p style="margin:12px 0 0 0;font-size:13.5px;line-height:1.55;color:#3d4a5c;">
+             ${
+               n === 1
+                 ? 'They have said they are up for a game and nobody has asked.'
+                 : 'They have all said they are up for a game. Open a card and send one line; that is the whole ask.'
+             }
+           </p>` +
+          (input.viewerOpenToRounds === false
+            ? `<p style="margin:8px 0 0 0;font-size:12.5px;line-height:1.5;color:${MUTED};">
+                 You are not on this list yourself yet. <a href="${escapeHtml(
+                   input.profileUrl ?? input.clubhouseUrl,
+                 )}" style="color:#990000;text-decoration:none;">Say you are open to a round &rarr;</a>
+               </p>`
+            : ''),
+      ),
+    )
+  }
+
 
   // 6. Penn's own headlines last, capped. They are already public, so they
   //    are the least exclusive thing in here.
