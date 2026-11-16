@@ -297,6 +297,10 @@ export default async function MomentsPage({ searchParams }: PageProps) {
         ) : (
           <div className="space-y-8">
             {moments.map((m) => (
+              // The anchor the weekly email links to. Without it every
+              // moment in that email landed on the Clubhouse front page and
+              // the reader had to go looking for the post.
+              <div key={m.id} id={`m-${m.id}`} className="scroll-mt-24">
               <MomentCard
                 key={m.id}
                 moment={m}
@@ -313,6 +317,7 @@ export default async function MomentsPage({ searchParams }: PageProps) {
                 isFounder={viewerIsFounder}
                 taggedMembers={taggedMembersFor(m.taggedPersonIds, m.taggedBookIds)}
               />
+              </div>
             ))}
           </div>
         )}

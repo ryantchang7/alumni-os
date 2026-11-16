@@ -695,6 +695,8 @@ interface DigestMember {
   joinedAt?: string
 }
 interface DigestGathering {
+  /** Deep-links the flyer to the gathering, where the RSVP is. */
+  id?: string
   title: string
   dateText: string
   city?: string
@@ -706,7 +708,14 @@ interface DigestGathering {
   type?: string
 }
 interface DigestCareerPost { kind: 'ask' | 'offer'; headline: string; sector: string; postedByName: string }
-interface DigestMoment { caption: string; postedByName: string; photoUrl?: string; mediaType?: 'image' | 'video' }
+interface DigestMoment {
+  /** Deep-links the email to the post. Optional so older callers compile. */
+  id?: string
+  caption: string
+  postedByName: string
+  photoUrl?: string
+  mediaType?: 'image' | 'video'
+}
 interface DigestNewsItem { title: string; sourceUrl: string }
 /** A live open request: someone passing through, or someone after an intro. */
 interface DigestOpenRequest {
@@ -776,6 +785,16 @@ export function renderWeeklyDigest(input: {
   profileGapReason?: string
   /** Deep link into this reader's own profile editor. */
   profileUrl?: string
+  /**
+   * The site origin, so an item can link to itself.
+   *
+   * Every link in this email used to land on the Clubhouse front page.
+   * Seven moments had been posted to 49 members and collected zero
+   * reactions and zero comments; the controls for both exist on the post,
+   * which the email never pointed at. A reader who wanted to say
+   * congratulations had to arrive at the front door and go looking.
+   */
+  siteUrl?: string
 }): { subject: string; html: string } {
   const CAP = 3
 
@@ -888,8 +907,14 @@ export function renderWeeklyDigest(input: {
     // Flyers are posters and arrive in every shape. Width is capped and the
     // height left to follow, so nothing is cropped and nothing is stretched;
     // the NYC happy hour's is 1333x750 and lands about 275px tall.
+    // The gathering's own page, where the RSVP is. The front door is one
+    // click further from turning up than it needs to be.
+    const gatheringHref = (g: DigestGathering): string =>
+      g.id && input.siteUrl
+        ? `${input.siteUrl}/gatherings/${encodeURIComponent(g.id)}`
+        : input.clubhouseUrl
     const flyer = lead?.imageUrl
-      ? `<a href="${escapeHtml(input.clubhouseUrl)}"><img src="${escapeHtml(lead.imageUrl)}" alt="${escapeHtml(lead.title)}" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 14px 0;"></a>`
+      ? `<a href="${escapeHtml(gatheringHref(lead))}"><img src="${escapeHtml(lead.imageUrl)}" alt="${escapeHtml(lead.title)}" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 14px 0;"></a>`
       : ''
     // "Where you could play" over a happy hour is the tee-sheet mistake in
     // heading form. Only say play when every one of them is golf.
@@ -901,10 +926,12 @@ export function renderWeeklyDigest(input: {
           .slice(0, CAP)
           .map(g =>
             li(
-              `<strong>${escapeHtml(g.title)}</strong> <span style="color:${MUTED}">· ${escapeHtml(g.dateText)}${g.city ? ' · ' + escapeHtml(g.city) : ''}</span>`,
+              `<a href="${escapeHtml(gatheringHref(g))}" style="color:${NAVY};text-decoration:none;"><strong>${escapeHtml(g.title)}</strong></a> <span style="color:${MUTED}">· ${escapeHtml(g.dateText)}${g.city ? ' · ' + escapeHtml(g.city) : ''}</span>`,
             ),
           )
-          .join('') + more(input.gatherings.length - CAP, 'on the board'),
+          .join('') +
+        more(input.gatherings.length - CAP, 'on the board') +
+        `<p style="margin:10px 0 0 0;font-size:12.5px;line-height:1.5;color:${MUTED};">Open it and say you&rsquo;re coming, so the people deciding whether to turn up can see who&rsquo;ll be there.</p>`,
     )
   }
   const gatheringsBlock = gatheringsSection()
@@ -1035,9 +1062,18 @@ export function renderWeeklyDigest(input: {
     // Amateur off at "winning her THIRD Ca…", which is the one word in the
     // post that mattered. Cut on a word boundary for the same reason.
     const limit = input.moments.length === 1 ? 400 : 110
+    // The post itself, not the front door. The reaction and comment
+    // controls live on the card in the feed; this is the only channel that
+    // reaches every member, so it has to land them on the thing.
+    const momentHref = (m: DigestMoment): string =>
+      m.id && input.siteUrl
+        ? `${input.siteUrl}/moments#m-${encodeURIComponent(m.id)}`
+        : input.siteUrl
+          ? `${input.siteUrl}/moments`
+          : input.clubhouseUrl
     const body =
       (lead?.photoUrl
-        ? `<a href="${input.clubhouseUrl}"><img src="${lead.photoUrl}" alt="${escapeHtml(
+        ? `<a href="${escapeHtml(momentHref(lead))}"><img src="${lead.photoUrl}" alt="${escapeHtml(
             clip(lead.caption, 80),
           )}" width="488" style="display:block;width:100%;max-width:488px;height:auto;border-radius:8px;border:1px solid #e8dec9;margin:0 0 8px 0;"></a>`
         : '') +
@@ -1045,10 +1081,15 @@ export function renderWeeklyDigest(input: {
         .slice(0, 2)
         .map(m =>
           li(
-            `<em style="color:#3d4a5c">${escapeHtml(clip(m.caption, limit))}</em> <span style="color:${MUTED}">· ${escapeHtml(m.postedByName)}</span>`,
+            `<a href="${escapeHtml(momentHref(m))}" style="color:#3d4a5c;text-decoration:none;"><em>${escapeHtml(clip(m.caption, limit))}</em></a> <span style="color:${MUTED}">· ${escapeHtml(m.postedByName)}</span>`,
           ),
         )
-        .join('') + more(input.moments.length - 2, 'posted')
+        .join('') +
+      more(input.moments.length - 2, 'posted') +
+      // One explicit instruction. Zero reactions across seven posts is not
+      // indifference from 49 people who filled in their own profiles; it is
+      // that nobody was ever asked, and the link went to the wrong page.
+      `<p style="margin:10px 0 0 0;font-size:12.5px;line-height:1.5;color:${MUTED};">Open it to say something. A line from a teammate is worth more than a reaction from a stranger.</p>`
     sections.push(sec('Posted this week', body))
   }
 

@@ -138,6 +138,9 @@ async function runJob(req: NextRequest) {
     })
     .sort((a, b) => gatheringSortKey(a) - gatheringSortKey(b))
     .map(g => ({
+      // Same reason as the moments above: the flyer should open the
+      // gathering, where the RSVP is, not the front page.
+      id: g.id,
       title: g.title,
       dateText: g.dateText,
       city: g.city,
@@ -186,6 +189,11 @@ async function runJob(req: NextRequest) {
         Date.parse(m.createdAt) >= cutoffMs,
     )
     .map(m => ({
+      // The id is what lets the email link to the post itself. Without it
+      // every item in the digest landed on the Clubhouse front door, and a
+      // reader who wanted to congratulate Lisette had to go and find her
+      // post. Seven moments, 49 members, zero reactions ever.
+      id: m.id,
       caption: m.caption,
       postedByName: m.postedByName,
       photoUrl: m.photoUrl,
@@ -258,6 +266,8 @@ async function runJob(req: NextRequest) {
     clubhouseUrl: `${clubhouseUrl}/player`,
     memberBookUrl: `${clubhouseUrl}/member-book`,
     postMomentUrl: `${clubhouseUrl}/moments/new`,
+    /** The origin, so the template can deep-link a moment or a gathering. */
+    siteUrl: clubhouseUrl,
   }
   // The shared copy. Used for the hasContent gate and the dry-run preview;
   // each recipient is rendered again below with their own card's gaps.
