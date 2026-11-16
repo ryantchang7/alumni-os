@@ -42,8 +42,11 @@
  * - **Women before 1999.** The list starts at 1999. Penn dates the
  *   programme's first varsity season to 1999-2000, which under the
  *   season-end convention is 2000 — so Penn's own captains list opens one
- *   season before Penn says the programme existed. Lindsay Stern is printed
- *   at 1999 and that is left exactly as printed.
+ *   season before Penn says the programme existed. That is not a
+ *   transcription error at either end: asked which team Lindsay Stern
+ *   captained, Melissa Maurer answered on 2026-11-15 that she "played and
+ *   was captain for only one season which was 1998-1999". The last club
+ *   team had a captain, Penn counts her, and the Member Book does too.
  */
 
 import type { ProgramId } from '@/lib/teams/programs'

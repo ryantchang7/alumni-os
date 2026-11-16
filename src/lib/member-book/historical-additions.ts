@@ -214,9 +214,13 @@ const ADDITIONS: AdditionInput[] = [
   // season was 1999-2000. So a listed year Y becomes the season (Y-1)-Y, and
   // a span is startYear = first fall, endYear = last spring.
   //
-  // What her email does NOT give is class years, and for anyone whose listed
-  // seasons do not already make four, it does not establish that the career
-  // was no longer than she remembers. Those stay null and say so.
+  // Her 2026-11-15 follow-up closed the two things the first email left
+  // open, both asked directly and both answered: Lindsay Stern captained
+  // the 1998-99 team, the last before Penn went varsity, and "less than 4
+  // years next to their names would represent their entire playing career"
+  // — so a one- or two-season list here is a complete career, not a
+  // partial memory. Class years she still does not give, and those stay
+  // null and say so.
   {
     id: 'w-lindsay-stern-ornstein',
     displayName: 'Lindsay Stern-Ornstein',
@@ -226,7 +230,7 @@ const ADDITIONS: AdditionInput[] = [
     endYear: 1999,
     rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
     uncertain:
-      "Recorded as playing one season and captaining it. Under the season-end convention her year reads 1998-99, which is the season BEFORE Penn women's golf went varsity in 1999-2000 — so either she captained the club team in its last pre-varsity season, or this one year is counted differently from the rest of the list. Left exactly as given rather than moved a year to fit. Class year not given.",
+      "One season, 1998-99, and she captained it — the season BEFORE Penn women's golf went varsity in 1999-2000. Asked directly which it was, Melissa Maurer answered: \"Lindsay played and was captain for only one season which was 1998-1999.\" Penn Athletics' own all-time women's captains list agrees, opening at 1999, one season before Penn dates the programme's first varsity season. So the last club team had a captain and this is her. Class year not given.",
     sourceRecordType: 'womens_pre_2004_recollection',
   },
   {
@@ -238,7 +242,7 @@ const ADDITIONS: AdditionInput[] = [
     endYear: 2000,
     rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
     uncertain:
-      "Captain of the 1999-2000 team, the programme's first varsity season. Only that season is recorded; earlier club seasons would not appear in any source. Class year not given.",
+      "Captain of the 1999-2000 team, the programme's first varsity season, and that one season is her whole playing career: Melissa Maurer confirmed on 2026-11-15 that \"less than 4 years next to their names would represent their entire playing career.\" Class year not given.",
     sourceRecordType: 'womens_pre_2004_recollection',
   },
   {
@@ -250,7 +254,7 @@ const ADDITIONS: AdditionInput[] = [
     endYear: 2001,
     rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
     uncertain:
-      'Recorded on the 1999-2000 and 2000-01 teams and as captain in 2000-01. Class year not given.',
+      'The 1999-2000 and 2000-01 teams, captain in 2000-01, and those two seasons are her whole career — Melissa Maurer confirmed that a list of fewer than four years is a complete one. Class year not given.',
     sourceRecordType: 'womens_pre_2004_recollection',
   },
   {
@@ -262,7 +266,7 @@ const ADDITIONS: AdditionInput[] = [
     endYear: 2000,
     rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
     uncertain:
-      'Recorded on the 1999-2000 team. Whether she played other seasons is not established. Class year not given.',
+      'The 1999-2000 team, and that one season is her whole playing career: Melissa Maurer confirmed on 2026-11-15 that a list of fewer than four years is complete, not partial. Class year not given.',
     sourceRecordType: 'womens_pre_2004_recollection',
   },
   {
@@ -287,7 +291,7 @@ const ADDITIONS: AdditionInput[] = [
     endYear: 2002,
     rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
     uncertain:
-      'Recorded on the 2000-01 and 2001-02 teams. Written "Laura M. Dolan" in the source; the middle initial is dropped on the card and kept as a claim alias, because an initial in a display name has already hidden one Penn captain from his own card. Class year not given.',
+      'The 2000-01 and 2001-02 teams, her whole career — Melissa Maurer confirmed a short list is a complete one. Written "Laura M. Dolan" in the source; the middle initial is dropped on the card and kept as a claim alias, because an initial in a display name has already hidden one Penn captain from his own card. Class year not given.',
     sourceRecordType: 'womens_pre_2004_recollection',
   },
   {
@@ -299,7 +303,7 @@ const ADDITIONS: AdditionInput[] = [
     endYear: 2002,
     rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
     uncertain:
-      'Recorded on the 2000-01 and 2001-02 teams. Written "Jessica J. Penzell" in the source; initial kept as a claim alias only. Class year not given.',
+      'The 2000-01 and 2001-02 teams, her whole career — Melissa Maurer confirmed a short list is a complete one. Written "Jessica J. Penzell" in the source; initial kept as a claim alias only. Class year not given.',
     sourceRecordType: 'womens_pre_2004_recollection',
   },
   {
@@ -311,7 +315,7 @@ const ADDITIONS: AdditionInput[] = [
     endYear: 2002,
     rememberedBy: "Melissa Maurer, women's captain 2004 and 2005",
     uncertain:
-      'Recorded on the 2001-02 team. Whether she played other seasons is not established. Class year not given.',
+      'The 2001-02 team, and that one season is her whole playing career — Melissa Maurer confirmed on 2026-11-15 that a list of fewer than four years is complete. Class year not given.',
     sourceRecordType: 'womens_pre_2004_recollection',
   },
   {

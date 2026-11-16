@@ -167,7 +167,7 @@ export const PENN_WOMENS_GOLF_HONORS: ProgramHonorSeason[] = [
       { name: 'Meg Bender', honor: 'All-Ivy' },
       { name: 'Kim Thompson', honor: 'All-Ivy' },
     ],
-    note: 'Two of the four Penn women to earn All-Ivy between 2000, when the program first played the Ivy Championship, and 2010. The other two are Stacy Kress Politziner in 2000 and Melissa Aylor Maurer in 2005, named by Melissa Maurer in 2026 after sixteen years in which no source listed them.',
+    note: 'Two of the four Penn women to earn All-Ivy between 2000, when the program first played the Ivy Championship, and 2010. The other two are Stacy Kress Politziner in 2000 and Melissa Aylor Maurer in 2005 \u2014 named by Melissa Maurer in 2026, and then found in the Ivy League\u2019s own women\u2019s golf record book, which had listed all four the whole time.',
   },
   {
     year: 2005,
@@ -185,7 +185,7 @@ export const PENN_WOMENS_GOLF_HONORS: ProgramHonorSeason[] = [
         detail: 'As a freshman, in the first varsity season',
       },
     ],
-    note: "The program's first recruit, honoured in the first season it played. Recorded from Daily Pennsylvanian archives and confirmed in 2026 by Melissa Maurer; Penn's own roster archive begins five years later and does not contain her.",
+    note: "The program's first recruit, honoured in the first season it played. Three independent sources now agree: Daily Pennsylvanian archives, Melissa Maurer in 2026, and the Ivy League's own women's golf record book, which prints \u201cStacy Kress (Penn)\u201d under 2000. Penn's roster archive begins five years later and does not contain her.",
   },
 ]
 
@@ -244,6 +244,21 @@ export const PENN_WOMENS_GOLF_HISTORICAL_NOTES: ProgramHistoryNote[] = [
  * cannot show these players, and this is the list to hand anyone who asks
  * what is missing.
  */
+/**
+ * The Ivy League's own record book, which Melissa Maurer found on
+ * 2026-11-15 and which nobody here had looked for.
+ *
+ * It prints All-Ivy selections by season from 1997, when the women's teams
+ * were first chosen, and it names Penn women in seasons Penn Athletics has
+ * never itemised. Two are already used above. The rest are not transcribed
+ * yet: the document is a dense multi-column layout and a record book read
+ * from an unreliable extraction is worse than one with gaps. Transcribing
+ * it is what would turn the "14+" on the plaque into a real total, the way
+ * the men's 65 now is.
+ */
+export const WOMENS_IVY_RECORD_BOOK =
+  'https://ivyleague.com/documents/2025/9/4/2025_26_Women_s_Golf_Record_Book.pdf'
+
 export const WOMENS_UNPUBLISHED_SEASONS = [
   '1999-00',
   '2000-01',
