@@ -1255,8 +1255,12 @@ export function renderWeeklyDigest(input: {
 
   // The fixture, if that is all the team block was. Above Penn's headlines,
   // because what Penn plays next is still closer to home than a press release.
-  if (teamBlock && !input.result) sections.push(teamBlock)
   // 5b. Open to a round, near this reader.
+  //
+  // Above the team block, which when there is no result is a fixture
+  // months away. Three golfers in this reader's own city who have said
+  // they want a game outrank "next up, in 88 days" by a wide margin, and
+  // the gathering flyer was moved above it for exactly the same reason.
   //
   // 38 of 49 members ticked the box and the Clubhouse introduced none of
   // them to each other. A name and a city and a link to their card is the
@@ -1307,7 +1311,7 @@ export function renderWeeklyDigest(input: {
     )
   }
 
-
+  if (teamBlock && !input.result) sections.push(teamBlock)
   // 6. Penn's own headlines last, capped. They are already public, so they
   //    are the least exclusive thing in here.
   if (input.newsItems.length) {
